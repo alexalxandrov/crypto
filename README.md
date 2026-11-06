@@ -45,7 +45,7 @@ chmod +x scripts/install-mac.sh
 ./scripts/install-mac.sh
 ```
 
-The installer installs MCP dependencies at user scope, asks for the SSH destination and the server API token, and writes a Cline MCP snippet to ~/.config/crypto/mcp.json. Add that server entry to Cline's MCP settings without deleting other servers.
+The installer installs MCP dependencies at user scope, asks for the SSH destination, retrieves the API token over that authenticated SSH connection without printing it, and writes a Cline MCP snippet to ~/.config/crypto/mcp.json. Add that server entry to Cline's MCP settings without deleting other servers.
 
 Start the SSH tunnel in a separate Mac terminal:
 
