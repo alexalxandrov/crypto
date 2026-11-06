@@ -1,28 +1,31 @@
 # Crypto Intelligence & Remote Control
 
-A local-first toolkit for **watch-only blockchain intelligence** and remote Linux process management. Designed for a Mac running VS Code/Cline and a Linux server running Ollama.
+Local-first, **watch-only blockchain intelligence** and remote Linux process management. Designed for a Mac running VS Code/Cline and a Linux server running Ollama.
 
-## Scope and safety
+## Safety scope
 
-- Query public balances and transaction data for explicitly supplied addresses.
-- Monitor address lists and compare balance snapshots.
-- Support EVM networks (Ethereum, Base, Arbitrum, Optimism, Polygon, BNB Chain), Bitcoin and Solana through public RPC/API endpoints.
-- Manage long-running processes on your own Linux server through an authenticated API and SSH tunnel.
-- Keep wallet secrets out of logs, telemetry, Ollama prompts and remote APIs.
-
-This project does **not** generate or enumerate seed phrases, probe random mnemonics, scan for wallets belonging to strangers, or attempt access to third-party assets. Mnemonic brute-force/probing is deliberately not implemented. Use watch-only addresses or a wallet's own recovery flow for assets you control.
+This project queries public blockchain data for explicitly supplied public addresses and manages processes on the operator's own Linux host. It does not generate or enumerate seed phrases, probe random mnemonics, guess private keys, discover wallets by secret guessing, sign transactions, or move funds. Wallet secrets must never be pasted into Cline, Ollama, this API, RPC providers, logs, or repository files.
 
 ## Architecture
 
-- `server/`: FastAPI service on Linux; process manager, resource diagnostics and blockchain read-only clients.
-- `mcp_client/`: MCP server on Mac; exposes tools to Cline and calls the Linux API through an SSH-forwarded localhost port.
-- `prompts/`: detailed agent operating instructions.
-- `config/`: example configuration only; never commit secrets.
-- `scripts/`: installation and diagnostics.
+- server/: FastAPI service on Linux; remote process manager, metrics, public chain reads, watchlist.
+- mcp_client/: MCP server on Mac; exposes typed tools to Cline.
+- prompts/: detailed operating instructions for Ollama/Cline.
+- AGENTS.md and .clinerules/: workspace-level agent constraints.
+- config/: example public network endpoints.
+- scripts/: installers and bootstrap checks.
 
-## Quick start
+## Supported read-only chains
 
-### Linux server (Parrot/Debian/Ubuntu)
+- EVM: Ethereum, Base, Arbitrum One, Optimism, Polygon, BNB Smart Chain.
+- Bitcoin: address balance and public transaction/block lookup via Blockstream API.
+- Solana: native account balance and public transaction/block lookup via JSON-RPC.
+
+The first version returns native coin balances. ERC-20 and SPL token account support is a separate adapter milestone; do not treat native balance as total portfolio value.
+
+## Linux server install (Parrot/Debian/Ubuntu)
+
+Run as the regular account that owns the server workspace:
 
 ```bash
 git clone https://github.com/alexalxandrov/crypto.git
@@ -31,9 +34,9 @@ chmod +x scripts/install-server.sh
 ./scripts/install-server.sh
 ```
 
-The installer creates a Python virtual environment, generates a local API token, installs a systemd service bound to `127.0.0.1:8765`, and prints the SSH tunnel command. It does not open a firewall port.
+The installer uses user-scope Python packages and **does not create a virtual environment**. It generates an API token at ~/.config/crypto/api.token, creates a user systemd service bound to 127.0.0.1:8765, and does not open a firewall port. It creates ~/work as the default process workspace. Review server/config.py before allowing additional workspace roots or executables.
 
-### Mac
+## Mac install
 
 ```bash
 git clone https://github.com/alexalxandrov/crypto.git
@@ -42,36 +45,41 @@ chmod +x scripts/install-mac.sh
 ./scripts/install-mac.sh
 ```
 
-Then create the tunnel in a terminal:
+The installer installs MCP dependencies at user scope, asks for the SSH destination and the server API token, and writes a Cline MCP snippet to ~/.config/crypto/mcp.json. Add that server entry to Cline's MCP settings without deleting other servers.
+
+Start the SSH tunnel in a separate Mac terminal:
 
 ```bash
 ssh -N -L 8765:127.0.0.1:8765 oleg@YOUR_SERVER
 ```
 
-Keep that terminal open. Configure Cline to use the generated MCP server config at `~/.config/crypto/mcp.json` (the installer prints the exact integration steps). Ollama's existing tunnel on 11434 is independent and can remain as-is.
+Keep the tunnel open. The existing Ollama tunnel on port 11434 is independent and can remain unchanged.
 
-## First tools
+## Cline first run
 
-- `server_info`, `system_metrics`
-- `process_start`, `process_output`, `process_input`, `process_stop`, `process_list`
-- `chain_balance`, `chain_transaction`, `chain_block`
-- `watchlist_add`, `watchlist_list`, `watchlist_check`
+Open this repository as the VS Code workspace. Cline should read AGENTS.md, .clinerules/crypto-intelligence.md, and prompts/AGENT_INSTRUCTIONS.md. Follow prompts/CLINE_BOOTSTRAP.md. Verify MCP tools server_info and system_metrics before using process or blockchain tools.
 
-Read `prompts/AGENT_INSTRUCTIONS.md` before operating the server.
+## Initial MCP tools
+
+- Remote host: server_info, system_metrics.
+- Process control: process_start, process_list, process_output, process_input, process_stop.
+- Chain data: chain_balance, chain_transaction, chain_block.
+- Watch-only addresses: watchlist_add, watchlist_list, watchlist_check.
 
 ## Configuration
 
-Copy `.env.example` to `server/.env` and configure RPC endpoints. Public endpoints are rate-limited; for reliable use, provide your own RPC URLs. The service accepts only read-only blockchain queries.
+Copy .env.example to a local ignored file or edit the service environment. Public RPC endpoints are examples and may be rate-limited. Use your own RPC provider for sustained workloads. Never commit authenticated RPC URLs or API keys.
 
 ## Security
 
-- API binds to loopback only; access it over SSH forwarding.
+- API binds to loopback only; use SSH forwarding.
 - Bearer token required for API calls.
-- Process execution is restricted to configured working directories and an allowlist of executable names.
-- No shell command strings are accepted by the process API; arguments are passed as arrays.
-- Do not place seed phrases, private keys or wallet files in this repository.
-- Do not expose port 8765 to the public internet.
+- Process execution is restricted to configured workspace paths and executable names.
+- Process API accepts executable + argument arrays, not shell command strings.
+- Do not place seed phrases, private keys, wallet files, or API credentials in the repository.
+- Never expose port 8765 or Ollama port 11434 to the public internet.
+- No Docker and no Python virtual environments.
 
-## Status
+## Current status
 
-Initial MVP. Review the allowlist and workspace paths in `server/config.py` before enabling process execution.
+MVP scaffold. Process sessions are held in service memory and will not survive a service restart. The initial process API is not a full PTY/tmux implementation. Review these limitations before relying on it for persistent interactive jobs.
