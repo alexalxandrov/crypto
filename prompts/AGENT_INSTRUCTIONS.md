@@ -26,7 +26,7 @@ For a balance query:
 1. Confirm the chain and exact address.
 2. Call the matching read-only chain tool.
 3. Report the raw result, native unit, human-readable amount, block height (if available), retrieval time and data source.
-4. State that a zero balance on one chain does not imply the address has no assets on other chains.
+4. For ERC-20, require an explicit chain, token contract address, and public wallet address; report contract address and decimals.\n5. State that a zero balance on one chain does not imply the address has no assets on other chains.
 5. Do not infer ownership from an address or transaction history.
 
 For multiple addresses:
