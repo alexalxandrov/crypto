@@ -6,7 +6,8 @@ command -v python3 >/dev/null || { echo "python3 is required"; exit 1; }
 echo "[crypto] Installing MCP client dependencies at user scope (no venv)..."
 python3 -m pip install --user --break-system-packages -r "$ROOT/mcp_client/requirements.txt"
 read -r -p "SSH destination (example oleg@server): " SSH_DEST
-read -r -s -p "Paste API token read from server ~/.config/crypto/api.token: " TOKEN; echo
+TOKEN="$(ssh "$SSH_DEST" 'cat ~/.config/crypto/api.token')" 
+if [[ -z "$TOKEN" ]]; then echo "Could not retrieve API token over SSH."; exit 1; fi
 TOKEN_FILE="$HOME/.config/crypto/api.token"
 printf '%s' "$TOKEN" > "$TOKEN_FILE"
 chmod 600 "$TOKEN_FILE"
