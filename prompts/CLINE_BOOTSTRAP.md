@@ -16,7 +16,7 @@ Connect this Mac workspace to the user's own Linux server using the existing SSH
    ./scripts/install-server.sh
    ```
    If the repository is already present, use `git pull --ff-only` rather than cloning over it.
-4. The server installer creates a token at `~/.config/crypto/api.token`. Never print it into model output, logs, or chat. Transfer it securely to the Mac installer prompt.
+4. The server installer creates a token at `~/.config/crypto/api.token`. Never print it into model output, logs, or chat. The Mac installer retrieves it over the authenticated SSH connection; do not print it or paste it into chat.
 5. On Mac, run `scripts/install-mac.sh`. It creates the MCP environment and a Cline config snippet at `~/.config/crypto/mcp.json`.
 6. Add only the `crypto-remote-control` entry to Cline MCP settings. Preserve all existing MCP servers; do not replace the entire settings file.
 7. Start the SSH tunnel in another terminal: `ssh -N -L 8765:127.0.0.1:8765 USER@SERVER`.
