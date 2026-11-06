@@ -21,7 +21,7 @@ This project queries public blockchain data for explicitly supplied public addre
 - Bitcoin: address balance and public transaction/block lookup via Blockstream API.
 - Solana: native account balance and public transaction/block lookup via JSON-RPC.
 
-The first version returns native coin balances. ERC-20 and SPL token account support is a separate adapter milestone; do not treat native balance as total portfolio value.
+Native coin balances are supported on the listed chains. ERC-20 token balances are supported on the listed EVM chains when the operator supplies both the token contract and public wallet address. SPL token-account enumeration is not implemented yet; do not treat native SOL balance as total portfolio value. Token symbols and metadata are intentionally not trusted.
 
 ## Linux server install (Parrot/Debian/Ubuntu)
 
