@@ -121,3 +121,63 @@ def balance(chain: str, address: str, authorization: Optional[str] = Header(defa
     auth(authorization)
     try: return get_balance(chain, address)
     except Exception as e: raise HTTPException(400, str(e))
+
+
+# Read-only blockchain transaction/block endpoints and a local watch-only address list.
+import sqlite3
+from .blockchain import get_transaction, get_block
+WATCH_DB = Path.home() / ".local" / "share" / "crypto" / "watchlist.sqlite3"
+WATCH_DB.parent.mkdir(parents=True, exist_ok=True)
+
+def watch_conn():
+    c=sqlite3.connect(WATCH_DB)
+    c.execute("CREATE TABLE IF NOT EXISTS addresses (chain TEXT NOT NULL,address TEXT NOT NULL,label TEXT DEFAULT '',created_at INTEGER NOT NULL,UNIQUE(chain,address))")
+    return c
+
+class WatchRequest(BaseModel):
+    chain: str
+    address: str
+    label: str = Field(default="", max_length=100)
+
+@app.get("/v1/transaction/{chain}/{txid}")
+def chain_transaction(chain: str, txid: str, authorization: Optional[str] = Header(default=None)):
+    auth(authorization)
+    try: return get_transaction(chain, txid)
+    except Exception as e: raise HTTPException(400, str(e))
+
+@app.get("/v1/block/{chain}/{height}")
+def chain_block(chain: str, height: str, authorization: Optional[str] = Header(default=None)):
+    auth(authorization)
+    try: return get_block(chain, height)
+    except Exception as e: raise HTTPException(400, str(e))
+
+@app.post("/v1/watchlist")
+def watchlist_add(req: WatchRequest, authorization: Optional[str] = Header(default=None)):
+    auth(authorization)
+    c=watch_conn()
+    try:
+        c.execute("INSERT OR IGNORE INTO addresses(chain,address,label,created_at) VALUES(?,?,?,?)",(req.chain.lower(),req.address,req.label,int(time.time())))
+        c.commit()
+        return {"added":True,"chain":req.chain.lower(),"address":req.address}
+    finally: c.close()
+
+@app.get("/v1/watchlist")
+def watchlist_list(authorization: Optional[str] = Header(default=None)):
+    auth(authorization)
+    c=watch_conn()
+    try:
+        return [{"chain":a,"address":b,"label":d,"created_at":t} for a,b,d,t in c.execute("SELECT chain,address,label,created_at FROM addresses ORDER BY id")]
+    finally: c.close()
+
+@app.post("/v1/watchlist/check")
+def watchlist_check(authorization: Optional[str] = Header(default=None)):
+    auth(authorization)
+    c=watch_conn()
+    try: rows=c.execute("SELECT chain,address,label FROM addresses ORDER BY id").fetchall()
+    finally: c.close()
+    results=[]
+    for chain,address,label in rows:
+        try: result=get_balance(chain,address)
+        except Exception as e: result={"error":str(e)}
+        results.append({"chain":chain,"address":address,"label":label,"balance":result})
+    return results
