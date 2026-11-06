@@ -181,3 +181,12 @@ def watchlist_check(authorization: Optional[str] = Header(default=None)):
         except Exception as e: result={"error":str(e)}
         results.append({"chain":chain,"address":address,"label":label,"balance":result})
     return results
+
+
+@app.get("/v1/token-balance/{chain}/{token_address}/{wallet_address}")
+def token_balance(chain: str, token_address: str, wallet_address: str,
+                  authorization: Optional[str] = Header(default=None)):
+    auth(authorization)
+    from .blockchain import get_token_balance
+    try: return get_token_balance(chain, token_address, wallet_address)
+    except Exception as e: raise HTTPException(400, str(e))
