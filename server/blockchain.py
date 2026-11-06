@@ -62,3 +62,28 @@ def get_block(chain,height):
 def http_get_text(url):
     req=urllib.request.Request(url,headers={"User-Agent":"crypto-watchonly/0.2"})
     with urllib.request.urlopen(req,timeout=20) as response: return response.read().decode().strip()
+
+
+def evm_token_balance(chain, token_address, wallet_address):
+    chain=chain.lower()
+    if chain not in RPCS: raise ValueError("ERC-20 queries require a supported EVM chain")
+    for value,name in [(token_address,"token contract"),(wallet_address,"wallet")]:
+        if not value.startswith("0x") or len(value)!=42:
+            raise ValueError("Expected a 20-byte 0x-prefixed "+name+" address")
+        try: int(value[2:],16)
+        except ValueError: raise ValueError("Invalid hexadecimal "+name+" address")
+    # balanceOf(address) selector + left-padded 32-byte address
+    data="0x70a08231"+"0"*24+wallet_address[2:].lower()
+    raw_hex=rpc_post(RPCS[chain],"eth_call",[{"to":token_address,"data":data},"latest"])
+    decimals_hex=rpc_post(RPCS[chain],"eth_call",[{"to":token_address,"data":"0x313ce567"},"latest"])
+    raw=int(raw_hex,16)
+    decimals=int(decimals_hex,16)
+    if decimals>36: raise ValueError("Token decimals outside accepted range")
+    block=int(rpc_post(RPCS[chain],"eth_blockNumber",[]),16)
+    return {"chain":chain,"wallet_address":wallet_address,"token_contract":token_address,
+            "raw_balance":str(raw),"decimals":decimals,"balance":raw/(10**decimals),
+            "block_number":block,"source":RPCS[chain],
+            "retrieved_at":datetime.now(timezone.utc).isoformat()}
+
+def get_token_balance(chain, token_address, wallet_address):
+    return evm_token_balance(chain,token_address,wallet_address)
