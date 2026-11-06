@@ -19,7 +19,7 @@ cat > server/.env <<EOF
 CRYPTO_API_TOKEN=$(cat "$TOKEN_FILE")
 CRYPTO_TOKEN_FILE=$TOKEN_FILE
 CRYPTO_DATA_DIR=$HOME/.local/share/crypto
-CRYPTO_WORKSPACES=$WORKSPACE:$HOME
+CRYPTO_WORKSPACES=$WORKSPACE
 EOF
 chmod 600 server/.env
 SERVICE="$HOME/.config/systemd/user/crypto-remote.service"
