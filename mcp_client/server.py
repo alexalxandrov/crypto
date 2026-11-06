@@ -82,3 +82,9 @@ def watchlist_check() -> str:
 
 if __name__ == "__main__":
     mcp.run()
+
+
+@mcp.tool()
+def erc20_balance(chain: str, token_contract: str, wallet_address: str) -> str:
+    """Read an ERC-20 token balance for an explicitly supplied public wallet address and token contract. Never uses private keys."""
+    return json.dumps(call("GET",f"/v1/token-balance/{chain}/{token_contract}/{wallet_address}"),indent=2)
