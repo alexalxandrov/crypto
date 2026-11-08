@@ -1,0 +1,4 @@
+2026-11-08 22:03:41,450 [ERROR] paid_oss: GitHub issues API error for pallets/flask: 403
+2026-11-08 22:03:41,451 [INFO] paid_oss: 0 bounty issues found in pallets/flask
+2026-11-08 22:03:41,714 [ERROR] paid_oss: GitHub issues API error for django/django: 403
+2026-11-08 22:03:41,716 [INFO] paid_oss: 0 bounty issues found in django/django

@@ -1,8 +1,12 @@
 import os
+import sys
 import requests
 import json
 import base64
 from logs.log_config import get_logger
+# Ensure utils from parent directory can be imported
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils import persist_repos, db_connect, create_tables
 
 logger = get_logger('bug_bounty')
 
@@ -37,3 +41,9 @@ if __name__ == '__main__':
         except Exception as e:
             logger.warning(f'Error processing {repo.get("full_name")}: {e}')
     logger.info(f'Potential vulnerable repos: {vuln_repos}')
+    # Persist all fetched repos
+    db_path = os.path.join(os.path.dirname(__file__), 'data.db')
+    conn = db_connect(db_path)
+    create_tables(conn)
+    persist_repos(conn, repos)
+    conn.close()

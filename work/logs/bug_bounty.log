@@ -1,0 +1,3 @@
+2026-11-08 21:52:56,262 [ERROR] bug_bounty: GitHub API returned 403
+2026-11-08 21:52:56,262 [INFO] bug_bounty: Fetched 0 repos
+2026-11-08 21:52:56,263 [INFO] bug_bounty: Potential vulnerable repos: []

@@ -11,7 +11,11 @@ def get_logger(name: str) -> logging.Logger:
     if logger.handlers:
         return logger
     logger.setLevel(logging.INFO)
-    log_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    # Store logs in the dedicated logs directory (work/logs). The logger is used from
+    # various project folders, so we hard‑code the path relative to the repository
+    # root instead of using the script's directory.
+    log_dir = os.path.abspath(os.path.dirname(__file__))
+    # Ensure the logs directory exists
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(log_dir, f"{name}.log")
     handler = RotatingFileHandler(log_file, maxBytes=5*1024*1024, backupCount=3)

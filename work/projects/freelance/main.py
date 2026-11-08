@@ -1,7 +1,11 @@
 import os
+import sys
 import requests
 import json
 from logs.log_config import get_logger
+# Ensure utils from parent directory can be imported
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils import persist_jobs, db_connect, create_tables
 
 logger = get_logger('freelance')
 
@@ -27,3 +31,9 @@ def fetch_upwork_jobs(search_query="python developer", max_results=10) -> list:
 if __name__ == '__main__':
     jobs = fetch_upwork_jobs('python developer', 5)
     logger.info(f'Fetched {len(jobs)} jobs: {jobs}')
+    # Persist results
+    db_path = os.path.join(os.path.dirname(__file__), 'data.db')
+    conn = db_connect(db_path)
+    create_tables(conn)
+    persist_jobs(conn, jobs)
+    conn.close()

@@ -1,7 +1,11 @@
 import os
+import sys
 import requests
 import json
 from logs.log_config import get_logger
+# Ensure utils from parent directory can be imported
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from utils import persist_prices, db_connect, create_tables
 
 logger = get_logger('crypto_arbitrage')
 
@@ -35,3 +39,9 @@ if __name__ == '__main__':
     else:
         spread = binance_price - coinbase_price
         logger.info(f"Spread: {spread}")
+    # Persist to SQLite
+    db_path = os.path.join(os.path.dirname(__file__), 'data.db')
+    conn = db_connect(db_path)
+    create_tables(conn)
+    persist_prices(conn, {"Binance": binance_price, "Coinbase": coinbase_price})
+    conn.close()

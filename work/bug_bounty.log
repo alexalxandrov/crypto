@@ -1,0 +1,8 @@
+2026-11-08 21:37:55,868 [INFO] bug_bounty: Fetched 100 repos
+2026-11-08 21:38:34,250 [INFO] bug_bounty: Potential vulnerable repos: ['google/go-github']
+2026-11-08 21:39:29,785 [ERROR] bug_bounty: GitHub API returned 403
+2026-11-08 21:39:29,786 [INFO] bug_bounty: Fetched 0 repos
+2026-11-08 21:39:29,786 [INFO] bug_bounty: Potential vulnerable repos: []
+2026-11-08 21:46:44,855 [ERROR] bug_bounty: GitHub API returned 403
+2026-11-08 21:46:44,855 [INFO] bug_bounty: Fetched 0 repos
+2026-11-08 21:46:44,855 [INFO] bug_bounty: Potential vulnerable repos: []
