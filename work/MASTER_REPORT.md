@@ -10,7 +10,12 @@
 - 
 
 ## Completed Experiments
-- 
+- Verified the bug‑bounty CSV parser and sorter:
+  * Ran :file:`work/research/bug_bounty_analyzer.py` locally.
+  * Confirmed correct reading of the CSV located in :file:`work/research/bug_bounty_list.csv`.
+  * Output was sorted by ``Max Payout`` in descending order, matching the desired quick reference.
+- Ran :file:`work/research/bug_bounty_fetcher.py` to pull a sample list of security‑focused repositories from the GitHub Search API.
+  * Stored results in :file:`work/research/bug_bounty_api_results.json`.
 
 ## Successful Strategies
 - 
@@ -46,6 +51,19 @@
 5. Automation Tool Suite
    - Build a small SaaS offering for automated report generation using Notion/Google Sheets APIs.
    - Market to small businesses.
+## Evaluation of Potential Revenue Channels
+| # | Channel | Probability | Time to First Result | Competition | Notes |
+|---|---------|-------------|---------------------|-------------|-------|
+| 1 | Bug Bounty | High | 1–2 weeks | Medium | High payout, low barrier to entry |
+| 2 | Freelance Gigs | Medium | 1–3 weeks | High | Requires platform fees |
+| 3 | Crypto Arbitrage | Medium | 1–4 weeks | Medium | Requires capital & API keys |
+| 4 | Paid OSS Issues | Medium | 2–4 weeks | Medium | Needs good skills & reputation |
+| 5 | Automation SaaS | Low | 2–8 weeks | High | Development effort |
+| 6 | Micro‑Consulting | Medium | 2–6 weeks | Medium | Depends on niche |
+| 7 | Ad Revenue on Tech Blog | Low | 4–12 weeks | High | Content creation effort |
+| 8 | NFT / Digital Asset Sales | Low | 4–12 weeks | High | Market volatility |
+| 9 | Affiliate Marketing | Low | 3–9 weeks | High | Requires traffic |
+|10 | Crowdfunding Projects | Low | 6–12 weeks | Medium | Depends on idea appeal |
 
 ## Action Plans
 - **Bug Bounty Hunting**: Create script to poll StackExchange for security‑related questions; cross‑reference with HackerOne listings.

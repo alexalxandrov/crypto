@@ -5,7 +5,16 @@ import json
 from logs.log_config import get_logger
 # Ensure utils from parent directory can be imported
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils import persist_jobs, db_connect, create_tables
+import importlib.util
+import os
+# Import utils from the same directory to avoid clashes with site-packages
+utils_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'utils.py')
+utils_spec = importlib.util.spec_from_file_location('utils', utils_path)
+utils_mod = importlib.util.module_from_spec(utils_spec)
+utils_spec.loader.exec_module(utils_mod)
+persist_jobs = utils_mod.persist_jobs
+db_connect = utils_mod.db_connect
+create_tables = utils_mod.create_tables
 
 logger = get_logger('freelance')
 

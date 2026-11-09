@@ -1,0 +1,27 @@
+Program,Platform,Max Payout,Avg Payout,Minimum Severity,Contact
+Google Vulnerability Reward Program,Google,50000,5000,Critical,https://security.google.com/vulnerability-reward-program
+Microsoft Security Response Center,Microsoft,20000,2000,Critical,https://security.microsoft.com
+Apple Security Bounty,Apple,25000,2500,Critical,https://developer.apple.com/security-bounty
+Facebook/Meta Security Bounty,Meta,15000,1500,Critical,https://www.facebook.com/security
+Amazon Bug Bounty,Amazon,15000,1500,Critical,https://bugbounty.amazon.com
+Uber Bug Bounty,Uber,12000,1200,Critical,https://bugbounty.uber.com
+Shopify Bug Bounty,Shopify,10000,1000,Critical,https://shopifybugbounty.com
+PayPal Bug Bounty,PayPal,8000,800,Critical,https://bugbounty.paypal.com
+Coinbase Bug Bounty,Coinbase,8000,800,Critical,https://bugbounty.coinbase.com
+Dropbox Bug Bounty,Dropbox,7000,700,Critical,https://security.dropbox.com
+Reddit Bug Bounty,Reddit,6000,600,Critical,https://www.reddit.com/r/bugs
+GitHub Vulnerability Bounty,GitHub,5000,500,Critical,https://bounty.github.com
+Atlassian Bug Bounty,Atlassian,5000,500,Critical,https://www.atlassian.com/security
+Cisco Bug Bounty,Cisco,4000,400,Critical,https://ciscobugbounty.com
+Oracle Bug Bounty,Oracle,4000,400,Critical,https://bugbounty.oracle.com
+Palo Alto Networks Bug Bounty,Palo Alto,3000,300,Critical,https://security.paloaltonetworks.com
+Splunk Bug Bounty,Splunk,3000,300,Critical,https://splunk.com/bounty
+Stripe Bug Bounty,Stripe,3000,300,Critical,https://stripe.com/security
+Twilio Bug Bounty,Twilio,2000,200,Critical,https://twilio.com/bounty
+Square Bug Bounty,Square,2000,200,Critical,https://square.com/bounty
+Slack Bug Bounty,Slack,2000,200,Critical,https://slack.com/bounty
+Okta Bug Bounty,Okta,2000,200,Critical,https://okta.com/bounty
+Pwn2Own,Independent,50000,5000,Critical,https://pwn2own.com
+Synack Open Platform,Synack,5000,500,Critical,https://synack.com
+HackerOne,Platform,50000,5000,Critical,https://hackerone.com
+Bugcrowd,Platform,30000,3000,Critical,https://bugcrowd.com
