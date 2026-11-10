@@ -1,893 +1,397 @@
-11:23:45 oleg@parrot ~ → BASE="$HOME/a26-analysis/engmode/current"
-HAL="$BASE/system-lib64/lib.engmode.samsung.so"
+11:28:39 oleg@parrot ~ → (line 4) ...
+if [ ! -f "$HAL" ]; then
+    echo "ERROR: HAL not found: $HAL"
+    exit 1
+fi
 
-echo "========== CLIENT CONSTRUCTOR: FIRST 120 INSTRUCTIONS =========="
-rizin -q -A -e scr.color=false -c 'pd 120 @ 0xe060; q' "$HAL" 2>/dev/null
+echo "========== MODE ID TABLE =========="
+rizin -q -A -c '
+px 0x10 @ 0x25d0
+px 0x10 @ 0x26f0
+px 0x10 @ 0x2590
+px 0x10 @ 0x02d0
+q' "$HAL" 2>/dev/null
 
 echo
-echo "========== CLIENT CONSTRUCTOR: AROUND SETVERSION CALL =========="
-rizin -q -A -e scr.color=false -c 'pd 70 @ 0xe130; q' "$HAL" 2>/dev/null
+echo "========== PACKAGE TO MODE REGISTRATION =========="
+rizin -q -A -e scr.color=false -c 'pdf @ 0xe230; q' "$HAL" 2>/dev/null |
+grep -E 'system_server|com\.|ldr +w[0-9]+, \[x19, 0x(2c|30|34|38|3c|40|44|48|4c|50|54|58|5c|60|64|68)\]|bl +fcn\.00011b78'
 
 echo
-echo "========== REGISTERCLIENTS: FIRST 100 INSTRUCTIONS =========="
-rizin -q -A -e scr.color=false -c 'pd 100 @ 0xe230; q' "$HAL" 2>/dev/null
+echo "========== MODE SET CHECK =========="
+rizin -q -A -e scr.color=false -c '
+pdf @ 0x10638
+pdf @ 0x10b84
+q' "$HAL" 2>/dev/null
+========== MODE ID TABLE ==========
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x000025d0  ffff ffff 0100 0000 0100 0000 0200 0000  ................
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x000026f0  0800 0000 0900 0000 0c00 0000 0d00 0000  ................
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x00002590  0e00 0000 0f00 0000 1000 0000 1100 0000  ................
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x000002d0  2000 0000 0000 0000 0800 0000 0000 0000   ...............
 
-echo
-echo "========== REGISTERCLIENTS: LAST 100 INSTRUCTIONS =========="
-rizin -q -A -e scr.color=false -c 'pd 100 @ 0x10480; q' "$HAL" 2>/dev/null
-========== CLIENT CONSTRUCTOR: FIRST 120 INSTRUCTIONS ==========
-            ; XREFS(23)
-            ;-- client::client():
-┌ method.client.client(int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000e060      paciasp                                    ; client::client()
-│           0x0000e064      stp   fp, lr, [sp, -0lr]!
-│           0x0000e068      stp   x22, x21, [var_20h]
-│           0x0000e06c      stp   x20, x19, [var_10h]
-│           0x0000e070      mov   fp, sp
-│           0x0000e074      fmov  d0, xzr
-│           0x0000e078      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e07c      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000e080      ldr   q1, [x8, data.000005d0]              ; [0x5d0:4]=0
-│           0x0000e084      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e088      ldr   q2, [x9, data.000006f0]              ; [0x6f0:4]=356 ; "d\U00000001"
-│           0x0000e08c      mov   x9, x0                               ; arg1
-│           0x0000e090      mov   x19, x0                              ; arg1
-│           0x0000e094      stp   xzr, xzr, [x0, 0x18]                 ; arg1
-│           0x0000e098      mov   v0.d[1], v0.d[0]
-│           0x0000e09c      stur  q1, [x0, 0x2c]                       ; arg1
-│           0x0000e0a0      ldr   q1, [x8, data.00000590]              ; [0x590:4]=0xd2f ; "/\r"
-│           0x0000e0a4      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e0a8      stur  q2, [x0, 0x3c]                       ; arg1
-│           0x0000e0ac      stur  q1, [x0, 0x4c]                       ; arg1
-│           0x0000e0b0      ldr   q1, data.000002d0                    ; [data.000007e0:4]=0x2d0 data.000002d0
-│           0x0000e0b4      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e0b8      str   q0, [x9, 8]!
-│           0x0000e0bc      ldr   q0, sym.engmodeManager_hal_getStringModes ; [data.000007c0:4]=0xdc40 sym.engmodeManager_hal_getStringModes ; "@\xdc"
-│           0x0000e0c0      adrp  x8, data.00003000                    ; 0x3000
-│           0x0000e0c4      stur  q1, [x0, 0x5c]                       ; arg1
-│           0x0000e0c8      stur  q0, [x0, 0x6c]                       ; arg1
-│           0x0000e0cc      ldr   d0, [x8, data.000004c8]              ; [0x4c8:4]=0
-│           0x0000e0d0      str   x9, [x0]                             ; arg1
-│           0x0000e0d4      stur  d0, [x0, 0x7c]                       ; arg1
-│           0x0000e0d8      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000e0dc      add   x0, x0, 0xaae                        ; 0x2aae ; "ro.em.version"
-│           0x0000e0e0      bl    fcn.00011998
-│           0x0000e0e4      cmn   x0, 9
-│       ┌─< 0x0000e0e8      b.hs  0xe180
-│       │   0x0000e0ec      mov   x20, x0
-│       │   0x0000e0f0      cmp   x0, 0x16
-│      ┌──< 0x0000e0f4      b.hi  0xe108
-│      ││   0x0000e0f8      lsl   w8, w20, 1
-│      ││   0x0000e0fc      add   x21, x19, 0x89
-│      ││   0x0000e100      strb  w8, [x19, 0x88]
-│     ┌───< 0x0000e104      b     0xe130
-│     │└──> 0x0000e108      orr   x8, x20, 7
-│     │ │   0x0000e10c      mov   w9, 0x1a
-│     │ │   0x0000e110      cmp   x8, 0x17
-│     │ │   0x0000e114      csinc x22, x9, x8, eq
-│     │ │   0x0000e118      mov   x0, x22                              ; const void *s1
-│     │ │   0x0000e11c      bl    sym.imp.memcmp                       ; int memcmp(const void *s1, const void *s2, size_t n)
-│     │ │   0x0000e120      mov   x21, x0
-│     │ │   0x0000e124      orr   x8, x22, 1
-│     │ │   0x0000e128      stp   x20, x0, [x19, 0x90]
-│     │ │   0x0000e12c      str   x8, [x19, 0x88]
-│     │ │   ; CODE XREF from method.client.client @ 0xe104
-│     └───> 0x0000e130      adrp  x1, data.00002000                    ; 0x2000
-│       │   0x0000e134      add   x1, x1, 0xaae                        ; 0x2aae ; "ro.em.version"
-│       │   0x0000e138      mov   x0, x21
-│       │   0x0000e13c      mov   x2, x20
-│       │   0x0000e140      bl    fcn.00011cb0
-│       │   0x0000e144      adrp  x8, data.00002000                    ; 0x2000
-│       │   0x0000e148      adrp  x9, data.00003000                    ; 0x3000
-│       │   0x0000e14c      mov   x0, x19
-│       │   0x0000e150      ldr   q0, [x8, data.000006b0]              ; [0x6b0:4]=0xda7
-│       │   0x0000e154      ldr   d1, [x9, data.000004c0]              ; [0x4c0:4]=0
-│       │   0x0000e158      strb  wzr, [x21, x20]
-│       │   0x0000e15c      str   q0, [x19, 0xa0]
-│       │   0x0000e160      str   d1, [x19, 0xb0]
-│       │   0x0000e164      bl    fcn.00011b30
-│       │   0x0000e168      mov   x0, x19
-│       │   0x0000e16c      ldp   x20, x19, [var_10h]
-│       │   0x0000e170      ldp   x22, x21, [var_20h]
-│       │   0x0000e174      ldp   fp, lr, [sp], 0lr
-│       │   0x0000e178      autiasp
-│       │   0x0000e17c      b     0x11b48
-│       └─> 0x0000e180      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000 ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000(void)
-            ; XREFS(48)
-            ;-- std::__1::__tree<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, std::__1::__map_value_compare<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client>, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, true>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client> > >::destroy(std::__1::__tree_node<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, void*>*):
-┌ method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           0x0000e184      cbz   x0, 0xe1e4                           ; std::__1::__tree<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, std::__1::__map_value_compare<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client>, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, true>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client> > >::destroy(std::__1::__tree_node<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, void*>*)
-│           0x0000e188      paciasp
-│           0x0000e18c      stp   fp, lr, [var_30h + 0x10]!
-│           0x0000e190      str   x19, [var_30h + 0x20]
-│           0x0000e194      mov   fp, sp
-│           0x0000e198      mov   x19, x0                              ; arg1
-│           0x0000e19c      ldr   x0, [x0]                             ; int64_t arg1
-│           0x0000e1a0      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│           0x0000e1a4      ldr   x0, [x19, 8]                         ; [0x8:4]=0 ; int64_t arg1
-│           0x0000e1a8      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│           0x0000e1ac      ldr   x0, [x19, 0x48]                      ; [0x48:4]=64 ; int64_t arg1
-│           0x0000e1b0      bl    method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void ;  method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1)
-│           0x0000e1b4      ldrb  w8, [x19, 0x20]                      ; [0x20:4]=64 ; "@"
-│           0x0000e1b8      tbz   w8, 0, 0xe1cc
-│           0x0000e1bc      ldr   x8, [x19, 0x20]                      ; [0x20:4]=64 ; "@"
-│           0x0000e1c0      ldr   x0, [x19, 0x30]                      ; [0x30:4]=0
-│           0x0000e1c4      and   x1, x8, 0xfffffffffffffffe
-│           0x0000e1c8      bl    fcn.00011a88
-│           0x0000e1cc      mov   x0, x19
-│           0x0000e1d0      mov   w1, 0x60                             ; '`'
-│           0x0000e1d4      ldr   x19, [var_40h]                       ; [0x10:4]=0xb70003
-│           0x0000e1d8      ldp   fp, lr, [sp], 0x20
-│           0x0000e1dc      autiasp
-│           0x0000e1e0      b     fcn.00011a88
-└           0x0000e1e4      ret
-            ; CALL XREF from method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void @ 0xe1b0
-            ; CALL XREFS from method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void @ 0xe208, 0xe210
-            ;-- std::__1::__tree<int, std::__1::less<int>, std::__1::allocator<int> >::destroy(std::__1::__tree_node<int, void*>*):
-┌ method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000e1e8      cbz   x0, 0xe22c                           ; std::__1::__tree<int, std::__1::less<int>, std::__1::allocator<int> >::destroy(std::__1::__tree_node<int, void*>*)
-│           0x0000e1ec      paciasp
-│           0x0000e1f0      stp   fp, lr, [sp, -0x20]!
-│           0x0000e1f4      str   x19, [var_10h]
-│           0x0000e1f8      mov   fp, sp
-│           0x0000e1fc      ldr   x8, [x0]                             ; arg1
-│           0x0000e200      mov   x19, x0                              ; arg1
-│           0x0000e204      mov   x0, x8                               ; int64_t arg1
-│           0x0000e208      bl    method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void ;  method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1)
-│           0x0000e20c      ldr   x0, [x19, 8]                         ; [0x8:4]=0 ; int64_t arg1
-│           0x0000e210      bl    method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void ;  method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1)
-│           0x0000e214      mov   x0, x19
-│           0x0000e218      mov   w1, 0x20
-│           0x0000e21c      ldr   x19, [var_10h]                       ; [0x10:4]=0xb70003
-│           0x0000e220      ldp   fp, lr, [sp], 0x20
-│           0x0000e224      autiasp
-│           0x0000e228      b     fcn.00011a88
-└           0x0000e22c      ret
-            ; CODE XREFS from method.client.client @ 0x11b4c, 0x11b54
-            ;-- client::registerClients():
-┌ method.client.registerClients(int64_t arg_50h, int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           ; var int64_t var_950h @ stack - 0x950
-│           ; var int64_t var_940h @ stack - 0x940
-│           ; var const char *var_930h @ stack - 0x930
-│           ; var int64_t var_920h @ stack - 0x920
-│           ; var int64_t var_910h @ stack - 0x910
-│           ; var const char *var_900h @ stack - 0x900
-│           ; var int64_t var_8f0h @ stack - 0x8f0
-│           ; var int64_t var_8e0h @ stack - 0x8e0
-│           ; var int64_t var_8c8h @ stack - 0x8c8
-│           ; var int64_t var_8b0h @ stack - 0x8b0
-│           ; var int64_t var_8a0h @ stack - 0x8a0
-│           ; var const char *var_898h @ stack - 0x898
-│           ; var const char *var_888h @ stack - 0x888
-│           ; var int64_t var_880h @ stack - 0x880
-│           ; var int64_t var_870h @ stack - 0x870
-│           ; var int64_t var_868h @ stack - 0x868
-│           ; var const char *var_858h @ stack - 0x858
-│           ; var const char *var_850h @ stack - 0x850
-│           ; var int64_t var_840h @ stack - 0x840
-│           ; var int64_t var_838h @ stack - 0x838
-│           ; var const char *var_828h @ stack - 0x828
-│           ; var const char *var_820h @ stack - 0x820
-│           ; var int64_t var_810h @ stack - 0x810
-│           ; var int64_t var_808h @ stack - 0x808
-│           ; var int64_t var_7f8h @ stack - 0x7f8
-│           ; var const char *var_7f0h @ stack - 0x7f0
-│           ; var const char *var_7e0h @ stack - 0x7e0
-│           ; var int64_t var_7d0h @ stack - 0x7d0
-│           ; var int64_t var_7c0h @ stack - 0x7c0
-│           ; var const char *var_7b0h @ stack - 0x7b0
-│           ; var int64_t var_7a0h @ stack - 0x7a0
-│           ; var int64_t var_798h @ stack - 0x798
-│           ; var int64_t var_788h @ stack - 0x788
-│           ; var const char *var_780h @ stack - 0x780
-│           ; var const char *var_770h @ stack - 0x770
-│           ; var int64_t var_768h @ stack - 0x768
-│           ; var int64_t var_758h @ stack - 0x758
-│           ; var int64_t var_750h @ stack - 0x750
-│           ; var int64_t var_740h @ stack - 0x740
-│           ; var int64_t var_738h @ stack - 0x738
-│           ; var int64_t var_728h @ stack - 0x728
-│           ; var int64_t var_720h @ stack - 0x720
-│           ; var const char *var_710h @ stack - 0x710
-│           ; var const char *var_708h @ stack - 0x708
-│           ; var int64_t var_6f8h @ stack - 0x6f8
-│           ; var int64_t var_6f0h @ stack - 0x6f0
-│           ; var int64_t var_6e0h @ stack - 0x6e0
-│           ; var const char *var_6d0h @ stack - 0x6d0
-│           ; var int64_t var_6c0h @ stack - 0x6c0
-│           ; var int64_t var_6b8h @ stack - 0x6b8
-│           ; var const char *var_6a0h @ stack - 0x6a0
-│           ; var int64_t var_688h @ stack - 0x688
-│           ; var int64_t var_678h @ stack - 0x678
-│           ; var int64_t var_670h @ stack - 0x670
-│           ; var int64_t var_660h @ stack - 0x660
-│           ; var int64_t var_650h @ stack - 0x650
-│           ; var int64_t var_640h @ stack - 0x640
-│           ; var int64_t var_630h @ stack - 0x630
-│           ; var int64_t var_620h @ stack - 0x620
-│           ; var int64_t var_610h @ stack - 0x610
-│           ; var int64_t var_600h @ stack - 0x600
-│           ; var int64_t var_5f0h @ stack - 0x5f0
-│           ; var int64_t var_5e0h @ stack - 0x5e0
-│           ; var int64_t var_5d8h @ stack - 0x5d8
-│           ; var int64_t var_5c8h @ stack - 0x5c8
-│           ; var int64_t var_5c0h @ stack - 0x5c0
-│           ; var int64_t var_5b0h @ stack - 0x5b0
-│           ; var int64_t var_5a0h @ stack - 0x5a0
-│           ; var int64_t var_590h @ stack - 0x590
-│           ; var int64_t var_580h @ stack - 0x580
-│           ; var int64_t var_570h @ stack - 0x570
-│           ; var int64_t var_560h @ stack - 0x560
-│           ; var int64_t var_550h @ stack - 0x550
-│           ; var int64_t var_540h @ stack - 0x540
-│           ; var int64_t var_530h @ stack - 0x530
-│           ; var int64_t var_520h @ stack - 0x520
-│           ; var int64_t var_510h @ stack - 0x510
-│           ; var int64_t var_500h @ stack - 0x500
-│           ; var int64_t var_4f0h @ stack - 0x4f0
-│           ; var int64_t var_4e0h @ stack - 0x4e0
-│           ; var int64_t var_4d0h @ stack - 0x4d0
-│           ; var int64_t var_4c0h @ stack - 0x4c0
-│           ; var int64_t var_4b0h @ stack - 0x4b0
-│           ; var int64_t var_4a0h @ stack - 0x4a0
-│           ; var int64_t var_490h @ stack - 0x490
-│           ; var int64_t var_480h @ stack - 0x480
-│           ; var int64_t var_470h @ stack - 0x470
-│           ; var int64_t var_460h @ stack - 0x460
-│           ; var int64_t var_450h @ stack - 0x450
-│           ; var int64_t var_440h @ stack - 0x440
-│           ; var int64_t var_430h @ stack - 0x430
-│           ; var int64_t var_428h @ stack - 0x428
-│           ; var int64_t var_410h @ stack - 0x410
-│           ; var int64_t var_3f8h @ stack - 0x3f8
-│           ; var int64_t var_3e8h @ stack - 0x3e8
-│           ; var int64_t var_3e0h @ stack - 0x3e0
-│           ; var int64_t var_3d0h @ stack - 0x3d0
-│           ; var int64_t var_3c0h @ stack - 0x3c0
-│           ; var int64_t var_3b0h @ stack - 0x3b0
-│           ; var int64_t var_3a0h @ stack - 0x3a0
-│           ; var int64_t var_390h @ stack - 0x390
-│           ; var int64_t var_380h @ stack - 0x380
-│           ; var int64_t var_370h @ stack - 0x370
-│           ; var int64_t var_360h @ stack - 0x360
-│           ; var int64_t var_350h @ stack - 0x350
-│           ; var int64_t var_340h @ stack - 0x340
-│           ; var int64_t var_330h @ stack - 0x330
-│           ; var int64_t var_328h @ stack - 0x328
-│           ; var int64_t var_310h @ stack - 0x310
-│           ; var int64_t var_2f8h @ stack - 0x2f8
-│           ; var int64_t var_2e8h @ stack - 0x2e8
-│           ; var int64_t var_2e0h @ stack - 0x2e0
-│           ; var int64_t var_2d0h @ stack - 0x2d0
-│           ; var int64_t var_2c0h @ stack - 0x2c0
-│           ; var int64_t var_2b0h @ stack - 0x2b0
-│           ; var int64_t var_2a0h @ stack - 0x2a0
-│           ; var int64_t var_290h @ stack - 0x290
-│           ; var int64_t var_280h @ stack - 0x280
-│           ; var const char *var_268h @ stack - 0x268
-│           ; var const char *var_250h @ stack - 0x250
-│           ; var int64_t var_240h @ stack - 0x240
-│           ; var const char *var_238h @ stack - 0x238
-│           ; var int64_t var_228h @ stack - 0x228
-│           ; var const char *var_220h @ stack - 0x220
-│           ; var const char *var_208h @ stack - 0x208
-│           ; var const char *var_1f0h @ stack - 0x1f0
-│           ; var int64_t var_1e0h @ stack - 0x1e0
-│           ; var const char *var_1d8h @ stack - 0x1d8
-│           ; var const char *var_1c0h @ stack - 0x1c0
-│           ; var const char *var_1a8h @ stack - 0x1a8
-│           ; var int64_t var_198h @ stack - 0x198
-│           ; var const char *var_190h @ stack - 0x190
-│           ; var int64_t var_180h @ stack - 0x180
-│           ; var int64_t arg3 @ stack - 0x170
-│           ; var const char *var_160h @ stack - 0x160
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           ; arg int64_t arg_50h @ stack + 0x50
-│           0x0000e230      paciasp                                    ; RELOC TARGET 64 client::registerClients() @ 0x0000e230 ; client::registerClients()
-│           0x0000e234      stp   fp, lr, [var_160h + data.00000110]!
-│           0x0000e238      stp   x28, x25, [var_40h]
-│           0x0000e23c      stp   x24, x23, [var_30h]
-
-========== CLIENT CONSTRUCTOR: AROUND SETVERSION CALL ==========
-│           ; CODE XREF from method.client.client @ 0xe104
-│           0x0000e130      adrp  x1, data.00002000                    ; 0x2000
-│           0x0000e134      add   x1, x1, 0xaae                        ; 0x2aae ; "ro.em.version"
-│           0x0000e138      mov   x0, x21
-│           0x0000e13c      mov   x2, x20
-│           0x0000e140      bl    fcn.00011cb0
-│           0x0000e144      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e148      adrp  x9, data.00003000                    ; 0x3000
-│           0x0000e14c      mov   x0, x19
-│           0x0000e150      ldr   q0, [x8, data.000006b0]              ; [0x6b0:4]=0xda7
-│           0x0000e154      ldr   d1, [x9, data.000004c0]              ; [0x4c0:4]=0
-│           0x0000e158      strb  wzr, [x21, x20]
-│           0x0000e15c      str   q0, [x19, 0xa0]
-│           0x0000e160      str   d1, [x19, 0xb0]
-│           0x0000e164      bl    fcn.00011b30
-│           0x0000e168      mov   x0, x19
-│           0x0000e16c      ldp   x20, x19, [var_10h]
-│           0x0000e170      ldp   x22, x21, [var_20h]
-│           0x0000e174      ldp   fp, lr, [sp], 0lr
-│           0x0000e178      autiasp
-│       ┌─< 0x0000e17c      b     0x11b48
-│       │   0x0000e180      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000 ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000(void)
-        │   ; XREFS(48)
-        │   ;-- std::__1::__tree<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, std::__1::__map_value_compare<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client>, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, true>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client> > >::destroy(std::__1::__tree_node<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, void*>*):
-┌ method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1);
-│       │   ; arg int64_t arg1 @ x0
-│       │   ; var int64_t var_40h @ stack - 0x40
-│       │   ; var int64_t var_30h @ stack - 0x30
-│      ┌──< 0x0000e184      cbz   x0, 0xe1e4                           ; std::__1::__tree<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, std::__1::__map_value_compare<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client>, std::__1::less<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > >, true>, std::__1::allocator<std::__1::pair<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> > const, Client> > >::destroy(std::__1::__tree_node<std::__1::__value_type<std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, Client>, void*>*)
-│      ││   0x0000e188      paciasp
-│      ││   0x0000e18c      stp   fp, lr, [var_30h + 0x10]!
-│      ││   0x0000e190      str   x19, [var_30h + 0x20]
-│      ││   0x0000e194      mov   fp, sp
-│      ││   0x0000e198      mov   x19, x0                              ; arg1
-│      ││   0x0000e19c      ldr   x0, [x0]                             ; int64_t arg1
-│      ││   0x0000e1a0      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│      ││   0x0000e1a4      ldr   x0, [x19, 8]                         ; [0x8:4]=0 ; int64_t arg1
-│      ││   0x0000e1a8      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│      ││   0x0000e1ac      ldr   x0, [x19, 0x48]                      ; [0x48:4]=64 ; int64_t arg1
-│      ││   0x0000e1b0      bl    method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void ;  method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1)
-│      ││   0x0000e1b4      ldrb  w8, [x19, 0x20]                      ; [0x20:4]=64 ; "@"
-│     ┌───< 0x0000e1b8      tbz   w8, 0, 0xe1cc
-│     │││   0x0000e1bc      ldr   x8, [x19, 0x20]                      ; [0x20:4]=64 ; "@"
-│     │││   0x0000e1c0      ldr   x0, [x19, 0x30]                      ; [0x30:4]=0
-│     │││   0x0000e1c4      and   x1, x8, 0xfffffffffffffffe
-│     │││   0x0000e1c8      bl    fcn.00011a88
-│     └───> 0x0000e1cc      mov   x0, x19
-│      ││   0x0000e1d0      mov   w1, 0x60                             ; '`'
-│      ││   0x0000e1d4      ldr   x19, [var_40h]                       ; [0x10:4]=0xb70003
-│      ││   0x0000e1d8      ldp   fp, lr, [sp], 0x20
-│      ││   0x0000e1dc      autiasp
-│     ┌───< 0x0000e1e0      b     fcn.00011a88
-└     │└──> 0x0000e1e4      ret
-      │ │   ; CALL XREF from method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void @ 0xe1b0
-      │ │   ; CALL XREFS from method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void @ 0xe208, 0xe210
-      │ │   ;-- std::__1::__tree<int, std::__1::less<int>, std::__1::allocator<int> >::destroy(std::__1::__tree_node<int, void*>*):
-┌ method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1);
-│     │ │   ; arg int64_t arg1 @ x0
-│     │ │   ; var int64_t var_10h @ stack - 0x10
-│     │┌──< 0x0000e1e8      cbz   x0, 0xe22c                           ; std::__1::__tree<int, std::__1::less<int>, std::__1::allocator<int> >::destroy(std::__1::__tree_node<int, void*>*)
-│     │││   0x0000e1ec      paciasp
-│     │││   0x0000e1f0      stp   fp, lr, [sp, -0x20]!
-│     │││   0x0000e1f4      str   x19, [var_10h]
-│     │││   0x0000e1f8      mov   fp, sp
-│     │││   0x0000e1fc      ldr   x8, [x0]                             ; arg1
-│     │││   0x0000e200      mov   x19, x0                              ; arg1
-│     │││   0x0000e204      mov   x0, x8                               ; int64_t arg1
-│     │││   0x0000e208      bl    method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void ;  method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1)
-│     │││   0x0000e20c      ldr   x0, [x19, 8]                         ; [0x8:4]=0 ; int64_t arg1
-│     │││   0x0000e210      bl    method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void ;  method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void(int64_t arg1)
-│     │││   0x0000e214      mov   x0, x19
-│     │││   0x0000e218      mov   w1, 0x20
-│     │││   0x0000e21c      ldr   x19, [var_10h]                       ; [0x10:4]=0xb70003
-│     │││   0x0000e220      ldp   fp, lr, [sp], 0x20
-│     │││   0x0000e224      autiasp
-│    ┌────< 0x0000e228      b     fcn.00011a88
-└    ││└──> 0x0000e22c      ret
-     ││ │   ; CODE XREFS from method.client.client @ 0x11b4c, 0x11b54
-     ││ │   ;-- client::registerClients():
-┌ method.client.registerClients(int64_t arg_50h, int64_t arg1);
-│    ││ │   ; arg int64_t arg1 @ x0
-│    ││ │   ; var int64_t var_950h @ stack - 0x950
-│    ││ │   ; var int64_t var_940h @ stack - 0x940
-│    ││ │   ; var const char *var_930h @ stack - 0x930
-│    ││ │   ; var int64_t var_920h @ stack - 0x920
-│    ││ │   ; var int64_t var_910h @ stack - 0x910
-│    ││ │   ; var const char *var_900h @ stack - 0x900
-│    ││ │   ; var int64_t var_8f0h @ stack - 0x8f0
-│    ││ │   ; var int64_t var_8e0h @ stack - 0x8e0
-│    ││ │   ; var int64_t var_8c8h @ stack - 0x8c8
-│    ││ │   ; var int64_t var_8b0h @ stack - 0x8b0
-│    ││ │   ; var int64_t var_8a0h @ stack - 0x8a0
-│    ││ │   ; var const char *var_898h @ stack - 0x898
-│    ││ │   ; var const char *var_888h @ stack - 0x888
-│    ││ │   ; var int64_t var_880h @ stack - 0x880
-│    ││ │   ; var int64_t var_870h @ stack - 0x870
-│    ││ │   ; var int64_t var_868h @ stack - 0x868
-│    ││ │   ; var const char *var_858h @ stack - 0x858
-│    ││ │   ; var const char *var_850h @ stack - 0x850
-│    ││ │   ; var int64_t var_840h @ stack - 0x840
-│    ││ │   ; var int64_t var_838h @ stack - 0x838
-│    ││ │   ; var const char *var_828h @ stack - 0x828
-│    ││ │   ; var const char *var_820h @ stack - 0x820
-│    ││ │   ; var int64_t var_810h @ stack - 0x810
-│    ││ │   ; var int64_t var_808h @ stack - 0x808
-│    ││ │   ; var int64_t var_7f8h @ stack - 0x7f8
-│    ││ │   ; var const char *var_7f0h @ stack - 0x7f0
-│    ││ │   ; var const char *var_7e0h @ stack - 0x7e0
-│    ││ │   ; var int64_t var_7d0h @ stack - 0x7d0
-│    ││ │   ; var int64_t var_7c0h @ stack - 0x7c0
-│    ││ │   ; var const char *var_7b0h @ stack - 0x7b0
-│    ││ │   ; var int64_t var_7a0h @ stack - 0x7a0
-│    ││ │   ; var int64_t var_798h @ stack - 0x798
-│    ││ │   ; var int64_t var_788h @ stack - 0x788
-│    ││ │   ; var const char *var_780h @ stack - 0x780
-│    ││ │   ; var const char *var_770h @ stack - 0x770
-│    ││ │   ; var int64_t var_768h @ stack - 0x768
-│    ││ │   ; var int64_t var_758h @ stack - 0x758
-│    ││ │   ; var int64_t var_750h @ stack - 0x750
-│    ││ │   ; var int64_t var_740h @ stack - 0x740
-│    ││ │   ; var int64_t var_738h @ stack - 0x738
-│    ││ │   ; var int64_t var_728h @ stack - 0x728
-│    ││ │   ; var int64_t var_720h @ stack - 0x720
-│    ││ │   ; var const char *var_710h @ stack - 0x710
-│    ││ │   ; var const char *var_708h @ stack - 0x708
-│    ││ │   ; var int64_t var_6f8h @ stack - 0x6f8
-│    ││ │   ; var int64_t var_6f0h @ stack - 0x6f0
-│    ││ │   ; var int64_t var_6e0h @ stack - 0x6e0
-│    ││ │   ; var const char *var_6d0h @ stack - 0x6d0
-│    ││ │   ; var int64_t var_6c0h @ stack - 0x6c0
-│    ││ │   ; var int64_t var_6b8h @ stack - 0x6b8
-│    ││ │   ; var const char *var_6a0h @ stack - 0x6a0
-│    ││ │   ; var int64_t var_688h @ stack - 0x688
-│    ││ │   ; var int64_t var_678h @ stack - 0x678
-│    ││ │   ; var int64_t var_670h @ stack - 0x670
-│    ││ │   ; var int64_t var_660h @ stack - 0x660
-│    ││ │   ; var int64_t var_650h @ stack - 0x650
-│    ││ │   ; var int64_t var_640h @ stack - 0x640
-│    ││ │   ; var int64_t var_630h @ stack - 0x630
-│    ││ │   ; var int64_t var_620h @ stack - 0x620
-│    ││ │   ; var int64_t var_610h @ stack - 0x610
-│    ││ │   ; var int64_t var_600h @ stack - 0x600
-│    ││ │   ; var int64_t var_5f0h @ stack - 0x5f0
-│    ││ │   ; var int64_t var_5e0h @ stack - 0x5e0
-│    ││ │   ; var int64_t var_5d8h @ stack - 0x5d8
-│    ││ │   ; var int64_t var_5c8h @ stack - 0x5c8
-│    ││ │   ; var int64_t var_5c0h @ stack - 0x5c0
-│    ││ │   ; var int64_t var_5b0h @ stack - 0x5b0
-│    ││ │   ; var int64_t var_5a0h @ stack - 0x5a0
-│    ││ │   ; var int64_t var_590h @ stack - 0x590
-│    ││ │   ; var int64_t var_580h @ stack - 0x580
-│    ││ │   ; var int64_t var_570h @ stack - 0x570
-│    ││ │   ; var int64_t var_560h @ stack - 0x560
-│    ││ │   ; var int64_t var_550h @ stack - 0x550
-│    ││ │   ; var int64_t var_540h @ stack - 0x540
-│    ││ │   ; var int64_t var_530h @ stack - 0x530
-│    ││ │   ; var int64_t var_520h @ stack - 0x520
-│    ││ │   ; var int64_t var_510h @ stack - 0x510
-│    ││ │   ; var int64_t var_500h @ stack - 0x500
-│    ││ │   ; var int64_t var_4f0h @ stack - 0x4f0
-│    ││ │   ; var int64_t var_4e0h @ stack - 0x4e0
-│    ││ │   ; var int64_t var_4d0h @ stack - 0x4d0
-│    ││ │   ; var int64_t var_4c0h @ stack - 0x4c0
-│    ││ │   ; var int64_t var_4b0h @ stack - 0x4b0
-│    ││ │   ; var int64_t var_4a0h @ stack - 0x4a0
-│    ││ │   ; var int64_t var_490h @ stack - 0x490
-│    ││ │   ; var int64_t var_480h @ stack - 0x480
-│    ││ │   ; var int64_t var_470h @ stack - 0x470
-│    ││ │   ; var int64_t var_460h @ stack - 0x460
-│    ││ │   ; var int64_t var_450h @ stack - 0x450
-│    ││ │   ; var int64_t var_440h @ stack - 0x440
-│    ││ │   ; var int64_t var_430h @ stack - 0x430
-│    ││ │   ; var int64_t var_428h @ stack - 0x428
-│    ││ │   ; var int64_t var_410h @ stack - 0x410
-│    ││ │   ; var int64_t var_3f8h @ stack - 0x3f8
-│    ││ │   ; var int64_t var_3e8h @ stack - 0x3e8
-│    ││ │   ; var int64_t var_3e0h @ stack - 0x3e0
-│    ││ │   ; var int64_t var_3d0h @ stack - 0x3d0
-│    ││ │   ; var int64_t var_3c0h @ stack - 0x3c0
-│    ││ │   ; var int64_t var_3b0h @ stack - 0x3b0
-│    ││ │   ; var int64_t var_3a0h @ stack - 0x3a0
-│    ││ │   ; var int64_t var_390h @ stack - 0x390
-│    ││ │   ; var int64_t var_380h @ stack - 0x380
-│    ││ │   ; var int64_t var_370h @ stack - 0x370
-│    ││ │   ; var int64_t var_360h @ stack - 0x360
-│    ││ │   ; var int64_t var_350h @ stack - 0x350
-│    ││ │   ; var int64_t var_340h @ stack - 0x340
-│    ││ │   ; var int64_t var_330h @ stack - 0x330
-│    ││ │   ; var int64_t var_328h @ stack - 0x328
-│    ││ │   ; var int64_t var_310h @ stack - 0x310
-│    ││ │   ; var int64_t var_2f8h @ stack - 0x2f8
-│    ││ │   ; var int64_t var_2e8h @ stack - 0x2e8
-│    ││ │   ; var int64_t var_2e0h @ stack - 0x2e0
-│    ││ │   ; var int64_t var_2d0h @ stack - 0x2d0
-│    ││ │   ; var int64_t var_2c0h @ stack - 0x2c0
-│    ││ │   ; var int64_t var_2b0h @ stack - 0x2b0
-│    ││ │   ; var int64_t var_2a0h @ stack - 0x2a0
-│    ││ │   ; var int64_t var_290h @ stack - 0x290
-│    ││ │   ; var int64_t var_280h @ stack - 0x280
-│    ││ │   ; var const char *var_268h @ stack - 0x268
-│    ││ │   ; var const char *var_250h @ stack - 0x250
-│    ││ │   ; var int64_t var_240h @ stack - 0x240
-│    ││ │   ; var const char *var_238h @ stack - 0x238
-│    ││ │   ; var int64_t var_228h @ stack - 0x228
-│    ││ │   ; var const char *var_220h @ stack - 0x220
-│    ││ │   ; var const char *var_208h @ stack - 0x208
-│    ││ │   ; var const char *var_1f0h @ stack - 0x1f0
-│    ││ │   ; var int64_t var_1e0h @ stack - 0x1e0
-│    ││ │   ; var const char *var_1d8h @ stack - 0x1d8
-│    ││ │   ; var const char *var_1c0h @ stack - 0x1c0
-│    ││ │   ; var const char *var_1a8h @ stack - 0x1a8
-│    ││ │   ; var int64_t var_198h @ stack - 0x198
-│    ││ │   ; var const char *var_190h @ stack - 0x190
-│    ││ │   ; var int64_t var_180h @ stack - 0x180
-│    ││ │   ; var int64_t arg3 @ stack - 0x170
-│    ││ │   ; var const char *var_160h @ stack - 0x160
-│    ││ │   ; var int64_t var_40h @ stack - 0x40
-│    ││ │   ; var int64_t var_30h @ stack - 0x30
-│    ││ │   ; var int64_t var_20h @ stack - 0x20
-│    ││ │   ; var int64_t var_10h @ stack - 0x10
-│    ││ │   ; arg int64_t arg_50h @ stack + 0x50
-│    ││ │   0x0000e230      paciasp                                    ; RELOC TARGET 64 client::registerClients() @ 0x0000e230 ; client::registerClients()
-│    ││ │   0x0000e234      stp   fp, lr, [var_160h + data.00000110]!
-│    ││ │   0x0000e238      stp   x28, x25, [var_40h]
-│    ││ │   0x0000e23c      stp   x24, x23, [var_30h]
-│    ││ │   0x0000e240      stp   x22, x21, [var_20h]
-│    ││ │   0x0000e244      stp   x20, x19, [var_10h]
-
-========== REGISTERCLIENTS: FIRST 100 INSTRUCTIONS ==========
-            ; CODE XREFS from method.client.client @ 0x11b4c, 0x11b54
-            ;-- client::registerClients():
-┌ method.client.registerClients(int64_t arg_50h, int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           ; var int64_t var_950h @ stack - 0x950
-│           ; var int64_t var_940h @ stack - 0x940
-│           ; var const char *var_930h @ stack - 0x930
-│           ; var int64_t var_920h @ stack - 0x920
-│           ; var int64_t var_910h @ stack - 0x910
-│           ; var const char *var_900h @ stack - 0x900
-│           ; var int64_t var_8f0h @ stack - 0x8f0
-│           ; var int64_t var_8e0h @ stack - 0x8e0
-│           ; var int64_t var_8c8h @ stack - 0x8c8
-│           ; var int64_t var_8b0h @ stack - 0x8b0
-│           ; var int64_t var_8a0h @ stack - 0x8a0
-│           ; var const char *var_898h @ stack - 0x898
-│           ; var const char *var_888h @ stack - 0x888
-│           ; var int64_t var_880h @ stack - 0x880
-│           ; var int64_t var_870h @ stack - 0x870
-│           ; var int64_t var_868h @ stack - 0x868
-│           ; var const char *var_858h @ stack - 0x858
-│           ; var const char *var_850h @ stack - 0x850
-│           ; var int64_t var_840h @ stack - 0x840
-│           ; var int64_t var_838h @ stack - 0x838
-│           ; var const char *var_828h @ stack - 0x828
-│           ; var const char *var_820h @ stack - 0x820
-│           ; var int64_t var_810h @ stack - 0x810
-│           ; var int64_t var_808h @ stack - 0x808
-│           ; var int64_t var_7f8h @ stack - 0x7f8
-│           ; var const char *var_7f0h @ stack - 0x7f0
-│           ; var const char *var_7e0h @ stack - 0x7e0
-│           ; var int64_t var_7d0h @ stack - 0x7d0
-│           ; var int64_t var_7c0h @ stack - 0x7c0
-│           ; var const char *var_7b0h @ stack - 0x7b0
-│           ; var int64_t var_7a0h @ stack - 0x7a0
-│           ; var int64_t var_798h @ stack - 0x798
-│           ; var int64_t var_788h @ stack - 0x788
-│           ; var const char *var_780h @ stack - 0x780
-│           ; var const char *var_770h @ stack - 0x770
-│           ; var int64_t var_768h @ stack - 0x768
-│           ; var int64_t var_758h @ stack - 0x758
-│           ; var int64_t var_750h @ stack - 0x750
-│           ; var int64_t var_740h @ stack - 0x740
-│           ; var int64_t var_738h @ stack - 0x738
-│           ; var int64_t var_728h @ stack - 0x728
-│           ; var int64_t var_720h @ stack - 0x720
-│           ; var const char *var_710h @ stack - 0x710
-│           ; var const char *var_708h @ stack - 0x708
-│           ; var int64_t var_6f8h @ stack - 0x6f8
-│           ; var int64_t var_6f0h @ stack - 0x6f0
-│           ; var int64_t var_6e0h @ stack - 0x6e0
-│           ; var const char *var_6d0h @ stack - 0x6d0
-│           ; var int64_t var_6c0h @ stack - 0x6c0
-│           ; var int64_t var_6b8h @ stack - 0x6b8
-│           ; var const char *var_6a0h @ stack - 0x6a0
-│           ; var int64_t var_688h @ stack - 0x688
-│           ; var int64_t var_678h @ stack - 0x678
-│           ; var int64_t var_670h @ stack - 0x670
-│           ; var int64_t var_660h @ stack - 0x660
-│           ; var int64_t var_650h @ stack - 0x650
-│           ; var int64_t var_640h @ stack - 0x640
-│           ; var int64_t var_630h @ stack - 0x630
-│           ; var int64_t var_620h @ stack - 0x620
-│           ; var int64_t var_610h @ stack - 0x610
-│           ; var int64_t var_600h @ stack - 0x600
-│           ; var int64_t var_5f0h @ stack - 0x5f0
-│           ; var int64_t var_5e0h @ stack - 0x5e0
-│           ; var int64_t var_5d8h @ stack - 0x5d8
-│           ; var int64_t var_5c8h @ stack - 0x5c8
-│           ; var int64_t var_5c0h @ stack - 0x5c0
-│           ; var int64_t var_5b0h @ stack - 0x5b0
-│           ; var int64_t var_5a0h @ stack - 0x5a0
-│           ; var int64_t var_590h @ stack - 0x590
-│           ; var int64_t var_580h @ stack - 0x580
-│           ; var int64_t var_570h @ stack - 0x570
-│           ; var int64_t var_560h @ stack - 0x560
-│           ; var int64_t var_550h @ stack - 0x550
-│           ; var int64_t var_540h @ stack - 0x540
-│           ; var int64_t var_530h @ stack - 0x530
-│           ; var int64_t var_520h @ stack - 0x520
-│           ; var int64_t var_510h @ stack - 0x510
-│           ; var int64_t var_500h @ stack - 0x500
-│           ; var int64_t var_4f0h @ stack - 0x4f0
-│           ; var int64_t var_4e0h @ stack - 0x4e0
-│           ; var int64_t var_4d0h @ stack - 0x4d0
-│           ; var int64_t var_4c0h @ stack - 0x4c0
-│           ; var int64_t var_4b0h @ stack - 0x4b0
-│           ; var int64_t var_4a0h @ stack - 0x4a0
-│           ; var int64_t var_490h @ stack - 0x490
-│           ; var int64_t var_480h @ stack - 0x480
-│           ; var int64_t var_470h @ stack - 0x470
-│           ; var int64_t var_460h @ stack - 0x460
-│           ; var int64_t var_450h @ stack - 0x450
-│           ; var int64_t var_440h @ stack - 0x440
-│           ; var int64_t var_430h @ stack - 0x430
-│           ; var int64_t var_428h @ stack - 0x428
-│           ; var int64_t var_410h @ stack - 0x410
-│           ; var int64_t var_3f8h @ stack - 0x3f8
-│           ; var int64_t var_3e8h @ stack - 0x3e8
-│           ; var int64_t var_3e0h @ stack - 0x3e0
-│           ; var int64_t var_3d0h @ stack - 0x3d0
-│           ; var int64_t var_3c0h @ stack - 0x3c0
-│           ; var int64_t var_3b0h @ stack - 0x3b0
-│           ; var int64_t var_3a0h @ stack - 0x3a0
-│           ; var int64_t var_390h @ stack - 0x390
-│           ; var int64_t var_380h @ stack - 0x380
-│           ; var int64_t var_370h @ stack - 0x370
-│           ; var int64_t var_360h @ stack - 0x360
-│           ; var int64_t var_350h @ stack - 0x350
-│           ; var int64_t var_340h @ stack - 0x340
-│           ; var int64_t var_330h @ stack - 0x330
-│           ; var int64_t var_328h @ stack - 0x328
-│           ; var int64_t var_310h @ stack - 0x310
-│           ; var int64_t var_2f8h @ stack - 0x2f8
-│           ; var int64_t var_2e8h @ stack - 0x2e8
-│           ; var int64_t var_2e0h @ stack - 0x2e0
-│           ; var int64_t var_2d0h @ stack - 0x2d0
-│           ; var int64_t var_2c0h @ stack - 0x2c0
-│           ; var int64_t var_2b0h @ stack - 0x2b0
-│           ; var int64_t var_2a0h @ stack - 0x2a0
-│           ; var int64_t var_290h @ stack - 0x290
-│           ; var int64_t var_280h @ stack - 0x280
-│           ; var const char *var_268h @ stack - 0x268
-│           ; var const char *var_250h @ stack - 0x250
-│           ; var int64_t var_240h @ stack - 0x240
-│           ; var const char *var_238h @ stack - 0x238
-│           ; var int64_t var_228h @ stack - 0x228
-│           ; var const char *var_220h @ stack - 0x220
-│           ; var const char *var_208h @ stack - 0x208
-│           ; var const char *var_1f0h @ stack - 0x1f0
-│           ; var int64_t var_1e0h @ stack - 0x1e0
-│           ; var const char *var_1d8h @ stack - 0x1d8
-│           ; var const char *var_1c0h @ stack - 0x1c0
-│           ; var const char *var_1a8h @ stack - 0x1a8
-│           ; var int64_t var_198h @ stack - 0x198
-│           ; var const char *var_190h @ stack - 0x190
-│           ; var int64_t var_180h @ stack - 0x180
-│           ; var int64_t arg3 @ stack - 0x170
-│           ; var const char *var_160h @ stack - 0x160
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           ; arg int64_t arg_50h @ stack + 0x50
-│           0x0000e230      paciasp                                    ; RELOC TARGET 64 client::registerClients() @ 0x0000e230 ; client::registerClients()
-│           0x0000e234      stp   fp, lr, [var_160h + data.00000110]!
-│           0x0000e238      stp   x28, x25, [var_40h]
-│           0x0000e23c      stp   x24, x23, [var_30h]
-│           0x0000e240      stp   x22, x21, [var_20h]
-│           0x0000e244      stp   x20, x19, [var_10h]
-│           0x0000e248      mov   fp, sp
-│           0x0000e24c      sub   sp, sp, 0x900
-│           0x0000e250      nop
+========== PACKAGE TO MODE REGISTRATION ==========
 │           0x0000e254      adr   x8, str.system_server                ; 0x2da7
-│           0x0000e258      str   xzr, [sp]
 │           0x0000e25c      ldr   x22, [x8]                            ; [0x2da7:4]=0x74737973 ; "system_server"
-│           0x0000e260      ldur  x23, [x8, 5]                         ; [0x5:4]=257
-│           0x0000e264      mov   w21, 0x1a
-│           0x0000e268      sub   x20, fp, 0xa0
-│           0x0000e26c      ldr   w24, [x0, 0x7c]                      ; [0x7c:4]=4 ; arg1
-│           0x0000e270      sub   x25, fp, 0x20
-│           0x0000e274      sub   x1, fp, 0x20                         ; int64_t arg3
-│           0x0000e278      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e27c      mov   x19, x0                              ; arg1
-│           0x0000e280      sturb w21, [fp, -0x20]
-│           0x0000e284      stur  x22, [x20, 0x81]
-│           0x0000e288      stur  x23, [x20, 0x86]
-│           0x0000e28c      sturb wzr, [fp, -0x12]                     ; arg1
-│           0x0000e290      stur  x25, [fp, -8]
-│           0x0000e294      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x0000e298      str   w24, [x0, 0x38]
-│           0x0000e29c      sub   x1, fp, 0x20                         ; int64_t arg3
-│           0x0000e2a0      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e2a4      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e2a8      stur  x25, [fp, -8]
-│           0x0000e2ac      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x0000e2b0      mov   w8, 1
-│           0x0000e2b4      sub   x1, fp, 0x20                         ; int64_t arg3
-│           0x0000e2b8      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e2bc      strb  w8, [x0, 0x58]
-│           0x0000e2c0      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e2c4      stur  x25, [fp, -8]
-│           0x0000e2c8      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x0000e2cc      strb  wzr, [x0, 0x59]
-│           0x0000e2d0      sub   x1, fp, 0x20                         ; int64_t arg3
-│           0x0000e2d4      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e2d8      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e2dc      stur  x25, [fp, -8]
-│           0x0000e2e0      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x0000e2e4      ldurb w8, [fp, -0x20]
-│           0x0000e2e8      strb  wzr, [x0, 0x5a]
-│       ┌─< 0x0000e2ec      tbz   w8, 0, 0xe300
-│       │   0x0000e2f0      ldur  x8, [fp, -0x20]
-│       │   0x0000e2f4      ldur  x0, [fp, -0x10]
-│       │   0x0000e2f8      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000e2fc      bl    fcn.00011a88
 │       └─> 0x0000e300      ldr   w2, [x19, 0x2c]                      ; [0x2c:4]=0
-│           0x0000e304      sub   x1, fp, 0x38
-│           0x0000e308      mov   x0, x19
-│           0x0000e30c      sturb w21, [fp, -0x38]
-│           0x0000e310      stur  x22, [x20, 0x69]
-│           0x0000e314      stur  x23, [x20, 0x6e]
-│           0x0000e318      sturb wzr, [fp, -0x2a]
 │           0x0000e31c      bl    fcn.00011b78
-│           0x0000e320      ldurb w8, [fp, -0x38]
-│       ┌─< 0x0000e324      tbz   w8, 0, 0xe338
-│       │   0x0000e328      ldur  x8, [fp, -0x38]
-│       │   0x0000e32c      ldur  x0, [fp, -0x28]
-│       │   0x0000e330      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000e334      bl    fcn.00011a88
-│       └─> 0x0000e338      mov   w0, 0x20
-│           0x0000e33c      bl    sym.imp.memcmp                       ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000e340      adrp  x8, data.00003000                    ; 0x3000
 │           0x0000e344      add   x8, x8, 0x70                         ; 0x3070 ; "com.sec.android.app.emservice"
-│           0x0000e348      adrp  x9, data.00002000                    ; 0x2000
 │           0x0000e34c      ldr   q1, [x8]                             ; [0x3070:4]=0x2e6d6f63 ; "com.sec.android.app.emservice"
-│           0x0000e350      ldur  q2, [x8, 0xd]                        ; [0xd:4]=0x3000000
-│           0x0000e354      ldr   q0, method.client.checkPath          ; [data.00000730:4]=0x10d8c method.client.checkPath
-│           0x0000e358      stur  x0, [fp, -0x40]
-│           0x0000e35c      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000e360      sub   x22, fp, 0x50
-│           0x0000e364      str   q1, [x0]
-│           0x0000e368      sub   x1, fp, 0x50                         ; int64_t arg3
-│           0x0000e36c      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e370      stur  q2, [x0, 0xd]
-│           0x0000e374      strb  wzr, [x0, 0x1d]
-│           0x0000e378      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e37c      stp   q2, q1, [var_910h]
-│           0x0000e380      str   q0, [var_8f0h]
-│           0x0000e384      stur  q0, [fp, -0x50]
-│           0x0000e388      stur  x22, [fp, -8]
-│           0x0000e38c      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x0000e390      str   w21, [x0, 0x38]
-│           0x0000e394      sub   x1, fp, 0x50                         ; int64_t arg3
-│           0x0000e398      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e39c      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e3a0      stur  x22, [fp, -8]
-│           0x0000e3a4      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x0000e3a8      mov   w21, 1
-│           0x0000e3ac      sub   x1, fp, 0x50                         ; int64_t arg3
-│           0x0000e3b0      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e3b4      strb  w21, [x0, 0x58]
-│           0x0000e3b8      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e3bc      stur  x22, [fp, -8]
-
-========== REGISTERCLIENTS: LAST 100 INSTRUCTIONS ==========
-│           0x00010480      strb  w21, [x0, 0x5a]
-│       ┌─< 0x00010484      tbz   w8, 0, 0x10498
-│       │   0x00010488      ldr   x8, [var_898h]                       ; [0xb8:4]=0x8000 pc
-│       │   0x0001048c      ldr   x0, [var_888h]                       ; [0xc8:4]=0x8000 pc
-│       │   0x00010490      and   x1, x8, 0xfffffffffffffffe
-│       │   0x00010494      bl    fcn.00011a88
-│       └─> 0x00010498      ldr   w8, [x19, 0x28]                      ; [0x28:4]=0x184b8
-│           0x0001049c      ldr   w9, [x19, 0xa4]                      ; [0xa4:4]=0
-│           0x000104a0      cmp   w8, w9
-│       ┌─< 0x000104a4      b.ge  0x104e8
-│       │   0x000104a8      mov   w9, 0x6f72                           ; 'ro'
-│       │   0x000104ac      ldr   q0, [var_8f0h]                       ; [0x60:4]=0x2a0
+│           0x0000e408      ldr   w2, [x19, 0x2c]                      ; [0x2c:4]=0
+│           0x0000e428      bl    fcn.00011b78
+│           0x0000e448      add   x8, x8, 0xa03                        ; 0x2a03 ; "com.sec.bcservice"
+│           0x0000e450      ldr   q0, [x8]                             ; [0x2a03:4]=0x2e6d6f63 ; "com.sec.bcservice"
+│       └─> 0x0000e4ec      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│           0x0000e508      bl    fcn.00011b78
+│           0x0000e530      add   x8, x8, 0x8e                         ; 0x308e ; "com.samsung.toolkit.ga_settingapplication"
+│           0x0000e538      ldp   q0, q1, [x8]                         ; [0x308e:4]=0x2e6d6f63 ; "com.samsung.toolkit.ga_settingapplication"
+│       │   0x0000e600      ldr   w2, [x19, 0x34]                      ; [0x34:4]=0x380040 ; u"@8\f@\U0000001c\U0000001a\U00000006"
+│       │   0x0000e628      bl    fcn.00011b78
+│     ││    0x0000e644      ldr   w2, [x19, 0x44]                      ; [0x44:4]=4
+│     ││    0x0000e66c      bl    fcn.00011b78
+│           0x0000e6a8      add   x8, x8, 0xe7e                        ; 0x2e7e ; "com.sec.android.app.servicemodeapp"
+│           0x0000e6ac      ldp   q1, q2, [x8]                         ; [0x2e7e:4]=0x2e6d6f63 ; "com.sec.android.app.servicemodeapp"
+│           0x0000e764      ldr   w2, [x19, 0x38]                      ; [0x38:4]=0x40000c
+│           0x0000e780      bl    fcn.00011b78
+│           0x0000e7a0      add   x9, x9, 0x986                        ; 0x2986 ; "com.fdm.soomagent"
+│           0x0000e7a8      ldr   q0, [x9]                             ; [0x2986:4]=0x2e6d6f63 ; "com.fdm.soomagent"
+│       │   0x0000e854      ldr   w2, [x19, 0x34]                      ; [0x34:4]=0x380040 ; u"@8\f@\U0000001c\U0000001a\U00000006"
+│       │   0x0000e87c      bl    fcn.00011b78
+│     ││└─> 0x0000e88c      ldr   w2, [x19, 0x44]                      ; [0x44:4]=4
+│     ││    0x0000e8b4      bl    fcn.00011b78
+│           0x0000e8d4      add   x9, x9, 0xb1c                        ; 0x2b1c ; "com.samsung.knox.kss"
+│           0x0000e8dc      ldr   q0, [x9]                             ; [0x2b1c:4]=0x2e6d6f63 ; "com.samsung.knox.kss"
+│       │   0x0000e9a4      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│       │   0x0000e9c4      bl    fcn.00011b78
+│     ││    0x0000e9d8      ldr   w2, [x19, 0x4c]                      ; [0x4c:4]=0
+│     ││    0x0000e9f8      bl    fcn.00011b78
+│           0x0000ea18      add   x8, x8, 0xea1                        ; 0x2ea1 ; "com.sec.facatfunction"
+│           0x0000ea20      ldr   q0, [x8]                             ; [0x2ea1:4]=0x2e6d6f63 ; "com.sec.facatfunction"
+│           0x0000eac4      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│           0x0000eae0      bl    fcn.00011b78
+│       │   0x0000eb10      ldr   w2, [x19, 0x34]                      ; [0x34:4]=0x380040 ; u"@8\f@\U0000001c\U0000001a\U00000006"
+│       │   0x0000eb34      bl    fcn.00011b78
+│     ││    0x0000eb48      ldr   w2, [x19, 0x44]                      ; [0x44:4]=4
+│     ││    0x0000eb6c      bl    fcn.00011b78
+│           0x0000eb94      add   x8, x8, 0x8f0                        ; 0x28f0 ; "com.sec.android.sherlocksetting"
+│           0x0000eb9c      ldr   q1, [x8]                             ; [0x28f0:4]=0x2e6d6f63 ; "com.sec.android.sherlocksetting"
+│       │   0x0000ec68      ldr   w2, [x19, 0x34]                      ; [0x34:4]=0x380040 ; u"@8\f@\U0000001c\U0000001a\U00000006"
+│       │   0x0000ec88      bl    fcn.00011b78
+│     ││    0x0000eca8      ldr   w2, [x19, 0x44]                      ; [0x44:4]=4
+│     ││    0x0000ecc8      bl    fcn.00011b78
+│           0x0000ecec      add   x9, x9, 0x2c5                        ; 0x32c5 ; "com.sec.imsservice"
+│           0x0000ecf4      ldr   q0, [x9]                             ; [0x32c5:4]=0x2e6d6f63 ; "com.sec.imsservice"
+│       │   0x0000eda8      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│       │   0x0000edd0      bl    fcn.00011b78
+│     ││    0x0000ede4      ldr   w2, [x19, 0x40]                      ; segment.PHDR
+│     ││    0x0000ee0c      bl    fcn.00011b78
+│           0x0000ee34      add   x8, x8, 0x85d                        ; 0x285d ; "com.samsung.oobsimulator"
+│           0x0000ee3c      ldr   q0, [x8]                             ; [0x285d:4]=0x2e6d6f63 ; "com.samsung.oobsimulator"
+│           0x0000eef4      ldr   w2, [x19, 0x54]                      ; [0x54:4]=0
+│           0x0000ef18      bl    fcn.00011b78
+│           0x0000ef40      add   x8, x8, 0x998                        ; 0x2998 ; "com.samsung.android.rlc"
+│           0x0000ef48      ldr   q1, [x8]                             ; [0x2998:4]=0x2e6d6f63 ; "com.samsung.android.rlc"
+│           0x0000f000      ldr   w2, [x19, 0x3c]                      ; [0x3c:4]=0x1a001c
+│           0x0000f024      bl    fcn.00011b78
+│           0x0000f04c      add   x8, x8, 0x1a1                        ; 0x31a1 ; "com.sec.android.app.hwmoduletest"
+│           0x0000f054      ldp   q0, q1, [x8]                         ; [0x31a1:4]=0x2e6d6f63 ; "com.sec.android.app.hwmoduletest"
+│           0x0000f128      bl    fcn.00011b78
+│           0x0000f148      add   x9, x9, 0xd40                        ; 0x2d40 ; "com.sec.keystringmain"
+│           0x0000f150      ldr   q0, [x9]                             ; [0x2d40:4]=0x2e6d6f63 ; "com.sec.keystringmain"
+│       │   0x0000f1fc      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│       │   0x0000f220      bl    fcn.00011b78
+│     ││    0x0000f234      ldr   w2, [x19, 0x40]                      ; segment.PHDR
+│     ││    0x0000f258      bl    fcn.00011b78
+│           0x0000f284      add   x8, x8, 0xd56                        ; 0x2d56 ; "com.sec.keystringscreen"
+│           0x0000f298      ldr   q0, [x8]                             ; [0x2d56:4]=0x2e6d6f63 ; "com.sec.keystringscreen"
+│       │   0x0000f344      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│       │   0x0000f368      bl    fcn.00011b78
+│     ││    0x0000f384      ldr   w2, [x19, 0x40]                      ; segment.PHDR
+│     ││    0x0000f3a8      bl    fcn.00011b78
+│           0x0000f3d8      add   x8, x8, 0x1c2                        ; 0x31c2 ; "com.samsung.knox.securefolder"
+│           0x0000f3ec      ldr   q0, [x8]                             ; [0x31c2:4]=0x2e6d6f63 ; "com.samsung.knox.securefolder"
+│       │   0x0000f498      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│       │   0x0000f4bc      bl    fcn.00011b78
+│     ││    0x0000f4d8      ldr   w2, [x19, 0x4c]                      ; [0x4c:4]=0
+│     ││    0x0000f4fc      bl    fcn.00011b78
+│           0x0000f52c      add   x8, x8, 0xeb7                        ; 0x2eb7 ; "com.samsung.android.bixby.agent"
+│           0x0000f540      ldr   q0, [x8]                             ; [0x2eb7:4]=0x2e6d6f63 ; "com.samsung.android.bixby.agent"
+│       │   0x0000f5ec      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│       │   0x0000f610      bl    fcn.00011b78
+│     ││    0x0000f62c      ldr   w2, [x19, 0x50]                      ; [0x50:4]=64
+│     ││    0x0000f650      bl    fcn.00011b78
+│           0x0000f67c      add   x8, x8, 0xf6b                        ; 0x2f6b ; "com.samsung.rcaframebuffer"
+│           0x0000f684      ldr   q0, [x8]                             ; [0x2f6b:4]=0x2e6d6f63 ; "com.samsung.rcaframebuffer"
+│           0x0000f738      ldr   w2, [x19, 0x5c]                      ; [0x5c:4]=0
+│           0x0000f760      bl    fcn.00011b78
+│           0x0000f788      add   x8, x8, 0x433                        ; 0x3433 ; "com.samsung.android.kgclient"
+│           0x0000f790      ldr   q0, [x8]                             ; [0x3433:4]=0x2e6d6f63 ; "com.samsung.android.kgclient"
+│           0x0000f848      ldr   w2, [x19, 0x3c]                      ; [0x3c:4]=0x1a001c
+│           0x0000f870      bl    fcn.00011b78
+│           0x0000f890      add   x8, x8, 0x25                         ; 0x3025 ; "com.sec.veg.wass"
+│           0x0000f898      ldr   q0, [x8]                             ; [0x3025:4]=0x2e6d6f63 ; "com.sec.veg.wass"
+│           0x0000f92c      ldr   w2, [x19, 0x58]                      ; [0x58:4]=64
+│           0x0000f948      bl    fcn.00011b78
+│           0x0000f970      add   x8, x8, 0xb31                        ; 0x2b31 ; "com.samsung.android.cidmanager"
+│           0x0000f978      ldr   q0, [x8]                             ; [0x2b31:4]=0x2e6d6f63 ; "com.samsung.android.cidmanager"
+│           0x0000fa54      bl    fcn.00011b78
+│           0x0000fb44      bl    fcn.00011b78
+│       │   0x0000fc1c      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│       │   0x0000fc40      bl    fcn.00011b78
+│     ││    0x0000fc54      ldr   w2, [x19, 0x48]                      ; [0x48:4]=64
+│     ││    0x0000fc78      bl    fcn.00011b78
+│           0x0000fca0      add   x8, x8, 0xd6e                        ; 0x2d6e ; "com.sec.enterprise.knox.cloudmdm.smdms"
+│           0x0000fca8      ldp   q0, q1, [x8]                         ; [0x2d6e:4]=0x2e6d6f63 ; "com.sec.enterprise.knox.cloudmdm.smdms"
+│           0x0000fd64      ldr   w2, [x19, 0x4c]                      ; [0x4c:4]=0
+│           0x0000fd84      bl    fcn.00011b78
+│           0x0000fe4c      ldr   w2, [x19, 0x64]                      ; [0x64:4]=0
+│           0x0000fe68      bl    fcn.00011b78
+│       └─> 0x0000ff1c      ldr   w2, [x19, 0x68]                      ; [0x68:4]=0x2a0 "."
+│           0x0000ff34      bl    fcn.00011b78
+│           0x0000ff54      add   x8, x8, 0x8cd                        ; 0x28cd ; "com.android.system"
+│           0x0000ff5c      ldr   q0, [x8]                             ; [0x28cd:4]=0x2e6d6f63 ; "com.android.system"
+│           0x00010004      ldr   w2, [x19, 0x38]                      ; [0x38:4]=0x40000c
+│           0x00010020      bl    fcn.00011b78
+│           0x00010040      ldr   w2, [x19, 0x68]                      ; [0x68:4]=0x2a0 "."
+│           0x0001005c      bl    fcn.00011b78
+│           0x0001007c      ldr   w2, [x19, 0x60]                      ; [0x60:4]=0x2a0 "."
+│           0x00010098      bl    fcn.00011b78
+│           0x000100c4      add   x8, x8, 0x910                        ; 0x2910 ; "com.samsung.gpuwatchapp"
+│           0x000100d8      ldr   q0, [x8]                             ; [0x2910:4]=0x2e6d6f63 ; "com.samsung.gpuwatchapp"
+│           0x00010198      bl    fcn.00011b78
+│           0x000101b8      add   x8, x8, 0x485                        ; 0x3485 ; "com.val.hardware"
+│           0x000101c0      ldr   q0, [x8]                             ; [0x3485:4]=0x2e6d6f63 ; "com.val.hardware"
+│           0x00010258      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│           0x00010270      bl    fcn.00011b78
+│           0x00010290      ldr   w2, [x19, 0x44]                      ; [0x44:4]=4
+│           0x000102ac      bl    fcn.00011b78
+│           0x000102cc      add   x8, x8, 0xb66                        ; 0x2b66 ; "com.longcheer.midtest"
+│           0x000102d4      ldr   q0, [x8]                             ; [0x2b66:4]=0x2e6d6f63 ; "com.longcheer.midtest"
+│           0x00010374      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
+│           0x00010390      bl    fcn.00011b78
+│           0x000103b0      ldr   w2, [x19, 0x44]                      ; [0x44:4]=4
+│           0x000103d0      bl    fcn.00011b78
+│           0x000103f0      add   x9, x9, 0xf86                        ; 0x2f86 ; "com.factory.mmigroup"
+│           0x000103f8      ldr   q0, [x9]                             ; [0x2f86:4]=0x2e6d6f63 ; "com.factory.mmigroup"
 │       │   0x000104b0      ldr   w2, [x19, 0x34]                      ; [0x34:4]=0x380040 ; u"@8\f@\U0000001c\U0000001a\U00000006"
-│       │   0x000104b4      mov   w8, 0x28                             ; '('
-│       │   0x000104b8      movk  w9, 0x7075, lsl 16
-│       │   0x000104bc      add   x1, var_8e0h
-│       │   0x000104c0      mov   x0, x19
-│       │   0x000104c4      strb  w8, [var_8e0h]
-│       │   0x000104c8      add   x19, var_8e0h
-│       │   0x000104cc      stur  w9, [var_8e0h + 0x11]
-│       │   0x000104d0      stur  q0, [var_8e0h + 0x1]
-│       │   0x000104d4      strb  wzr, [var_8e0h + 0x15]
 │       │   0x000104d8      bl    fcn.00011b78
-│       │   0x000104dc      ldrb  w8, [var_8e0h]                       ; [0x70:4]=8
-│      ┌──< 0x000104e0      tbnz  w8, 0, 0x10560
-│     ┌───< 0x000104e4      b     0x10570
-│     ││└─> 0x000104e8      mov   w21, 0x6f72                          ; 'ro'
-│     ││    0x000104ec      ldr   q0, [var_8f0h]                       ; [0x60:4]=0x2a0
 │     ││    0x000104f0      ldr   w2, [x19, 0x30]                      ; [0x30:4]=0
-│     ││    0x000104f4      mov   w20, 0x28                            ; '('
-│     ││    0x000104f8      movk  w21, 0x7075, lsl 16
-│     ││    0x000104fc      add   x1, var_8b0h
-│     ││    0x00010500      mov   x0, x19
-│     ││    0x00010504      strb  w20, [var_8b0h]
-│     ││    0x00010508      stur  w21, [var_8a0h + 0x1]
-│     ││    0x0001050c      stur  q0, [var_8b0h + 0x1]
-│     ││    0x00010510      strb  wzr, [var_8a0h + 0x5]
 │     ││    0x00010514      bl    fcn.00011b78
-│     ││    0x00010518      ldrb  w8, [var_8b0h]                       ; [0xa0:4]=0x49a8
-│     ││┌─< 0x0001051c      tbz   w8, 0, 0x10530
-│     │││   0x00010520      ldr   x8, [arg_50h]                        ; [0xa0:4]=0x49a8
-│     │││   0x00010524      ldr   x0, [var_8a0h]                       ; [0xb0:4]=1
-│     │││   0x00010528      and   x1, x8, 0xfffffffffffffffe
-│     │││   0x0001052c      bl    fcn.00011a88
-│     ││└─> 0x00010530      ldr   q0, [var_8f0h]                       ; [0x60:4]=0x2a0
 │     ││    0x00010534      ldr   w2, [x19, 0x44]                      ; [0x44:4]=4
-│     ││    0x00010538      add   x1, var_8c8h
-│     ││    0x0001053c      mov   x0, x19
-│     ││    0x00010540      strb  w20, [var_8c8h]
-│     ││    0x00010544      add   x19, var_8c8h
-│     ││    0x00010548      stur  w21, [var_8c8h + 0x11]
-│     ││    0x0001054c      stur  q0, [var_8c8h + 0x1]
-│     ││    0x00010550      strb  wzr, [var_8c8h + 0x15]
 │     ││    0x00010554      bl    fcn.00011b78
-│     ││    0x00010558      ldrb  w8, [var_8c8h]                       ; [0x88:4]=0
-│     ││┌─< 0x0001055c      tbz   w8, 0, 0x10570
-│     │└──> 0x00010560      ldr   x8, [x19]
-│     │ │   0x00010564      ldr   x0, [x19, 0x10]                      ; [0x10:4]=0xb70003
-│     │ │   0x00010568      and   x1, x8, 0xfffffffffffffffe
-│     │ │   0x0001056c      bl    fcn.00011a88
-│     │ │   ; CODE XREF from method.client.registerClients @ 0x104e4
-│     └─└─> 0x00010570      add   sp, sp, 0x900
-│           0x00010574      ldp   x20, x19, [var_10h]
-│           0x00010578      ldp   x22, x21, [var_20h]
-│           0x0001057c      ldp   x24, x23, [var_30h]
-│           0x00010580      ldp   x28, x25, [var_40h]
-│           0x00010584      ldp   fp, lr, [sp], 0x50
-│           0x00010588      autiasp
-└           0x0001058c      ret
-            ;-- client::setClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, bool, bool, bool):
-┌ method.client.setClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__bool__bool__bool(int64_t arg1, int64_t arg3, int64_t arg6, int64_t arg5, int64_t arg4, int64_t arg2);
+
+========== MODE SET CHECK ==========
+            ; CODE XREFS from fcn.00011b78 @ 0x11b7c, 0x11b84
+            ;-- client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int):
+┌ method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int(int64_t arg1, int64_t arg3, int64_t arg2);
 │           ; arg int64_t arg1 @ x0
+│           ; arg int64_t arg2 @ x1
+│           ; arg int64_t arg3 @ x2
+│           ; var const void *var_38h @ stack - 0x38
+│           ; var int64_t var_30h @ stack - 0x30
+│           ; var int64_t var_20h @ stack - 0x20
+│           ; var int64_t var_10h @ stack - 0x10
+│           0x00010638      paciasp                                    ; RELOC TARGET 64 client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int) @ 0x00010638 ; client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int)
+│           0x0001063c      sub   sp, sp, 0x40
+│           0x00010640      stp   fp, lr, [var_30h]
+│           0x00010644      stp   x22, x21, [var_20h]
+│           0x00010648      stp   x20, x19, [var_10h]
+│           0x0001064c      add   fp, sp, 0x10
+│           0x00010650      mov   w20, w2                              ; arg3
+│           0x00010654      add   x2, var_38h                          ; const void *arg2
+│           0x00010658      str   x1, [var_38h]                        ; arg2
+│           0x0001065c      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
+│           0x00010660      mov   x22, x0
+│           0x00010664      mov   x19, x0
+│           0x00010668      ldr   x8, [x22, 0x48]!                     ; [0x48:4]=64
+│       ┌─< 0x0001066c      cbnz  x8, 0x10684
+│       │   0x00010670      mov   x21, x22
+│      ┌──< 0x00010674      b     0x106a8
+│     ┌───> 0x00010678      ldr   x8, [x21]
+│     ╎││   0x0001067c      mov   x22, x21
+│    ┌────< 0x00010680      cbz   x8, 0x106a8
+│   ┌───└─> 0x00010684      mov   x21, x8
+│   ╎│╎│    0x00010688      ldr   w8, [x8, 0x1c]                       ; [0x1c:4]=0
+│   ╎│╎│    0x0001068c      cmp   w20, w8
+│   ╎│└───< 0x00010690      b.lt  0x10678
+│   ╎│ │    0x00010694      cmp   w8, w20
+│   ╎│ │┌─< 0x00010698      b.ge  0x106f0
+│   ╎│ ││   0x0001069c      ldr   x8, [x21, 8]                         ; [0x8:4]=0
+│   └─────< 0x000106a0      cbnz  x8, 0x10684
+│    │ ││   0x000106a4      add   x22, x21, 8
+│    │ ││   ; CODE XREF from method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int @ 0x10674
+│    └─└──> 0x000106a8      mov   w0, 0x20
+│       │   0x000106ac      bl    sym.imp.memcmp                       ; int memcmp(const void *s1, const void *s2, size_t n)
+│       │   0x000106b0      str   w20, [x0, 0x1c]
+│       │   0x000106b4      stp   xzr, xzr, [x0]
+│       │   0x000106b8      str   x21, [x0, 0x10]
+│       │   0x000106bc      str   x0, [x22]
+│       │   0x000106c0      ldr   x8, [x19, 0x40]                      ; segment.PHDR
+│       │                                                              ; [0x40:4]=6
+│       │   0x000106c4      ldr   x8, [x8]
+│      ┌──< 0x000106c8      cbz   x8, 0x106d8
+│      ││   0x000106cc      str   x8, [x19, 0x40]
+│      ││   0x000106d0      ldr   x1, [x22]
+│     ┌───< 0x000106d4      b     0x106dc
+│     │└──> 0x000106d8      mov   x1, x0
+│     │ │   ; CODE XREF from method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int @ 0x106d4
+│     └───> 0x000106dc      ldr   x0, [x19, 0x48]                      ; [0x48:4]=64 ; unsigned long long arg1
+│       │   0x000106e0      bl    method.void_std::__1.__tree_balance_after_insert_abi:nn220000__std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void ;  method.void_std::__1.__tree_balance_after_insert_abi:nn220000__std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void(unsigned long long arg1, unsigned long long arg2)
+│       │   0x000106e4      ldr   x8, [x19, 0x50]                      ; [0x50:4]=64
+│       │   0x000106e8      add   x8, x8, 1
+│       │   0x000106ec      str   x8, [x19, 0x50]
+│       └─> 0x000106f0      ldp   x20, x19, [var_10h]
+│           0x000106f4      ldp   x22, x21, [var_20h]
+│           0x000106f8      ldp   fp, lr, [var_30h]
+│           0x000106fc      add   sp, sp, 0x40
+│           0x00010700      autiasp
+└           0x00010704      ret
+            ; CODE XREFS from method.std::__1.to_string(int) @ 0x11a14, 0x11a1c
+            ;-- client::checkClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int):
+┌ method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int(int64_t arg2, unsigned long long arg1, int64_t arg5, int64_t arg4, int64_t arg3);
+│           ; arg unsigned long long arg1 @ x0
 │           ; arg int64_t arg2 @ x1
 │           ; arg int64_t arg3 @ x2
 │           ; arg int64_t arg4 @ x3
 │           ; arg int64_t arg5 @ x4
-│           ; arg int64_t arg6 @ x5
-│           ; var const void *var_48h @ stack - 0x48
-│           ; var int64_t var_40h @ stack - 0x40
 │           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x00010590      paciasp                                    ; client::setClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, bool, bool, bool)
-│           0x00010594      sub   sp, sp, 0x50
-│           0x00010598      stp   fp, lr, [var_40h]
-│           0x0001059c      stp   x24, x23, [var_30h]
-│           0x000105a0      stp   x22, x21, [var_20h]
-│           0x000105a4      stp   x20, x19, [var_10h]
-│           0x000105a8      add   fp, sp, 0x10
-│           0x000105ac      mov   w23, w2                              ; arg3
-│           0x000105b0      add   x2, var_48h                          ; const void *arg2
-│           0x000105b4      mov   w19, w5                              ; arg6
-│           0x000105b8      mov   w20, w4                              ; arg5
-│           0x000105bc      mov   w21, w3                              ; arg4
-│           0x000105c0      mov   x22, x1                              ; arg2
-│           0x000105c4      mov   x24, x0                              ; arg1
-│           0x000105c8      str   x1, [var_48h]                        ; arg2
-│           0x000105cc      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x000105d0      str   w23, [x0, 0x38]
-│           0x000105d4      add   x2, var_48h                          ; const void *arg2
-│           0x000105d8      mov   x0, x24                              ; unsigned long long arg1
-│           0x000105dc      mov   x1, x22                              ; int64_t arg3
-│           0x000105e0      str   x22, [var_48h]
-│           0x000105e4      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x000105e8      strb  w21, [x0, 0x58]
-│           0x000105ec      add   x2, var_48h                          ; const void *arg2
-│           0x000105f0      mov   x0, x24                              ; unsigned long long arg1
-│           0x000105f4      mov   x1, x22                              ; int64_t arg3
-│           0x000105f8      str   x22, [var_48h]
-│           0x000105fc      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::chbl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x00010600      strb  w20, [x0, 0x59]
-│           0x00010604      add   x2, var_48h                          ; const void *arg2
-│           0x00010608      mov   x0, x24                              ; unsigned long long arg1
-│           0x0001060c      mov   x1, x22                              ; int64_t arg3
-11:23:50 oleg@parrot ~ →
+│           0x00010b84      paciasp                                    ; RELOC TARGET 64 client::checkClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int) @ 0x00010b84 ; client::checkClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int)
+│           0x00010b88      stp   fp, lr, [sp, -0x40]!
+│           0x00010b8c      str   x23, [var_30h]
+│           0x00010b90      stp   x22, x21, [var_20h]
+│           0x00010b94      stp   x20, x19, [var_10h]
+│           0x00010b98      mov   fp, sp
+│           0x00010b9c      ldrb  w8, [x1]                             ; arg2
+│           0x00010ba0      ldr   x9, [x1, 0x10]                       ; [0x10:4]=0xb70003 ; arg2
+│           0x00010ba4      mov   w19, w4                              ; arg5
+│           0x00010ba8      mov   w21, w3                              ; arg4
+│           0x00010bac      mov   w20, w2                              ; arg3
+│           0x00010bb0      mov   x23, x1                              ; arg2
+│           0x00010bb4      tst   w8, 1                                ; arg1
+│           0x00010bb8      mov   x22, x0                              ; arg1
+│           0x00010bbc      adrp  x2, data.00002000                    ; 0x2000
+│           0x00010bc0      add   x2, x2, 0xe59                        ; 0x2e59 ; "%s: [ProcessName = %s]"
+│           0x00010bc4      csinc x4, x9, x1, ne
+│           0x00010bc8      adrp  x1, data.00003000                    ; 0x3000
+│           0x00010bcc      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│           0x00010bd0      adrp  x3, data.00002000                    ; 0x2000
+│           0x00010bd4      add   x3, x3, 0xfba                        ; 0x2fba ; "checkClient"
+│           0x00010bd8      mov   w0, 4
+│           0x00010bdc      bl    fcn.00011968
+│           0x00010be0      mov   x0, x22                              ; unsigned long long arg1
+│           0x00010be4      mov   x1, x23                              ; int64_t arg2
+│           0x00010be8      bl    method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char__bl    0x11550 ; method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char______std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const ;  method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char______std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const(unsigned long long arg1, int64_t arg2)
+│           0x00010bec      add   x8, x22, 8
+│           0x00010bf0      str   x0, [x22, 0x18]
+│           0x00010bf4      cmp   x8, x0
+│       ┌─< 0x00010bf8      b.eq  0x10cb0
+│       │   0x00010bfc      ldrb  w8, [x0, 0x58]                       ; [0x58:4]=64
+│       │   0x00010c00      cmp   w8, 1
+│      ┌──< 0x00010c04      b.ne  0x10c14
+│      ││   0x00010c08      ldr   w4, [x0, 0x38]                       ; [0x38:4]=0x40000c
+│      ││   0x00010c0c      cmp   w4, w20
+│     ┌───< 0x00010c10      b.ne  0x10cfc
+│     │└──> 0x00010c14      bl    fcn.00011b90
+│     │┌──< 0x00010c18      tbz   w0, 0, 0x10ccc
+│     │││   0x00010c1c      ldr   x8, [x22, 0x18]                      ; [0x18:4]=0
+│     │││   0x00010c20      ldrb  w9, [x8, 0x59]                       ; [0x59:4]=0
+│     │││   0x00010c24      cmp   w9, 1
+│    ┌────< 0x00010c28      b.ne  0x10c74
+│    ││││   0x00010c2c      mov   x9, x8
+│    ││││   0x00010c30      ldr   x10, [x9, 0x48]!                     ; [0x48:4]=64
+│   ┌─────< 0x00010c34      cbz   x10, 0x10d1c
+│   │││││   0x00010c38      mov   w12, 8
+│   │││││   0x00010c3c      mov   x11, x9
+│  ┌──────> 0x00010c40      ldr   w13, [x10, 0x1c]                     ; [0x1c:4]=0
+│  ╎│││││   0x00010c44      cmp   w13, w21
+│  ╎│││││   0x00010c48      csel  x13, x12, xzr, lt
+│  ╎│││││   0x00010c4c      csel  x11, x11, x10, lt
+│  ╎│││││   0x00010c50      ldr   x10, [x10, x13]
+│  └──────< 0x00010c54      cbnz  x10, 0x10c40
+│   │││││   0x00010c58      cmp   x11, x9
+│  ┌──────< 0x00010c5c      b.eq  0x10d1c
+│  ││││││   0x00010c60      ldr   w10, [x11, 0x1c]                     ; [0x1c:4]=0
+│  ││││││   0x00010c64      cmp   w21, w10
+│  ││││││   0x00010c68      csel  x9, x9, x11, lt
+│  ││││││   0x00010c6c      str   x9, [x22, 0x20]
+│ ┌───────< 0x00010c70      b.lt  0x10d20
+│ │││└────> 0x00010c74      ldrb  w8, [x8, 0x5a]                       ; [0x5a:4]=0
+│ │││ │││   0x00010c78      cmp   w8, 1
+│ │││┌────< 0x00010c7c      b.ne  0x10d3c
+│ │││││││   0x00010c80      ldr   w8, [x22, 0x80]                      ; [0x80:4]=0
+│ │││││││   0x00010c84      cmp   w19, w8
+│ ────────< 0x00010c88      b.eq  0x10d3c
+│ │││││││   0x00010c8c      ldr   w8, [x22, 0x7c]                      ; [0x7c:4]=4
+│ │││││││   0x00010c90      adrp  x1, data.00003000                    ; 0x3000
+│ │││││││   0x00010c94      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ │││││││   0x00010c98      cmp   w20, w8
+│ ────────< 0x00010c9c      b.ne  0x10d5c
+│ │││││││   0x00010ca0      adrp  x2, data.00002000                    ; 0x2000
+│ │││││││   0x00010ca4      add   x2, x2, 0xa15                        ; 0x2a15 ; "This is system client, pass checking signature"
+│ │││││││   0x00010ca8      mov   w0, 3
+│ ────────< 0x00010cac      b     0x10d50
+│ ││││││└─> 0x00010cb0      adrp  x1, data.00003000                    ; 0x3000
+│ ││││││    0x00010cb4      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ ││││││    0x00010cb8      adrp  x2, data.00003000                    ; 0x3000
+│ ││││││    0x00010cbc      add   x2, x2, 0x3cc                        ; 0x33cc ; "Cannot find client"
+│ ││││││    0x00010cc0      mov   w0, 6
+│ ││││││    0x00010cc4      bl    fcn.00011968
+│ ││││││┌─< 0x00010cc8      b     0x10d70
+│ │││││└──> 0x00010ccc      ldrb  w8, [x23]
+│ │││││ │   0x00010cd0      ldr   x9, [x23, 0x10]                      ; [0x10:4]=0xb70003
+│ │││││ │   0x00010cd4      add   x10, x23, 1
+│ │││││ │   0x00010cd8      adrp  x1, data.00003000                    ; 0x3000
+│ │││││ │   0x00010cdc      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ │││││ │   0x00010ce0      adrp  x2, data.00002000                    ; 0x2000
+│ │││││ │   0x00010ce4      add   x2, x2, 0xdd6                        ; 0x2dd6 ; "Process authentication failed for %s"
+│ │││││ │   0x00010ce8      tst   w8, 1
+│ │││││ │   0x00010cec      mov   w0, 6
+│ │││││ │   0x00010cf0      csel  x3, x10, x9, eq
+│ │││││ │   0x00010cf4      bl    fcn.00011968
+│ │││││┌──< 0x00010cf8      b     0x10d70
+│ ││││└───> 0x00010cfc      adrp  x1, data.00003000                    ; 0x3000
+│ ││││ ││   0x00010d00      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ ││││ ││   0x00010d04      adrp  x2, data.00002000                    ; 0x2000
+│ ││││ ││   0x00010d08      add   x2, x2, 0xb81                        ; 0x2b81 ; "UID permission error(%d, %d)"
+│ ││││ ││   0x00010d0c      mov   w0, 6
+│ ││││ ││   0x00010d10      mov   w3, w20
+│ ││││ ││   0x00010d14      bl    fcn.00011968
+│ ││││┌───< 0x00010d18      b     0x10d70
+│ │└└─────> 0x00010d1c      str   x9, [x22, 0x20]
+│ └───────> 0x00010d20      adrp  x1, data.00003000                    ; 0x3000
+│    ││││   0x00010d24      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│    ││││   0x00010d28      adrp  x2, data.00002000                    ; 0x2000
+│    ││││   0x00010d2c      add   x2, x2, 0xfc6                        ; 0x2fc6 ; "MODE permission error(%d)"
+│    ││││   0x00010d30      mov   w0, 6
+│    ││││   0x00010d34      mov   w3, w21
+│   ┌─────< 0x00010d38      b     0x10d6c
+│ ───└────> 0x00010d3c      adrp  x1, data.00003000                    ; 0x3000
+│   │ │││   0x00010d40      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│   │ │││   0x00010d44      adrp  x2, data.00003000                    ; 0x3000
+│   │ │││   0x00010d48      add   x2, x2, 0x496                        ; 0x3496 ; "Signature check completed"
+│   │ │││   0x00010d4c      mov   w0, 4
+│   │ │││   ; CODE XREF from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10cac
+│ ────────> 0x00010d50      bl    fcn.00011968
+│   │ │││   0x00010d54      mov   w0, 1
+│   │┌────< 0x00010d58      b     0x10d74
+│ ────────> 0x00010d5c      adrp  x2, data.00002000                    ; 0x2000
+│   │││││   0x00010d60      add   x2, x2, 0xf9b                        ; 0x2f9b ; "Failed to check signature(%d)\n"
+│   │││││   0x00010d64      mov   w0, 6
+│   │││││   0x00010d68      mov   w3, w19
+│   │││││   ; CODE XREF from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10d38
+│   └─────> 0x00010d6c      bl    fcn.00011968
+│    ││││   ; CODE XREFS from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10cc8, 0x10cf8, 0x10d18
+│    │└└└─> 0x00010d70      mov   w0, wzr
+│    │      ; CODE XREF from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10d58
+│    └────> 0x00010d74      ldp   x20, x19, [var_10h]
+│           0x00010d78      ldr   x23, [var_30h]                       ; [0x10:4]=0xb70003
+│           0x00010d7c      ldp   x22, x21, [var_20h]
+│           0x00010d80      ldp   fp, lr, [sp], 0x40
+│           0x00010d84      autiasp
+└           0x00010d88      ret
+11:29:32 oleg@parrot ~ →
