@@ -1,0 +1,104 @@
+
+----- harx.bin -----
+exynos_plugin_oem_hvc
+set_end_of_bootloader
+%s: H-Arx OEM Plug-in
+
+----- keystorage.bin -----
+bootloader
+
+----- sboot.bin -----
+androidboot.bootloader=%s
+androidboot.other.locked=%d
+assert fail: ops->read_is_device_unlocked != NULL
+assert fail: ops->read_rollback_index != NULL
+AST_UPLOAD.. By Bootloader
+BBOOTLOADER REBOOT
+[BLDP] bootloader_event = 0x%x
+[BLDP] bootloader_event_target[] = %s
+[BLDP] bootloader_mode = %d
+[BLDP] bootloader_rp = 0x%x
+[BLDP] frp_state = 0x%x
+[BLDP] %s : Error. Failed to set bootloader event on DDI
+bldp_set_bootloader_event
+[BLDP] unlock_count = %d
+bootloader
+BOOTLOADER
+Bootloader Booting SEQ #%u
+bootloader_fb
+bootloaderr
+bootloader upload
+===== BOOTLOADER UPLOAD (%s)
+[Bootloader] USB Loading Done
+[CD_SMP][%s(%d)]: unable to unlock the buffer
+check_bootloader_watchdog_bit
+CSMC: bldp_secure_info.bootloader_event_target[%d]	(%x)
+CSMC: bldp_secure_info.bootloader_event (%x)
+CSMC: bldp_secure_info.bootloader_mode (%d)
+CSMC: bldp_secure_info.bootloader_rp (%x)
+CSMC: bldp_secure_info.frp_state (%x)
+CSMC: bldp_secure_info.unlock_count (%d)
+CSMC: bl_secure_info.frp_lock (%x)
+Custom binary(%s) blocked by CC Mode.
+Custom binary(%s) blocked due to remaining installment balance (%d)
+custom binary! %s rp skip checking..
+device_unlock.jpg
+: Digest does not exist, device unlocked so not initializing digest.
+DN_FAIL_ALL_NOT_SUPPORT_KG_LOCK
+DN_FAIL_BLOCK_CUSTOM_BIN_OEM
+DN_FAIL_FRP_MAGIC
+exynos_read_is_device_unlocked
+exynos_read_rollback_index
+exynos_write_rollback_index
+Fail to unlock (0x%x)
+get_oem_unlock_val
+[ICCC] frp_lock = 0x%x
+Ignore DEBUG_UNLOCK_SJTAG area
+init_debug_bootloader_reset_logs
+: Invalid rollback_index_location.
+Invalid rollback index location value.
+[I]%s:%d BootLoader doesn't keysharing
+OEM %s in RPMB
+OSUNLOCK
+PO_FRP_MAGIC
+PO_OEM_UNLOCK
+--reason=bootloader_unlock
+rpmb_load_rollback_index
+RPMB : Rollback Index init fail!!!
+s3cfb.bootloaderfb=0x%x
+Samsung Bootloader BIOS
+[%s] Clear bootloader booting start flag
+%s : dont clear s2d (by sjtag unlock)
+[SECD] %s: bootloader watchdog, skip all
+Secure jtag: unlock
+%s: EMMC BOOTLOADER partition - size check skip..
+set_reset_reason_as_bootloader_reset
+%s: Saving BLDP bootloader mode: [%d] in DDI
+[%s] Set bootloader booting retry count to 1
+%s: there is no unlock keys
+Succeed to unlock (0x%x)
+[SUMM] %s: stop here, bootloader exception
+%s upload by bootloader
+%s: using unlock keys which was downloaded by odin
+UFS desc lock/unlock fail: %d
+ufs unlock isn't supported!!
+Unlock
+unlock_counter_rw
+unlocked
+Unlocked
+[V3_SMP][%s(%d)]: unable to unlock the buffer
+
+----- tzar.img -----
+mutex_unlock
+[%pU] anti-rollback
+Storage.rollbackDetecM
+
+----- tzsw.img -----
+TKyOEM
+
+----- up_param.bin -----
+device_unlock.jpg
+%Frpi[
+
+----- vbmeta.img -----
+bootloaderr

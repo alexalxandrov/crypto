@@ -17,15 +17,15 @@ results to :file:`work/research/bug_bounty_api_results.json`.
 
 from __future__ import annotations
 
- import json
- import os
- import sys
- import time
- import re
- from pathlib import Path
+import json
+import os
+import sys
+import time
+import re
+from pathlib import Path
 from typing import Dict, List
 
- import requests
+import requests
 import csv
 
 
@@ -50,7 +50,7 @@ def safe_get(url: str, params: Dict | None = None, headers: Dict | None = None, 
             response = requests.get(url, params=params, headers=headers, timeout=15)
             response.raise_for_status()
             return response
-        except Exception as exc:  # pragma: no cover – transient network errors
+        except Exception as exc:  # pragma: no cover - transient network errors
             if attempt == retries:
                 raise
             time.sleep(backoff)
@@ -81,7 +81,7 @@ def extract_payout_from_readme(repo: Dict) -> str:
         pass
     return ""
 
-# Basic configuration – keep it on the side so the script can be
+# Basic configuration - keep it on the side so the script can be
 # executed from anywhere.  The GitHub Search API is rate limited to
 # 10 requests per minute for unauthenticated requests.
 BASE_GITHUB_SEARCH_URL = "https://api.github.com/search/repositories"
@@ -142,7 +142,7 @@ def main() -> None:
     all_repos: List[Dict] = []
     page = 1
     per_page = QUERY_PARAMS["per_page"]
-    import time
+import time
 
     # GitHub Search API is rate limited to 10 requests per minute for
     # unauthenticated requests.  We respect this limit by sleeping after
@@ -197,7 +197,7 @@ def main() -> None:
         def extract_payout_from_readme(repo: Dict) -> str:
             """Return the first monetary amount found in the README.
 
-            The function is intentionally simple – it looks for a number
+            The function is intentionally simple - it looks for a number
             that may contain thousand separators and may be prefixed with
             a dollar sign.  It returns the cleaned numeric string
             (e.g. ``"50000"``) or an empty string if no amount is found.
@@ -210,7 +210,7 @@ def main() -> None:
                 r = requests.get(readme_url, timeout=10)
                 r.raise_for_status()
                 content = r.text
-                import re
+import re
                 match = re.search(r"\$?([0-9]{3,}(?:[.,][0-9]{3})*)", content)
                 if match:
                     return match.group(1).replace(",", "").replace(".", "")
@@ -260,7 +260,7 @@ def main() -> None:
                 detail_url = BASE_HACKERONE_PROGRAM_URL.format(program_id=program_id)
                 detail_resp = safe_get(detail_url, headers=headers)
                 detail = detail_resp.json()
-                # Parse payouts – we look for the highest and average
+                # Parse payouts - we look for the highest and average
                 payouts = detail.get("payouts", [])
                 max_payout = ""
                 avg_payout = ""
@@ -273,7 +273,7 @@ def main() -> None:
                     if amounts:
                         max_payout = str(max(amounts))
                         avg_payout = str(int(sum(amounts) / len(amounts)))
-                # Minimum severity – look for the lowest level key
+                # Minimum severity - look for the lowest level key
                 severity_levels = detail.get("severity_levels", {})
                 min_sev = ""
                 if severity_levels:
@@ -297,7 +297,7 @@ def main() -> None:
                 print(f"Appended {len(rows_to_append_ho)} HackerOne rows to {csv_path}")
             else:
                 print("No new HackerOne programs to append.")
-        except Exception as exc:  # pragma: no cover – optional feature
+        except Exception as exc:  # pragma: no cover - optional feature
             print(f"Failed to fetch HackerOne data: {exc}", file=sys.stderr)
 
 

@@ -1,5 +1,12 @@
 import os
+import os
+import sys
 from fastapi import FastAPI, HTTPException, Header, Depends
+# Ensure the directory containing this module is on sys.path so that the
+# absolute import of stripe_integration works even when the module is
+# loaded via ``importlib.spec_from_file_location`` in the tests.
+sys.path.append(os.path.dirname(__file__))
+from stripe_integration import router as stripe_router
 from fastapi.responses import JSONResponse
 import httpx
 from dotenv import load_dotenv
@@ -11,6 +18,7 @@ if not API_KEY:
     raise RuntimeError("MICROSERVICE_API_KEY environment variable is required")
 
 app = FastAPI(title="CoinGecko Proxy API")
+app.include_router(stripe_router)
 
 COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3"
 

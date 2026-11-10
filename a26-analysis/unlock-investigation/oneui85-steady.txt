@@ -1,0 +1,808 @@
+[2KHit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+Hit assert: RegNo && RegNo < 700 && "Invalid register number!"
+  [38;2;197;15;31m[38;2;197;15;31m; CALL XREFS from fcn.00155668 @ [38;2;197;15;31m0x155c84[38;2;197;15;31m, 0x155ccc[38;2;197;15;31m[0m
+[38;2;58;150;221m┌[0m [38;2;197;15;31m[38;2;197;15;31mfcn.0018967c[0m(int64_t arg1);
+[38;2;58;150;221m│[0m [38;2;204;204;204m; arg int64_t arg1 @ x0[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_298h @ stack - 0x298[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_290h @ stack - 0x290[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_28ch @ stack - 0x28c[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_288h @ stack - 0x288[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_258h @ stack - 0x258[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_50h @ stack - 0x50[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_40h @ stack - 0x40[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_30h @ stack - 0x30[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_20h @ stack - 0x20[0m
+[38;2;58;150;221m│[0m [38;2;204;204;204m; var int64_t var_10h @ stack - 0x10[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018967c[0m      [38;2;58;150;221mpacibsp[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189680[0m      [1;38;2;180;0;158mstp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mfp[0m[38;2;204;204;204m, [0m[38;2;58;150;221mlr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m258h[0m[38;2;204;204;204m [0m[38;2;204;204;204m+[0m[38;2;204;204;204m [0m[38;2;193;156;0maav.aav.0x000001f8][0m[38;2;204;204;204m![0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189684[0m      [1;38;2;180;0;158mstp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx28[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx27[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m50h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189688[0m      [1;38;2;180;0;158mstp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx26[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx25[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m40h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018968c[0m      [1;38;2;180;0;158mstp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m30h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189690[0m      [1;38;2;180;0;158mstp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m20h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189694[0m      [1;38;2;180;0;158mstp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx20[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m10h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189698[0m      [38;2;193;156;0mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mfp[0m[38;2;204;204;204m, [0m[38;2;58;150;221msp[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018969c[0m      [38;2;193;156;0msub[0m[38;2;204;204;204m   [0m[38;2;58;150;221msp[0m[38;2;204;204;204m, [0m[38;2;58;150;221msp[0m[38;2;204;204;204m, [0m[38;2;193;156;0maav.0x00000240[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896a0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[0m[0m                                        [38;2;0;55;218m; arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896a4[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m258h[0m[0m[0m                                   [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896a8[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x1f0[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896ac[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896b0[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d6ec[0m[0m[38;2;197;15;31m                                   ; fcn.0014d6ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896b4[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896b8[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m00142190[0m[0m[38;2;197;15;31m                                   ; fcn.00142190[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896bc[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189720[0m[0m[0m
+| ----------- true: 0x00189720  false: 0x001896c0
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896c0[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896c4[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896c8[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx23[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896cc[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d6ec[0m[0m[38;2;197;15;31m                                   ; fcn.0014d6ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896d0[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896d4[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896d8[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx24[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896dc[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d3fc[0m[0m[38;2;197;15;31m                                   ; fcn.0014d3fc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896e0[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x25b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896e4[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xd7[0m[0m[0m                                   [38;2;0;55;218m; int64_t arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896e8[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896ec[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m                                        [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896f0[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d9c8[0m[0m[38;2;197;15;31m                                   ; fcn.0014d9c8[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896f4[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189734[0m[0m[0m
+| ----------- true: 0x00189734  false: 0x001896f8
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896f8[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x251000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001896fc[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x322[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189700[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m7[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189704[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m                                        [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189708[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d9c8[0m[0m[38;2;197;15;31m                                   ; fcn.0014d9c8[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018970c[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x1897a0[0m[0m[0m
+| ----------- true: 0x001897a0  false: 0x00189710
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189710[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189714[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189718[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mxzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018971c[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x1898bc[0m[0m[0m
+| ----------- true: 0x001898bc
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189720[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x257000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189724[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x803[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189728[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018972c[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;204;204;204m-[0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189730[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x18994c[0m[0m[0m
+| ----------- true: 0x0018994c
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189734[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189738[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw19[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;193;156;0m9[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                  ; [[38;2;197;15;31m0x9[38;2;197;15;31m:4]=0x686561[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018973c[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189740[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189744[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx24[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189748[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018974c[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x324[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189750[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d6ec[0m[0m[38;2;197;15;31m                                   ; fcn.0014d6ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189754[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x251000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189758[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xb36[0m[0m[0m                                  [38;2;0;55;218m; unsigned long long arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018975c[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m7[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189760[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx24[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189764[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d3fc[0m[0m[38;2;197;15;31m                                   ; fcn.0014d3fc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189768[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018976c[0m      [38;2;19;161;14mb.ne[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x1897f8[0m[0m[0m
+| ----------- true: 0x001897f8  false: 0x00189770
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189770[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x17[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189774[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189778[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018977c[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m001870e4[0m[0m[38;2;197;15;31m                                   ; fcn.001870e4[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189780[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x1898a4[0m[0m[0m
+| ----------- true: 0x001898a4  false: 0x00189784
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189784[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189788[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018978c[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mxzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189790[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw19[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189794[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mwzr[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0maav.0x00000320][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189798[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;204;204;204m-[0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018979c[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x1898bc[0m[0m[0m
+| ----------- true: 0x001898bc
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897a0[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897a4[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0maav.0x00000320][0m[0m[38;2;197;15;31m                       ; [[38;2;197;15;31m0x320[38;2;197;15;31m:4]=0xb940a7e9[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897a8[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m298h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897ac[0m      [38;2;19;161;14mtbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x18981c[0m[0m[0m
+| ----------- true: 0x0018981c  false: 0x001897b0
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897b0[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897b4[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897b8[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx24[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897bc[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d3fc[0m[0m[38;2;197;15;31m                                   ; fcn.0014d3fc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897c0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897c4[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                   ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897c8[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897cc[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897d0[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897d4[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897d8[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897dc[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897e0[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x3e[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897e4[0m      [38;2;19;161;14mb.ls[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x189974[0m[0m[0m
+| ----------- true: 0x00189974  false: 0x001897e8
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897e8[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x26c000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897ec[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x54b[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897f0[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897f4[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189828[0m[0m[0m
+| ----------- true: 0x00189828
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897f8[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x277000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001897fc[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x52e[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189800[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189804[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189808[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018980c[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mxzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189810[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189814[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;204;204;204m-[0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189818[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x1898bc[0m[0m[0m
+| ----------- true: 0x001898bc
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018981c[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x24f000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189820[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0mstr.0x_02x[0m[0m[38;2;197;15;31m                             ; 0x9fa[38;2;197;15;31m ; "0x%02x "[0m
+| ----------- true: 0x00189824
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREFS from fcn.0018967c @ [38;2;197;15;31m0x189a9c[38;2;197;15;31m, 0x18b5e8[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189824[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+| ----------- true: 0x00189828
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x1897f4[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189828[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018982c[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mxzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[0m
+| ----------- true: 0x00189830
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x18b5dc[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189830[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;204;204;204m-[0m[38;2;193;156;0m1[0m[0m[0m
+| ----------- true: 0x00189834
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x18b5cc[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189834[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m298h[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189838[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018983c[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m                                        [38;2;0;55;218m; arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189840[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189844[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d6ec[0m[0m[38;2;197;15;31m                                   ; fcn.0014d6ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189848[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x269000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018984c[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xe11[0m[0m[0m                                  [38;2;0;55;218m; unsigned long long arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189850[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m6[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189854[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189858[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d3fc[0m[0m[38;2;197;15;31m                                   ; fcn.0014d3fc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018985c[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189868[0m[0m[0m
+| ----------- true: 0x00189868  false: 0x00189860
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189860[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189864[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[0m[0m
+| ----------- true: 0x00189868
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189868[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018986c[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x328[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                ; [[38;2;197;15;31m0x328[38;2;197;15;31m:4]=0xb940abe9[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189870[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x7fffff8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189874[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x26c000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189878[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx2[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x57d[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg4[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018987c[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx9[0m[0m[0m                                     [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189880[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189884[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014af34[0m[0m[38;2;197;15;31m                                   ; fcn.0014af34[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189888[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x86a0[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018988c[0m      [38;2;204;204;204mmovk[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m, [0m[38;2;204;204;204mlsl[0m[38;2;204;204;204m [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189890[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m001b1494[0m[0m[38;2;197;15;31m                                   ; fcn.001b1494[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189894[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x24f000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189898[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xa5a[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018989c[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898a0[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x1898bc[0m[0m[0m
+| ----------- true: 0x001898bc
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898a4[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898a8[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898ac[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898b0[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mxzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898b4[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mwzr[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898b8[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw19[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0maav.0x00000320][0m[0m[0m
+| ----------- true: 0x001898bc
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREFS from fcn.0018967c @ [38;2;197;15;31m0x18971c[38;2;197;15;31m, 0x18979c[38;2;197;15;31m, 0x189818[38;2;197;15;31m, 0x1898a0[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898bc[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898c0[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                   ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898c4[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898c8[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898cc[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898d0[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898d4[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898d8[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898dc[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x18992c[0m[0m[0m
+| ----------- true: 0x0018992c  false: 0x001898e0
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898e0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898e4[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx20[0m[38;2;204;204;204m, [0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m258h[0m[0m[0m
+| ----------- true: 0x001898e8
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898e8[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx20[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;204;204;204mlsl[0m[38;2;204;204;204m [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898ec[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189914[0m[0m[0m
+| ----------- true: 0x00189914  false: 0x001898f0
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898f0[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m001422b8[0m[0m[38;2;197;15;31m                                   ; fcn.001422b8[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898f4[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898f8[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                   ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001898fc[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189900[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189904[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189908[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018990c[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189910[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+| ----------- true: 0x00189914
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189914[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x3c[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189918[0m      [38;2;19;161;14mb.hi[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x18992c[0m[0m[0m
+| ----------- true: 0x0018992c  false: 0x0018991c
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018991c[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189920[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189924[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx9[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189928[0m      [38;2;19;161;14mb.lo[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x1898e8[0m[0m[0m
+| ----------- true: 0x001898e8  false: 0x0018992c
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018992c[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m                                        [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189930[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m001422b8[0m[0m[38;2;197;15;31m                                   ; fcn.001422b8[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189934[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                 ; aav.0x00000018
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x18[38;2;197;15;31m:4]=0x7600000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189938[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189940[0m[0m[0m
+| ----------- true: 0x00189940  false: 0x0018993c
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018993c[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m001422b8[0m[0m[38;2;197;15;31m                                   ; fcn.001422b8[0m
+| ----------- true: 0x00189940
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189940[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x18994c[0m[0m[0m
+| ----------- true: 0x0018994c  false: 0x00189944
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189944[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx22[0m[0m[0m                                        [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189948[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m001422b8[0m[0m[38;2;197;15;31m                                   ; fcn.001422b8[0m
+| ----------- true: 0x0018994c
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x189730[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018994c[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw27[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189950[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221msp[0m[38;2;204;204;204m, [0m[38;2;58;150;221msp[0m[38;2;204;204;204m, [0m[38;2;193;156;0maav.0x00000240[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189954[0m      [38;2;136;23;152mldp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx20[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m10h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189958[0m      [38;2;136;23;152mldp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m20h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018995c[0m      [38;2;136;23;152mldp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m30h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189960[0m      [38;2;136;23;152mldp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx26[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx25[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m40h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189964[0m      [38;2;136;23;152mldp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx28[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx27[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m50h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189968[0m      [38;2;136;23;152mldp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mfp[0m[38;2;204;204;204m, [0m[38;2;58;150;221mlr[0m[38;2;204;204;204m, [[0m[38;2;58;150;221msp[0m[38;2;204;204;204m], [0m[38;2;193;156;0m0x60[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018996c[0m      [38;2;58;150;221mautibsp[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189970[0m      [38;2;197;15;31mret[0m[0m
+
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189974[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x1899d0[0m[0m[0m
+| ----------- true: 0x001899d0  false: 0x00189978
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189978[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018997c[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[38;2;197;15;31m                                 ; "@\t"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189980[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx20[0m[38;2;204;204;204m, [0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m258h[0m[0m[0m
+| ----------- true: 0x00189984
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189984[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189988[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m00142190[0m[0m[38;2;197;15;31m                                   ; fcn.00142190[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018998c[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx20[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;204;204;204mlsl[0m[38;2;204;204;204m [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189990[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189a94[0m[0m[0m
+| ----------- true: 0x00189a94  false: 0x00189994
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189994[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189998[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx21[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018999c[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d3fc[0m[0m[38;2;197;15;31m                                   ; fcn.0014d3fc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899a0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899a4[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                   ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899a8[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899ac[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[38;2;197;15;31m                                 ; 0x30
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; aav.0x00000030[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899b0[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899b4[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899b8[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899bc[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx11[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899c0[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899c4[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx11[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899c8[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx9[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899cc[0m      [38;2;19;161;14mb.lo[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x189984[0m[0m[0m
+| ----------- true: 0x00189984  false: 0x001899d0
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899d0[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;204;204;204m-[0m[38;2;193;156;0m0x3b000000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899d4[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899d8[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;204;204;204m-[0m[38;2;193;156;0m0x3b000000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899dc[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x8000000[0m[0m[38;2;197;15;31m                                  ; "an test key on fused chip.\r\n"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899e0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899e4[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x328[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899e8[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d6ec[0m[0m[38;2;197;15;31m                                   ; fcn.0014d6ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899ec[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx23[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x14[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                ; aav.0x00000014
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [0x14:4]=0[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899f0[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x275000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899f4[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx28[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899f8[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x38f[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x001899fc[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx28[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x330[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a00[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a04[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a08[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x324[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                ; [[38;2;197;15;31m0x324[38;2;197;15;31m:4]=0xb9004d09[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a0c[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189aa0[0m[0m[0m
+| ----------- true: 0x00189aa0  false: 0x00189a10
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a10[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0018b5ec[0m[0m[38;2;197;15;31m                                   ; fcn.0018b5ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a14[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw0[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a18[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a1c[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m00142190[0m[0m[38;2;197;15;31m                                   ; fcn.00142190[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a20[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x18b5e0[0m[0m[0m
+| ----------- true: 0x0018b5e0  false: 0x00189a24
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a24[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a28[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a2c[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a30[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d6ec[0m[0m[38;2;197;15;31m                                   ; fcn.0014d6ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a34[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m00129cb4[0m[0m[38;2;197;15;31m                                   ; fcn.00129cb4[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a38[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x2dc000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a3c[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x94[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                 ; aav.0x00000094
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x94[38;2;197;15;31m:4]=0xd2804700[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a40[0m      [38;2;204;204;204mlsr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a44[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a48[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a4c[0m      [38;2;193;156;0msub[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a50[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m4[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a54[0m      [38;2;204;204;204mlsr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m24[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a58[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a5c[0m      [38;2;204;204;204mlsr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a60[0m      [38;2;204;204;204mlsr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a64[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx19[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a68[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a6c[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a70[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m5[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a74[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a78[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[38;2;197;15;31m                                 ; 0x30
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; aav.0x00000030[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a7c[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0012c8a0[0m[0m[38;2;197;15;31m                                   ; fcn.0012c8a0[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a80[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[0m[0m                                         [38;2;0;55;218m; unsigned long long arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a84[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a88[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx19[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a8c[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d3fc[0m[0m[38;2;197;15;31m                                   ; fcn.0014d3fc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a90[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189aa8[0m[0m[0m
+| ----------- true: 0x00189aa8
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a94[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x277000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a98[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x553[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189a9c[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189824[0m[0m[0m
+| ----------- true: 0x00189824
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; DATA XREF from aav.0x0027fc40 @ [38;2;197;15;31m+0x11a0[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189aa0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189aa4[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mxzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[0m
+| ----------- true: 0x00189aa8
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x189a90[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189aa8[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189aac[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m00142190[0m[0m[38;2;197;15;31m                                   ; fcn.00142190[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ab0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx22[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ab4[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x18b5d0[0m[0m[0m
+| ----------- true: 0x0018b5d0  false: 0x00189ab8
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ab8[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189abc[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx22[0m[0m[0m                                        [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ac0[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;58;150;221mwzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ac4[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d6ec[0m[0m[38;2;197;15;31m                                   ; fcn.0014d6ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ac8[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189acc[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xc[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                 ; aav.0x0000000c
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [0xc:4]=0[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ad0[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ad4[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ad8[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189adc[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ae0[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ae4[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ae8[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x18b568[0m[0m[0m
+| ----------- true: 0x0018b568  false: 0x00189aec
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189aec[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189af0[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                   ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189af4[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mwzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m290h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189af8[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx23[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m [0m[38;2;204;204;204m+[0m[38;2;204;204;204m [0m[38;2;193;156;0m0x10[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189afc[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b00[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b04[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b08[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b0c[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b10[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b14[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189b5c[0m[0m[0m
+| ----------- true: 0x00189b5c
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b18[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204maav.aav.0x0000028c][0m[0m[38;2;197;15;31m                   ; aav.0x00000014
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [0x14:4]=0[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b1c[0m      [38;2;19;161;14mcbnz[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x18b568[0m[0m[0m
+| ----------- true: 0x0018b568  false: 0x00189b20
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b20[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b24[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xc[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                ; aav.0x0000000c
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [0xc:4]=0[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b28[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw13[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m290h[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                ; fcn.00000010
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x10[38;2;197;15;31m:4]=0x14000004[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b2c[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b30[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw12[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b34[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b38[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw13[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw13[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b3c[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw13[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m290h[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b40[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw12[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b44[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b48[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw12[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b4c[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw13[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b50[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b54[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mwzr[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x334[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b58[0m      [38;2;19;161;14mb.hs[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x18b568[0m[0m[0m
+| ----------- true: 0x0018b568  false: 0x00189b5c
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x189b14[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b5c[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189b20[0m[0m[0m
+| ----------- true: 0x00189b20  false: 0x00189b60
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b60[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;58;150;221mxzr[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b64[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mwzr[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m28ch[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b68[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189bac[0m[0m[0m
+| ----------- true: 0x00189bac
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x189d2c[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.00189bdc @ [38;2;197;15;31m+0x1dc[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018b208 @ [38;2;197;15;31m0x18b254[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018b048 @ [38;2;197;15;31m0x18b308[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018b560 @ [38;2;197;15;31m0x18b564[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b80[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx23[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b84[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[38;2;197;15;31m                                   ; str.daeh
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x8[38;2;197;15;31m:4]=0x68656164[38;2;197;15;31m ; "daeh"[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b88[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b8c[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x3[38;2;197;15;31m:4]=0xe58f200[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b90[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw11[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                   ; [[38;2;197;15;31m0x2[38;2;197;15;31m:4]=0x58f20000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b94[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m1[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                    ; [[38;2;197;15;31m0x1[38;2;197;15;31m:4]=0xf2000000[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b98[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx11[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189b9c[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ba0[0m      [38;2;204;204;204mbfi[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx11[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ba4[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189ba8[0m      [38;2;19;161;14mb.hs[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x189b18[0m[0m[0m
+| ----------- true: 0x00189b18  false: 0x00189bac
+[38;2;58;150;221m│[0m [38;2;197;15;31m[38;2;197;15;31m; CODE XREF from fcn.0018967c @ [38;2;197;15;31m0x189b68[38;2;197;15;31m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bac[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m258h[0m[0m[38;2;197;15;31m                                   ; 0x48
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; aav.0x00000048[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bb0[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx21[0m[38;2;204;204;204m, [0m[38;2;204;204;204mlsl[0m[38;2;204;204;204m [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bb4[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx24[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bb8[0m      [38;2;58;150;221mcmp[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x10[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bbc[0m      [38;2;19;161;14mb.hi[0m[38;2;204;204;204m  [0m[38;2;193;156;0m0x189d20[0m[0m[0m
+| ----------- true: 0x00189d20  false: 0x00189bc0
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bc0[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x288000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bc4[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x1b2[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bc8[0m      [38;2;204;204;204madr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0mfcn.00189bdc[0m[0m[38;2;197;15;31m                               ; 0x189bdc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bcc[0m      [38;2;136;23;152mldrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bd0[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;204;204;204mlsl[0m[38;2;204;204;204m [0m[38;2;193;156;0m2[0m[0m[38;2;197;15;31m                              ; 0x189bdc
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; fcn.00189bdc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bd4[0m      [1;38;2;180;0;158mstr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx24[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m [0m[38;2;204;204;204m+[0m[38;2;204;204;204m [0m[38;2;193;156;0m0x28[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189bd8[0m      [38;2;19;161;14mbr[0m[38;2;204;204;204m    [0m[38;2;58;150;221mx8[0m[0m[0m
+
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189d20[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x25f000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189d24[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0mstr.SecureOS[0m[0m[38;2;197;15;31m                           ; 0xc12[38;2;197;15;31m ; "SecureOS"[0m [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189d28[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x00189d2c[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189b80[0m[0m[0m
+| ----------- true: 0x00189b80
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b568[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b56c[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x324[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                ; [[38;2;197;15;31m0x324[38;2;197;15;31m:4]=0xb9004d09[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b570[0m      [38;2;19;161;14mcbz[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x189834[0m[0m[0m
+| ----------- true: 0x00189834  false: 0x0018b574
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b574[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0018b5ec[0m[0m[38;2;197;15;31m                                   ; fcn.0018b5ec[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b578[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x2dc000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b57c[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x94[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                 ; aav.0x00000094
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x94[38;2;197;15;31m:4]=0xd2804700[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b580[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [[0m[38;2;204;204;204mvar[0m[38;2;204;204;204m_[0m[38;2;204;204;204m288h[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                 ; aav.0x00000018
+[38;2;58;150;221m│[0m [38;2;197;15;31m                                                                     ; [[38;2;197;15;31m0x18[38;2;197;15;31m:4]=0x7600000[0m [38;2;0;55;218m; unsigned long long arg2[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b584[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;204;204;204m-[0m[38;2;193;156;0m0x2000000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b588[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw27[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw0[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b58c[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw9[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b590[0m      [38;2;58;150;221mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx1[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b594[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xc[0m[38;2;204;204;204m][0m[38;2;204;204;204m![0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b598[0m      [38;2;204;204;204mlsr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m24[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b59c[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m3[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5a0[0m      [38;2;204;204;204mlsr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m16[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5a4[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m2[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5a8[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x59b000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5ac[0m      [38;2;136;23;152mldr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x328[0m[38;2;204;204;204m][0m[0m[38;2;197;15;31m                                ; [[38;2;197;15;31m0x328[38;2;197;15;31m:4]=0xb940abe9[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5b0[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw10[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x4000000[0m[0m[38;2;197;15;31m                                 ; aav.0x00000400[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5b4[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw0[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xb[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5b8[0m      [38;2;204;204;204mlsr[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [0m[38;2;193;156;0m8[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5bc[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx9[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx10[0m[0m[0m                                    [38;2;0;55;218m; unsigned long long arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5c0[0m      [38;2;204;204;204mmov[0m[38;2;204;204;204m   [0m[38;2;58;150;221mw2[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x20[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5c4[0m      [1;38;2;180;0;158mstrb[0m[38;2;204;204;204m  [0m[38;2;58;150;221mw8[0m[38;2;204;204;204m, [[0m[38;2;58;150;221mx1[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0xd[0m[38;2;204;204;204m][0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5c8[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014d3fc[0m[0m[38;2;197;15;31m                                   ; fcn.0014d3fc[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5cc[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189834[0m[0m[0m
+| ----------- true: 0x00189834
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5d0[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x255000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5d4[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x8fc[0m[0m[0m                                  [38;2;0;55;218m; int64_t arg1[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5d8[0m      [1;38;2;22;198;12mbl[0m[38;2;204;204;204m    [0m[38;2;204;204;204mfcn[0m[38;2;204;204;204m.[0m[38;2;193;156;0m0014c80c[0m[0m[38;2;197;15;31m                                   ; fcn.0014c80c[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5dc[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189830[0m[0m[0m
+| ----------- true: 0x00189830
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5e0[0m      [38;2;204;204;204madrp[0m[38;2;204;204;204m  [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x263000[0m[0m[0m
+[38;2;58;150;221m│[0m [38;2;19;161;14m0x0018b5e4[0m      [38;2;193;156;0madd[0m[38;2;204;204;204m   [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;58;150;221mx0[0m[38;2;204;204;204m, [0m[38;2;193;156;0m0x952[0m[0m[0m
+[38;2;58;150;221m└[0m [38;2;19;161;14m0x0018b5e8[0m      [38;2;19;161;14mb[0m[38;2;204;204;204m     [0m[38;2;193;156;0m0x189824[0m[0m[0m
+| ----------- true: 0x00189824

@@ -1,0 +1,1 @@
+"""Package marker for the paid open‑source project."""
