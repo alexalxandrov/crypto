@@ -27,3 +27,11 @@ jobs:
         run: |
           cd work/projects/${{ matrix.project }}
           pytest tests
+
+      - name: Build Docker image (micro_service_api_scraper)
+        if: matrix.project == 'micro_service_api_scraper'
+        run: |
+          cd work/projects/${{ matrix.project }}
+          docker build -t microservice-image .
+        env:
+          DOCKER_BUILDKIT: 1
