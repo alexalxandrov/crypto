@@ -1,748 +1,851 @@
-11:06:18 oleg@parrot ~ → BASE="$HOME/a26-analysis/engmode/current"
-JNI="$BASE/system-lib64/lib.engmodejni.samsung.so"
-HAL="$BASE/system-lib64/lib.engmode.samsung.so"
+11:08:30 oleg@parrot ~ → (line 3) ...
 
-echo "========== PACKAGE AUTHORIZATION =========="
-readelf -Ws "$JNI" | c++filt | grep -iE 'em_check_package|check_package'
-rizin -q -A -c 'pdf @ sym.em_check_package; q' "$JNI"
+echo "========== CALLER CHECK =========="
+rizin -q -A -c 'pdf @ 0x873c; axt @ 0x873c; q' "$HAL"
 
 echo
-echo "========== JNI LOADER RELOCATIONS =========="
-readelf -rW "$JNI" | grep -iE 'dlopen|dlsym|dlclose'
+echo "========== AIDL CLIENT INITIALIZATION =========="
+rizin -q -A -c 'pdf @ 0x11968; pdf @ 0x11830; pdf @ 0x11800; q' "$HAL"
 
 echo
-echo "========== HAL SYMBOLS =========="
-nm -D -C --defined-only "$HAL" |
-grep -iE 'getServerTime|makeTokenReq|getRequestMsg|isTokenInstalled|caller_check'
+echo "========== AIDL REQUEST DISPATCH =========="
+rizin -q -A -c 'pdf @ 0x117e8; pdf @ 0x11728; pdf @ 0x8fe0; q' "$HAL"
 
 echo
-echo "========== HAL IMPLEMENTATION =========="
-rizin -q -A -c 'pdf @ sym.engmodeManager_hal_getServerTime; pdf @ sym.engmodeManager_hal_makeTokenReq; pdf @ sym.engmodeManager_hal_getRequestMsg; pdf @ sym.engmodeManager_hal_isTokenInstalled; q' "$HAL"
-========== PACKAGE AUTHORIZATION ==========
-    24: 00000000000070a8  1300 FUNC    LOCAL  DEFAULT   15 em_check_package
-ERROR: Cannot determine entrypoint, using 0x00004000.
-            ; XREFS: CALL 0x00004364  CALL 0x00004924  CALL 0x00004ce4  CALL 0x000050c0  CALL 0x000053a8
-            ; XREFS: CALL 0x000055d4  CALL 0x000057c8  CALL 0x00005988  CALL 0x00005b4c  CALL 0x00006018
-            ; XREFS: CALL 0x000061fc  CALL 0x0000642c  CALL 0x0000673c  CALL 0x00006990  CALL 0x00006bb0
-            ; XREFS: CALL 0x00006db8
-┌ sym.em_check_package(int64_t arg1, int64_t arg2, int64_t arg3);
-│           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; var int64_t var_60h @ stack - 0x60
-│           ; var int64_t var_50h @ stack - 0x50
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x000070a8      paciasp
-│           0x000070ac      sub   sp, sp, 0x170
-│           0x000070b0      stp   fp, lr, [var_60h]
-│           0x000070b4      stp   x28, x27, [var_50h]
-│           0x000070b8      stp   x26, x25, [var_40h]
-│           0x000070bc      stp   x24, x23, [var_30h]
-│           0x000070c0      stp   x22, x21, [var_20h]
-│           0x000070c4      stp   x20, x19, [var_10h]
-│           0x000070c8      add   fp, sp, data.00000110                ; 0x110
-│           0x000070cc      movi  v0.2d, 0000000000000000
-│           0x000070d0      ldr   x8, [x0]                             ; arg1
-│           0x000070d4      strb  wzr, [sp, 0x100]                     ; arg1
-│           0x000070d8      mov   x20, x2                              ; arg3
-│           0x000070dc      mov   x21, x1                              ; arg2
-│           0x000070e0      mov   x19, x0                              ; arg1
-│           0x000070e4      stp   q0, q0, [sp]
-│           0x000070e8      stp   q0, q0, [sp, 0x20]
-│           0x000070ec      stp   q0, q0, [sp, 0x40]
-│           0x000070f0      stp   q0, q0, [sp, 0x60]
-│           0x000070f4      stp   q0, q0, [sp, 0x80]
-│           0x000070f8      stp   q0, q0, [sp, 0xa0]
-│           0x000070fc      stp   q0, q0, [sp, 0xc0]
-│           0x00007100      stp   q0, q0, [sp, 0xe0]
-│           0x00007104      ldr   x8, [x8, 0xf8]                       ; [0xf8:4]=0x8000 obj.__dso_handle
-│           0x00007108      blr   x8
-│           0x0000710c      ldr   x8, [x19]
-│           0x00007110      mov   x22, x0                              ; arg1
-│           0x00007114      mov   x0, x19
-│           0x00007118      mov   x1, x22
-│           0x0000711c      mov   x2, xzr
-│           0x00007120      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
-│           0x00007124      blr   x8
-│           0x00007128      adrp  x26, obj.__dso_handle                ; 0x8000
-│           0x0000712c      and   w8, w0, 0xff
-│           0x00007130      ldr   x26, [x26, data.000001e8]            ; [0x1e8:4]=0
-│           0x00007134      cmp   w8, 1
-│       ┌─< 0x00007138      b.ne  0x7150
-│       │   0x0000713c      adrp  x1, data.00001000                    ; 0x1000
-│       │   0x00007140      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│       │   0x00007144      adrp  x2, data.00001000                    ; 0x1000
-│       │   0x00007148      add   x2, x2, 0x8dc                        ; 0x18dc ; "Can't get object class"
-│      ┌──< 0x0000714c      b     0x72c8
-│      │└─> 0x00007150      ldr   x8, [x19]
-│      │    0x00007154      adrp  x2, data.00001000                    ; 0x1000
-│      │    0x00007158      add   x2, x2, 0x82f                        ; 0x182f ; "getPackageManager"
-│      │    0x0000715c      adrp  x3, data.00001000                    ; 0x1000
-│      │    0x00007160      add   x3, x3, 0x7d5                        ; 0x17d5 ; "()Landroid/content/pm/PackageManager;"
-│      │    0x00007164      mov   x0, x19
-│      │    0x00007168      ldr   x8, [x8, data.00000108]              ; [0x108:4]=0x290
-│      │    0x0000716c      mov   x1, x22
-│      │    0x00007170      blr   x8
-│      │┌─< 0x00007174      cbz   x0, 0x71cc
-│      ││   0x00007178      ldr   x8, [x19]
-│      ││   0x0000717c      mov   x2, x0
-│      ││   0x00007180      mov   x0, x19
-│      ││   0x00007184      mov   x1, x21
-│      ││   0x00007188      ldr   x8, [x8, data.00001000]              ; [data.00000110:4]=0x1000 data.00001000
-│      ││   0x0000718c      blr   x8
-│      ││   0x00007190      ldr   x8, [x19]
-│      ││   0x00007194      mov   x23, x0
-│      ││   0x00007198      mov   x0, x19
-│      ││   0x0000719c      mov   x1, x23
-│      ││   0x000071a0      mov   x2, xzr
-│      ││   0x000071a4      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
-│      ││   0x000071a8      blr   x8
-│      ││   0x000071ac      and   w8, w0, 0xff
-│      ││   0x000071b0      cmp   w8, 1
-│     ┌───< 0x000071b4      b.ne  0x71e0
-│     │││   0x000071b8      adrp  x1, data.00001000                    ; 0x1000
-│     │││   0x000071bc      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     │││   0x000071c0      adrp  x2, data.00001000                    ; 0x1000
-│     │││   0x000071c4      add   x2, x2, 0x49b                        ; 0x149b ; "Can't get getPackageManager"
-│    ┌────< 0x000071c8      b     0x72c8
-│    │││└─> 0x000071cc      adrp  x1, data.00001000                    ; 0x1000
-│    │││    0x000071d0      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│    │││    0x000071d4      adrp  x2, data.00001000                    ; 0x1000
-│    │││    0x000071d8      add   x2, x2, 0x7fb                        ; 0x17fb ; "Can't get method id of getPackageManager"
-│    │││┌─< 0x000071dc      b     0x72c8
-│    │└───> 0x000071e0      ldr   x8, [x19]
-│    │ ││   0x000071e4      mov   x0, x19
-│    │ ││   0x000071e8      mov   x1, x23
-│    │ ││   0x000071ec      ldr   x8, [x8, 0xf8]                       ; [0xf8:4]=0x8000 obj.__dso_handle
-│    │ ││   0x000071f0      blr   x8
-│    │ ││   0x000071f4      ldr   x8, [x19]
-│    │ ││   0x000071f8      mov   x24, x0
-│    │ ││   0x000071fc      mov   x0, x19
-│    │ ││   0x00007200      mov   x1, x24
-│    │ ││   0x00007204      mov   x2, xzr
-│    │ ││   0x00007208      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
-│    │ ││   0x0000720c      blr   x8
-│    │ ││   0x00007210      and   w8, w0, 0xff
-│    │ ││   0x00007214      cmp   w8, 1
-│    │┌───< 0x00007218      b.ne  0x7230
-│    ││││   0x0000721c      adrp  x1, data.00001000                    ; 0x1000
-│    ││││   0x00007220      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│    ││││   0x00007224      adrp  x2, data.00001000                    ; 0x1000
-│    ││││   0x00007228      add   x2, x2, 0x327                        ; 0x1327 ; "Can't get getPackageManager class"
-│   ┌─────< 0x0000722c      b     0x72c8
-│   ││└───> 0x00007230      ldr   x8, [x19]
-│   ││ ││   0x00007234      adrp  x2, data.00001000                    ; 0x1000
-│   ││ ││   0x00007238      add   x2, x2, 0x8af                        ; 0x18af ; "getPackageName"
-│   ││ ││   0x0000723c      adrp  x3, data.00001000                    ; 0x1000
-│   ││ ││   0x00007240      add   x3, x3, 0x349                        ; 0x1349 ; "()Ljava/lang/String;"
-│   ││ ││   0x00007244      mov   x0, x19
-│   ││ ││   0x00007248      ldr   x8, [x8, data.00000108]              ; [0x108:4]=0x290
-│   ││ ││   0x0000724c      mov   x1, x22
-│   ││ ││   0x00007250      blr   x8
-│   ││┌───< 0x00007254      cbz   x0, 0x72b8
-│   │││││   0x00007258      ldr   x8, [x19]
-│   │││││   0x0000725c      mov   x2, x0
-│   │││││   0x00007260      mov   x0, x19
-│   │││││   0x00007264      mov   x1, x21
-│   │││││   0x00007268      ldr   x8, [x8, data.00001000]              ; [data.00000110:4]=0x1000 data.00001000
-│   │││││   0x0000726c      blr   x8
-│   │││││   0x00007270      ldr   x8, [x19]
-│   │││││   0x00007274      mov   x21, x0
-│   │││││   0x00007278      mov   x0, x19
-│   │││││   0x0000727c      mov   x1, x23
-│   │││││   0x00007280      mov   x2, xzr
-│   │││││   0x00007284      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
-│   │││││   0x00007288      blr   x8
-│   │││││   0x0000728c      and   w8, w0, 0xff
-│   │││││   0x00007290      cmp   w8, 1
-│  ┌──────< 0x00007294      b.ne  0x73ec
-│  ││││││   0x00007298      adrp  x1, data.00001000                    ; 0x1000
-│  ││││││   0x0000729c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  ││││││   0x000072a0      adrp  x2, data.00001000                    ; 0x1000
-│  ││││││   0x000072a4      add   x2, x2, 0xa34                        ; 0x1a34 ; "Can't get package name"
-│  ││││││   0x000072a8      mov   w0, 6
-│  ││││││   0x000072ac      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  ││││││   0x000072b0      mov   x22, xzr
-│ ┌───────< 0x000072b4      b     0x72d8
-│ ││││└───> 0x000072b8      adrp  x1, data.00001000                    ; 0x1000
-│ ││││ ││   0x000072bc      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│ ││││ ││   0x000072c0      adrp  x2, data.00001000                    ; 0x1000
-│ ││││ ││   0x000072c4      add   x2, x2, 0x568                        ; 0x1568 ; "Can't get method id of package name"
-│ ││││ ││   ; CODE XREFS from sym.em_check_package @ 0x714c, 0x71c8, 0x71dc, 0x722c
-│ ││└└─└└─> 0x000072c8      mov   w0, 6
-│ ││        0x000072cc      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│ ││        0x000072d0      mov   x22, xzr
-│ ││        0x000072d4      mov   x21, xzr
-│ ││        ; CODE XREFS from sym.em_check_package @ 0x72b4, 0x7444, 0x7568
-│ └────┌┌─> 0x000072d8      mov   w8, 0x4f4e                           ; 'NO'
-│  │   ╎╎   0x000072dc      mov   w9, 0x4e55                           ; 'UN'
-│  │   ╎╎   0x000072e0      mov   w24, -5
-│  │   ╎╎   0x000072e4      movk  w8, 0x4e57, lsl 16
-│  │   ╎╎   0x000072e8      movk  w9, 0x4e4b, lsl 16
-│  │   ╎╎   0x000072ec      mov   w23, -5
-│  │   ╎╎   0x000072f0      stur  w8, [sp, 3]
-│  │   ╎╎   0x000072f4      str   w9, [sp]
-│  │   ╎╎   0x000072f8      strb  wzr, [sp, 7]
-│  │   ╎╎   ; CODE XREF from sym.em_check_package @ 0x75b8
-│  │  ┌───> 0x000072fc      ldr   x25, [x26]                           ; [0x9090:4]=0
-│  │  ╎╎╎                                                              ; reloc.target.__progname
-│  │  ╎╎╎   0x00007300      mov   x0, x25
-│  │  ╎╎╎   0x00007304      bl    fcn.000077d8                         ; fcn.000077d8
-│  │  ╎╎╎   0x00007308      cmp   x0, 0x101
-│  │ ┌────< 0x0000730c      b.lo  0x7338
-│  │ │╎╎╎   0x00007310      adrp  x1, data.00001000                    ; 0x1000
-│  │ │╎╎╎   0x00007314      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  │ │╎╎╎   0x00007318      adrp  x2, data.00001000                    ; 0x1000
-│  │ │╎╎╎   0x0000731c      add   x2, x2, 0x6bb                        ; 0x16bb ; "Invalid process name size"
-│  │ │╎╎╎   0x00007320      mov   w0, 6
-│  │ │╎╎╎   0x00007324      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  │ │╎╎╎   0x00007328      mov   w25, 0x19
-│  │ │╎╎╎   0x0000732c      mov   w6, -1
-│  │ │╎╎╎   0x00007330      movk  w25, 0xc001, lsl 16
-│  │┌─────< 0x00007334      b     0x737c
-│  ││└────> 0x00007338      mov   x2, x0
-│  ││ ╎╎╎   0x0000733c      mov   x0, x20
-│  ││ ╎╎╎   0x00007340      mov   x1, x25
-│  ││ ╎╎╎   0x00007344      bl    fcn.000077f0                         ; fcn.000077f0
-│  ││ ╎╎╎   0x00007348      bl    sym.imp.dlopen                       ; sym.imp.dlopen
-│  ││ ╎╎╎   0x0000734c      mov   w25, w0
-│  ││ ╎╎╎   0x00007350      mov   x0, sp                               ; const char *s
-│  ││ ╎╎╎   0x00007354      mov   w1, 0x101
-│  ││ ╎╎╎   0x00007358      bl    sym.imp.strlen                       ; sym.imp.strlen ; size_t strlen(const char *s)
-│  ││ ╎╎╎   0x0000735c      mov   x2, x0
-│  ││ ╎╎╎   0x00007360      add   x0, x20, 0x100
-│  ││ ╎╎╎   0x00007364      mov   x1, sp
-│  ││ ╎╎╎   0x00007368      bl    fcn.000077f0                         ; fcn.000077f0
-│  ││ ╎╎╎   0x0000736c      mov   w6, w25
-│  ││ ╎╎╎   0x00007370      mov   w25, wzr
-│  ││ ╎╎╎   0x00007374      str   w24, [x20, 0x204]
-│  ││ ╎╎╎   0x00007378      str   w6, [x20, data.00000200]
-│  ││ ╎╎╎   ; CODE XREF from sym.em_check_package @ 0x7334
-│  │└─────> 0x0000737c      ldr   x4, [x26]                            ; [0x9090:4]=0
-│  │  ╎╎╎                                                              ; reloc.target.__progname
-│  │  ╎╎╎   0x00007380      adrp  x1, data.00001000                    ; 0x1000
-│  │  ╎╎╎   0x00007384      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  │  ╎╎╎   0x00007388      adrp  x2, data.00001000                    ; 0x1000
-│  │  ╎╎╎   0x0000738c      add   x2, x2, 0x775                        ; 0x1775 ; "%s : client info : %s/%s/%d/%d\n"
-│  │  ╎╎╎   0x00007390      adrp  x3, data.00001000                    ; 0x1000
-│  │  ╎╎╎   0x00007394      add   x3, x3, 0x62a                        ; 0x162a ; "em_check_package"
-│  │  ╎╎╎   0x00007398      mov   w0, 4
-│  │  ╎╎╎   0x0000739c      mov   x5, x22
-│  │  ╎╎╎   0x000073a0      mov   w7, w23
-│  │  ╎╎╎   0x000073a4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  │ ┌────< 0x000073a8      cbz   x22, 0x73c4
-│  │ │╎╎╎   0x000073ac      ldr   x8, [x19]
-│  │ │╎╎╎   0x000073b0      mov   x0, x19
-│  │ │╎╎╎   0x000073b4      mov   x1, x21
-│  │ │╎╎╎   0x000073b8      mov   x2, x22
-│  │ │╎╎╎   0x000073bc      ldr   x8, [x8, data.00000208]              ; [data.00000550:4]=0x208 data.00000208
-│  │ │╎╎╎   0x000073c0      blr   x8
-│  │ └────> 0x000073c4      mov   w0, w25
-│  │  ╎╎╎   0x000073c8      ldp   x20, x19, [var_10h]
-│  │  ╎╎╎   0x000073cc      ldp   x22, x21, [var_20h]
-│  │  ╎╎╎   0x000073d0      ldp   x24, x23, [var_30h]
-│  │  ╎╎╎   0x000073d4      ldp   x26, x25, [var_40h]
-│  │  ╎╎╎   0x000073d8      ldp   x28, x27, [var_50h]
-│  │  ╎╎╎   0x000073dc      ldp   fp, lr, [var_60h]
-│  │  ╎╎╎   0x000073e0      add   sp, sp, 0x170
-│  │  ╎╎╎   0x000073e4      autiasp
-│  │  ╎╎╎   0x000073e8      ret
-│  └──────> 0x000073ec      ldr   x8, [x19]
-│     ╎╎╎   0x000073f0      mov   x0, x19
-│     ╎╎╎   0x000073f4      mov   x1, x21
-│     ╎╎╎   0x000073f8      mov   x2, xzr
-│     ╎╎╎   0x000073fc      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate] ; [data.00000548:4]=0x5564 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate ; "dU"
-│     ╎╎╎   0x00007400      blr   x8
-│     ╎╎╎   0x00007404      mov   x22, x0
-│    ┌────< 0x00007408      cbz   x0, 0x7448
-│    │╎╎╎   0x0000740c      mov   x0, x22
-│    │╎╎╎   0x00007410      bl    fcn.000077d8                         ; fcn.000077d8
-│    │╎╎╎   0x00007414      sub   x8, x0, 0x101
-│    │╎╎╎   0x00007418      cmn   x8, 0x101
-│   ┌─────< 0x0000741c      b.hi  0x745c
-│   ││╎╎╎   0x00007420      mov   x0, x22
-│   ││╎╎╎   0x00007424      bl    fcn.000077d8                         ; fcn.000077d8
-│   ││╎╎╎   0x00007428      mov   x3, x0
-│   ││╎╎╎   0x0000742c      adrp  x1, data.00001000                    ; 0x1000
-│   ││╎╎╎   0x00007430      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│   ││╎╎╎   0x00007434      adrp  x2, data.00001000                    ; 0x1000
-│   ││╎╎╎   0x00007438      add   x2, x2, 0x8f3                        ; 0x18f3 ; "pkg name length isn't normal(%lu)"
-│   ││╎╎╎   0x0000743c      mov   w0, 6
-│   ││╎╎╎   0x00007440      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│   ││╎└──< 0x00007444      b     0x72d8
-│   │└────> 0x00007448      adrp  x1, data.00001000                    ; 0x1000
-│   │ ╎ ╎   0x0000744c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│   │ ╎ ╎   0x00007450      adrp  x2, data.00001000                    ; 0x1000
-│   │ ╎ ╎   0x00007454      add   x2, x2, 0xac4                        ; 0x1ac4 ; "Failed to convert jstring to char *"
-│   │ ╎┌──< 0x00007458      b     0x7560
-│   └─────> 0x0000745c      ldr   x8, [x19]
-│     ╎│╎   0x00007460      adrp  x2, data.00001000                    ; 0x1000
-│     ╎│╎   0x00007464      add   x2, x2, 0x65f                        ; 0x165f ; "checkSignatures"
-│     ╎│╎   0x00007468      adrp  x3, data.00001000                    ; 0x1000
-│     ╎│╎   0x0000746c      add   x3, x3, 0x35e                        ; 0x135e ; "(Ljava/lang/String;Ljava/lang/String;)I"
-│     ╎│╎   0x00007470      mov   x0, x19
-│     ╎│╎   0x00007474      ldr   x8, [x8, data.00000108]              ; [0x108:4]=0x290
-│     ╎│╎   0x00007478      mov   x1, x24
-│     ╎│╎   0x0000747c      blr   x8
-│    ┌────< 0x00007480      cbz   x0, 0x7550
-│    │╎│╎   0x00007484      ldr   x8, [x19]
-│    │╎│╎   0x00007488      mov   x25, x0
-│    │╎│╎   0x0000748c      adrp  x1, data.00001000                    ; 0x1000
-│    │╎│╎   0x00007490      add   x1, x1, 0x889                        ; 0x1889 ; "android"
-│    │╎│╎   0x00007494      mov   x0, x19
-│    │╎│╎   0x00007498      ldr   x27, [x8, data.00000188]             ; [0x188:4]=1
-│    │╎│╎   0x0000749c      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
-│    │╎│╎   0x000074a0      blr   x8
-│    │╎│╎   0x000074a4      ldr   x8, [x19]
-│    │╎│╎   0x000074a8      ldr   x1, [x26]                            ; [0x9090:4]=0
-│    │╎│╎                                                              ; reloc.target.__progname
-│    │╎│╎   0x000074ac      mov   x24, x0
-│    │╎│╎   0x000074b0      mov   x0, x19
-│    │╎│╎   0x000074b4      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
-│    │╎│╎   0x000074b8      blr   x8
-│    │╎│╎   0x000074bc      mov   x4, x0
-│    │╎│╎   0x000074c0      mov   x0, x19
-│    │╎│╎   0x000074c4      mov   x1, x23
-│    │╎│╎   0x000074c8      mov   x2, x25
-│    │╎│╎   0x000074cc      mov   x3, x24
-│    │╎│╎   0x000074d0      blr   x27
-│    │╎│╎   0x000074d4      mov   w24, w0
-│   ┌─────< 0x000074d8      cbz   w0, 0x756c
-│   ││╎│╎   0x000074dc      adrp  x1, data.00001000                    ; 0x1000
-│   ││╎│╎   0x000074e0      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│   ││╎│╎   0x000074e4      adrp  x2, data.00001000                    ; 0x1000
-│   ││╎│╎   0x000074e8      add   x2, x2, 0x5a8                        ; 0x15a8 ; "Package signature information %d"
-│   ││╎│╎   0x000074ec      mov   w0, 4
-│   ││╎│╎   0x000074f0      mov   w3, w24
-│   ││╎│╎   0x000074f4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│   ││╎│╎   0x000074f8      ldr   x8, [x19]
-│   ││╎│╎   0x000074fc      adrp  x1, data.00001000                    ; 0x1000
-│   ││╎│╎   0x00007500      add   x1, x1, 0x889                        ; 0x1889 ; "android"
-│   ││╎│╎   0x00007504      mov   x0, x19
-│   ││╎│╎   0x00007508      ldr   x27, [x8, data.00000188]             ; [0x188:4]=1
-│   ││╎│╎   0x0000750c      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
-│   ││╎│╎   0x00007510      blr   x8
-│   ││╎│╎   0x00007514      ldr   x8, [x19]
-│   ││╎│╎   0x00007518      mov   x24, x0
-│   ││╎│╎   0x0000751c      mov   x0, x19
-│   ││╎│╎   0x00007520      mov   x1, x22
-│   ││╎│╎   0x00007524      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
-│   ││╎│╎   0x00007528      blr   x8
-│   ││╎│╎   0x0000752c      mov   x4, x0
-│   ││╎│╎   0x00007530      mov   x0, x19
-│   ││╎│╎   0x00007534      mov   x1, x23
-│   ││╎│╎   0x00007538      mov   x2, x25
-│   ││╎│╎   0x0000753c      mov   x3, x24
-│   ││╎│╎   0x00007540      blr   x27
-│   ││╎│╎   0x00007544      mov   w24, w0
-│   ││╎│╎   0x00007548      mov   w23, w0
-│  ┌──────< 0x0000754c      b     0x7570
-│  ││└────> 0x00007550      adrp  x1, data.00001000                    ; 0x1000
-│  ││ ╎│╎   0x00007554      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  ││ ╎│╎   0x00007558      adrp  x2, data.00001000                    ; 0x1000
-│  ││ ╎│╎   0x0000755c      add   x2, x2, 0x2cf                        ; 0x12cf ; "Can't get method id of check signature"
-│  ││ ╎│╎   ; CODE XREF from sym.em_check_package @ 0x7458
-│  ││ ╎└──> 0x00007560      mov   w0, 6
-│  ││ ╎ ╎   0x00007564      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  ││ ╎ └─< 0x00007568      b     0x72d8
-│  │└─────> 0x0000756c      mov   w23, wzr
-│  │  ╎     ; CODE XREF from sym.em_check_package @ 0x754c
-│  └──────> 0x00007570      adrp  x1, data.00001000                    ; 0x1000
-│     ╎     0x00007574      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     ╎     0x00007578      adrp  x2, data.00001000                    ; 0x1000
-│     ╎     0x0000757c      add   x2, x2, 0x5a8                        ; 0x15a8 ; "Package signature information %d"
-│     ╎     0x00007580      mov   w0, 4
-│     ╎     0x00007584      mov   w3, w23
-│     ╎     0x00007588      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│     ╎     0x0000758c      mov   x0, x22
-│     ╎     0x00007590      bl    fcn.000077d8                         ; fcn.000077d8
-│     ╎     0x00007594      mov   x2, x0                               ; size_t n
-│     ╎     0x00007598      mov   x0, sp                               ; void *s1
-│     ╎     0x0000759c      mov   x1, x22                              ; const void *s2
-│     ╎     0x000075a0      mov   w3, 0x101
-│     ╎     0x000075a4      mov   x25, sp
-│     ╎     0x000075a8      bl    sym.imp.memcpy                       ; sym.imp.memcpy ; void *memcpy(void *s1, const void *s2, size_t n)
-│     ╎     0x000075ac      mov   x0, x22
-│     ╎     0x000075b0      bl    fcn.000077d8                         ; fcn.000077d8
-│     ╎     0x000075b4      strb  wzr, [x25, x0]
-└     └───< 0x000075b8      b     0x72fc
+echo "========== CLIENT OBJECT =========="
+rizin -q -A -c 'pdf @ 0x8a00; pdf @ 0x8b00; q' "$HAL"
 
-========== JNI LOADER RELOCATIONS ==========
-0000000000008238  0000000700000402 R_AARCH64_JUMP_SLOT    0000000000000000 dlopen@LIBC + 0
-0000000000008240  0000000800000402 R_AARCH64_JUMP_SLOT    0000000000000000 dlsym@LIBC + 0
-0000000000008250  0000000a00000402 R_AARCH64_JUMP_SLOT    0000000000000000 dlclose@LIBC + 0
+echo
+echo "========== CLIENT REGISTRY STRINGS =========="
+strings -a "$HAL" |
+grep -iE 'client|signature|caller|permission|uid|package|process|engmode|aidl|denied|invalid|not allowed'
 
-========== HAL SYMBOLS ==========
-000000000000cf6c T engmodeManager_hal_getRequestMsg
-000000000000d340 T engmodeManager_hal_getServerTime
-000000000000c820 T engmodeManager_hal_isTokenInstalled
-000000000000d0bc T engmodeManager_hal_makeTokenReq
-000000000000873c T EngmodeManager::caller_check(unsigned char const*, int, int, int)
-000000000000a194 T EngmodeManager::makeTokenReq(char const*, char const*, unsigned char const*, int, char const*, unsigned char const*, int, unsigned char*, int*)
-0000000000009d20 T EngmodeManager::getRequestMsg(char const*, char const*, unsigned char const*, int, int, unsigned char const*, int, unsigned char*, int*)
-000000000000a9d4 T EngmodeManager::getServerTime(unsigned char const*, int, unsigned char*, int*)
-0000000000008fe0 T EngmodeManager::isTokenInstalled(unsigned char const*, int)
-
-========== HAL IMPLEMENTATION ==========
+echo
+echo "========== HAL SECURITY SYMBOLS =========="
+readelf -Ws "$HAL" | c++filt |
+grep -iE 'caller_check|client|signature|permission|uid|package|process|token'
+========== CALLER CHECK ==========
 WARNING: There is no program header.
 WARNING: There is no program header.
 ERROR: Cannot determine entrypoint, using 0x00008000.
-┌ sym.engmodeManager_hal_getServerTime(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4);
-│           ; arg int64_t arg1 @ x0
+            ; CODE XREFS from fcn.000116e0 @ 0x116e4, 0x116ec
+            ;-- EngmodeManager::caller_check(unsigned char const*, int, int, int):
+┌ method.EngmodeManager.caller_check_unsigned_char_const___int__int__int(unsigned long long arg1, unsigned long long arg3, int64_t arg2, int64_t arg5, int64_t arg4);
+│           ; arg unsigned long long arg1 @ x0
 │           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg4 @ x3
-│           ; var int64_t var_148h @ stack - 0x148
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000d340      paciasp
-│           0x0000d344      sub   sp, sp, 0x150
-│           0x0000d348      stp   fp, lr, [var_40h]
-│           0x0000d34c      stp   x28, x23, [var_30h]
-│           0x0000d350      stp   x22, x21, [var_20h]
-│           0x0000d354      stp   x20, x19, [var_10h]
-│           0x0000d358      add   fp, sp, data.00000110                ; 0x110
-│           0x0000d35c      mov   x19, x3                              ; arg4
-│           0x0000d360      mov   x20, x2                              ; arg3
-│           0x0000d364      mov   w21, w1                              ; arg2
-│           0x0000d368      mov   x22, x0                              ; arg1
-│           0x0000d36c      adrp  x1, data.00003000                    ; 0x3000
-│           0x0000d370      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│           0x0000d374      adrp  x2, data.00002000                    ; 0x2000
-│           0x0000d378      add   x2, x2, 0xd17
-│           0x0000d37c      adrp  x3, data.00003000                    ; 0x3000
-│           0x0000d380      add   x3, x3, 0x20f                        ; 0x320f ; "engmodeManager_hal_getServerTime"
-│           0x0000d384      mov   w0, 3
-│           0x0000d388      bl    fcn.00011968                         ; fcn.00011968
-│           0x0000d38c      movi  v0.2d, 0000000000000000
-│           0x0000d390      mov   w8, data.000003e8                    ; 0x3e8
-│           0x0000d394      mov   w0, 0xb8
-│           0x0000d398      stp   q0, q0, [var_data.00000148 + 0x8]
-│           0x0000d39c      stp   q0, q0, [var_data.00000148 + 0x28]
-│           0x0000d3a0      stp   q0, q0, [var_data.00000148 + 0x48]
-│           0x0000d3a4      stp   q0, q0, [var_data.00000148 + 0x68]
-│           0x0000d3a8      stp   q0, q0, [var_data.00000148 + 0x88]
-│           0x0000d3ac      stp   q0, q0, [var_data.00000148 + 0xa8]
-│           0x0000d3b0      stp   q0, q0, [var_data.00000148 + 0xc8]
-│           0x0000d3b4      stp   q0, q0, [var_data.00000148 + 0xe8]
-│           0x0000d3b8      str   q0, [sp]
-│           0x0000d3bc      str   w8, [sp]
-│           0x0000d3c0      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000d3c4      mov   x23, x0
-│           0x0000d3c8      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
-│           0x0000d3cc      mov   x0, sp
-│           0x0000d3d0      mov   x1, x22
-│           0x0000d3d4      mov   w2, w21
-│           0x0000d3d8      mov   x3, x20
-│           0x0000d3dc      mov   x4, x19
-│           0x0000d3e0      str   x23, [var_148h]
-│           0x0000d3e4      bl    fcn.00011830                         ; fcn.00011830
-│           0x0000d3e8      ldr   x19, [var_data.00000148]             ; [0x8:4]=0
-│       ┌─< 0x0000d3ec      cbz   x19, 0xd440
-│       │   0x0000d3f0      mov   x21, x19
-│       │   0x0000d3f4      mov   w20, w0
-│       │   0x0000d3f8      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
-│       │   0x0000d3fc      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000d400      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
-│       │   0x0000d404      mov   x0, xzr
-│       │   0x0000d408      str   x21, [x19]
-│       │   0x0000d40c      str   xzr, [x19, 0x10]
-│       │   0x0000d410      str   xzr, [x21]
-│      ┌──< 0x0000d414      tbz   w8, 0, 0xd42c
-│      ││   0x0000d418      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
-│      ││   0x0000d41c      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
-│      ││   0x0000d420      and   x1, x8, 0xfffffffffffffffe
-│      ││   0x0000d424      bl    fcn.00011a88                         ; fcn.00011a88
-│      ││   0x0000d428      ldr   x0, [x19, 8]                         ; [0x8:4]=0
-│      └──> 0x0000d42c      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000d430      mov   x0, x19
-│       │   0x0000d434      mov   w1, 0xb8
-│       │   0x0000d438      bl    fcn.00011a88                         ; fcn.00011a88
-│       │   0x0000d43c      mov   w0, w20
-│       └─> 0x0000d440      ldp   x20, x19, [var_10h]
-│           0x0000d444      ldp   x22, x21, [var_20h]
-│           0x0000d448      ldp   x28, x23, [var_30h]
-│           0x0000d44c      ldp   fp, lr, [var_40h]
-│           0x0000d450      add   sp, sp, 0x150
-│           0x0000d454      autiasp
-└           0x0000d458      ret
-┌ sym.engmodeManager_hal_makeTokenReq(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-│           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
+│           ; arg unsigned long long arg3 @ x2
 │           ; arg int64_t arg4 @ x3
 │           ; arg int64_t arg5 @ x4
-│           ; arg int64_t arg6 @ x5
-│           ; arg int64_t arg7 @ x6
-│           ; arg int64_t arg8 @ x7
-│           ; var int64_t var_180h @ stack - 0x180
-│           ; var int64_t var_178h @ stack - 0x178
-│           ; var int64_t var_60h @ stack - 0x60
+│           ; var int64_t var_a0h @ stack - 0xa0
+│           ; var int64_t var_90h @ stack - 0x90
+│           ; var const char *var_80h @ stack - 0x80
+│           ; var int64_t var_70h @ stack - 0x70
 │           ; var int64_t var_50h @ stack - 0x50
 │           ; var int64_t var_40h @ stack - 0x40
 │           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x0000d0bc      paciasp
-│           0x0000d0c0      sub   sp, sp, data.00000190                ; 0x190 ; "R\xe5td\U00000004"
-│           0x0000d0c4      stp   fp, lr, [var_60h]
-│           0x0000d0c8      stp   x28, x27, [var_50h]
-│           0x0000d0cc      stp   x26, x25, [var_40h]
-│           0x0000d0d0      stp   x24, x23, [var_30h]
-│           0x0000d0d4      stp   x22, x21, [var_20h]
-│           0x0000d0d8      stp   x20, x19, [var_10h]
-│           0x0000d0dc      add   fp, sp, data.00000130                ; 0x130
-│           0x0000d0e0      mov   w23, w3                              ; arg4
-│           0x0000d0e4      mov   x24, x2                              ; arg3
-│           0x0000d0e8      mov   x25, x1                              ; arg2
-│           0x0000d0ec      ldr   x28, [fp, 0x60]                      ; [0x60:4]=0x2a0
-│           0x0000d0f0      mov   x26, x0                              ; arg1
-│           0x0000d0f4      adrp  x1, data.00003000                    ; 0x3000
-│           0x0000d0f8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│           0x0000d0fc      adrp  x2, data.00002000                    ; 0x2000
-│           0x0000d100      add   x2, x2, 0xd17
-│           0x0000d104      adrp  x3, data.00002000                    ; 0x2000
-│           0x0000d108      add   x3, x3, 0xfe2                        ; 0x2fe2 ; "engmodeManager_hal_makeTokenReq"
-│           0x0000d10c      mov   w0, 3
-│           0x0000d110      mov   x19, x7                              ; arg8
-│           0x0000d114      mov   w20, w6                              ; arg7
-│           0x0000d118      mov   x21, x5                              ; arg6
-│           0x0000d11c      mov   x22, x4                              ; arg5
-│           0x0000d120      bl    fcn.00011968                         ; fcn.00011968
-│           0x0000d124      movi  v0.2d, 0000000000000000
-│           0x0000d128      mov   w8, data.000003e8                    ; 0x3e8
-│           0x0000d12c      mov   w0, 0xb8
-│           0x0000d130      stp   q0, q0, [var_178h + 0x8]
-│           0x0000d134      stp   q0, q0, [var_178h + 0x28]
-│           0x0000d138      stp   q0, q0, [var_178h + 0x48]
-│           0x0000d13c      stp   q0, q0, [var_178h + 0x68]
-│           0x0000d140      stp   q0, q0, [var_178h + 0x88]
-│           0x0000d144      stp   q0, q0, [var_178h + 0xa8]
-│           0x0000d148      stp   q0, q0, [var_178h + 0xc8]
-│           0x0000d14c      stp   q0, q0, [var_178h + 0xe8]
-│           0x0000d150      str   q0, [var_180h]
-│           0x0000d154      str   w8, [var_180h]
-│           0x0000d158      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000d15c      mov   x27, x0
-│           0x0000d160      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
-│           0x0000d164      add   x0, var_data.00000180
-│           0x0000d168      mov   x1, x26
-│           0x0000d16c      mov   x2, x25
-│           0x0000d170      mov   x3, x24
-│           0x0000d174      mov   w4, w23
-│           0x0000d178      mov   x5, x22
-│           0x0000d17c      mov   x6, x21
-│           0x0000d180      mov   w7, w20
-│           0x0000d184      str   x27, [var_178h]
-│           0x0000d188      stp   x19, x28, [sp]
-│           0x0000d18c      bl    fcn.00011800                         ; fcn.00011800
-│           0x0000d190      ldr   x19, [var_178h]                      ; [0x18:4]=0
-│       ┌─< 0x0000d194      cbz   x19, 0xd1e8
-│       │   0x0000d198      mov   x21, x19
-│       │   0x0000d19c      mov   w20, w0
-│       │   0x0000d1a0      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
-│       │   0x0000d1a4      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000d1a8      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
-│       │   0x0000d1ac      mov   x0, xzr
-│       │   0x0000d1b0      str   x21, [x19]
-│       │   0x0000d1b4      str   xzr, [x19, 0x10]
-│       │   0x0000d1b8      str   xzr, [x21]
-│      ┌──< 0x0000d1bc      tbz   w8, 0, 0xd1d4
-│      ││   0x0000d1c0      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
-│      ││   0x0000d1c4      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
-│      ││   0x0000d1c8      and   x1, x8, 0xfffffffffffffffe
-│      ││   0x0000d1cc      bl    fcn.00011a88                         ; fcn.00011a88
-│      ││   0x0000d1d0      ldr   x0, [x19, 8]                         ; [0x8:4]=0
-│      └──> 0x0000d1d4      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000d1d8      mov   x0, x19
-│       │   0x0000d1dc      mov   w1, 0xb8
-│       │   0x0000d1e0      bl    fcn.00011a88                         ; fcn.00011a88
-│       │   0x0000d1e4      mov   w0, w20
-│       └─> 0x0000d1e8      ldp   x20, x19, [var_10h]
-│           0x0000d1ec      ldp   x22, x21, [var_20h]
-│           0x0000d1f0      ldp   x24, x23, [var_30h]
-│           0x0000d1f4      ldp   x26, x25, [var_40h]
-│           0x0000d1f8      ldp   x28, x27, [var_50h]
-│           0x0000d1fc      ldp   fp, lr, [var_60h]
-│           0x0000d200      add   sp, sp, data.00000190
-│           0x0000d204      autiasp
-└           0x0000d208      ret
-┌ sym.engmodeManager_hal_getRequestMsg(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+│           0x0000873c      paciasp                                    ; RELOC TARGET 64 EngmodeManager::caller_check(unsigned char const*, int, int, int) @ 0x0000873c ; EngmodeManager::caller_check(unsigned char const*, int, int, int)
+│           0x00008740      sub   sp, sp, 0xa0
+│           0x00008744      stp   fp, lr, [var_50h]
+│           0x00008748      str   x25, [var_40h]
+│           0x0000874c      stp   x24, x23, [var_30h]
+│           0x00008750      stp   x22, x21, [var_20h]
+│           0x00008754      stp   x20, x19, [var_10h]
+│           0x00008758      add   fp, sp, 0x50
+│           0x0000875c      cmp   w2, 0x208                            ; arg3
+│       ┌─< 0x00008760      b.ne  0x87dc
+│       │   0x00008764      mov   x19, x1                              ; arg2
+│      ┌──< 0x00008768      cbz   x1, 0x87f0
+│      ││   0x0000876c      ldr   w5, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│      ││   0x00008770      ldr   w6, [x19, data.00000204]             ; [0x204:4]=6
+│      ││   0x00008774      mov   x21, x0                              ; arg1
+│      ││   0x00008778      mov   w25, w4                              ; arg5
+│      ││   0x0000877c      mov   w20, w3                              ; arg4
+│      ││   0x00008780      adrp  x1, data.00003000                    ; 0x3000
+│      ││   0x00008784      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ││   0x00008788      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000878c      add   x2, x2, 0x35e                        ; 0x335e ; "%s. %s. %d. %d"
+│      ││   0x00008790      add   x4, x19, data.00000100               ; 0x100
+│      ││   0x00008794      mov   w0, 4
+│      ││   0x00008798      mov   x3, x19
+│      ││   0x0000879c      bl    fcn.00011968                         ; fcn.00011968
+│      ││   0x000087a0      bl    fcn.000119e0                         ; fcn.000119e0
+│      ││   0x000087a4      mov   w22, w0
+│      ││   0x000087a8      bl    fcn.000119f8                         ; fcn.000119f8
+│      ││   0x000087ac      ldr   w3, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│      ││   0x000087b0      cmp   w3, w22
+│     ┌───< 0x000087b4      b.ne  0x882c
+│     │││   0x000087b8      mov   w1, w0
+│     │││   0x000087bc      mov   x0, x21
+│     │││   0x000087c0      bl    fcn.000116c8                         ; fcn.000116c8
+│    ┌────< 0x000087c4      cbz   w0, 0x8848
+│    ││││   0x000087c8      adrp  x1, data.00003000                    ; 0x3000
+│    ││││   0x000087cc      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│    ││││   0x000087d0      adrp  x2, data.00002000                    ; 0x2000
+│    ││││   0x000087d4      add   x2, x2, 0x9d5                        ; 0x29d5 ; "Failed to Get process name"
+│   ┌─────< 0x000087d8      b     0x8800
+│   ││││└─> 0x000087dc      adrp  x1, data.00003000                    ; 0x3000
+│   ││││    0x000087e0      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│   ││││    0x000087e4      adrp  x2, data.00002000                    ; 0x2000
+│   ││││    0x000087e8      add   x2, x2, 0xa4c                        ; 0x2a4c ; "caller struct size error"
+│   ││││┌─< 0x000087ec      b     0x8800
+│   │││└──> 0x000087f0      adrp  x1, data.00003000                    ; 0x3000
+│   │││ │   0x000087f4      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│   │││ │   0x000087f8      adrp  x2, data.00003000                    ; 0x3000
+│   │││ │   0x000087fc      add   x2, x2, data.00000450                ; 0x450
+│   │││ │   ; CODE XREFS from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x87d8, 0x87ec, 0x886c
+│   └──┌└─> 0x00008800      mov   w0, 6
+│    ││╎    0x00008804      bl    fcn.00011968                         ; fcn.00011968
+│    ││╎    ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8844
+│    ││╎┌─> 0x00008808      mov   w0, -1
+│    ││╎╎   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8a68
+│ ┌┌┌─────> 0x0000880c      ldp   x20, x19, [var_10h]
+│ ╎╎╎││╎╎   0x00008810      ldr   x25, [var_40h]                       ; [0x60:4]=0x2a0
+│ ╎╎╎││╎╎   0x00008814      ldp   x22, x21, [var_20h]
+│ ╎╎╎││╎╎   0x00008818      ldp   x24, x23, [var_30h]
+│ ╎╎╎││╎╎   0x0000881c      ldp   fp, lr, [var_50h]
+│ ╎╎╎││╎╎   0x00008820      add   sp, sp, 0xa0
+│ ╎╎╎││╎╎   0x00008824      autiasp
+│ ╎╎╎││╎╎   0x00008828      ret
+│ ╎╎╎│└───> 0x0000882c      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎│ ╎╎   0x00008830      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎│ ╎╎   0x00008834      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎│ ╎╎   0x00008838      add   x2, x2, 0x9bc                        ; 0x29bc ; "Caller UID is invalid %d"
+│ ╎╎╎│ ╎╎   0x0000883c      mov   w0, 6
+│ ╎╎╎│ ╎╎   0x00008840      bl    fcn.00011968                         ; fcn.00011968
+│ ╎╎╎│ ╎└─< 0x00008844      b     0x8808
+│ ╎╎╎└────> 0x00008848      add   x2, x19, data.00000100               ; 0x100
+│ ╎╎╎  ╎    0x0000884c      mov   x0, x21
+│ ╎╎╎  ╎    0x00008850      mov   x1, x19
+│ ╎╎╎  ╎    0x00008854      bl    fcn.000116b0                         ; fcn.000116b0
+│ ╎╎╎  ╎┌─< 0x00008858      cbz   w0, 0x8870
+│ ╎╎╎  ╎│   0x0000885c      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎  ╎│   0x00008860      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎  ╎│   0x00008864      adrp  x2, data.00003000                    ; 0x3000
+│ ╎╎╎  ╎│   0x00008868      add   x2, x2, data.000001e0                ; 0x1e0
+│ ╎╎╎  └──< 0x0000886c      b     0x8800
+│ ╎╎╎   └─> 0x00008870      mov   x0, x19
+│ ╎╎╎       0x00008874      stp   xzr, xzr, [fp, -0x18]
+│ ╎╎╎       0x00008878      stur  xzr, [fp, -8]
+│ ╎╎╎       0x0000887c      bl    fcn.00011998                         ; fcn.00011998
+│ ╎╎╎       0x00008880      cmn   x0, 9
+│ ╎╎╎   ┌─< 0x00008884      b.hs  0x8a6c
+│ ╎╎╎   │   0x00008888      mov   x22, x0
+│ ╎╎╎   │   0x0000888c      cmp   x0, 0x16
+│ ╎╎╎  ┌──< 0x00008890      b.hi  0x88a8
+│ ╎╎╎  ││   0x00008894      lsl   w8, w22, 1
+│ ╎╎╎  ││   0x00008898      sub   x9, fp, 0x18
+│ ╎╎╎  ││   0x0000889c      orr   x23, x9, 1
+│ ╎╎╎  ││   0x000088a0      sturb w8, [fp, -0x18]
+│ ╎╎╎ ┌───< 0x000088a4      b     0x88d0
+│ ╎╎╎ │└──> 0x000088a8      orr   x8, x22, 7
+│ ╎╎╎ │ │   0x000088ac      mov   w9, 0x1a
+│ ╎╎╎ │ │   0x000088b0      cmp   x8, 0x17
+│ ╎╎╎ │ │   0x000088b4      csinc x24, x9, x8, eq
+│ ╎╎╎ │ │   0x000088b8      mov   x0, x24                              ; const void *s1
+│ ╎╎╎ │ │   0x000088bc      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│ ╎╎╎ │ │   0x000088c0      mov   x23, x0
+│ ╎╎╎ │ │   0x000088c4      orr   x8, x24, 1
+│ ╎╎╎ │ │   0x000088c8      stp   x22, x0, [fp, -0x10]
+│ ╎╎╎ │ │   0x000088cc      stur  x8, [fp, -0x18]
+│ ╎╎╎ │ │   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x88a4
+│ ╎╎╎ └───> 0x000088d0      mov   x0, x23
+│ ╎╎╎   │   0x000088d4      mov   x1, x19
+│ ╎╎╎   │   0x000088d8      mov   x2, x22
+│ ╎╎╎   │   0x000088dc      bl    fcn.00011cb0                         ; fcn.00011cb0
+│ ╎╎╎   │   0x000088e0      cmp   w25, 2
+│ ╎╎╎   │   0x000088e4      strb  wzr, [x23, x22]
+│ ╎╎╎  ┌──< 0x000088e8      b.eq  0x8958
+│ ╎╎╎  ││   0x000088ec      cmp   w25, 1
+│ ╎╎╎ ┌───< 0x000088f0      b.eq  0x8938
+│ ╎╎╎ │││   0x000088f4      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎ │││   0x000088f8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎┌────< 0x000088fc      cbnz  w25, 0x8974
+│ ╎╎╎││││   0x00008900      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎││││   0x00008904      add   x2, x2, 0xad7                        ; 0x2ad7 ; "%s called getstatus (0x%x)"
+│ ╎╎╎││││   0x00008908      mov   w0, 4
+│ ╎╎╎││││   0x0000890c      mov   x3, x19
+│ ╎╎╎││││   0x00008910      mov   w4, w20
+│ ╎╎╎││││   0x00008914      bl    fcn.00011968                         ; fcn.00011968
+│ ╎╎╎││││   0x00008918      ldurb w8, [fp, -0x18]
+│ ╎╎╎││││   0x0000891c      ldr   x21, [x21, 8]                        ; [0x8:4]=0
+│ ────────< 0x00008920      tbnz  w8, 0, 0x89d4
+│ ╎╎╎││││   0x00008924      ldur  q0, [fp, -0x18]
+│ ╎╎╎││││   0x00008928      ldur  x8, [fp, -8]
+│ ╎╎╎││││   0x0000892c      str   q0, [var_80h]
+│ ╎╎╎││││   0x00008930      str   x8, [var_70h]
+│ ────────< 0x00008934      b     0x89e0
+│ ╎╎╎│└───> 0x00008938      ldurb w8, [fp, -0x18]
+│ ╎╎╎│ ││   0x0000893c      ldr   x20, [x21, 8]                        ; [0x8:4]=0
+│ ╎╎╎│┌───< 0x00008940      tbnz  w8, 0, 0x8980
+│ ╎╎╎││││   0x00008944      ldur  q0, [fp, -0x18]
+│ ╎╎╎││││   0x00008948      ldur  x8, [fp, -8]
+│ ╎╎╎││││   0x0000894c      str   q0, [sp]
+│ ╎╎╎││││   0x00008950      str   x8, [var_90h]
+│ ────────< 0x00008954      b     0x898c
+│ ╎╎╎││└──> 0x00008958      ldr   w8, [x19, data.00000204]             ; [0x204:4]=6
+│ ╎╎╎││┌──< 0x0000895c      cbz   w8, 0x8a18
+│ ╎╎╎││││   0x00008960      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎││││   0x00008964      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎││││   0x00008968      adrp  x2, data.00003000                    ; 0x3000
+│ ╎╎╎││││   0x0000896c      add   x2, x2, 0x36d                        ; 0x336d ; "Permission (sig) error"
+│ ────────< 0x00008970      b     0x8a38
+│ ╎╎╎└────> 0x00008974      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎ │││   0x00008978      add   x2, x2, 0xf18                        ; 0x2f18 ; "Invalid Check mode"
+│ ╎╎╎┌────< 0x0000897c      b     0x8a38
+│ ╎╎╎│└───> 0x00008980      ldp   x2, x1, [fp, -0x10]                  ; int64_t arg2
+│ ╎╎╎│ ││   0x00008984      mov   x0, sp                               ; unsigned long long arg3
+│ ╎╎╎│ ││   0x00008988      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_charrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrl    0xdfc8 ; method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long(unsigned long long arg3, int64_t arg1, int64_t arg2)
+│ ╎╎╎│ ││   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8954
+│ ────────> 0x0000898c      ldr   w2, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│ ╎╎╎│ ││   0x00008990      ldr   w3, [x19, data.00000204]             ; [0x204:4]=6
+│ ╎╎╎│ ││   0x00008994      mov   x1, sp
+│ ╎╎╎│ ││   0x00008998      mov   x0, x20
+│ ╎╎╎│ ││   0x0000899c      bl    sym.imp.access                       ; sym.imp.access
+│ ╎╎╎│ ││   0x000089a0      ldrb  w8, [sp]
+│ ╎╎╎│ ││   0x000089a4      mov   w19, w0
+│ ╎╎╎│┌───< 0x000089a8      tbz   w8, 0, 0x89bc
+│ ╎╎╎││││   0x000089ac      ldr   x8, [sp]
+│ ╎╎╎││││   0x000089b0      ldr   x0, [var_90h]                        ; [0x10:4]=0xb70003
+│ ╎╎╎││││   0x000089b4      and   x1, x8, 0xfffffffffffffffe
+│ ╎╎╎││││   0x000089b8      bl    fcn.00011a88                         ; fcn.00011a88
+│ ────└───> 0x000089bc      tbnz  w19, 0, 0x8a18
+│ ╎╎╎│ ││   0x000089c0      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎│ ││   0x000089c4      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎│ ││   0x000089c8      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎│ ││   0x000089cc      add   x2, x2, 0xba9                        ; 0x2ba9 ; "Permission error"
+│ ╎╎╎│┌───< 0x000089d0      b     0x8a38
+│ ────────> 0x000089d4      ldp   x2, x1, [fp, -0x10]                  ; int64_t arg2
+│ ╎╎╎││││   0x000089d8      add   x0, var_80h                          ; unsigned long long arg3
+│ ╎╎╎││││   0x000089dc      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_charrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrl    0xdfc8 ; method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long(unsigned long long arg3, int64_t arg1, int64_t arg2)
+│ ╎╎╎││││   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8934
+│ ────────> 0x000089e0      ldr   w2, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│ ╎╎╎││││   0x000089e4      ldr   w4, [x19, data.00000204]             ; [0x204:4]=6
+│ ╎╎╎││││   0x000089e8      add   x1, var_80h
+│ ╎╎╎││││   0x000089ec      mov   x0, x21
+│ ╎╎╎││││   0x000089f0      mov   w3, w20
+│ ╎╎╎││││   0x000089f4      bl    method.std::__1.to_string(int)       ; method.std::__1.to_string(int) ;  method.std::__1.to_string(int)(void)
+│ ╎╎╎││││   0x000089f8      ldrb  w8, [var_80h]                        ; [0x20:4]=64 ; "@"
+│ ╎╎╎││││   0x000089fc      mov   w19, w0
+│ ────────< 0x00008a00      tbz   w8, 0, 0x8a14
+│ ╎╎╎││││   0x00008a04      ldr   x8, [var_80h]                        ; [0x20:4]=64 ; "@"
+│ ╎╎╎││││   0x00008a08      ldr   x0, [var_70h]                        ; [0x30:4]=0
+│ ╎╎╎││││   0x00008a0c      and   x1, x8, 0xfffffffffffffffe
+│ ╎╎╎││││   0x00008a10      bl    fcn.00011a88                         ; fcn.00011a88
+│ ────────> 0x00008a14      tbz   w19, 0, 0x8a28
+│ ─────└──> 0x00008a18      mov   w0, wzr
+│ ╎╎╎││ │   0x00008a1c      ldurb w8, [fp, -0x18]
+│ └───────< 0x00008a20      tbz   w8, 0, 0x880c
+│  ╎╎││┌──< 0x00008a24      b     0x8a4c
+│ ────────> 0x00008a28      adrp  x1, data.00003000                    ; 0x3000
+│  ╎╎││││   0x00008a2c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│  ╎╎││││   0x00008a30      adrp  x2, data.00003000                    ; 0x3000
+│  ╎╎││││   0x00008a34      add   x2, x2, 0x25a                        ; 0x325a ; "Client error"
+│  ╎╎││││   ; CODE XREFS from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8970, 0x897c, 0x89d0
+│ ───└└───> 0x00008a38      mov   w0, 6
+│  ╎╎  ││   0x00008a3c      bl    fcn.00011968                         ; fcn.00011968
+│  ╎╎  ││   0x00008a40      mov   w0, -1
+│  ╎╎  ││   0x00008a44      ldurb w8, [fp, -0x18]
+│  └──────< 0x00008a48      tbz   w8, 0, 0x880c
+│   ╎  ││   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8a24
+│   ╎  └──> 0x00008a4c      ldur  x8, [fp, -8]
+│   ╎   │   0x00008a50      ldur  x9, [fp, -0x18]
+│   ╎   │   0x00008a54      mov   w19, w0
+│   ╎   │   0x00008a58      and   x1, x9, 0xfffffffffffffffe
+│   ╎   │   0x00008a5c      mov   x0, x8
+│   ╎   │   0x00008a60      bl    fcn.00011a88                         ; fcn.00011a88
+│   ╎   │   0x00008a64      mov   w0, w19
+│   └─────< 0x00008a68      b     0x880c
+└       └─> 0x00008a6c      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_charrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrl    0xdf94 ; method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000 ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000(void)
+fcn.000116e0 0x116e4 [DATA] ldr x17, method.EngmodeManager.caller_check_unsigned_char_const___int__int__int
+fcn.000116e0 0x116ec [CODE] br x17
+
+========== AIDL CLIENT INITIALIZATION ==========
+WARNING: There is no program header.
+WARNING: There is no program header.
+ERROR: Cannot determine entrypoint, using 0x00008000.
+            ; XREFS(111)
+┌ fcn.00011968();
+│           0x00011968      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x0001196c      ldr   x17, [x16, data.000003a8]            ; [0x3a8:4]=0
+│           ;-- AStatus_delete:
+│           0x00011970      add   x16, x16, data.000003a8              ; 0x3a8
+└           0x00011974      br    x17
+            ; CALL XREF from sym.engmodeManager_hal_getServerTime @ 0xd3e4
+┌ fcn.00011830();
+│           0x00011830      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x00011834      ldr   x17, [x16, data.00000340]            ; [0x340:4]=0xc0000000
+│           0x00011838      add   x16, x16, data.00000340              ; 0x340
+└           0x0001183c      br    x17
+            ; CALL XREF from sym.engmodeManager_hal_makeTokenReq @ 0xd18c
+┌ fcn.00011800();
+│           0x00011800      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x00011804      ldr   x17, [x16, segment.NOTE_0x330]       ; [0x330:4]=4
+│           0x00011808      add   x16, x16, segment.NOTE_0x330
+└           0x0001180c      br    x17
+
+========== AIDL REQUEST DISPATCH ==========
+WARNING: There is no program header.
+WARNING: There is no program header.
+ERROR: Cannot determine entrypoint, using 0x00008000.
+            ; CALL XREF from sym.engmodeManager_hal_getRequestMsg @ 0xd03c
+┌ fcn.000117e8();
+│           0x000117e8      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x000117ec      ldr   x17, [x16, data.00000328]            ; [0x328:4]=0xd0ce3c28 ; "(<\xceИg\x88\xe0\U00000004"
+│           0x000117f0      add   x16, x16, data.00000328              ; 0x328 ; "(<\xceИg\x88\xe0\U00000004"
+└           0x000117f4      br    x17
+            ; CALL XREF from sym.engmodeManager_hal_isTokenInstalled @ 0xc8b0
+┌ fcn.00011728();
+│           0x00011728      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x0001172c      ldr   x17, [x16, data.000002e8]            ; [0x2e8:4]=1
+│           0x00011730      add   x16, x16, data.000002e8              ; 0x2e8
+└           0x00011734      br    x17
+            ; CODE XREFS from fcn.00011728 @ 0x1172c, 0x11734
+            ;-- EngmodeManager::isTokenInstalled(unsigned char const*, int):
+┌ method.EngmodeManager.isTokenInstalled_unsigned_char_const___int(int64_t arg1, int64_t arg3, int64_t arg2);
 │           ; arg int64_t arg1 @ x0
 │           ; arg int64_t arg2 @ x1
 │           ; arg int64_t arg3 @ x2
+│           ; var int64_t var_50h @ stack - 0x50
+│           ; var int64_t var_48h @ stack - 0x48
+│           ; var int64_t var_40h @ stack - 0x40
+│           ; var int64_t var_30h @ stack - 0x30
+│           ; var int64_t var_20h @ stack - 0x20
+│           ; var int64_t var_10h @ stack - 0x10
+│           0x00008fe0      paciasp                                    ; RELOC TARGET 64 EngmodeManager::isTokenInstalled(unsigned char const*, int) @ 0x00008fe0 ; EngmodeManager::isTokenInstalled(unsigned char const*, int)
+│           0x00008fe4      sub   sp, sp, 0x50
+│           0x00008fe8      stp   fp, lr, [var_30h]
+│           0x00008fec      str   x21, [var_20h]
+│           0x00008ff0      stp   x20, x19, [var_10h]
+│           0x00008ff4      add   fp, sp, 0x20
+│           0x00008ff8      mov   x21, x0                              ; arg1
+│           0x00008ffc      adrp  x0, data.00002000                    ; 0x2000
+│           0x00009000      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x00009004      mov   w19, w2                              ; arg3
+│           0x00009008      mov   x20, x1                              ; arg2
+│           0x0000900c      str   wzr, [fp, 0x1c]
+│           0x00009010      bl    sym.imp.strerror                     ; sym.imp.strerror ; char *strerror(int errnum)
+│           0x00009014      stur  x0, [fp, -8]
+│           0x00009018      add   x8, var_48h
+│           0x0000901c      sub   x0, fp, 8
+│           0x00009020      stp   xzr, xzr, [var_48h]
+│           0x00009024      bl    sym.imp.__errno                      ; sym.imp.__errno
+│           0x00009028      ldr   x8, [var_48h]                        ; [0x8:4]=0
+│       ┌─< 0x0000902c      cbz   x8, 0x9064
+│       │   0x00009030      mov   x0, x21
+│       │   0x00009034      mov   x1, x20
+│       │   0x00009038      mov   w2, w19
+│       │   0x0000903c      mov   w3, wzr
+│       │   0x00009040      mov   w4, 1
+│       │   0x00009044      bl    fcn.000116e0                         ; fcn.000116e0
+│       │   0x00009048      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x0000904c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x00009050      cbz   w0, 0x908c
+│      ││   0x00009054      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x00009058      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000905c      mov   w0, 4
+│     ┌───< 0x00009060      b     0x9078
+│     ││└─> 0x00009064      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x00009068      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000906c      adrp  x2, data.00002000                    ; 0x2000
+│     ││    0x00009070      add   x2, x2, 0xa65                        ; 0x2a65 ; "Engmode HAL service not available"
+│     ││    0x00009074      mov   w0, 6
+│     ││    ; CODE XREF from method.EngmodeManager.isTokenInstalled_unsigned_char_const___int @ 0x9060
+│     └───> 0x00009078      bl    fcn.00011968                         ; fcn.00011968
+│      │    0x0000907c      mov   w19, -1
+│      │    0x00009080      ldr   x20, [var_40h]                       ; [0x10:4]=0xb70003
+│      │┌─< 0x00009084      cbnz  x20, 0x90cc
+│     ┌───< 0x00009088      b     0x90f4
+│     │└──> 0x0000908c      adrp  x2, data.00003000                    ; 0x3000
+│     │ │   0x00009090      add   x2, x2, data.000002d8                ; 0x2d8
+│     │ │   0x00009094      mov   w0, 4
+│     │ │   0x00009098      bl    fcn.00011968                         ; fcn.00011968
+│     │ │   0x0000909c      ldr   x0, [var_48h]                        ; [0x8:4]=0
+│     │ │   0x000090a0      str   xzr, [sp]
+│     │ │   0x000090a4      add   x1, fp, 0x1c
+│     │ │   0x000090a8      ldr   x8, [x0]
+│     │ │   0x000090ac      ldr   x9, [x8, 0x40]                       ; segment.PHDR
+│     │ │                                                              ; [0x40:4]=6
+│     │ │   0x000090b0      mov   x8, sp
+│     │ │   0x000090b4      blr   x9
+│     │ │   0x000090b8      ldr   x0, [sp]
+│     │ │   0x000090bc      ldr   w19, [fp, 0x1c]                      ; [0x1c:4]=0
+│     │ │   0x000090c0      bl    fcn.00011ae8                         ; fcn.00011ae8
+│     │ │   0x000090c4      ldr   x20, [var_40h]                       ; [0x10:4]=0xb70003
+│     │┌──< 0x000090c8      cbz   x20, 0x90f4
+│     ││└─> 0x000090cc      add   x1, x20, 8                           ; int64_t arg2
+│     ││    0x000090d0      mov   x0, -1                               ; int64_t arg1
+│     ││    0x000090d4      bl    sym.__aarch64_ldadd8_acq_rel         ; sym.__aarch64_ldadd8_acq_rel
+│     ││┌─< 0x000090d8      cbnz  x0, 0x90f4
+│     │││   0x000090dc      ldr   x8, [x20]
+│     │││   0x000090e0      mov   x0, x20
+│     │││   0x000090e4      ldr   x8, [x8, 0x10]                       ; [0x10:4]=0xb70003
+│     │││   0x000090e8      blr   x8
+│     │││   0x000090ec      mov   x0, x20
+│     │││   0x000090f0      bl    fcn.00011b60                         ; fcn.00011b60
+│     │││   ; CODE XREF from method.EngmodeManager.isTokenInstalled_unsigned_char_const___int @ 0x9088
+│     └└└─> 0x000090f4      ldur  x20, [fp, -8]
+│       ┌─< 0x000090f8      cbz   x20, 0x9104
+│       │   0x000090fc      mov   x0, x20
+│       │   0x00009100      bl    fcn.00011b00                         ; fcn.00011b00
+│       └─> 0x00009104      ldur  x8, [fp, -8]
+│           0x00009108      cmp   x20, x8
+│       ┌─< 0x0000910c      b.ne  0x912c
+│       │   0x00009110      mov   w0, w19
+│       │   0x00009114      ldp   x20, x19, [var_10h]
+│       │   0x00009118      ldr   x21, [var_20h]                       ; [0x30:4]=0
+│       │   0x0000911c      ldp   fp, lr, [var_30h]
+│       │   0x00009120      add   sp, sp, 0x50
+│       │   0x00009124      autiasp
+│       │   0x00009128      ret
+│       └─> 0x0000912c      adrp  x0, data.00003000                    ; 0x3000
+│           0x00009130      add   x0, x0, 0x2ec                        ; 0x32ec ; "frameworks/native/libs/binder/ndk/include_cpp/android/binder_auto_utils.h"
+│           0x00009134      adrp  x2, data.00002000                    ; 0x2000
+│           0x00009138      add   x2, x2, 0xc7e                        ; 0x2c7e ; "Race detected."
+│           0x0000913c      mov   w1, 0x62                             ; 'b'
+└           0x00009140      bl    fcn.00011b18                         ; fcn.00011b18
+
+========== CLIENT OBJECT ==========
+WARNING: There is no program header.
+WARNING: There is no program header.
+ERROR: Cannot determine entrypoint, using 0x00008000.
+            ; CODE XREFS from fcn.000116e0 @ 0x116e4, 0x116ec
+            ;-- EngmodeManager::caller_check(unsigned char const*, int, int, int):
+┌ method.EngmodeManager.caller_check_unsigned_char_const___int__int__int(unsigned long long arg1, unsigned long long arg3, int64_t arg2, int64_t arg5, int64_t arg4);
+│           ; arg unsigned long long arg1 @ x0
+│           ; arg int64_t arg2 @ x1
+│           ; arg unsigned long long arg3 @ x2
 │           ; arg int64_t arg4 @ x3
 │           ; arg int64_t arg5 @ x4
-│           ; arg int64_t arg6 @ x5
-│           ; arg int64_t arg7 @ x6
-│           ; arg int64_t arg8 @ x7
-│           ; var int64_t var_180h @ stack - 0x180
-│           ; var int64_t var_178h @ stack - 0x178
-│           ; var int64_t var_60h @ stack - 0x60
+│           ; var int64_t var_a0h @ stack - 0xa0
+│           ; var int64_t var_90h @ stack - 0x90
+│           ; var const char *var_80h @ stack - 0x80
+│           ; var int64_t var_70h @ stack - 0x70
 │           ; var int64_t var_50h @ stack - 0x50
 │           ; var int64_t var_40h @ stack - 0x40
 │           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x0000cf6c      paciasp
-│           0x0000cf70      sub   sp, sp, data.00000190                ; 0x190 ; "R\xe5td\U00000004"
-│           0x0000cf74      stp   fp, lr, [var_60h]
-│           0x0000cf78      stp   x28, x27, [var_50h]
-│           0x0000cf7c      stp   x26, x25, [var_40h]
-│           0x0000cf80      stp   x24, x23, [var_30h]
-│           0x0000cf84      stp   x22, x21, [var_20h]
-│           0x0000cf88      stp   x20, x19, [var_10h]
-│           0x0000cf8c      add   fp, sp, data.00000130                ; 0x130
-│           0x0000cf90      mov   w23, w3                              ; arg4
-│           0x0000cf94      mov   x24, x2                              ; arg3
-│           0x0000cf98      mov   x25, x1                              ; arg2
-│           0x0000cf9c      ldr   x28, [fp, 0x60]                      ; [0x60:4]=0x2a0
-│           0x0000cfa0      mov   x26, x0                              ; arg1
-│           0x0000cfa4      adrp  x1, data.00003000                    ; 0x3000
-│           0x0000cfa8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│           0x0000cfac      adrp  x2, data.00002000                    ; 0x2000
-│           0x0000cfb0      add   x2, x2, 0xd17
-│           0x0000cfb4      adrp  x3, data.00002000                    ; 0x2000
-│           0x0000cfb8      add   x3, x3, 0xdb5                        ; 0x2db5 ; "engmodeManager_hal_getRequestMsg"
-│           0x0000cfbc      mov   w0, 3
-│           0x0000cfc0      mov   x19, x7                              ; arg8
-│           0x0000cfc4      mov   w20, w6                              ; arg7
-│           0x0000cfc8      mov   x21, x5                              ; arg6
-│           0x0000cfcc      mov   w22, w4                              ; arg5
-│           0x0000cfd0      bl    fcn.00011968                         ; fcn.00011968
-│           0x0000cfd4      movi  v0.2d, 0000000000000000
-│           0x0000cfd8      mov   w8, data.000003e8                    ; 0x3e8
-│           0x0000cfdc      mov   w0, 0xb8
-│           0x0000cfe0      stp   q0, q0, [var_178h + 0x8]
-│           0x0000cfe4      stp   q0, q0, [var_178h + 0x28]
-│           0x0000cfe8      stp   q0, q0, [var_178h + 0x48]
-│           0x0000cfec      stp   q0, q0, [var_178h + 0x68]
-│           0x0000cff0      stp   q0, q0, [var_178h + 0x88]
-│           0x0000cff4      stp   q0, q0, [var_178h + 0xa8]
-│           0x0000cff8      stp   q0, q0, [var_178h + 0xc8]
-│           0x0000cffc      stp   q0, q0, [var_178h + 0xe8]
-│           0x0000d000      str   q0, [var_180h]
-│           0x0000d004      str   w8, [var_180h]
-│           0x0000d008      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000d00c      mov   x27, x0
-│           0x0000d010      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
-│           0x0000d014      add   x0, var_data.00000180
-│           0x0000d018      mov   x1, x26
-│           0x0000d01c      mov   x2, x25
-│           0x0000d020      mov   x3, x24
-│           0x0000d024      mov   w4, w23
-│           0x0000d028      mov   w5, w22
-│           0x0000d02c      mov   x6, x21
-│           0x0000d030      mov   w7, w20
-│           0x0000d034      str   x27, [var_178h]
-│           0x0000d038      stp   x19, x28, [sp]
-│           0x0000d03c      bl    fcn.000117e8                         ; fcn.000117e8
-│           0x0000d040      ldr   x19, [var_178h]                      ; [0x18:4]=0
-│       ┌─< 0x0000d044      cbz   x19, 0xd098
-│       │   0x0000d048      mov   x21, x19
-│       │   0x0000d04c      mov   w20, w0
-│       │   0x0000d050      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
-│       │   0x0000d054      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000d058      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
-│       │   0x0000d05c      mov   x0, xzr
-│       │   0x0000d060      str   x21, [x19]
-│       │   0x0000d064      str   xzr, [x19, 0x10]
-│       │   0x0000d068      str   xzr, [x21]
-│      ┌──< 0x0000d06c      tbz   w8, 0, 0xd084
-│      ││   0x0000d070      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
-│      ││   0x0000d074      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
-│      ││   0x0000d078      and   x1, x8, 0xfffffffffffffffe
-│      ││   0x0000d07c      bl    fcn.00011a88                         ; fcn.00011a88
-│      ││   0x0000d080      ldr   x0, [x19, 8]                         ; [0x8:4]=0
-│      └──> 0x0000d084      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000d088      mov   x0, x19
-│       │   0x0000d08c      mov   w1, 0xb8
-│       │   0x0000d090      bl    fcn.00011a88                         ; fcn.00011a88
-│       │   0x0000d094      mov   w0, w20
-│       └─> 0x0000d098      ldp   x20, x19, [var_10h]
-│           0x0000d09c      ldp   x22, x21, [var_20h]
-│           0x0000d0a0      ldp   x24, x23, [var_30h]
-│           0x0000d0a4      ldp   x26, x25, [var_40h]
-│           0x0000d0a8      ldp   x28, x27, [var_50h]
-│           0x0000d0ac      ldp   fp, lr, [var_60h]
-│           0x0000d0b0      add   sp, sp, data.00000190
-│           0x0000d0b4      autiasp
-└           0x0000d0b8      ret
-┌ sym.engmodeManager_hal_isTokenInstalled(int64_t arg1, int64_t arg2);
-│           ; arg int64_t arg1 @ x0
+│           0x0000873c      paciasp                                    ; RELOC TARGET 64 EngmodeManager::caller_check(unsigned char const*, int, int, int) @ 0x0000873c ; EngmodeManager::caller_check(unsigned char const*, int, int, int)
+│           0x00008740      sub   sp, sp, 0xa0
+│           0x00008744      stp   fp, lr, [var_50h]
+│           0x00008748      str   x25, [var_40h]
+│           0x0000874c      stp   x24, x23, [var_30h]
+│           0x00008750      stp   x22, x21, [var_20h]
+│           0x00008754      stp   x20, x19, [var_10h]
+│           0x00008758      add   fp, sp, 0x50
+│           0x0000875c      cmp   w2, 0x208                            ; arg3
+│       ┌─< 0x00008760      b.ne  0x87dc
+│       │   0x00008764      mov   x19, x1                              ; arg2
+│      ┌──< 0x00008768      cbz   x1, 0x87f0
+│      ││   0x0000876c      ldr   w5, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│      ││   0x00008770      ldr   w6, [x19, data.00000204]             ; [0x204:4]=6
+│      ││   0x00008774      mov   x21, x0                              ; arg1
+│      ││   0x00008778      mov   w25, w4                              ; arg5
+│      ││   0x0000877c      mov   w20, w3                              ; arg4
+│      ││   0x00008780      adrp  x1, data.00003000                    ; 0x3000
+│      ││   0x00008784      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ││   0x00008788      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000878c      add   x2, x2, 0x35e                        ; 0x335e ; "%s. %s. %d. %d"
+│      ││   0x00008790      add   x4, x19, data.00000100               ; 0x100
+│      ││   0x00008794      mov   w0, 4
+│      ││   0x00008798      mov   x3, x19
+│      ││   0x0000879c      bl    fcn.00011968                         ; fcn.00011968
+│      ││   0x000087a0      bl    fcn.000119e0                         ; fcn.000119e0
+│      ││   0x000087a4      mov   w22, w0
+│      ││   0x000087a8      bl    fcn.000119f8                         ; fcn.000119f8
+│      ││   0x000087ac      ldr   w3, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│      ││   0x000087b0      cmp   w3, w22
+│     ┌───< 0x000087b4      b.ne  0x882c
+│     │││   0x000087b8      mov   w1, w0
+│     │││   0x000087bc      mov   x0, x21
+│     │││   0x000087c0      bl    fcn.000116c8                         ; fcn.000116c8
+│    ┌────< 0x000087c4      cbz   w0, 0x8848
+│    ││││   0x000087c8      adrp  x1, data.00003000                    ; 0x3000
+│    ││││   0x000087cc      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│    ││││   0x000087d0      adrp  x2, data.00002000                    ; 0x2000
+│    ││││   0x000087d4      add   x2, x2, 0x9d5                        ; 0x29d5 ; "Failed to Get process name"
+│   ┌─────< 0x000087d8      b     0x8800
+│   ││││└─> 0x000087dc      adrp  x1, data.00003000                    ; 0x3000
+│   ││││    0x000087e0      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│   ││││    0x000087e4      adrp  x2, data.00002000                    ; 0x2000
+│   ││││    0x000087e8      add   x2, x2, 0xa4c                        ; 0x2a4c ; "caller struct size error"
+│   ││││┌─< 0x000087ec      b     0x8800
+│   │││└──> 0x000087f0      adrp  x1, data.00003000                    ; 0x3000
+│   │││ │   0x000087f4      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│   │││ │   0x000087f8      adrp  x2, data.00003000                    ; 0x3000
+│   │││ │   0x000087fc      add   x2, x2, data.00000450                ; 0x450
+│   │││ │   ; CODE XREFS from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x87d8, 0x87ec, 0x886c
+│   └──┌└─> 0x00008800      mov   w0, 6
+│    ││╎    0x00008804      bl    fcn.00011968                         ; fcn.00011968
+│    ││╎    ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8844
+│    ││╎┌─> 0x00008808      mov   w0, -1
+│    ││╎╎   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8a68
+│ ┌┌┌─────> 0x0000880c      ldp   x20, x19, [var_10h]
+│ ╎╎╎││╎╎   0x00008810      ldr   x25, [var_40h]                       ; [0x60:4]=0x2a0
+│ ╎╎╎││╎╎   0x00008814      ldp   x22, x21, [var_20h]
+│ ╎╎╎││╎╎   0x00008818      ldp   x24, x23, [var_30h]
+│ ╎╎╎││╎╎   0x0000881c      ldp   fp, lr, [var_50h]
+│ ╎╎╎││╎╎   0x00008820      add   sp, sp, 0xa0
+│ ╎╎╎││╎╎   0x00008824      autiasp
+│ ╎╎╎││╎╎   0x00008828      ret
+│ ╎╎╎│└───> 0x0000882c      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎│ ╎╎   0x00008830      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎│ ╎╎   0x00008834      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎│ ╎╎   0x00008838      add   x2, x2, 0x9bc                        ; 0x29bc ; "Caller UID is invalid %d"
+│ ╎╎╎│ ╎╎   0x0000883c      mov   w0, 6
+│ ╎╎╎│ ╎╎   0x00008840      bl    fcn.00011968                         ; fcn.00011968
+│ ╎╎╎│ ╎└─< 0x00008844      b     0x8808
+│ ╎╎╎└────> 0x00008848      add   x2, x19, data.00000100               ; 0x100
+│ ╎╎╎  ╎    0x0000884c      mov   x0, x21
+│ ╎╎╎  ╎    0x00008850      mov   x1, x19
+│ ╎╎╎  ╎    0x00008854      bl    fcn.000116b0                         ; fcn.000116b0
+│ ╎╎╎  ╎┌─< 0x00008858      cbz   w0, 0x8870
+│ ╎╎╎  ╎│   0x0000885c      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎  ╎│   0x00008860      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎  ╎│   0x00008864      adrp  x2, data.00003000                    ; 0x3000
+│ ╎╎╎  ╎│   0x00008868      add   x2, x2, data.000001e0                ; 0x1e0
+│ ╎╎╎  └──< 0x0000886c      b     0x8800
+│ ╎╎╎   └─> 0x00008870      mov   x0, x19
+│ ╎╎╎       0x00008874      stp   xzr, xzr, [fp, -0x18]
+│ ╎╎╎       0x00008878      stur  xzr, [fp, -8]
+│ ╎╎╎       0x0000887c      bl    fcn.00011998                         ; fcn.00011998
+│ ╎╎╎       0x00008880      cmn   x0, 9
+│ ╎╎╎   ┌─< 0x00008884      b.hs  0x8a6c
+│ ╎╎╎   │   0x00008888      mov   x22, x0
+│ ╎╎╎   │   0x0000888c      cmp   x0, 0x16
+│ ╎╎╎  ┌──< 0x00008890      b.hi  0x88a8
+│ ╎╎╎  ││   0x00008894      lsl   w8, w22, 1
+│ ╎╎╎  ││   0x00008898      sub   x9, fp, 0x18
+│ ╎╎╎  ││   0x0000889c      orr   x23, x9, 1
+│ ╎╎╎  ││   0x000088a0      sturb w8, [fp, -0x18]
+│ ╎╎╎ ┌───< 0x000088a4      b     0x88d0
+│ ╎╎╎ │└──> 0x000088a8      orr   x8, x22, 7
+│ ╎╎╎ │ │   0x000088ac      mov   w9, 0x1a
+│ ╎╎╎ │ │   0x000088b0      cmp   x8, 0x17
+│ ╎╎╎ │ │   0x000088b4      csinc x24, x9, x8, eq
+│ ╎╎╎ │ │   0x000088b8      mov   x0, x24                              ; const void *s1
+│ ╎╎╎ │ │   0x000088bc      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│ ╎╎╎ │ │   0x000088c0      mov   x23, x0
+│ ╎╎╎ │ │   0x000088c4      orr   x8, x24, 1
+│ ╎╎╎ │ │   0x000088c8      stp   x22, x0, [fp, -0x10]
+│ ╎╎╎ │ │   0x000088cc      stur  x8, [fp, -0x18]
+│ ╎╎╎ │ │   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x88a4
+│ ╎╎╎ └───> 0x000088d0      mov   x0, x23
+│ ╎╎╎   │   0x000088d4      mov   x1, x19
+│ ╎╎╎   │   0x000088d8      mov   x2, x22
+│ ╎╎╎   │   0x000088dc      bl    fcn.00011cb0                         ; fcn.00011cb0
+│ ╎╎╎   │   0x000088e0      cmp   w25, 2
+│ ╎╎╎   │   0x000088e4      strb  wzr, [x23, x22]
+│ ╎╎╎  ┌──< 0x000088e8      b.eq  0x8958
+│ ╎╎╎  ││   0x000088ec      cmp   w25, 1
+│ ╎╎╎ ┌───< 0x000088f0      b.eq  0x8938
+│ ╎╎╎ │││   0x000088f4      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎ │││   0x000088f8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎┌────< 0x000088fc      cbnz  w25, 0x8974
+│ ╎╎╎││││   0x00008900      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎││││   0x00008904      add   x2, x2, 0xad7                        ; 0x2ad7 ; "%s called getstatus (0x%x)"
+│ ╎╎╎││││   0x00008908      mov   w0, 4
+│ ╎╎╎││││   0x0000890c      mov   x3, x19
+│ ╎╎╎││││   0x00008910      mov   w4, w20
+│ ╎╎╎││││   0x00008914      bl    fcn.00011968                         ; fcn.00011968
+│ ╎╎╎││││   0x00008918      ldurb w8, [fp, -0x18]
+│ ╎╎╎││││   0x0000891c      ldr   x21, [x21, 8]                        ; [0x8:4]=0
+│ ────────< 0x00008920      tbnz  w8, 0, 0x89d4
+│ ╎╎╎││││   0x00008924      ldur  q0, [fp, -0x18]
+│ ╎╎╎││││   0x00008928      ldur  x8, [fp, -8]
+│ ╎╎╎││││   0x0000892c      str   q0, [var_80h]
+│ ╎╎╎││││   0x00008930      str   x8, [var_70h]
+│ ────────< 0x00008934      b     0x89e0
+│ ╎╎╎│└───> 0x00008938      ldurb w8, [fp, -0x18]
+│ ╎╎╎│ ││   0x0000893c      ldr   x20, [x21, 8]                        ; [0x8:4]=0
+│ ╎╎╎│┌───< 0x00008940      tbnz  w8, 0, 0x8980
+│ ╎╎╎││││   0x00008944      ldur  q0, [fp, -0x18]
+│ ╎╎╎││││   0x00008948      ldur  x8, [fp, -8]
+│ ╎╎╎││││   0x0000894c      str   q0, [sp]
+│ ╎╎╎││││   0x00008950      str   x8, [var_90h]
+│ ────────< 0x00008954      b     0x898c
+│ ╎╎╎││└──> 0x00008958      ldr   w8, [x19, data.00000204]             ; [0x204:4]=6
+│ ╎╎╎││┌──< 0x0000895c      cbz   w8, 0x8a18
+│ ╎╎╎││││   0x00008960      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎││││   0x00008964      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎││││   0x00008968      adrp  x2, data.00003000                    ; 0x3000
+│ ╎╎╎││││   0x0000896c      add   x2, x2, 0x36d                        ; 0x336d ; "Permission (sig) error"
+│ ────────< 0x00008970      b     0x8a38
+│ ╎╎╎└────> 0x00008974      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎ │││   0x00008978      add   x2, x2, 0xf18                        ; 0x2f18 ; "Invalid Check mode"
+│ ╎╎╎┌────< 0x0000897c      b     0x8a38
+│ ╎╎╎│└───> 0x00008980      ldp   x2, x1, [fp, -0x10]                  ; int64_t arg2
+│ ╎╎╎│ ││   0x00008984      mov   x0, sp                               ; unsigned long long arg3
+│ ╎╎╎│ ││   0x00008988      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_charrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrl    0xdfc8 ; method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long(unsigned long long arg3, int64_t arg1, int64_t arg2)
+│ ╎╎╎│ ││   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8954
+│ ────────> 0x0000898c      ldr   w2, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│ ╎╎╎│ ││   0x00008990      ldr   w3, [x19, data.00000204]             ; [0x204:4]=6
+│ ╎╎╎│ ││   0x00008994      mov   x1, sp
+│ ╎╎╎│ ││   0x00008998      mov   x0, x20
+│ ╎╎╎│ ││   0x0000899c      bl    sym.imp.access                       ; sym.imp.access
+│ ╎╎╎│ ││   0x000089a0      ldrb  w8, [sp]
+│ ╎╎╎│ ││   0x000089a4      mov   w19, w0
+│ ╎╎╎│┌───< 0x000089a8      tbz   w8, 0, 0x89bc
+│ ╎╎╎││││   0x000089ac      ldr   x8, [sp]
+│ ╎╎╎││││   0x000089b0      ldr   x0, [var_90h]                        ; [0x10:4]=0xb70003
+│ ╎╎╎││││   0x000089b4      and   x1, x8, 0xfffffffffffffffe
+│ ╎╎╎││││   0x000089b8      bl    fcn.00011a88                         ; fcn.00011a88
+│ ────└───> 0x000089bc      tbnz  w19, 0, 0x8a18
+│ ╎╎╎│ ││   0x000089c0      adrp  x1, data.00003000                    ; 0x3000
+│ ╎╎╎│ ││   0x000089c4      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│ ╎╎╎│ ││   0x000089c8      adrp  x2, data.00002000                    ; 0x2000
+│ ╎╎╎│ ││   0x000089cc      add   x2, x2, 0xba9                        ; 0x2ba9 ; "Permission error"
+│ ╎╎╎│┌───< 0x000089d0      b     0x8a38
+│ ────────> 0x000089d4      ldp   x2, x1, [fp, -0x10]                  ; int64_t arg2
+│ ╎╎╎││││   0x000089d8      add   x0, var_80h                          ; unsigned long long arg3
+│ ╎╎╎││││   0x000089dc      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_charrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrl    0xdfc8 ; method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__init_copy_ctor_external_char_const___unsigned_long(unsigned long long arg3, int64_t arg1, int64_t arg2)
+│ ╎╎╎││││   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8934
+│ ────────> 0x000089e0      ldr   w2, [x19, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│ ╎╎╎││││   0x000089e4      ldr   w4, [x19, data.00000204]             ; [0x204:4]=6
+│ ╎╎╎││││   0x000089e8      add   x1, var_80h
+│ ╎╎╎││││   0x000089ec      mov   x0, x21
+│ ╎╎╎││││   0x000089f0      mov   w3, w20
+│ ╎╎╎││││   0x000089f4      bl    method.std::__1.to_string(int)       ; method.std::__1.to_string(int) ;  method.std::__1.to_string(int)(void)
+│ ╎╎╎││││   0x000089f8      ldrb  w8, [var_80h]                        ; [0x20:4]=64 ; "@"
+│ ╎╎╎││││   0x000089fc      mov   w19, w0
+│ ────────< 0x00008a00      tbz   w8, 0, 0x8a14
+│ ╎╎╎││││   0x00008a04      ldr   x8, [var_80h]                        ; [0x20:4]=64 ; "@"
+│ ╎╎╎││││   0x00008a08      ldr   x0, [var_70h]                        ; [0x30:4]=0
+│ ╎╎╎││││   0x00008a0c      and   x1, x8, 0xfffffffffffffffe
+│ ╎╎╎││││   0x00008a10      bl    fcn.00011a88                         ; fcn.00011a88
+│ ────────> 0x00008a14      tbz   w19, 0, 0x8a28
+│ ─────└──> 0x00008a18      mov   w0, wzr
+│ ╎╎╎││ │   0x00008a1c      ldurb w8, [fp, -0x18]
+│ └───────< 0x00008a20      tbz   w8, 0, 0x880c
+│  ╎╎││┌──< 0x00008a24      b     0x8a4c
+│ ────────> 0x00008a28      adrp  x1, data.00003000                    ; 0x3000
+│  ╎╎││││   0x00008a2c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│  ╎╎││││   0x00008a30      adrp  x2, data.00003000                    ; 0x3000
+│  ╎╎││││   0x00008a34      add   x2, x2, 0x25a                        ; 0x325a ; "Client error"
+│  ╎╎││││   ; CODE XREFS from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8970, 0x897c, 0x89d0
+│ ───└└───> 0x00008a38      mov   w0, 6
+│  ╎╎  ││   0x00008a3c      bl    fcn.00011968                         ; fcn.00011968
+│  ╎╎  ││   0x00008a40      mov   w0, -1
+│  ╎╎  ││   0x00008a44      ldurb w8, [fp, -0x18]
+│  └──────< 0x00008a48      tbz   w8, 0, 0x880c
+│   ╎  ││   ; CODE XREF from method.EngmodeManager.caller_check_unsigned_char_const___int__int__int @ 0x8a24
+│   ╎  └──> 0x00008a4c      ldur  x8, [fp, -8]
+│   ╎   │   0x00008a50      ldur  x9, [fp, -0x18]
+│   ╎   │   0x00008a54      mov   w19, w0
+│   ╎   │   0x00008a58      and   x1, x9, 0xfffffffffffffffe
+│   ╎   │   0x00008a5c      mov   x0, x8
+│   ╎   │   0x00008a60      bl    fcn.00011a88                         ; fcn.00011a88
+│   ╎   │   0x00008a64      mov   w0, w19
+│   └─────< 0x00008a68      b     0x880c
+└       └─> 0x00008a6c      bl    method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_charrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrl    0xdf94 ; method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000 ;  method.std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char___.__throw_length_error_abi:nn220000(void)
+            ;-- EngmodeManager::setCallerInfo(aidl::vendor::samsung::hardware::security::engmode::SehCallerInfo&, unsigned char const*):
+┌ method.EngmodeManager.setCallerInfo_aidl::vendor::samsung::hardware::security::engmode::SehCallerInfo___unsigned_char_const(int64_t arg3, int64_t arg2);
 │           ; arg int64_t arg2 @ x1
-│           ; var int64_t var_138h @ stack - 0x138
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000c820      paciasp
-│           0x0000c824      sub   sp, sp, data.00000140                ; 0x140
-│           0x0000c828      stp   fp, lr, [var_30h]
-│           0x0000c82c      stp   x28, x21, [var_20h]
-│           0x0000c830      stp   x20, x19, [var_10h]
-│           0x0000c834      add   fp, sp, data.00000110                ; 0x110
-│           0x0000c838      mov   w19, w1                              ; arg2
-│           0x0000c83c      mov   x20, x0                              ; arg1
-│           0x0000c840      adrp  x1, data.00003000                    ; 0x3000
-│           0x0000c844      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│           0x0000c848      adrp  x2, data.00002000                    ; 0x2000
-│           0x0000c84c      add   x2, x2, 0xd17
-│           0x0000c850      adrp  x3, data.00002000                    ; 0x2000
-│           0x0000c854      add   x3, x3, 0xe25                        ; 0x2e25 ; "engmodeManager_hal_isTokenInstalled"
-│           0x0000c858      mov   w0, 3
-│           0x0000c85c      bl    fcn.00011968                         ; fcn.00011968
-│           0x0000c860      movi  v0.2d, 0000000000000000
-│           0x0000c864      mov   w8, data.000003e8                    ; 0x3e8
-│           0x0000c868      mov   w0, 0xb8
-│           0x0000c86c      stp   q0, q0, [var_138h + 0x8]
-│           0x0000c870      stp   q0, q0, [var_138h + 0x28]
-│           0x0000c874      stp   q0, q0, [var_138h + 0x48]
-│           0x0000c878      stp   q0, q0, [var_138h + 0x68]
-│           0x0000c87c      stp   q0, q0, [var_138h + 0x88]
-│           0x0000c880      stp   q0, q0, [var_138h + 0xa8]
-│           0x0000c884      stp   q0, q0, [var_138h + 0xc8]
-│           0x0000c888      stp   q0, q0, [var_138h + 0xe8]
-│           0x0000c88c      str   q0, [sp]
-│           0x0000c890      str   w8, [sp]
-│           0x0000c894      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000c898      mov   x21, x0
-│           0x0000c89c      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
-│           0x0000c8a0      mov   x0, sp
-│           0x0000c8a4      mov   x1, x20
-│           0x0000c8a8      mov   w2, w19
-│           0x0000c8ac      str   x21, [var_138h]
-│           0x0000c8b0      bl    fcn.00011728                         ; fcn.00011728
-│           0x0000c8b4      ldr   x19, [var_138h]                      ; [0x8:4]=0
-│       ┌─< 0x0000c8b8      cbz   x19, 0xc90c
-│       │   0x0000c8bc      mov   x21, x19
-│       │   0x0000c8c0      mov   w20, w0
-│       │   0x0000c8c4      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
-│       │   0x0000c8c8      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000c8cc      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
-│       │   0x0000c8d0      mov   x0, xzr
-│       │   0x0000c8d4      str   x21, [x19]
-│       │   0x0000c8d8      str   xzr, [x19, 0x10]
-│       │   0x0000c8dc      str   xzr, [x21]
-│      ┌──< 0x0000c8e0      tbz   w8, 0, 0xc8f8
-│      ││   0x0000c8e4      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
-│      ││   0x0000c8e8      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
-│      ││   0x0000c8ec      and   x1, x8, 0xfffffffffffffffe
-│      ││   0x0000c8f0      bl    fcn.00011a88                         ; fcn.00011a88
-│      ││   0x0000c8f4      ldr   x0, [x19, 8]                         ; [0x8:4]=0
-│      └──> 0x0000c8f8      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
-│       │   0x0000c8fc      mov   x0, x19
-│       │   0x0000c900      mov   w1, 0xb8
-│       │   0x0000c904      bl    fcn.00011a88                         ; fcn.00011a88
-│       │   0x0000c908      mov   w0, w20
-│       └─> 0x0000c90c      ldp   x20, x19, [var_10h]
-│           0x0000c910      ldp   x28, x21, [var_20h]
-│           0x0000c914      ldp   fp, lr, [var_30h]
-│           0x0000c918      add   sp, sp, data.00000140
-│           0x0000c91c      autiasp
-└           0x0000c920      ret
-11:06:51 oleg@parrot ~ →
+│           ; arg int64_t arg3 @ x2
+│           0x00008a70      bti   c                                    ; EngmodeManager::setCallerInfo(aidl::vendor::samsung::hardware::security::engmode::SehCallerInfo&, unsigned char const*)
+│           0x00008a74      ldp   q1, q0, [x2, 0x20]                   ; arg3
+│           0x00008a78      ldr   x8, [x1]                             ; arg2
+│           0x00008a7c      ldp   q2, q3, [x2]                         ; arg3
+│           0x00008a80      stp   q1, q0, [x8, 0x20]
+│           0x00008a84      stp   q2, q3, [x8]
+│           0x00008a88      ldp   q1, q0, [x2, 0x60]                   ; arg3
+│           0x00008a8c      ldp   q2, q3, [x2, 0x40]                   ; arg3
+│           0x00008a90      stp   q1, q0, [x8, 0x60]
+│           0x00008a94      stp   q2, q3, [x8, 0x40]
+│           0x00008a98      ldp   q1, q0, [x2, 0xa0]                   ; arg3
+│           0x00008a9c      ldp   q2, q3, [x2, 0x80]                   ; arg3
+│           0x00008aa0      stp   q1, q0, [x8, 0xa0]
+│           0x00008aa4      stp   q2, q3, [x8, 0x80]
+│           0x00008aa8      ldp   q1, q0, [x2, 0xe0]                   ; arg3
+│           0x00008aac      ldp   q2, q3, [x2, 0xc0]                   ; arg3
+│           0x00008ab0      stp   q1, q0, [x8, 0xe0]
+│           0x00008ab4      stp   q2, q3, [x8, 0xc0]
+│           0x00008ab8      ldp   q1, q0, [x2, data.00000120]          ; [0x120:4]=1 ; arg3
+│           0x00008abc      ldr   x8, [x1, 0x18]                       ; [0x18:4]=0 ; arg2
+│           0x00008ac0      ldp   q2, q3, [x2, 0x100]                  ; [0x100:4]=0x14000 segment.GNU_RELRO ; data.00000100 ; arg3
+│           0x00008ac4      stp   q1, q0, [x8, 0x20]
+│           0x00008ac8      stp   q2, q3, [x8]
+│           0x00008acc      ldp   q1, q0, [x2, data.00000160]          ; [0x160:4]=0x14030 segment.DYNAMIC ; "0@\U00000001" ; arg3
+│           0x00008ad0      ldp   q2, q3, [x2, data.00000140]          ; [0x140:4]=0 ; arg3
+│           0x00008ad4      stp   q1, q0, [x8, 0x60]
+│           0x00008ad8      stp   q2, q3, [x8, 0x40]
+│           0x00008adc      ldp   q1, q0, [x2, data.000001a0]          ; [0x1a0:4]=0x14000 segment.GNU_RELRO ; arg3
+│           0x00008ae0      ldp   q2, q3, [x2, data.00000180]          ; [0x180:4]=0x250 ; "P\U00000002" ; arg3
+│           0x00008ae4      stp   q1, q0, [x8, 0xa0]
+│           0x00008ae8      stp   q2, q3, [x8, 0x80]
+│           0x00008aec      ldp   q1, q0, [x2, data.000001e0]          ; [0x1e0:4]=0x34d4 segment.GNU_EH_FRAME ; arg3
+│           0x00008af0      ldp   q2, q3, [x2, 0x1c0]                  ; arg3
+│           0x00008af4      stp   q1, q0, [x8, 0xe0]
+│           0x00008af8      stp   q2, q3, [x8, 0xc0]
+│           0x00008afc      ldr   w8, [x2, data.00000200]              ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006" ; arg3
+│           0x00008b00      str   w8, [x1, 0x30]                       ; arg2
+│           0x00008b04      ldr   w8, [x2, data.00000204]              ; [0x204:4]=6 ; arg3
+│           0x00008b08      str   w8, [x1, 0x34]                       ; arg2
+└           0x00008b0c      ret
+
+========== CLIENT REGISTRY STRINGS ==========
+_ZN14EngmodeManager15checkClientNameEPcS0_
+_ZN14EngmodeManager14getProcessNameEi
+_ZN14EngmodeManager12caller_checkEPKhiii
+_ZN14EngmodeManager13setCallerInfoERN4aidl6vendor7samsung8hardware8security7engmode13SehCallerInfoEPKh
+_ZN14EngmodeManager9getStatusEiPKhi
+_ZN14EngmodeManager12installTokenEiPKhS1_i
+_ZN14EngmodeManager16isTokenInstalledEPKhi
+_ZN14EngmodeManager11removeTokenEPKhi
+_ZN14EngmodeManager13getNumOfModesEPKhi
+_ZN14EngmodeManager11sendFuseCmdEPKhi
+_ZN14EngmodeManager10getVersionEPKhi
+_ZN14EngmodeManager13getExpiryDateEPKhiPhPi
+_ZN14EngmodeManager15postAidlProcessENSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEN4aidl6vendor7samsung8hardware8security7engmode9SehStatusEPNS0_6vectorIhNS4_IhEEEEPhPi
+_ZN14EngmodeManager5getIdEPKhiPhPi
+_ZN14EngmodeManager13getRequestMsgEPKcS1_PKhiiS3_iPhPi
+_ZN14EngmodeManager12makeTokenReqEPKcS1_PKhiS1_S3_iPhPi
+_ZN14EngmodeManager13commandForEssEiPKcPKhiPhPi
+_ZN14EngmodeManager13getServerTimeEPKhiPhPi
+_ZN14EngmodeManager11recoveryItlEPKhiS1_i
+_ZN14EngmodeManager10makeItlReqEPKcS1_PKhiPhPi
+_ZN14EngmodeManager8getTokenEPKhiPhPi
+_ZN14EngmodeManager6getTucEiPKhi
+_ZN14EngmodeManager15setPriorityTimeEPKcPKhiPhPi
+_ZN14EngmodeManager15getPriorityTimeEPKhiPhPi
+_ZN14EngmodeManager18getLastTokenStatusEPKhiPhPi
+_ZN14EngmodeManager14getStringModesEPKhiPhPi
+_ZN14EngmodeManager11getModesbitEPKhiPhPi
+_ZN14EngmodeManager20getTokenInfoForJanusEPKhiPhPi
+engmodeManager_hal_getStatus
+engmodeManager_hal_installToken
+engmodeManager_hal_isTokenInstalled
+engmodeManager_hal_removeToken
+engmodeManager_hal_getNumOfModes
+engmodeManager_hal_sendFuseCmd
+engmodeManager_hal_getVersion
+engmodeManager_hal_getExpiryDate
+engmodeManager_hal_getID
+engmodeManager_hal_getRequestMsg
+engmodeManager_hal_makeTokenReq
+engmodeManager_hal_commandForESS
+engmodeManager_hal_getServerTime
+engmodeManager_hal_recoveryITL
+engmodeManager_hal_makeITLReq
+engmodeManager_hal_getToken
+engmodeManager_hal_getTUC
+engmodeManager_hal_setPriorityTime
+engmodeManager_hal_getPriorityTime
+engmodeManager_hal_getLastTokenStatus
+engmodeManager_hal_getStringModes
+engmodeManager_hal_getModesbit
+engmodeManager_hal_getTokenInfoForJanus
+_ZN4aidl6vendor7samsung8hardware8security7engmode11ISehEngmode4hashE
+_ZGVN4aidl6vendor7samsung8hardware8security7engmode11ISehEngmode4hashE
+AIBinder_getCallingUid
+_ZN6client11checkClientENSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEiii
+_ZN6client15checkPermissionENSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEii
+_ZN4aidl6vendor7samsung8hardware8security7engmode11ISehEngmode10fromBinderERKN3ndk10SpAIBinderE
+_ZN6client10setVersionEv
+_ZN6client15registerClientsEv
+_ZN6client9setClientENSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEibbb
+_ZN6client13setClientModeENSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEEi
+_ZN6client9testPrintEv
+_ZN6client14checkSignatureEii
+_ZN6client9checkPathEv
+_ZN6client14getProcessPathEPcm
+vendor.samsung.hardware.security.engmode-V1-ndk.so
+lib.engmode.samsung.so
+vendor.samsung.hardware.security.engmode.ISehEngmode/default
+engmodeManager_hal_getTUC
+checkPermission
+engmodeManager_hal_getModesbit
+Can't access process path : %s
+engmodeManager_hal_sendFuseCmd
+Caller UID is invalid %d
+Failed to Get process name
+This is system client, pass checking signature
+caller struct size error
+Engmode HAL service not available
+engmodeManager_hal_getID
+processName is invalid= %s
+android.process.media
+UID permission error(%d, %d)
+Permission error
+%s argument is invalid
+Path permission error - process not in system directory: %s
+engmodeManager_hal_getToken
+engmodeManager_hal_setPriorityTime
+engmodeManager_hal_getStringModes
+engmodeManager_hal_getLastTokenStatus
+PROCESS NAME = %s
+engmodeManager_hal_getRequestMsg
+Process authentication failed for %s
+Failed to get process path
+CHECK UID = %d
+engmodeManager_hal_isTokenInstalled
+%s: [ProcessName = %s]
+process is %s
+UID = %d
+Invalid Check mode
+engmodeManager_hal_getExpiryDate
+engmodeManager_hal_recoveryITL
+Failed to check signature(%d)
+checkClient
+MODE permission error(%d)
+engmodeManager_hal_makeTokenReq
+engmodeManager_hal_getPriorityTime
+engmodeManager_hal_getNumOfModes
+Process path permission pass
+Buffer is invalid
+Caller check fail
+engmodeManager_hal_makeITLReq
+engmodeManager_hal_getTokenInfoForJanus
+Invalid client
+engmodeManager_hal_installToken
+engmodeManager_hal_getServerTime
+pakageName is invalid= %s
+Client error
+engmodeManager_hal_removeToken
+engmodeManager_hal_getVersion
+engmodeManager_hal_commandForESS
+Caller check succes
+engmode_client_list
+engmode_client_aidl
+Permission (sig) error
+==============================CLIENT LIST==============================
+Cannot find client
+Buffer size is invalid
+Failed to get process path : %s, error: %s
+com.samsung.android.kgclient
+engmodeManager_hal_getStatus
+Signature check completed
+
+========== HAL SECURITY SYMBOLS ==========
+    11: 0000000000000000     0 FUNC    GLOBAL DEFAULT  UND AIBinder_getCallingUid@LIBBINDER_NDK (4)
+    38: 0000000000008fe0   356 FUNC    GLOBAL DEFAULT   16 EngmodeManager::isTokenInstalled(unsigned char const*, int)
+    40: 0000000000009960   308 FUNC    GLOBAL DEFAULT   16 EngmodeManager::postAidlProcess(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, aidl::vendor::samsung::hardware::security::engmode::SehStatus, std::__1::vector<unsigned char, std::__1::allocator<unsigned char> >*, unsigned char*, int*)
+    41: 0000000000010d8c   324 FUNC    GLOBAL DEFAULT   16 client::checkPath()
+    42: 000000000000873c   820 FUNC    GLOBAL DEFAULT   16 EngmodeManager::caller_check(unsigned char const*, int, int, int)
+    44: 000000000000c924   260 FUNC    GLOBAL DEFAULT   16 engmodeManager_hal_removeToken
+    51: 000000000001091c   468 FUNC    GLOBAL DEFAULT   16 client::testPrint()
+    52: 0000000000008de0   512 FUNC    GLOBAL DEFAULT   16 EngmodeManager::installToken(int, unsigned char const*, unsigned char const*, int)
+    56: 000000000000d6ac   284 FUNC    GLOBAL DEFAULT   16 engmodeManager_hal_getToken
+    60: 000000000000c364   652 FUNC    GLOBAL DEFAULT   16 EngmodeManager::getTokenInfoForJanus(unsigned char const*, int, unsigned char*, int*)
+    61: 0000000000010b84   520 FUNC    GLOBAL DEFAULT   16 client::checkClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int)
+    62: 000000000000b218   652 FUNC    GLOBAL DEFAULT   16 EngmodeManager::getToken(unsigned char const*, int, unsigned char*, int*)
+    69: 000000000000de78   284 FUNC    GLOBAL DEFAULT   16 engmodeManager_hal_getTokenInfoForJanus
+    70: 0000000000010638   208 FUNC    GLOBAL DEFAULT   16 client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int)
+    71: 0000000000011058   312 FUNC    GLOBAL DEFAULT   16 client::getProcessPath(char*, unsigned long)
+    74: 00000000000084d0   260 FUNC    GLOBAL DEFAULT   16 EngmodeManager::checkClientName(char*, char*)
+    76: 000000000000a194  1292 FUNC    GLOBAL DEFAULT   16 EngmodeManager::makeTokenReq(char const*, char const*, unsigned char const*, int, char const*, unsigned char const*, int, unsigned char*, int*)
+    78: 000000000000d0bc   336 FUNC    GLOBAL DEFAULT   16 engmodeManager_hal_makeTokenReq
+    80: 0000000000010ed0   392 FUNC    GLOBAL DEFAULT   16 client::checkPermission(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int)
+    81: 000000000000e230  9056 FUNC    GLOBAL DEFAULT   16 client::registerClients()
+    82: 000000000000c704   284 FUNC    GLOBAL DEFAULT   16 engmodeManager_hal_installToken
+    84: 000000000000db24   284 FUNC    GLOBAL DEFAULT   16 engmodeManager_hal_getLastTokenStatus
+    86: 0000000000009144   356 FUNC    GLOBAL DEFAULT   16 EngmodeManager::removeToken(unsigned char const*, int)
+    88: 0000000000010590   168 FUNC    GLOBAL DEFAULT   16 client::setClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, bool, bool, bool)
+    89: 0000000000010af0   148 FUNC    GLOBAL DEFAULT   16 client::checkSignature(int, int)
+    90: 00000000000085d4   220 FUNC    GLOBAL DEFAULT   16 EngmodeManager::getProcessName(int)
+    96: 000000000000bbc0   652 FUNC    GLOBAL DEFAULT   16 EngmodeManager::getLastTokenStatus(unsigned char const*, int, unsigned char*, int*)
+    97: 000000000000c820   260 FUNC    GLOBAL DEFAULT   16 engmodeManager_hal_isTokenInstalled
+   101: 0000000000010708   532 FUNC    GLOBAL DEFAULT   16 client::setVersion()
+11:08:36 oleg@parrot ~ →
