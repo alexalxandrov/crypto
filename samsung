@@ -1,505 +1,958 @@
-11:32:44 oleg@parrot ~ → (line 14) ...
-    "getStatus:0x8b10" \
-    "installToken:0x8de0" \
-    "isTokenInstalled:0x8fe0" \
-    "removeToken:0x9144" \
-    "sendFuseCmd:0x940c" \
-    "getRequestMsg:0x9d20" \
-    "makeTokenReq:0xa194" \
-    "commandForESS:0xa6a0" \
-    "recoveryITL:0xac60" \
-    "makeITLReq:0xae60" \
-    "getModesbit:0xc0d8" \
-    "getTokenInfoForJanus:0xc364"
-do
-    NAME="${SPEC%%:*}"
-    ADDR="${SPEC#*:}"
+11:48:50 oleg@parrot ~ → REPORT="/home/oleg/sboot_arm64_20261110_234752.txt"
 
-    echo
-    echo "----- $NAME -----"
-
-    rizin -q -A -e scr.color=false -c "pdf @ $ADDR; q" "$HAL" 2>/dev/null |
-    grep -B 24 -A 10 'bl    fcn.000116e0'
-done
+echo "========== SECTION INDEX =========="
+grep -nE '^========== ' "$REPORT"
 
 echo
-echo "========== END =========="
-========== COMMON AUTHORIZATION HANDLER ==========
-            ; XREFS(23)
-┌ fcn.000116e0();
-│           0x000116e0      adrp  x16, segment.GNU_RELRO               ; 0x14000
-│           0x000116e4      ldr   x17, [x16, data.000002d0]            ; [0x2d0:4]=32 ; " "
-│           0x000116e8      add   x16, x16, data.000002d0              ; 0x2d0 ; " "
-└           0x000116ec      br    x17
-method.EngmodeManager.getStatus_int__unsigned_char_const___int 0x8bf8 [CALL] bl fcn.000116e0
-method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int 0x8e50 [CALL] bl fcn.000116e0
-method.EngmodeManager.isTokenInstalled_unsigned_char_const___int 0x9044 [CALL] bl fcn.000116e0
-method.EngmodeManager.removeToken_unsigned_char_const___int 0x91a8 [CALL] bl fcn.000116e0
-method.EngmodeManager.getNumOfModes_unsigned_char_const___int 0x930c [CALL] bl fcn.000116e0
-method.EngmodeManager.sendFuseCmd_unsigned_char_const___int 0x9470 [CALL] bl fcn.000116e0
-method.EngmodeManager.getVersion_unsigned_char_const___int 0x95d4 [CALL] bl fcn.000116e0
-method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int 0x9744 [CALL] bl fcn.000116e0
-method.EngmodeManager.getId_unsigned_char_const___int__unsigned_char___int 0x9b04 [CALL] bl fcn.000116e0
-method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0x9da4 [CALL] bl fcn.000116e0
-method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa218 [CALL] bl fcn.000116e0
-method.EngmodeManager.commandForEss_int__char_const___unsigned_char_const___int__unsigned_char___int 0xa720 [CALL] bl fcn.000116e0
-method.EngmodeManager.getServerTime_unsigned_char_const___int__unsigned_char___int 0xaa44 [CALL] bl fcn.000116e0
-method.EngmodeManager.recoveryItl_unsigned_char_const___int__unsigned_char_const___int 0xacd0 [CALL] bl fcn.000116e0
-method.EngmodeManager.makeItlReq_char_const___char_const___unsigned_char_const___int__unsigned_char___int 0xaee0 [CALL] bl fcn.000116e0
-method.EngmodeManager.getToken_unsigned_char_const___int__unsigned_char___int 0xb288 [CALL] bl fcn.000116e0
-method.EngmodeManager.getTuc_int__unsigned_char_const___int 0xb50c [CALL] bl fcn.000116e0
-method.EngmodeManager.setPriorityTime_char_const___unsigned_char_const___int__unsigned_char___int 0xb688 [CALL] bl fcn.000116e0
-method.EngmodeManager.getPriorityTime_unsigned_char_const___int__unsigned_char___int 0xb9a4 [CALL] bl fcn.000116e0
-method.EngmodeManager.getLastTokenStatus_unsigned_char_const___int__unsigned_char___int 0xbc30 [CALL] bl fcn.000116e0
-method.EngmodeManager.getStringModes_unsigned_char_const___int__unsigned_char___int 0xbebc [CALL] bl fcn.000116e0
-method.EngmodeManager.getModesbit_unsigned_char_const___int__unsigned_char___int 0xc148 [CALL] bl fcn.000116e0
-method.EngmodeManager.getTokenInfoForJanus_unsigned_char_const___int__unsigned_char___int 0xc3d4 [CALL] bl fcn.000116e0
+echo "========== COMPLETE ARM64 ANALYSIS =========="
+awk '
+/^========== EARLY TOKEN PROCESSING/ {show=1}
+show {print}
+/^========== END ==========/{exit}
+' "$REPORT"
+========== SECTION INDEX ==========
+1:========== A26 S-BOOT ARM64 ANALYSIS ==========
+8:========== AVAILABLE ARM DISASSEMBLERS ==========
+13:========== EARLY TOKEN PROCESSING @ 0x114100 ==========
+463:========== MODE BITS TRANSFER @ 0x18962c ==========
+693:========== STEADY VALIDATION @ 0x189d8c ==========
+861:========== RPMB UPDATE @ 0x1257bc ==========
+943:========== MODE BITS ADDRESS ==========
+946:========== END ==========
 
-========== CALL ARGUMENTS: SENSITIVE OPERATIONS ==========
+========== COMPLETE ARM64 ANALYSIS ==========
+========== EARLY TOKEN PROCESSING @ 0x114100 ==========
+--- RAW BYTES ---
+00114100: 7f2303d5 fd7bbda9 f50b00f9 f44f02a9  .#...{.......O..
+00114110: fd030091 95018152 d530a272 a80240b9  .......R.0.r..@.
+00114120: 299d9d52 1f01096b c1000054 400900d0  )..R...k...T@...
+00114130: 210b00d0 00201191 21cc0f91 25f40194  !.... ..!...%...
+00114140: 20008052 26930094 24b80094 77860194   ..R&...$...w...
+00114150: a1f20094 70510294 210900d0 e04f8652  ....pQ..!....O.R
 
------ getStatus -----
-│           0x00008b98      stp   x8, x8, [var_80h + 0x20]
-│           0x00008b9c      stp   q0, q0, [x0]
-│           0x00008ba0      stp   q0, q0, [x0, 0x20]
-│           0x00008ba4      stp   q0, q0, [x0, 0x40]
-│           0x00008ba8      stp   q0, q0, [x0, 0x60]
-│           0x00008bac      stp   q0, q0, [x0, 0x80]
-│           0x00008bb0      stp   q0, q0, [x0, 0xa0]
-│           0x00008bb4      stp   q0, q0, [x0, 0xc0]
-│           0x00008bb8      stp   q0, q0, [x0, 0xe0]
-│           0x00008bbc      adrp  x0, data.00002000                    ; 0x2000
-│           0x00008bc0      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x00008bc4      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x00008bc8      stp   xzr, x0, [var_90h]
-│           0x00008bcc      add   x8, var_98h
-│           0x00008bd0      add   x0, var_88h
-│           0x00008bd4      str   xzr, [var_98h]
-│           0x00008bd8      bl    sym.imp.__errno
-│           0x00008bdc      ldr   x8, [var_98h]                        ; [0x8:4]=0
-│       ┌─< 0x00008be0      cbz   x8, 0x8c34
-│       │   0x00008be4      mov   x0, x23
-│       │   0x00008be8      mov   x1, x20
-│       │   0x00008bec      mov   w2, w24
-│       │   0x00008bf0      mov   w3, w19
-│       │   0x00008bf4      mov   w4, wzr
-│       │   0x00008bf8      bl    fcn.000116e0
-│       │   0x00008bfc      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x00008c00      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x00008c04      cbz   w0, 0x8c5c
-│      ││   0x00008c08      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x00008c0c      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x00008c10      mov   w0, 4
-│      ││   0x00008c14      bl    fcn.00011968
-│      ││   0x00008c18      ldr   w8, [x20, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
-│      ││   0x00008c1c      ldr   w9, [x23]
-│      ││   0x00008c20      cmp   w8, w9
+--- FUNCTION ANALYSIS ---
+arm
+64
+┌ fcn.00114100(int64_t arg1);
+│           ; arg int64_t arg1 @ x0
+│           ; var int64_t var_20h @ stack - 0x20
+│           ; var int64_t var_10h @ stack - 0x10
+│           0x00114100      7f2303d5       pacibsp
+│           0x00114104      fd7bbda9       stp   fp, lr, [sp, -0lr]!
+│           0x00114108      f50b00f9       str   x21, [var_20h]
+│           0x0011410c      f44f02a9       stp   x20, x19, [var_10h]
+│           0x00114110      fd030091       mov   fp, sp
+│           0x00114114      95018152       mov   w21, 0x80c
+│           0x00114118      d530a272       movk  w21, 0x1186, lsl 16
+│           0x0011411c      a80240b9       ldr   w8, [x21]
+│           0x00114120      299d9d52       mov   w9, 0xece9
+│           0x00114124      1f01096b       cmp   w8, w9                ; arg1
+│       ┌─< 0x00114128      c1000054       b.ne  0x114140
+│       │   0x0011412c      400900d0       adrp  x0, 0x23e000
+│       │   0x00114130      210b00d0       adrp  x1, 0x27a000
+│       │   0x00114134      00201191       add   x0, x0, 0x448
+│       │   0x00114138      21cc0f91       add   x1, x1, 0x3f3
+│       │   0x0011413c      25f40194       bl    0x1911d0
+│       └─> 0x00114140      20008052       mov   w0, 1
+│           0x00114144      26930094       bl    0x138ddc
+│           0x00114148      24b80094       bl    0x1421d8
+│           0x0011414c      77860194       bl    0x175b28
+│           0x00114150      a1f20094       bl    0x150bd4
+│           0x00114154      70510294       bl    0x1a8714
+│           0x00114158      210900d0       adrp  x1, 0x23a000
+│           0x0011415c      e04f8652       mov   w0, 0x327f
+│           0x00114160      21dc0b91       add   x1, x1, 0x2f7
+│           0x00114164      2000a072       movk  w0, 1, lsl 16
+│           0x00114168      da510294       bl    0x1a88d0
+│           0x0011416c      1ffcff97       bl    0x1131e8
+│           0x00114170      c1090090       adrp  x1, 0x24c000
+│           0x00114174      21040191       add   x1, x1, 0x41
+│           0x00114178      00089052       mov   w0, 0x8040
+│           0x0011417c      d5510294       bl    0x1a88d0
+│           0x00114180      c10a0090       adrp  x1, 0x26c000
+│           0x00114184      21c02991       add   x1, x1, 0xa70
+│           0x00114188      00088052       mov   w0, 0x40              ; '@'
+│           0x0011418c      d1510294       bl    0x1a88d0
+│           0x00114190      8fefff97       bl    0x10ffcc
+│           0x00114194      657bff97       bl    0xf2f28
+│       ┌─< 0x00114198      e0000034       cbz   w0, 0x1141b4
+│       │   0x0011419c      c00900d0       adrp  x0, 0x24e000
+│       │   0x001141a0      010a00f0       adrp  x1, 0x257000
+│       │   0x001141a4      00383691       add   x0, x0, 0xd8e
+│       │   0x001141a8      21501291       add   x1, x1, 0x494
+│       │   0x001141ac      13e20094       bl    0x14c9f8
+│      ┌──< 0x001141b0      10000014       b     0x1141f0
+│      │└─> 0x001141b4      e8be00b0       adrp  x8, 0x18f1000
+│      │    0x001141b8      080140b9       ldr   w8, [x8]
+│      │    0x001141bc      49999952       mov   w9, 0xccca
+│      │    0x001141c0      c9c4ac72       movk  w9, 0x6626, lsl 16
+│      │    0x001141c4      1f01096b       cmp   w8, w9
+│      │┌─< 0x001141c8      a1010054       b.ne  0x1141fc
+│      ││   0x001141cc      400b0090       adrp  x0, 0x27c000
+│      ││   0x001141d0      010a00f0       adrp  x1, 0x257000
+│      ││   0x001141d4      00ac1d91       add   x0, x0, 0x76b
+│      ││   0x001141d8      21501291       add   x1, x1, 0x494
+│      ││   0x001141dc      07e20094       bl    0x14c9f8
+│      ││   0x001141e0      20008052       mov   w0, 1
+│      ││   0x001141e4      02808052       mov   w2, 0x400
+│      ││   0x001141e8      e1031f2a       mov   w1, wzr
+│      ││   0x001141ec      b3940094       bl    0x1394b8
+│      ││   ; CODE XREF from fcn.00114100 @ 0x1141b0
+│      └──> 0x001141f0      28c08a52       mov   w8, 0x5601
+│       │   0x001141f4      8846a272       movk  w8, 0x1234, lsl 16
+│       │   0x001141f8      a80200b9       str   w8, [x21]
+│       └─> 0x001141fc      881b0094       bl    0x11b01c
+│           0x00114200      24660194       bl    0x16da90
+│           0x00114204      e0031f2a       mov   w0, wzr
+│           0x00114208      54f20094       bl    0x150b58
+│           0x0011420c      f303002a       mov   w19, w0
+│           0x00114210      20028052       mov   w0, 0x11
+│           0x00114214      51f20094       bl    0x150b58
+│           0x00114218      1f140071       cmp   w0, 5
+│       ┌─< 0x0011421c      a1010054       b.ne  0x114250
+│       │   0x00114220      20090090       adrp  x0, 0x238000
+│       │   0x00114224      810a00d0       adrp  x1, 0x266000
+│       │   0x00114228      00f01091       add   x0, x0, 0x43c
+│       │   0x0011422c      21182491       add   x1, x1, 0x906
+│       │   0x00114230      f2e10094       bl    0x14c9f8
+│       │   0x00114234      20008052       mov   w0, 1
+│       │   0x00114238      81008052       mov   w1, 4
+│       │   0x0011423c      9e310094       bl    0x1208b4
+│       │   0x00114240      20008052       mov   w0, 1
+│       │   0x00114244      e1018052       mov   w1, 0xf
+│       │   0x00114248      8e310094       bl    0x120880
+│      ┌──< 0x0011424c      0c000014       b     0x11427c
+│      │└─> 0x00114250      c0090090       adrp  x0, 0x24c000
+│      │    0x00114254      810a00d0       adrp  x1, 0x266000
+│      │    0x00114258      00b00091       add   x0, x0, 0x2c
+│      │    0x0011425c      21182491       add   x1, x1, 0x906
+│      │    0x00114260      e6e10094       bl    0x14c9f8
+│      │    0x00114264      20008052       mov   w0, 1
+│      │    0x00114268      81008052       mov   w1, 4
+│      │    0x0011426c      85310094       bl    0x120880
+│      │    0x00114270      81008052       mov   w1, 4
+│      │    0x00114274      e0031f2a       mov   w0, wzr
+│      │    0x00114278      8f310094       bl    0x1208b4
+│      │    ; CODE XREF from fcn.00114100 @ 0x11424c
+│      └──> 0x0011427c      21090090       adrp  x1, 0x238000
+│           0x00114280      21541191       add   x1, x1, 0x455
+│           0x00114284      00088052       mov   w0, 0x40              ; '@'
+│           0x00114288      92510294       bl    0x1a88d0
+│           0x0011428c      ce920194       bl    0x178dc4
+│           0x00114290      429f0194       bl    0x17bf98
+│           0x00114294      5ace0194       bl    0x187bfc
+│           0x00114298      247bff97       bl    0xf2f28
+│       ┌─< 0x0011429c      80000034       cbz   w0, 0x1142ac
+│       │   0x001142a0      e0008052       mov   w0, 7
+│       │   0x001142a4      e1031faa       mov   x1, xzr
+│       │   0x001142a8      1ad00194       bl    0x188310
+│       └─> 0x001142ac      b8d60194       bl    0x189d8c
+│           0x001142b0      1f690194       bl    0x16e72c
+│           0x001142b4      e0031f2a       mov   w0, wzr
+│           0x001142b8      80710194       bl    0x1708b8
+│           0x001142bc      0fd2ff97       bl    0x108af8
+│           0x001142c0      bdd1ff97       bl    0x1089b4
+│           0x001142c4      ecd6ff97       bl    0x109e74
+│           0x001142c8      76680194       bl    0x16e4a0
+│           0x001142cc      78420294       bl    0x1a4cac
+│           0x001142d0      b4d1ff97       bl    0x1089a0
+│           0x001142d4      57680494       bl    0x22e430
+│           0x001142d8      8cfcff97       bl    0x113508
+│           0x001142dc      a691ff97       bl    0xf8974
+│           0x001142e0      02f08752       mov   w2, 0x3f80
+│           0x001142e4      0044bf52       mov   w0, -0x5e00000
+│           0x001142e8      4213a072       movk  w2, 0x9a, lsl 16
+│           0x001142ec      e1031f2a       mov   w1, wzr
+│           0x001142f0      83e50094       bl    0x14d8fc
+│           0x001142f4      de94ff97       bl    0xf966c
+│           0x001142f8      280d00b0       adrp  x8, 0x2b9000
+│           0x001142fc      01fd42b9       ldr   w1, [x8, 0x2fc]       ; [0x2fc:4]=0xb9003909
+│           0x00114300      e00a00b0       adrp  x0, 0x271000
+│           0x00114304      00e41291       add   x0, x0, 0x4b9
+│           0x00114308      bce10094       bl    0x14c9f8
+│           0x0011430c      00000090       adrp  x0, 0x114000
+│           0x00114310      00a01e91       add   x0, x0, 0x7a8
+│           0x00114314      de000194       bl    0x15468c
+│           0x00114318      00000090       adrp  x0, 0x114000
+│           0x0011431c      00f02091       add   x0, x0, 0x83c
+│           0x00114320      e0000194       bl    0x1546a0
+│           0x00114324      00000090       adrp  x0, 0x114000
+│           0x00114328      00a02891       add   x0, x0, 0xa28
+│           0x0011432c      1af20194       bl    0x190b94
+│           0x00114330      e00900f0       adrp  x0, 0x253000
+│           0x00114334      00240f91       add   x0, x0, 0x3c9
+│           0x00114338      b0e10094       bl    0x14c9f8
+│           0x0011433c      96da0194       bl    0x18ad94
+│           0x00114340      c0be0194       bl    0x183e40
+│           0x00114344      c80d00b0       adrp  x8, 0x2cd000
+│           0x00114348      003107b9       str   w0, [x8, 0x730]
+│           0x0011434c      88ad0194       bl    0x17f96c
+│           0x00114350      68240090       adrp  x8, 0x5a0000
+│           0x00114354      00d906b9       str   w0, [x8, 0x6d8]
+│           0x00114358      fe020194       bl    0x154f50
+│       ┌─< 0x0011435c      80010034       cbz   w0, 0x11438c
+│       │   0x00114360      f403002a       mov   w20, w0
+│       │   0x00114364      cd080294       bl    0x196698
+│       │   0x00114368      b0400294       bl    0x1a4628
+│       │   0x0011436c      4000a052       mov   w0, 0x20000
+│       │   0x00114370      852c0094       bl    0x11f584
+│       │   0x00114374      60090090       adrp  x0, 0x240000
+│       │   0x00114378      001c2291       add   x0, x0, 0x887
+│       │   0x0011437c      9fe10094       bl    0x14c9f8
+│       │   0x00114380      e003142a       mov   w0, w20
+│       │   0x00114384      2c010194       bl    0x154834
+│      ┌──< 0x00114388      25000014       b     0x11441c
+│      │└─> 0x0011438c      bbf40194       bl    0x191678
+│      │┌─< 0x00114390      20180034       cbz   w0, 0x114694
+│      ││   0x00114394      c82200f0       adrp  x8, 0x56f000
+│      ││   0x00114398      1fd11139       strb  wzr, [x8, 0x474]
+│      ││   0x0011439c      17fbff97       bl    0x112ff8
+│      ││   0x001143a0      2000a052       mov   w0, 0x10000
+│      ││   0x001143a4      782c0094       bl    0x11f584
+│      ││   0x001143a8      200b00d0       adrp  x0, 0x27a000
+│      ││   0x001143ac      00381091       add   x0, x0, 0x40e
+│      ││   0x001143b0      92e10094       bl    0x14c9f8
+│      ││   0x001143b4      e0031f2a       mov   w0, wzr
+│      ││   0x001143b8      b9c70194       bl    0x18629c
+│      ││   0x001143bc      e44e0294       bl    0x1a7f4c
+│      ││   0x001143c0      e20300aa       mov   x2, x0
+│      ││   0x001143c4      a00a0090       adrp  x0, 0x268000
+│      ││   0x001143c8      210a00f0       adrp  x1, 0x25b000
+│      ││   0x001143cc      00581a91       add   x0, x0, 0x696
+│      ││   0x001143d0      21003a91       add   x1, x1, 0xe80
+│      ││   0x001143d4      89e10094       bl    0x14c9f8
+│      ││   0x001143d8      00038052       mov   w0, 0x18
+│      ││   0x001143dc      dff10094       bl    0x150b58
+│      ││   0x001143e0      14040011       add   w20, w0, 1
+│      ││   0x001143e4      00038052       mov   w0, 0x18
+│      ││   0x001143e8      23008052       mov   w3, 1
+│      ││   0x001143ec      e103142a       mov   w1, w20
+│      ││   0x001143f0      e2031faa       mov   x2, xzr
+│      ││   0x001143f4      f7ef0094       bl    0x1503d0
+│      ││   0x001143f8      a00900b0       adrp  x0, 0x249000
+│      ││   0x001143fc      00303091       add   x0, x0, 0xc0c
+│      ││   0x00114400      e103142a       mov   w1, w20
+│      ││   0x00114404      7de10094       bl    0x14c9f8
+│      ││   0x00114408      03090094       bl    0x116814
+│      ││   0x0011440c      45d7ff97       bl    0x10a120
+│      ││   0x00114410      9dfcff97       bl    0x113684
+│      ││   0x00114414      ec7e0294       bl    0x1b3fc4
+│      ││   0x00114418      fbf10194       bl    0x190c04
+│      ││   ; CODE XREFS from fcn.00114100 @ 0x114388, 0x1146d0, 0x1147a4
+│  ┌┌┌┌└──> 0x0011441c      46030194       bl    0x155134
+│  ╎╎╎╎┌──< 0x00114420      e0010034       cbz   w0, 0x11445c
+│  ╎╎╎╎││   0x00114424      7f120071       cmp   w19, 4
+│ ┌───────< 0x00114428      a0010054       b.eq  0x11445c
+│ │╎╎╎╎││   0x0011442c      02050194       bl    0x155834
+│ ────────< 0x00114430      60010035       cbnz  w0, 0x11445c
+│ │╎╎╎╎││   0x00114434      68008052       mov   w8, 3
+│ │╎╎╎╎││   0x00114438      a1730091       add   x1, fp, 0x1c
+│ │╎╎╎╎││   0x0011443c      a8730039       strb  w8, [fp, 0x1c]
+│ │╎╎╎╎││   0x00114440      b4cf0194       bl    0x188310
+│ │╎╎╎╎││   0x00114444      61090090       adrp  x1, 0x240000
+│ │╎╎╎╎││   0x00114448      420900d0       adrp  x2, 0x23e000
+│ │╎╎╎╎││   0x0011444c      21542291       add   x1, x1, 0x895
+│ │╎╎╎╎││   0x00114450      42241091       add   x2, x2, 0x409
+│ │╎╎╎╎││   0x00114454      c0098052       mov   w0, 0x4e              ; 'N'
+│ │╎╎╎╎││   0x00114458      78640194       bl    0x16d638
+│ └────└──> 0x0011445c      6bc2ff97       bl    0x104e08
+│  ╎╎╎╎ │   0x00114460      200900d0       adrp  x0, 0x23a000
+│  ╎╎╎╎ │   0x00114464      00280c91       add   x0, x0, 0x30a
+│  ╎╎╎╎ │   0x00114468      02c90394       bl    0x206870
+│  ╎╎╎╎ │   0x0011446c      54d9ff97       bl    0x10a9bc
+│  ╎╎╎╎┌──< 0x00114470      60000034       cbz   w0, 0x11447c
+│  ╎╎╎╎││   0x00114474      4dd9ff97       bl    0x10a9a8
+│ ┌───────< 0x00114478      c0000035       cbnz  w0, 0x114490
+│ │╎╎╎╎└──> 0x0011447c      c00a00f0       adrp  x0, 0x26f000
+│ │╎╎╎╎ │   0x00114480      410900d0       adrp  x1, 0x23e000
+│ │╎╎╎╎ │   0x00114484      00e81291       add   x0, x0, 0x4ba
+│ │╎╎╎╎ │   0x00114488      213c1191       add   x1, x1, 0x44f
+│ │╎╎╎╎ │   0x0011448c      5be10094       bl    0x14c9f8
+│ └───────> 0x00114490      ca7e0294       bl    0x1b3fb8
+│  ╎╎╎╎┌──< 0x00114494      a0000034       cbz   w0, 0x1144a8
+│  ╎╎╎╎││   0x00114498      c00a00f0       adrp  x0, 0x26f000
+│  ╎╎╎╎││   0x0011449c      00101491       add   x0, x0, 0x504
+│  ╎╎╎╎││   0x001144a0      56e10094       bl    0x14c9f8
+│  ╎╎╎╎││   0x001144a4      c87e0294       bl    0x1b3fc4
+│  ╎╎╎╎└──> 0x001144a8      87edff97       bl    0x10fac4
+│  ╎╎╎╎┌──< 0x001144ac      00070034       cbz   w0, 0x11458c
+│  ╎╎╎╎││   0x001144b0      f303002a       mov   w19, w0
+│  ╎╎╎╎││   0x001144b4      200a00f0       adrp  x0, 0x25b000
+│  ╎╎╎╎││   0x001144b8      00843a91       add   x0, x0, 0xea1
+│  ╎╎╎╎││   0x001144bc      4fe10094       bl    0x14c9f8
+│  ╎╎╎╎││   0x001144c0      e003132a       mov   w0, w19
+│  ╎╎╎╎││   ; CODE XREF from fcn.00114100 @ 0x114600
+│ ┌───────> 0x001144c4      39670194       bl    0x16e1a8
+│ ╎╎╎╎╎││   ; CODE XREF from fcn.00114100 @ 0x1146e0
+│ ────────> 0x001144c8      02008012       mov   w2, -1
+│ ╎╎╎╎╎││   0x001144cc      e0031f2a       mov   w0, wzr
+│ ╎╎╎╎╎││   0x001144d0      e1031faa       mov   x1, xzr
+│ ╎╎╎╎╎││   0x001144d4      01a80094       bl    0x13e4d8
+│ ╎╎╎╎╎││   0x001144d8      96afff97       bl    0x100330
+│ ╎╎╎╎╎││   0x001144dc      f30300aa       mov   x19, x0
+│ ╎╎╎╎╎││   0x001144e0      e0031f2a       mov   w0, wzr
+│ ╎╎╎╎╎││   0x001144e4      08680194       bl    0x16e504
+│ ╎╎╎╎╎││   0x001144e8      e9f99ed2       mov   x9, 0xf7cf
+│ ╎╎╎╎╎││   0x001144ec      696abcf2       movk  x9, 0xe353, lsl 16
+│ ╎╎╎╎╎││   0x001144f0      0800138b       add   x8, x0, x19
+│ ╎╎╎╎╎││   0x001144f4      a974d3f2       movk  x9, 0x9ba5, lsl 32
+│ ╎╎╎╎╎││   0x001144f8      08fd43d3       lsr   x8, x8, 3
+│ ╎╎╎╎╎││   0x001144fc      8918e4f2       movk  x9, 0x20c4, lsl 48
+│ ╎╎╎╎╎││   0x00114500      087dc99b       umulh x8, x8, x9
+│ ╎╎╎╎╎││   0x00114504      01fd44d3       lsr   x1, x8, 4
+│ ╎╎╎╎╎││   0x00114508      40008052       mov   w0, 2
+│ ╎╎╎╎╎││   0x0011450c      f7670194       bl    0x16e4e8
+│ ╎╎╎╎╎││   0x00114510      a10a0090       adrp  x1, 0x268000
+│ ╎╎╎╎╎││   0x00114514      21741a91       add   x1, x1, 0x69d
+│ ╎╎╎╎╎││   0x00114518      c00a8052       mov   w0, 0x56              ; 'V'
+│ ╎╎╎╎╎││   0x0011451c      ed500294       bl    0x1a88d0
+│ ╎╎╎╎╎││   0x00114520      3a94ff97       bl    0xf9608
+│ ╎╎╎╎╎││   0x00114524      bafeff97       bl    0x11400c
+│ ╎╎╎╎╎││   0x00114528      10680194       bl    0x16e568
+│ ────────< 0x0011452c      60079037       tbnz  w0, 0x12, 0x114618
+│ ────────> 0x00114530      c0008052       mov   w0, 6
+│ ╎╎╎╎╎││   0x00114534      89f10094       bl    0x150b58
+│ ╎╎╎╎╎││   0x00114538      a01f00b9       str   w0, [fp, 0x1c]
+│ ╎╎╎╎╎││   0x0011453c      a0630091       add   x0, fp, 0x18
+│ ╎╎╎╎╎││   0x00114540      a1730091       add   x1, fp, 0x1c
+│ ╎╎╎╎╎││   0x00114544      82008052       mov   w2, 4
+│ ╎╎╎╎╎││   0x00114548      31e40094       bl    0x14d60c
+│ ╎╎╎╎╎││   0x0011454c      e1090090       adrp  x1, 0x250000
+│ ╎╎╎╎╎││   0x00114550      21bc3491       add   x1, x1, 0xd2f
+│ ╎╎╎╎╎││   0x00114554      a0630091       add   x0, fp, 0x18
+│ ╎╎╎╎╎││   0x00114558      62008052       mov   w2, 3
+│ ╎╎╎╎╎││   0x0011455c      9fe50094       bl    0x14dbd8
+│ ╎╎╎╎╎││   0x00114560      480900d0       adrp  x8, 0x23e000
+│ ╎╎╎╎╎││   0x00114564      690900d0       adrp  x9, 0x242000
+│ ╎╎╎╎╎││   0x00114568      08951091       add   x8, x8, 0x425
+│ ╎╎╎╎╎││   0x0011456c      29013a91       add   x9, x9, 0xe80
+│ ╎╎╎╎╎││   0x00114570      1f000071       cmp   w0, 0
+│ ╎╎╎╎╎││   0x00114574      2001889a       csel  x0, x9, x8, eq
+│ ╎╎╎╎╎││   0x00114578      880c8052       mov   w8, 0x64              ; 'd'
+│ ╎╎╎╎╎││   0x0011457c      893e8052       mov   w9, 0x1f4
+│ ╎╎╎╎╎││   0x00114580      3301881a       csel  w19, w9, w8, eq
+│ ╎╎╎╎╎││   0x00114584      1de10094       bl    0x14c9f8
+│ ────────< 0x00114588      3a000014       b     0x114670
+│ ╎╎╎╎╎└──> 0x0011458c      f7670194       bl    0x16e568
+│ ╎╎╎╎╎┌──< 0x00114590      a0039037       tbnz  w0, 0x12, 0x114604
+│ ╎╎╎╎╎││   0x00114594      00208052       mov   w0, 0x100
+│ ╎╎╎╎╎││   0x00114598      281a0094       bl    0x11ae38
+│ ────────< 0x0011459c      60f9ff35       cbnz  w0, 0x1144c8
+│ ╎╎╎╎╎││   0x001145a0      a82210d1       sub   x8, x21, 0x408
+│ ╎╎╎╎╎││   0x001145a4      080140b9       ldr   w8, [x8]
+│ ────────< 0x001145a8      08f98736       tbz   w8, 0x10, 0x1144c8
+│ ╎╎╎╎╎││   0x001145ac      c7310094       bl    0x120cc8
+│ ╎╎╎╎╎││   0x001145b0      1f000071       cmp   w0, 0
+│ ────────< 0x001145b4      acf8ff54       b.gt  0x1144c8
+│ ╎╎╎╎╎││   0x001145b8      b1310094       bl    0x120c7c
+│ ╎╎╎╎╎││   0x001145bc      1f000071       cmp   w0, 0
+│ ────────< 0x001145c0      4cf8ff54       b.gt  0x1144c8
+│ ╎╎╎╎╎││   0x001145c4      e8be00b0       adrp  x8, 0x18f1000
+│ ╎╎╎╎╎││   0x001145c8      080140b9       ldr   w8, [x8]
+│ ╎╎╎╎╎││   0x001145cc      29338b52       mov   w9, 0x5999
+│ ╎╎╎╎╎││   0x001145d0      c9c4ac72       movk  w9, 0x6626, lsl 16
+│ ╎╎╎╎╎││   0x001145d4      1f01096b       cmp   w8, w9
+│ ────────< 0x001145d8      80f7ff54       b.eq  0x1144c8
+│ ╎╎╎╎╎││   0x001145dc      5c310094       bl    0x120b4c
+│ ╎╎╎╎╎││   0x001145e0      1f040071       cmp   w0, 1
+│ ────────< 0x001145e4      2bf7ff54       b.lt  0x1144c8
+│ ╎╎╎╎╎││   0x001145e8      000a00b0       adrp  x0, 0x255000
+│ ╎╎╎╎╎││   0x001145ec      410900d0       adrp  x1, 0x23e000
+│ ╎╎╎╎╎││   0x001145f0      00741491       add   x0, x0, 0x51d
+│ ╎╎╎╎╎││   0x001145f4      213c1191       add   x1, x1, 0x44f
+│ ╎╎╎╎╎││   0x001145f8      00e10094       bl    0x14c9f8
+│ ╎╎╎╎╎││   0x001145fc      20038052       mov   w0, 0x19
+│ └───────< 0x00114600      b1ffff17       b     0x1144c4
+│  ╎╎╎╎└──> 0x00114604      d9670194       bl    0x16e568
+│  ╎╎╎╎┌──< 0x00114608      60069837       tbnz  w0, 0x13, 0x1146d4
+│  ╎╎╎╎││   0x0011460c      39eeff97       bl    0x10fef0
+│  ╎╎╎╎││   0x00114610      d6670194       bl    0x16e568
+│ ────────< 0x00114614      e0f89736       tbz   w0, 0x12, 0x114530
+│ ────────> 0x00114618      c0008052       mov   w0, 6
+│  ╎╎╎╎││   0x0011461c      4ff10094       bl    0x150b58
+│  ╎╎╎╎││   0x00114620      a01f00b9       str   w0, [fp, 0x1c]
+│  ╎╎╎╎││   0x00114624      a0630091       add   x0, fp, 0x18
+│  ╎╎╎╎││   0x00114628      a1730091       add   x1, fp, 0x1c
+│  ╎╎╎╎││   0x0011462c      82008052       mov   w2, 4
+│  ╎╎╎╎││   0x00114630      f7e30094       bl    0x14d60c
+│  ╎╎╎╎││   0x00114634      e1090090       adrp  x1, 0x250000
+│  ╎╎╎╎││   0x00114638      21bc3491       add   x1, x1, 0xd2f
+│  ╎╎╎╎││   0x0011463c      a0630091       add   x0, fp, 0x18
+│  ╎╎╎╎││   0x00114640      62008052       mov   w2, 3
+│  ╎╎╎╎││   0x00114644      65e50094       bl    0x14dbd8
+│  ╎╎╎╎││   0x00114648      480900d0       adrp  x8, 0x23e000
+│  ╎╎╎╎││   0x0011464c      690900d0       adrp  x9, 0x242000
+│  ╎╎╎╎││   0x00114650      08951091       add   x8, x8, 0x425
+│  ╎╎╎╎││   0x00114654      29013a91       add   x9, x9, 0xe80
+│  ╎╎╎╎││   0x00114658      1f000071       cmp   w0, 0
+│  ╎╎╎╎││   0x0011465c      f303002a       mov   w19, w0
+│  ╎╎╎╎││   0x00114660      2001889a       csel  x0, x9, x8, eq
+│  ╎╎╎╎││   0x00114664      e5e00094       bl    0x14c9f8
+│ ┌───────< 0x00114668      93000035       cbnz  w19, 0x114678
+│ │╎╎╎╎││   0x0011466c      137d8052       mov   w19, 0x3e8
+│ │╎╎╎╎││   ; CODE XREF from fcn.00114100 @ 0x114588
+│ ────────> 0x00114670      e003132a       mov   w0, w19
+│ │╎╎╎╎││   0x00114674      db320094       bl    0x1211e0
+│ └───────> 0x00114678      20008052       mov   w0, 1
+│  ╎╎╎╎││   0x0011467c      a8300094       bl    0x12091c
+│  ╎╎╎╎││   0x00114680      f44f42a9       ldp   x20, x19, [var_10h]
+│  ╎╎╎╎││   0x00114684      f50b40f9       ldr   x21, [var_20h]        ; [0x10:4]=0x14000004
+│  ╎╎╎╎││   0x00114688      fd7bc3a8       ldp   fp, lr, [sp], 0lr
+│  ╎╎╎╎││   0x0011468c      ff2303d5       autibsp
+│  ╎╎╎╎││   0x00114690      c0035fd6       ret
+│  └────└─> 0x00114694      53ecff34       cbz   w19, 0x11441c
+│   ╎╎╎│    0x00114698      687a1f12       and   w8, w19, 0xfffffffe
+│   ╎╎╎│    0x0011469c      1f110071       cmp   w8, 4
+│   ╎╎╎│┌─< 0x001146a0      21020054       b.ne  0x1146e4
+│   ╎╎╎││   0x001146a4      0001a052       mov   w0, 0x80000
+│   ╎╎╎││   0x001146a8      21008052       mov   w1, 1
+│   ╎╎╎││   0x001146ac      b4670194       bl    0x16e57c
+│   ╎╎╎││   0x001146b0      ae670194       bl    0x16e568
+│   ╎╎╎││   0x001146b4      e303002a       mov   w3, w0
+│   ╎╎╎││   0x001146b8      200a00b0       adrp  x0, 0x259000
+│   ╎╎╎││   0x001146bc      410900d0       adrp  x1, 0x23e000
+│   ╎╎╎││   0x001146c0      00303191       add   x0, x0, 0xc4c
+│   ╎╎╎││   0x001146c4      213c1191       add   x1, x1, 0x44f
+│   ╎╎╎││   0x001146c8      e203132a       mov   w2, w19
+│   ╎╎╎││   0x001146cc      cbe00094       bl    0x14c9f8
+│   └─────< 0x001146d0      53ffff17       b     0x11441c
+│    ╎╎└──> 0x001146d4      8000a052       mov   w0, 0x40000
+│    ╎╎ │   0x001146d8      e1031f2a       mov   w1, wzr
+│    ╎╎ │   0x001146dc      a8670194       bl    0x16e57c
+│ ────────< 0x001146e0      7affff17       b     0x1144c8
+│    ╎╎ └─> 0x001146e4      7f1a0071       cmp   w19, 6
+│    └────< 0x001146e8      a1e9ff54       b.ne  0x11441c
+│     ╎     0x001146ec      80028052       mov   w0, 0x14
+│     ╎     0x001146f0      1af10094       bl    0x150b58
+│     ╎     0x001146f4      f403002a       mov   w20, w0
+│     ╎     0x001146f8      c0018052       mov   w0, 0xe
+│     ╎     0x001146fc      17f10094       bl    0x150b58
+│     ╎     0x00114700      e303002a       mov   w3, w0
+│     ╎     0x00114704      400900d0       adrp  x0, 0x23e000
+│     ╎     0x00114708      410900d0       adrp  x1, 0x23e000
+│     ╎     0x0011470c      00741191       add   x0, x0, 0x45d
+│     ╎     0x00114710      213c1191       add   x1, x1, 0x44f
+│     ╎     0x00114714      e203142a       mov   w2, w20
+│     ╎     0x00114718      b8e00094       bl    0x14c9f8
+│     ╎     0x0011471c      80028052       mov   w0, 0x14
+│     ╎     0x00114720      0ef10094       bl    0x150b58
+│     ╎     0x00114724      e103002a       mov   w1, w0
+│     ╎     0x00114728      c0018052       mov   w0, 0xe
+│     ╎     0x0011472c      23008052       mov   w3, 1
+│     ╎     0x00114730      e2031faa       mov   x2, xzr
+│     ╎     0x00114734      27ef0094       bl    0x1503d0
+│     ╎     0x00114738      80028052       mov   w0, 0x14
+│     ╎     0x0011473c      23008052       mov   w3, 1
+│     ╎     0x00114740      e1031f2a       mov   w1, wzr
+│     ╎     0x00114744      e2031faa       mov   x2, xzr
+│     ╎     0x00114748      22ef0094       bl    0x1503d0
+│     ╎     0x0011474c      3a040194       bl    0x155834
+│     ╎     0x00114750      f403002a       mov   w20, w0
+│     ╎     0x00114754      68008052       mov   w8, 3
+│     ╎     0x00114758      a1730091       add   x1, fp, 0x1c
+│     ╎     0x0011475c      e0031f2a       mov   w0, wzr
+│     ╎     0x00114760      a8730039       strb  w8, [fp, 0x1c]
+│     ╎     0x00114764      ebce0194       bl    0x188310
+│     ╎     0x00114768      23008052       mov   w3, 1
+│     ╎     0x0011476c      e0031f2a       mov   w0, wzr
+│     ╎     0x00114770      e1031f2a       mov   w1, wzr
+│     ╎     0x00114774      e2031faa       mov   x2, xzr
+│     ╎     0x00114778      16ef0094       bl    0x1503d0
+│     ╎     0x0011477c      880a0090       adrp  x8, 0x264000
+│     ╎     0x00114780      490b0090       adrp  x9, 0x27c000
+│     ╎     0x00114784      08a12791       add   x8, x8, 0x9e8
+│     ╎     0x00114788      293d1e91       add   x9, x9, 0x78f
+│     ╎     0x0011478c      9f020071       cmp   w20, 0
+│     ╎     0x00114790      420900d0       adrp  x2, 0x23e000
+│     ╎     0x00114794      2101889a       csel  x1, x9, x8, eq
+│     ╎     0x00114798      42241091       add   x2, x2, 0x409
+│     ╎     0x0011479c      c0098052       mov   w0, 0x4e              ; 'N'
+│     ╎     0x001147a0      a6630194       bl    0x16d638
+└     └───< 0x001147a4      1effff17       b     0x11441c
+RIZIN_STATUS=0
 
------ installToken -----
-│           0x00008df0      stp   x22, x21, [var_b0h + 0x90]
-│           0x00008df4      stp   x20, x19, [var_b0h + 0xa0]
-│           0x00008df8      add   fp, sp, 0x20
-│           0x00008dfc      mov   x23, x0                              ; arg1
-│           0x00008e00      adrp  x0, data.00002000                    ; 0x2000
-│           0x00008e04      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x00008e08      mov   w20, w4                              ; arg5
-│           0x00008e0c      mov   x22, x3                              ; arg4
-│           0x00008e10      mov   x19, x2                              ; arg3
-│           0x00008e14      mov   w21, w1                              ; arg2
-│           0x00008e18      str   wzr, [fp, 0x1c]
-│           0x00008e1c      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x00008e20      stur  x0, [fp, -8]
-│           0x00008e24      add   x8, var_f8h
-│           0x00008e28      sub   x0, fp, 8
-│           0x00008e2c      stp   xzr, xzr, [var_b0h + 0x58]
-│           0x00008e30      bl    sym.imp.__errno
-│           0x00008e34      ldr   x8, [var_f8h]                        ; [0x8:4]=0
-│       ┌─< 0x00008e38      cbz   x8, 0x8e70
-│       │   0x00008e3c      mov   x0, x23
-│       │   0x00008e40      mov   x1, x22
-│       │   0x00008e44      mov   w2, w20
-│       │   0x00008e48      mov   w3, wzr
-│       │   0x00008e4c      mov   w4, 1
-│       │   0x00008e50      bl    fcn.000116e0
-│       │   0x00008e54      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x00008e58      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x00008e5c      cbz   w0, 0x8e98
-│      ││   0x00008e60      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x00008e64      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x00008e68      mov   w0, 4
-│     ┌───< 0x00008e6c      b     0x8e84
-│     ││└─> 0x00008e70      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x00008e74      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x00008e78      adrp  x2, data.00002000                    ; 0x2000
+========== MODE BITS TRANSFER @ 0x18962c ==========
+--- RAW BYTES ---
+0018962c: 7f2303d5 fd7bbda9 f50b00f9 f44f02a9  .#...{.......O..
+0018963c: fd030091 a0028052 ca000094 00020034  .......R.......4
+0018964c: c0050090 e10600d0 00702491 21bc1091  .........p$.!...
+0018965c: e2278052 03008012 13008012 e40cff97  .'.R............
+0018966c: 39010094 e003132a f44f42a9 f50b40f9  9......*.OB...@.
+0018967c: fd7bc3a8 ff2303d5 c0035fd6 f52000b0  .{...#...._.. ..
 
------ isTokenInstalled -----
-│           0x00008fe4      sub   sp, sp, 0x50
-│           0x00008fe8      stp   fp, lr, [var_30h]
-│           0x00008fec      str   x21, [var_20h]
-│           0x00008ff0      stp   x20, x19, [var_10h]
-│           0x00008ff4      add   fp, sp, 0x20
-│           0x00008ff8      mov   x21, x0                              ; arg1
-│           0x00008ffc      adrp  x0, data.00002000                    ; 0x2000
-│           0x00009000      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x00009004      mov   w19, w2                              ; arg3
-│           0x00009008      mov   x20, x1                              ; arg2
-│           0x0000900c      str   wzr, [fp, 0x1c]
-│           0x00009010      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x00009014      stur  x0, [fp, -8]
-│           0x00009018      add   x8, var_48h
-│           0x0000901c      sub   x0, fp, 8
-│           0x00009020      stp   xzr, xzr, [var_48h]
-│           0x00009024      bl    sym.imp.__errno
-│           0x00009028      ldr   x8, [var_48h]                        ; [0x8:4]=0
-│       ┌─< 0x0000902c      cbz   x8, 0x9064
-│       │   0x00009030      mov   x0, x21
-│       │   0x00009034      mov   x1, x20
-│       │   0x00009038      mov   w2, w19
-│       │   0x0000903c      mov   w3, wzr
-│       │   0x00009040      mov   w4, 1
-│       │   0x00009044      bl    fcn.000116e0
-│       │   0x00009048      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x0000904c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x00009050      cbz   w0, 0x908c
-│      ││   0x00009054      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x00009058      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x0000905c      mov   w0, 4
-│     ┌───< 0x00009060      b     0x9078
-│     ││└─> 0x00009064      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x00009068      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x0000906c      adrp  x2, data.00002000                    ; 0x2000
+--- FUNCTION ANALYSIS ---
+arm
+64
+┌ fcn.0018962c();
+│           ; var int64_t var_20h @ stack - 0x20
+│           ; var int64_t var_10h @ stack - 0x10
+│           0x0018962c      7f2303d5       pacibsp
+│           0x00189630      fd7bbda9       stp   fp, lr, [sp, -0lr]!
+│           0x00189634      f50b00f9       str   x21, [var_20h]
+│           0x00189638      f44f02a9       stp   x20, x19, [var_10h]
+│           0x0018963c      fd030091       mov   fp, sp
+│           0x00189640      a0028052       mov   w0, 0x15
+│           0x00189644      ca000094       bl    fcn.0018996c
+│       ┌─< 0x00189648      00020034       cbz   w0, 0x189688
+│       │   0x0018964c      c0050090       adrp  x0, 0x241000
+│       │   0x00189650      e10600d0       adrp  x1, 0x267000
+│       │   0x00189654      00702491       add   x0, x0, 0x91c
+│       │   0x00189658      21bc1091       add   x1, x1, 0x42f
+│       │   0x0018965c      e2278052       mov   w2, 0x13f
+│       │   ; CODE XREFS from fcn.0018962c @ 0x189784, 0x189868
+│     ┌┌──> 0x00189660      03008012       mov   w3, -1
+│     ╎╎│   0x00189664      13008012       mov   w19, -1
+│     ╎╎│   ; CODE XREF from fcn.0018962c @ 0x1898c8
+│    ┌────> 0x00189668      e40cff97       bl    fcn.0014c9f8
+│    ╎╎╎│   ; CODE XREFS from fcn.0018962c @ 0x189758, 0x189908
+│  ┌┌─────> 0x0018966c      39010094       bl    fcn.00189b50
+│  ╎╎╎╎╎│   0x00189670      e003132a       mov   w0, w19
+│  ╎╎╎╎╎│   0x00189674      f44f42a9       ldp   x20, x19, [var_10h]
+│  ╎╎╎╎╎│   0x00189678      f50b40f9       ldr   x21, [var_20h]        ; [0x10:4]=0x14000004
+│  ╎╎╎╎╎│   0x0018967c      fd7bc3a8       ldp   fp, lr, [sp], 0lr
+│  ╎╎╎╎╎│   0x00189680      ff2303d5       autibsp
+│  ╎╎╎╎╎│   0x00189684      c0035fd6       ret
+│  ╎╎╎╎╎└─> 0x00189688      f52000b0       adrp  x21, 0x5a6000
+│  ╎╎╎╎╎    0x0018968c      b46245f9       ldr   x20, [x21, 0xac0]     ; [0xac0:4]=0x6e612065 ; "e and RP count success\r\n"
+│  ╎╎╎╎╎    0x00189690      200700d0       adrp  x0, 0x26f000
+│  ╎╎╎╎╎    0x00189694      00943891       add   x0, x0, 0xe25
+│  ╎╎╎╎╎    0x00189698      99b0ff97       bl    fcn.001758fc
+│  ╎╎╎╎╎┌─< 0x0018969c      000600b4       cbz   x0, 0x18975c
+│  ╎╎╎╎╎│   0x001896a0      f30300aa       mov   x19, x0
+│  ╎╎╎╎╎│   0x001896a4      80070090       adrp  x0, 0x279000
+│  ╎╎╎╎╎│   0x001896a8      210700f0       adrp  x1, 0x270000
+│  ╎╎╎╎╎│   0x001896ac      00643a91       add   x0, x0, 0xe99
+│  ╎╎╎╎╎│   0x001896b0      21780191       add   x1, x1, 0x5e
+│  ╎╎╎╎╎│   0x001896b4      94a21891       add   x20, x20, 0x628
+│  ╎╎╎╎╎│   0x001896b8      d00cff97       bl    fcn.0014c9f8
+│  ╎╎╎╎╎│   0x001896bc      684e4138       ldrb  w8, [x19, 0x14]!      ; [0x14:4]=0
+│  ╎╎╎╎╎│   0x001896c0      03008252       mov   w3, 0x1000
+│  ╎╎╎╎╎│   0x001896c4      2300a072       movk  w3, 1, lsl 16
+│  ╎╎╎╎╎│   0x001896c8      e00314aa       mov   x0, x20
+│  ╎╎╎╎╎│   0x001896cc      618e4038       ldrb  w1, [x19, 8]!         ; [0x8:4]=0x68656164
+│  ╎╎╎╎╎│   0x001896d0      6cb25f38       ldurb w12, [x19, -5]        ; [0x5:4]=0x64214877
+│  ╎╎╎╎╎│   0x001896d4      6da25f38       ldurb w13, [x19, -6]        ; [0x6:4]=0x61642148
+│  ╎╎╎╎╎│   0x001896d8      6e925f38       ldurb w14, [x19, -7]        ; [0x7:4]=0x65616421
+│  ╎╎╎╎╎│   0x001896dc      690e4039       ldrb  w9, [x19, 3]          ; [0x3:4]=0x48776b00
+│  ╎╎╎╎╎│   0x001896e0      6a0a4039       ldrb  w10, [x19, 2]         ; [0x2:4]=0x776b0000
+│  ╎╎╎╎╎│   0x001896e4      6b064039       ldrb  w11, [x19, 1]         ; [0x1:4]=0x6b000000
+│  ╎╎╎╎╎│   0x001896e8      8d1d1833       bfi   w13, w12, 8, 8
+│  ╎╎╎╎╎│   0x001896ec      c81d1833       bfi   w8, w14, 8, 8
+│  ╎╎╎╎╎│   0x001896f0      2a1d1833       bfi   w10, w9, 8, 8
+│  ╎╎╎╎╎│   0x001896f4      611d1833       bfi   w1, w11, 8, 8
+│  ╎╎╎╎╎│   0x001896f8      a83d1033       bfi   w8, w13, 16, 16
+│  ╎╎╎╎╎│   0x001896fc      413d1033       bfi   w1, w10, 16, 16
+│  ╎╎╎╎╎│   0x00189700      02a10011       add   w2, w8, 0x28
+│  ╎╎╎╎╎│   0x00189704      6fbefe97       bl    fcn.001390c0
+│  ╎╎╎╎╎│   0x00189708      b46245f9       ldr   x20, [x21, 0xac0]     ; [0xac0:4]=0x6e612065 ; "e and RP count success\r\n"
+│  ╎╎╎╎╎│   0x0018970c      130600b0       adrp  x19, 0x24a000
+│  ╎╎╎╎╎│   0x00189710      73f21291       add   x19, x19, 0x4bc
+│  ╎╎╎╎╎│   0x00189714      e00313aa       mov   x0, x19
+│  ╎╎╎╎╎│   0x00189718      880643f9       ldr   x8, [x20, 0x608]      ; [0x608:4]=0x910163e9
+│  ╎╎╎╎╎│   0x0018971c      080140b2       orr   x8, x8, 1
+│  ╎╎╎╎╎│   0x00189720      880603f9       str   x8, [x20, 0x608]
+│  ╎╎╎╎╎│   0x00189724      0d11ff97       bl    fcn.0014db58
+│  ╎╎╎╎╎│   0x00189728      e20300aa       mov   x2, x0
+│  ╎╎╎╎╎│   0x0018972c      80a21891       add   x0, x20, 0x628
+│  ╎╎╎╎╎│   0x00189730      e10313aa       mov   x1, x19
+│  ╎╎╎╎╎│   0x00189734      a50fff97       bl    fcn.0014d5c8
+│ ┌───────< 0x00189738      80020034       cbz   w0, 0x189788
+│ │╎╎╎╎╎│   0x0018973c      c00500f0       adrp  x0, 0x244000
+│ │╎╎╎╎╎│   0x00189740      e10600d0       adrp  x1, 0x267000
+│ │╎╎╎╎╎│   0x00189744      00100c91       add   x0, x0, 0x304
+│ │╎╎╎╎╎│   0x00189748      21bc1091       add   x1, x1, 0x42f
+│ │╎╎╎╎╎│   0x0018974c      62298052       mov   w2, 0x14b
+│ │╎╎╎╎╎│   0x00189750      aa0cff97       bl    fcn.0014c9f8
+│ │╎╎╎╎╎│   ; CODE XREF from fcn.0018962c @ 0x189968
+│ ────────> 0x00189754      f3031f2a       mov   w19, wzr
+│ │└──────< 0x00189758      c5ffff17       b     0x18966c
+│ │ ╎╎╎╎└─> 0x0018975c      e0060090       adrp  x0, 0x265000
+│ │ ╎╎╎╎    0x00189760      210700f0       adrp  x1, 0x270000
+│ │ ╎╎╎╎    0x00189764      004c1791       add   x0, x0, 0x5d3
+│ │ ╎╎╎╎    0x00189768      21780191       add   x1, x1, 0x5e
+│ │ ╎╎╎╎    0x0018976c      a30cff97       bl    fcn.0014c9f8
+│ │ ╎╎╎╎    0x00189770      c0060090       adrp  x0, 0x261000
+│ │ ╎╎╎╎    0x00189774      e10600d0       adrp  x1, 0x267000
+│ │ ╎╎╎╎    0x00189778      00180c91       add   x0, x0, 0x306
+│ │ ╎╎╎╎    0x0018977c      21bc1091       add   x1, x1, 0x42f
+│ │ ╎╎╎╎    0x00189780      a2288052       mov   w2, 0x145
+│ │ ╎╎└───< 0x00189784      b7ffff17       b     0x189660
+│ └───────> 0x00189788      200700d0       adrp  x0, 0x26f000
+│   ╎╎ ╎    0x0018978c      00943891       add   x0, x0, 0xe25
+│   ╎╎ ╎    0x00189790      5bb0ff97       bl    fcn.001758fc
+│   ╎╎ ╎┌─< 0x00189794      600500b4       cbz   x0, 0x189840
+│   ╎╎ ╎│   0x00189798      f30300aa       mov   x19, x0
+│   ╎╎ ╎│   0x0018979c      88129e52       mov   w8, 0xf094
+│   ╎╎ ╎│   0x001897a0      80070090       adrp  x0, 0x279000
+│   ╎╎ ╎│   0x001897a4      210700b0       adrp  x1, 0x26e000
+│   ╎╎ ╎│   0x001897a8      2800a072       movk  w8, 1, lsl 16
+│   ╎╎ ╎│   0x001897ac      00643a91       add   x0, x0, 0xe99
+│   ╎╎ ╎│   0x001897b0      212c0491       add   x1, x1, 0x10b
+│   ╎╎ ╎│   0x001897b4      9402088b       add   x20, x20, x8
+│   ╎╎ ╎│   0x001897b8      900cff97       bl    fcn.0014c9f8
+│   ╎╎ ╎│   0x001897bc      684e4138       ldrb  w8, [x19, 0x14]!      ; [0x14:4]=0
+│   ╎╎ ╎│   0x001897c0      03808552       mov   w3, 0x2c00
+│   ╎╎ ╎│   0x001897c4      e00314aa       mov   x0, x20
+│   ╎╎ ╎│   0x001897c8      618e4038       ldrb  w1, [x19, 8]!         ; [0x8:4]=0x68656164
+│   ╎╎ ╎│   0x001897cc      6cb25f38       ldurb w12, [x19, -5]        ; [0x5:4]=0x64214877
+│   ╎╎ ╎│   0x001897d0      6da25f38       ldurb w13, [x19, -6]        ; [0x6:4]=0x61642148
+│   ╎╎ ╎│   0x001897d4      6e925f38       ldurb w14, [x19, -7]        ; [0x7:4]=0x65616421
+│   ╎╎ ╎│   0x001897d8      690e4039       ldrb  w9, [x19, 3]          ; [0x3:4]=0x48776b00
+│   ╎╎ ╎│   0x001897dc      6a0a4039       ldrb  w10, [x19, 2]         ; [0x2:4]=0x776b0000
+│   ╎╎ ╎│   0x001897e0      6b064039       ldrb  w11, [x19, 1]         ; [0x1:4]=0x6b000000
+│   ╎╎ ╎│   0x001897e4      8d1d1833       bfi   w13, w12, 8, 8
+│   ╎╎ ╎│   0x001897e8      c81d1833       bfi   w8, w14, 8, 8
+│   ╎╎ ╎│   0x001897ec      2a1d1833       bfi   w10, w9, 8, 8
+│   ╎╎ ╎│   0x001897f0      611d1833       bfi   w1, w11, 8, 8
+│   ╎╎ ╎│   0x001897f4      a83d1033       bfi   w8, w13, 16, 16
+│   ╎╎ ╎│   0x001897f8      413d1033       bfi   w1, w10, 16, 16
+│   ╎╎ ╎│   0x001897fc      02490011       add   w2, w8, 0x12
+│   ╎╎ ╎│   0x00189800      30befe97       bl    fcn.001390c0
+│   ╎╎ ╎│   0x00189804      a06245f9       ldr   x0, [x21, 0xac0]      ; [0xac0:4]=0x6e612065 ; "e and RP count success\r\n"
+│   ╎╎ ╎│   0x00189808      f52000b0       adrp  x21, 0x5a6000
+│   ╎╎ ╎│   0x0018980c      a16645f9       ldr   x1, [x21, 0xac8]      ; [0xac8:4]=0x756f6320 ; " count success\r\n"
+│   ╎╎ ╎│   0x00189810      080443f9       ldr   x8, [x0, 0x608]       ; [0x608:4]=0x910163e9
+│   ╎╎ ╎│   0x00189814      08017bb2       orr   x8, x8, 0x20
+│   ╎╎ ╎│   0x00189818      080403f9       str   x8, [x0, 0x608]
+│   ╎╎ ╎│   0x0018981c      2f7eff97       bl    fcn.001690d8
+│   ╎╎┌───< 0x00189820      60020034       cbz   w0, 0x18986c
+│   ╎╎│╎│   0x00189824      f303002a       mov   w19, w0
+│   ╎╎│╎│   0x00189828      200600d0       adrp  x0, 0x24f000
+│   ╎╎│╎│   0x0018982c      e10600d0       adrp  x1, 0x267000
+│   ╎╎│╎│   0x00189830      00802991       add   x0, x0, 0xa60
+│   ╎╎│╎│   0x00189834      21bc1091       add   x1, x1, 0x42f
+│   ╎╎│╎│   0x00189838      022b8052       mov   w2, 0x158
+│  ┌──────< 0x0018983c      22000014       b     0x1898c4
+│  │╎╎│╎└─> 0x00189840      e0060090       adrp  x0, 0x265000
+│  │╎╎│╎    0x00189844      210700b0       adrp  x1, 0x26e000
+│  │╎╎│╎    0x00189848      004c1791       add   x0, x0, 0x5d3
+│  │╎╎│╎    0x0018984c      212c0491       add   x1, x1, 0x10b
+│  │╎╎│╎    0x00189850      6a0cff97       bl    fcn.0014c9f8
+│  │╎╎│╎    0x00189854      c0050090       adrp  x0, 0x241000
+│  │╎╎│╎    0x00189858      e10600d0       adrp  x1, 0x267000
+│  │╎╎│╎    0x0018985c      00242591       add   x0, x0, 0x949
+│  │╎╎│╎    0x00189860      21bc1091       add   x1, x1, 0x42f
+│  │╎╎│╎    0x00189864      222a8052       mov   w2, 0x151
+│  │╎╎│└──< 0x00189868      7effff17       b     0x189660
+│  │╎╎└───> 0x0018986c      a06645f9       ldr   x0, [x21, 0xac8]      ; [0xac8:4]=0x756f6320 ; " count success\r\n"
+│  │╎╎      0x00189870      173bff97       bl    fcn.001584cc
+│  │╎╎  ┌─< 0x00189874      00010034       cbz   w0, 0x189894
+│  │╎╎  │   0x00189878      f303002a       mov   w19, w0
+│  │╎╎  │   0x0018987c      a00500d0       adrp  x0, 0x23f000
+│  │╎╎  │   0x00189880      e10600d0       adrp  x1, 0x267000
+│  │╎╎  │   0x00189884      00680b91       add   x0, x0, 0x2da
+│  │╎╎  │   0x00189888      21bc1091       add   x1, x1, 0x42f
+│  │╎╎  │   0x0018988c      c22b8052       mov   w2, 0x15e
+│  │╎╎ ┌──< 0x00189890      0d000014       b     0x1898c4
+│  │╎╎ │└─> 0x00189894      f42000b0       adrp  x20, 0x5a6000
+│  │╎╎ │    0x00189898      806a45f9       ldr   x0, [x20, 0xad0]      ; [0xad0:4]=0x65636375 ; "uccess\r\n"
+│  │╎╎ │    0x0018989c      a16645f9       ldr   x1, [x21, 0xac8]      ; [0xac8:4]=0x756f6320 ; " count success\r\n"
+│  │╎╎ │    0x001898a0      e2031f2a       mov   w2, wzr
+│  │╎╎ │    0x001898a4      a57fff97       bl    fcn.00169738
+│  │╎╎ │┌─< 0x001898a8      20010034       cbz   w0, 0x1898cc
+│  │╎╎ ││   0x001898ac      f303002a       mov   w19, w0
+│  │╎╎ ││   0x001898b0      000600b0       adrp  x0, 0x24a000
+│  │╎╎ ││   0x001898b4      e10600d0       adrp  x1, 0x267000
+│  │╎╎ ││   0x001898b8      00683391       add   x0, x0, 0xcda
+│  │╎╎ ││   0x001898bc      21bc1091       add   x1, x1, 0x42f
+│  │╎╎ ││   0x001898c0      822c8052       mov   w2, 0x164
+│  │╎╎ ││   ; CODE XREFS from fcn.0018962c @ 0x18983c, 0x189890
+│  └───└──> 0x001898c4      e303132a       mov   w3, w19
+│   ╎└────< 0x001898c8      68ffff17       b     0x189668
+│   ╎   └─> 0x001898cc      886a45f9       ldr   x8, [x20, 0xad0]      ; [0xad0:4]=0x65636375 ; "uccess\r\n"
+│   ╎       0x001898d0      130140b9       ldr   w19, [x8]
+│   ╎   ┌─< 0x001898d4      d3010034       cbz   w19, 0x18990c
+│   ╎   │   0x001898d8      400600d0       adrp  x0, 0x253000
+│   ╎   │   0x001898dc      e10600d0       adrp  x1, 0x267000
+│   ╎   │   0x001898e0      00ec3991       add   x0, x0, 0xe7b
+│   ╎   │   0x001898e4      21bc1091       add   x1, x1, 0x42f
+│   ╎   │   0x001898e8      422d8052       mov   w2, 0x16a
+│   ╎   │   0x001898ec      e303132a       mov   w3, w19
+│   ╎   │   0x001898f0      420cff97       bl    fcn.0014c9f8
+│   ╎   │   0x001898f4      886a45f9       ldr   x8, [x20, 0xad0]      ; [0xad0:4]=0x65636375 ; "uccess\r\n"
+│   ╎   │   0x001898f8      08614039       ldrb  w8, [x8, 0x18]        ; [0x18:4]=0x7600000
+│   ╎   │   0x001898fc      1f011972       tst   w8, 0x80
+│   ╎   │   0x00189900      e8ae8012       mov   w8, -0x578
+│   ╎   │   0x00189904      7302881a       csel  w19, w19, w8, eq
+│   └─────< 0x00189908      59ffff17       b     0x18966c
+│       └─> 0x0018990c      08614039       ldrb  w8, [x8, 0x18]        ; [0x18:4]=0x7600000
+│ ────────< 0x00189910      28f22f36       tbz   w8, 5, 0x189754
+│           0x00189914      f30600d0       adrp  x19, 0x267000
+│           0x00189918      800700d0       adrp  x0, 0x27b000
+│           0x0018991c      73be1091       add   x19, x19, 0x42f
+│           0x00189920      00500991       add   x0, x0, 0x254
+│           0x00189924      222e8052       mov   w2, 0x171
+│           0x00189928      e10313aa       mov   x1, x19
+│           0x0018992c      330cff97       bl    fcn.0014c9f8
+│           0x00189930      886a45f9       ldr   x8, [x20, 0xad0]      ; [0xad0:4]=0x65636375 ; "uccess\r\n"
+│           0x00189934      f42000b0       adrp  x20, 0x5a6000
+│           0x00189938      94422a91       add   x20, x20, 0xa90
+│           0x0018993c      02048052       mov   w2, 0x20
+│           0x00189940      01810491       add   x1, x8, 0x120
+│           0x00189944      e00314aa       mov   x0, x20
+│           0x00189948      310fff97       bl    fcn.0014d60c
+│           0x0018994c      831240a9       ldp   x3, x4, [x20]
+│           0x00189950      851a41a9       ldp   x5, x6, [x20, 0x10]
+│           0x00189954      a0070090       adrp  x0, 0x27d000
+│           0x00189958      000c1391       add   x0, x0, 0x4c3
+│           0x0018995c      822e8052       mov   w2, 0x174
+│           0x00189960      e10313aa       mov   x1, x19
+│           0x00189964      250cff97       bl    fcn.0014c9f8
+└ ────────< 0x00189968      7bffff17       b     0x189754
+RIZIN_STATUS=0
 
------ removeToken -----
-│           0x00009148      sub   sp, sp, 0x50
-│           0x0000914c      stp   fp, lr, [var_60h + 0x30]
-│           0x00009150      str   x21, [var_60h + 0x40]
-│           0x00009154      stp   x20, x19, [var_60h + 0x50]
-│           0x00009158      add   fp, sp, 0x20
-│           0x0000915c      mov   x21, x0                              ; arg1
-│           0x00009160      adrp  x0, data.00002000                    ; 0x2000
-│           0x00009164      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x00009168      mov   w19, w2                              ; arg3
-│           0x0000916c      mov   x20, x1                              ; arg2
-│           0x00009170      str   wzr, [fp, 0x1c]
-│           0x00009174      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x00009178      stur  x0, [fp, -8]
-│           0x0000917c      add   x8, var_98h
-│           0x00009180      sub   x0, fp, 8
-│           0x00009184      stp   xzr, xzr, [var_60h + 0x18]
-│           0x00009188      bl    sym.imp.__errno
-│           0x0000918c      ldr   x8, [var_98h]                        ; [0x8:4]=0
-│       ┌─< 0x00009190      cbz   x8, 0x91c8
-│       │   0x00009194      mov   x0, x21
-│       │   0x00009198      mov   x1, x20
-│       │   0x0000919c      mov   w2, w19
-│       │   0x000091a0      mov   w3, wzr
-│       │   0x000091a4      mov   w4, 1
-│       │   0x000091a8      bl    fcn.000116e0
-│       │   0x000091ac      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x000091b0      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x000091b4      cbz   w0, 0x91f0
-│      ││   0x000091b8      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x000091bc      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x000091c0      mov   w0, 4
-│     ┌───< 0x000091c4      b     0x91dc
-│     ││└─> 0x000091c8      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x000091cc      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x000091d0      adrp  x2, data.00002000                    ; 0x2000
+========== STEADY VALIDATION @ 0x189d8c ==========
+--- RAW BYTES ---
+00189d8c: 7f2303d5 fd7bbda9 f50b00f9 f44f02a9  .#...{.......O..
+00189d9c: fd030091 35ceff97 e82000b0 00890ab9  ....5.... ......
+00189dac: ff02fe97 1f040071 21010054 5ca4fd97  .......q!..T\...
+00189dbc: a0020034 e00500b0 010600b0 00841591  ...4............
+00189dcc: 212c3491 62478052 06000014 200700f0  !,4.bG.R.... ...
+00189ddc: 010600b0 00f80191 212c3491 c2468052  ........!,4..F.R
 
------ sendFuseCmd -----
-│           0x00009410      sub   sp, sp, 0x50
-│           0x00009414      stp   fp, lr, [var_100h + 0xd0]
-│           0x00009418      str   x21, [var_100h + 0xe0]
-│           0x0000941c      stp   x20, x19, [var_100h + 0xf0]
-│           0x00009420      add   fp, sp, 0x20
-│           0x00009424      mov   x21, x0                              ; arg1
-│           0x00009428      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000942c      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x00009430      mov   w19, w2                              ; arg3
-│           0x00009434      mov   x20, x1                              ; arg2
-│           0x00009438      str   wzr, [fp, 0x1c]
-│           0x0000943c      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x00009440      stur  x0, [fp, -8]
-│           0x00009444      add   x8, var_138h
-│           0x00009448      sub   x0, fp, 8
-│           0x0000944c      stp   xzr, xzr, [var_100h + 0xb8]
-│           0x00009450      bl    sym.imp.__errno
-│           0x00009454      ldr   x8, [var_138h]                       ; [0x8:4]=0
-│       ┌─< 0x00009458      cbz   x8, 0x9490
-│       │   0x0000945c      mov   x0, x21
-│       │   0x00009460      mov   x1, x20
-│       │   0x00009464      mov   w2, w19
-│       │   0x00009468      mov   w3, wzr
-│       │   0x0000946c      mov   w4, 1
-│       │   0x00009470      bl    fcn.000116e0
-│       │   0x00009474      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x00009478      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x0000947c      cbz   w0, 0x94b8
-│      ││   0x00009480      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x00009484      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x00009488      mov   w0, 4
-│     ┌───< 0x0000948c      b     0x94a4
-│     ││└─> 0x00009490      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x00009494      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x00009498      adrp  x2, data.00002000                    ; 0x2000
+--- FUNCTION ANALYSIS ---
+arm
+64
+┌ fcn.00189d8c();
+│           ; var int64_t var_20h @ stack - 0x20
+│           ; var int64_t var_10h @ stack - 0x10
+│           0x00189d8c      7f2303d5       pacibsp
+│           0x00189d90      fd7bbda9       stp   fp, lr, [sp, -0lr]!
+│           0x00189d94      f50b00f9       str   x21, [var_20h]
+│           0x00189d98      f44f02a9       stp   x20, x19, [var_10h]
+│           0x00189d9c      fd030091       mov   fp, sp
+│           0x00189da0      35ceff97       bl    0x17d674
+│           0x00189da4      e82000b0       adrp  x8, 0x5a6000
+│           0x00189da8      00890ab9       str   w0, [x8, 0xa88]
+│           0x00189dac      ff02fe97       bl    0x10a9a8
+│           0x00189db0      1f040071       cmp   w0, 1
+│       ┌─< 0x00189db4      21010054       b.ne  0x189dd8
+│       │   0x00189db8      5ca4fd97       bl    0xf2f28
+│      ┌──< 0x00189dbc      a0020034       cbz   w0, 0x189e10
+│      ││   0x00189dc0      e00500b0       adrp  x0, 0x246000
+│      ││   0x00189dc4      010600b0       adrp  x1, 0x24a000
+│      ││   0x00189dc8      00841591       add   x0, x0, 0x561
+│      ││   0x00189dcc      212c3491       add   x1, x1, 0xd0b
+│      ││   0x00189dd0      62478052       mov   w2, 0x23b
+│     ┌───< 0x00189dd4      06000014       b     0x189dec
+│     ││└─> 0x00189dd8      200700f0       adrp  x0, 0x270000
+│     ││    0x00189ddc      010600b0       adrp  x1, 0x24a000
+│     ││    0x00189de0      00f80191       add   x0, x0, 0x7e
+│     ││    0x00189de4      212c3491       add   x1, x1, 0xd0b
+│     ││    0x00189de8      c2468052       mov   w2, 0x236
+│     ││    ; CODE XREF from fcn.00189d8c @ 0x189dd4
+│     └───> 0x00189dec      e30301aa       mov   x3, x1
+│      │    0x00189df0      020bff97       bl    0x14c9f8
+│      │    0x00189df4      13008012       mov   w19, -1
+│      │    ; CODE XREF from fcn.00189d8c @ 0x189f8c
+│      │┌─> 0x00189df8      e003132a       mov   w0, w19
+│      │╎   0x00189dfc      f44f42a9       ldp   x20, x19, [var_10h]
+│      │╎   0x00189e00      f50b40f9       ldr   x21, [var_20h]        ; [0x10:4]=0x14000004
+│      │╎   0x00189e04      fd7bc3a8       ldp   fp, lr, [sp], 0lr
+│      │╎   0x00189e08      ff2303d5       autibsp
+│      │╎   0x00189e0c      c0035fd6       ret
+│      └──> 0x00189e10      20038052       mov   w0, 0x19
+│       ╎   0x00189e14      d6feff97       bl    0x18996c
+│      ┌──< 0x00189e18      20010034       cbz   w0, 0x189e3c
+│      │╎   0x00189e1c      c0050090       adrp  x0, 0x241000
+│      │╎   0x00189e20      010600b0       adrp  x1, 0x24a000
+│      │╎   0x00189e24      00702491       add   x0, x0, 0x91c
+│      │╎   0x00189e28      212c3491       add   x1, x1, 0xd0b
+│      │╎   0x00189e2c      22488052       mov   w2, 0x241
+│      │╎   ; CODE XREF from fcn.00189d8c @ 0x189f24
+│     ┌───> 0x00189e30      03008012       mov   w3, -1
+│     ╎│╎   0x00189e34      13008012       mov   w19, -1
+│    ┌────< 0x00189e38      53000014       b     0x189f84
+│    │╎└──> 0x00189e3c      f52000b0       adrp  x21, 0x5a6000
+│    │╎ ╎   0x00189e40      b46245f9       ldr   x20, [x21, 0xac0]     ; [0xac0:4]=0x6e612065 ; "e and RP count success\r\n"
+│    │╎ ╎   0x00189e44      200700d0       adrp  x0, 0x26f000
+│    │╎ ╎   0x00189e48      00943891       add   x0, x0, 0xe25
+│    │╎ ╎   0x00189e4c      acaeff97       bl    0x1758fc
+│    │╎┌──< 0x00189e50      600500b4       cbz   x0, 0x189efc
+│    │╎│╎   0x00189e54      f30300aa       mov   x19, x0
+│    │╎│╎   0x00189e58      88129e52       mov   w8, 0xf094
+│    │╎│╎   0x00189e5c      80070090       adrp  x0, 0x279000
+│    │╎│╎   0x00189e60      210700b0       adrp  x1, 0x26e000
+│    │╎│╎   0x00189e64      2800a072       movk  w8, 1, lsl 16
+│    │╎│╎   0x00189e68      00643a91       add   x0, x0, 0xe99
+│    │╎│╎   0x00189e6c      212c0491       add   x1, x1, 0x10b
+│    │╎│╎   0x00189e70      9402088b       add   x20, x20, x8
+│    │╎│╎   0x00189e74      e10aff97       bl    0x14c9f8
+│    │╎│╎   0x00189e78      684e4138       ldrb  w8, [x19, 0x14]!      ; [0x14:4]=0
+│    │╎│╎   0x00189e7c      03808552       mov   w3, 0x2c00
+│    │╎│╎   0x00189e80      e00314aa       mov   x0, x20
+│    │╎│╎   0x00189e84      618e4038       ldrb  w1, [x19, 8]!         ; [0x8:4]=0x68656164
+│    │╎│╎   0x00189e88      6cb25f38       ldurb w12, [x19, -5]        ; [0x5:4]=0x64214877
+│    │╎│╎   0x00189e8c      6da25f38       ldurb w13, [x19, -6]        ; [0x6:4]=0x61642148
+│    │╎│╎   0x00189e90      6e925f38       ldurb w14, [x19, -7]        ; [0x7:4]=0x65616421
+│    │╎│╎   0x00189e94      690e4039       ldrb  w9, [x19, 3]          ; [0x3:4]=0x48776b00
+│    │╎│╎   0x00189e98      6a0a4039       ldrb  w10, [x19, 2]         ; [0x2:4]=0x776b0000
+│    │╎│╎   0x00189e9c      6b064039       ldrb  w11, [x19, 1]         ; [0x1:4]=0x6b000000
+│    │╎│╎   0x00189ea0      8d1d1833       bfi   w13, w12, 8, 8
+│    │╎│╎   0x00189ea4      c81d1833       bfi   w8, w14, 8, 8
+│    │╎│╎   0x00189ea8      2a1d1833       bfi   w10, w9, 8, 8
+│    │╎│╎   0x00189eac      611d1833       bfi   w1, w11, 8, 8
+│    │╎│╎   0x00189eb0      a83d1033       bfi   w8, w13, 16, 16
+│    │╎│╎   0x00189eb4      413d1033       bfi   w1, w10, 16, 16
+│    │╎│╎   0x00189eb8      02490011       add   w2, w8, 0x12
+│    │╎│╎   0x00189ebc      81bcfe97       bl    0x1390c0
+│    │╎│╎   0x00189ec0      a06245f9       ldr   x0, [x21, 0xac0]      ; [0xac0:4]=0x6e612065 ; "e and RP count success\r\n"
+│    │╎│╎   0x00189ec4      f42000b0       adrp  x20, 0x5a6000
+│    │╎│╎   0x00189ec8      816645f9       ldr   x1, [x20, 0xac8]      ; [0xac8:4]=0x756f6320 ; " count success\r\n"
+│    │╎│╎   0x00189ecc      080443f9       ldr   x8, [x0, 0x608]       ; [0x608:4]=0x910163e9
+│    │╎│╎   0x00189ed0      08017bb2       orr   x8, x8, 0x20
+│    │╎│╎   0x00189ed4      080403f9       str   x8, [x0, 0x608]
+│    │╎│╎   0x00189ed8      807cff97       bl    0x1690d8
+│   ┌─────< 0x00189edc      60020034       cbz   w0, 0x189f28
+│   ││╎│╎   0x00189ee0      f303002a       mov   w19, w0
+│   ││╎│╎   0x00189ee4      200600d0       adrp  x0, 0x24f000
+│   ││╎│╎   0x00189ee8      010600b0       adrp  x1, 0x24a000
+│   ││╎│╎   0x00189eec      00802991       add   x0, x0, 0xa60
+│   ││╎│╎   0x00189ef0      212c3491       add   x1, x1, 0xd0b
+│   ││╎│╎   0x00189ef4      c2498052       mov   w2, 0x24e
+│  ┌──────< 0x00189ef8      22000014       b     0x189f80
+│  │││╎└──> 0x00189efc      e0060090       adrp  x0, 0x265000
+│  │││╎ ╎   0x00189f00      210700b0       adrp  x1, 0x26e000
+│  │││╎ ╎   0x00189f04      004c1791       add   x0, x0, 0x5d3
+│  │││╎ ╎   0x00189f08      212c0491       add   x1, x1, 0x10b
+│  │││╎ ╎   0x00189f0c      bb0aff97       bl    0x14c9f8
+│  │││╎ ╎   0x00189f10      c0050090       adrp  x0, 0x241000
+│  │││╎ ╎   0x00189f14      010600b0       adrp  x1, 0x24a000
+│  │││╎ ╎   0x00189f18      00242591       add   x0, x0, 0x949
+│  │││╎ ╎   0x00189f1c      212c3491       add   x1, x1, 0xd0b
+│  │││╎ ╎   0x00189f20      e2488052       mov   w2, 0x247
+│  │││└───< 0x00189f24      c3ffff17       b     0x189e30
+│  │└─────> 0x00189f28      806645f9       ldr   x0, [x20, 0xac8]      ; [0xac8:4]=0x756f6320 ; " count success\r\n"
+│  │ │  ╎   0x00189f2c      6839ff97       bl    0x1584cc
+│  │ │ ┌──< 0x00189f30      00010034       cbz   w0, 0x189f50
+│  │ │ │╎   0x00189f34      f303002a       mov   w19, w0
+│  │ │ │╎   0x00189f38      a00500d0       adrp  x0, 0x23f000
+│  │ │ │╎   0x00189f3c      010600b0       adrp  x1, 0x24a000
+│  │ │ │╎   0x00189f40      00680b91       add   x0, x0, 0x2da
+│  │ │ │╎   0x00189f44      212c3491       add   x1, x1, 0xd0b
+│  │ │ │╎   0x00189f48      824a8052       mov   w2, 0x254
+│  │ │┌───< 0x00189f4c      0d000014       b     0x189f80
+│  │ ││└──> 0x00189f50      f52000b0       adrp  x21, 0x5a6000
+│  │ ││ ╎   0x00189f54      a06a45f9       ldr   x0, [x21, 0xad0]      ; [0xad0:4]=0x65636375 ; "uccess\r\n"
+│  │ ││ ╎   0x00189f58      816645f9       ldr   x1, [x20, 0xac8]      ; [0xac8:4]=0x756f6320 ; " count success\r\n"
+│  │ ││ ╎   0x00189f5c      e2031f2a       mov   w2, wzr
+│  │ ││ ╎   0x00189f60      f67dff97       bl    0x169738
+│  │ ││┌──< 0x00189f64      60010034       cbz   w0, 0x189f90
+│  │ │││╎   0x00189f68      f303002a       mov   w19, w0
+│  │ │││╎   0x00189f6c      000600b0       adrp  x0, 0x24a000
+│  │ │││╎   0x00189f70      010600b0       adrp  x1, 0x24a000
+│  │ │││╎   0x00189f74      00683391       add   x0, x0, 0xcda
+│  │ │││╎   0x00189f78      212c3491       add   x1, x1, 0xd0b
+│  │ │││╎   0x00189f7c      424b8052       mov   w2, 0x25a
+│  │ │││╎   ; CODE XREFS from fcn.00189d8c @ 0x189ef8, 0x189f4c, 0x189fc0
+│  └┌─└───> 0x00189f80      e303132a       mov   w3, w19
+│   ╎│ │╎   ; CODE XREF from fcn.00189d8c @ 0x189e38
+│   ╎└────> 0x00189f84      9d0aff97       bl    0x14c9f8
+│   ╎  │╎   ; CODE XREF from fcn.00189d8c @ 0x189fcc
+│   ╎ ┌───> 0x00189f88      f2feff97       bl    0x189b50
+│   ╎ ╎│└─< 0x00189f8c      9bffff17       b     0x189df8
+│   ╎ ╎└──> 0x00189f90      a86a45f9       ldr   x8, [x21, 0xad0]      ; [0xad0:4]=0x65636375 ; "uccess\r\n"
+│   ╎ ╎     0x00189f94      09815439       ldrb  w9, [x8, 0x520]       ; [0x520:4]=0xb900011f
+│   ╎ ╎ ┌─< 0x00189f98      69011036       tbz   w9, 2, 0x189fc4
+│   ╎ ╎ │   0x00189f9c      00e11491       add   x0, x8, 0x538
+│   ╎ ╎ │   0x00189fa0      e6f9ff97       bl    0x188738
+│   ╎ ╎┌──< 0x00189fa4      00010034       cbz   w0, 0x189fc4
+│   ╎ ╎││   0x00189fa8      f303002a       mov   w19, w0
+│   ╎ ╎││   0x00189fac      600600b0       adrp  x0, 0x256000
+│   ╎ ╎││   0x00189fb0      010600b0       adrp  x1, 0x24a000
+│   ╎ ╎││   0x00189fb4      00e80f91       add   x0, x0, 0x3fa
+│   ╎ ╎││   0x00189fb8      212c3491       add   x1, x1, 0xd0b
+│   ╎ ╎││   0x00189fbc      224c8052       mov   w2, 0x261
+│   └─────< 0x00189fc0      f0ffff17       b     0x189f80
+│     ╎└└─> 0x00189fc4      9afdff97       bl    0x18962c
+│     ╎     0x00189fc8      f3031f2a       mov   w19, wzr
+└     └───< 0x00189fcc      efffff17       b     0x189f88
+RIZIN_STATUS=0
 
------ getRequestMsg -----
-│           0x00009d44      mov   x21, x0                              ; arg1
-│           0x00009d48      adrp  x0, data.00002000                    ; 0x2000
-│           0x00009d4c      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x00009d50      mov   w19, w7                              ; arg8
-│           0x00009d54      mov   x20, x6                              ; arg7
-│           0x00009d58      mov   w22, w5                              ; arg6
-│           0x00009d5c      mov   w26, w4                              ; arg5
-│           0x00009d60      mov   x25, x3                              ; arg4
-│           0x00009d64      mov   x23, x2                              ; arg3
-│           0x00009d68      mov   x24, x1                              ; arg2
-│           0x00009d6c      stur  wzr, [fp, -4]
-│           0x00009d70      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x00009d74      stp   xzr, x0, [fp, -0x18]
-│           0x00009d78      sub   x8, fp, 0x20
-│           0x00009d7c      sub   x0, fp, 0x10
-│           0x00009d80      stur  xzr, [fp, -0x20]
-│           0x00009d84      bl    sym.imp.__errno
-│           0x00009d88      ldur  x8, [fp, -0x20]
-│       ┌─< 0x00009d8c      cbz   x8, 0x9dc4
-│       │   0x00009d90      mov   x0, x21
-│       │   0x00009d94      mov   x1, x20
-│       │   0x00009d98      mov   w2, w19
-│       │   0x00009d9c      mov   w3, wzr
-│       │   0x00009da0      mov   w4, 1
-│       │   0x00009da4      bl    fcn.000116e0
-│      ┌──< 0x00009da8      cbz   w0, 0x9df0
-│      ││   0x00009dac      adrp  x1, data.00003000                    ; 0x3000
-│      ││   0x00009db0      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ││   0x00009db4      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x00009db8      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x00009dbc      mov   w0, 4
-│     ┌───< 0x00009dc0      b     0x9dd8
-│     ││└─> 0x00009dc4      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x00009dc8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x00009dcc      adrp  x2, data.00002000                    ; 0x2000
+========== RPMB UPDATE @ 0x1257bc ==========
+--- RAW BYTES ---
+001257bc: 7f2303d5 fd7bbda9 f50b00f9 f44f02a9  .#...{.......O..
+001257cc: fd030091 1f000071 00208052 f3079f1a  .......q. .R....
+001257dc: e8720094 400500b4 02208052 e1031f2a  .r..@.... .R...*
+001257ec: f40300aa 43a00094 412200d0 21d02391  ....C...A"..!.#.
+001257fc: 82018052 e00314aa 829f0094 482200d0  ...R........H"..
+0012580c: 08a15339 492200d0 33f108b9 93fe00b9  ..S9I"..3.......
 
------ makeTokenReq -----
-│           0x0000a1b8      mov   x21, x0                              ; arg1
-│           0x0000a1bc      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000a1c0      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x0000a1c4      mov   w19, w7                              ; arg8
-│           0x0000a1c8      mov   x20, x6                              ; arg7
-│           0x0000a1cc      mov   x22, x5                              ; arg6
-│           0x0000a1d0      mov   w26, w4                              ; arg5
-│           0x0000a1d4      mov   x25, x3                              ; arg4
-│           0x0000a1d8      mov   x23, x2                              ; arg3
-│           0x0000a1dc      mov   x24, x1                              ; arg2
-│           0x0000a1e0      stur  wzr, [fp, -4]
-│           0x0000a1e4      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x0000a1e8      stp   xzr, x0, [fp, -0x18]
-│           0x0000a1ec      sub   x8, fp, 0x20
-│           0x0000a1f0      sub   x0, fp, 0x10
-│           0x0000a1f4      stur  xzr, [fp, -0x20]
-│           0x0000a1f8      bl    sym.imp.__errno
-│           0x0000a1fc      ldur  x8, [fp, -0x20]
-│       ┌─< 0x0000a200      cbz   x8, 0xa238
-│       │   0x0000a204      mov   x0, x21
-│       │   0x0000a208      mov   x1, x20
-│       │   0x0000a20c      mov   w2, w19
-│       │   0x0000a210      mov   w3, wzr
-│       │   0x0000a214      mov   w4, 1
-│       │   0x0000a218      bl    fcn.000116e0
-│      ┌──< 0x0000a21c      cbz   w0, 0xa264
-│      ││   0x0000a220      adrp  x1, data.00003000                    ; 0x3000
-│      ││   0x0000a224      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ││   0x0000a228      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x0000a22c      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x0000a230      mov   w0, 4
-│     ┌───< 0x0000a234      b     0xa24c
-│     ││└─> 0x0000a238      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x0000a23c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x0000a240      adrp  x2, data.00002000                    ; 0x2000
+--- FUNCTION ANALYSIS ---
+arm
+64
+┌ fcn.001257bc(int64_t arg1);
+│           ; arg int64_t arg1 @ x0
+│           ; var int64_t var_20h @ stack - 0x20
+│           ; var int64_t var_10h @ stack - 0x10
+│           0x001257bc      7f2303d5       pacibsp
+│           0x001257c0      fd7bbda9       stp   fp, lr, [sp, -0lr]!
+│           0x001257c4      f50b00f9       str   x21, [var_20h]
+│           0x001257c8      f44f02a9       stp   x20, x19, [var_10h]
+│           0x001257cc      fd030091       mov   fp, sp
+│           0x001257d0      1f000071       cmp   w0, 0                 ; arg1
+│           0x001257d4      00208052       mov   w0, 0x100
+│           0x001257d8      f3079f1a       cset  w19, ne
+│           0x001257dc      e8720094       bl    0x14237c
+│       ┌─< 0x001257e0      400500b4       cbz   x0, 0x125888
+│       │   0x001257e4      02208052       mov   w2, 0x100
+│       │   0x001257e8      e1031f2a       mov   w1, wzr
+│       │   0x001257ec      f40300aa       mov   x20, x0
+│       │   0x001257f0      43a00094       bl    0x14d8fc
+│       │   0x001257f4      412200d0       adrp  x1, 0x56f000
+│       │   0x001257f8      21d02391       add   x1, x1, 0x8f4
+│       │   0x001257fc      82018052       mov   w2, 0xc
+│       │   0x00125800      e00314aa       mov   x0, x20
+│       │   0x00125804      829f0094       bl    0x14d60c
+│       │   0x00125808      482200d0       adrp  x8, 0x56f000
+│       │   0x0012580c      08a15339       ldrb  w8, [x8, 0x4e8]       ; [0x4e8:4]=0xb900511f
+│       │   0x00125810      492200d0       adrp  x9, 0x56f000
+│       │   0x00125814      33f108b9       str   w19, [x9, 0x8f0]
+│       │   0x00125818      93fe00b9       str   w19, [x20, 0xfc]
+│       │   0x0012581c      1f050071       cmp   w8, 1
+│      ┌──< 0x00125820      01020054       b.ne  0x125860
+│      ││   0x00125824      482200d0       adrp  x8, 0x56f000
+│      ││   0x00125828      15d944b9       ldr   w21, [x8, 0x4d8]      ; [0x4d8:4]=0xb900411f
+│      ││   0x0012582c      a3730091       add   x3, fp, 0x1c
+│      ││   0x00125830      21008052       mov   w1, 1
+│      ││   0x00125834      e20314aa       mov   x2, x20
+│      ││   0x00125838      e003152a       mov   w0, w21
+│      ││   0x0012583c      bf3b0079       strh  wzr, [fp, 0x1c]
+│      ││   0x00125840      b5f9ff97       bl    0x123f14
+│     ┌───< 0x00125844      a0010034       cbz   w0, 0x125878
+│     │││   0x00125848      a0090090       adrp  x0, 0x259000
+│     │││   0x0012584c      c10800b0       adrp  x1, 0x23e000
+│     │││   0x00125850      003c3d91       add   x0, x0, 0xf4f
+│     │││   0x00125854      21041c91       add   x1, x1, 0x701
+│     │││   0x00125858      e203152a       mov   w2, w21
+│     │││   0x0012585c      679c0094       bl    0x14c9f8
+│     │└──> 0x00125860      a00800b0       adrp  x0, 0x23a000
+│     │ │   0x00125864      a10900f0       adrp  x1, 0x25c000
+│     │ │   0x00125868      00f41591       add   x0, x0, 0x57d
+│     │ │   0x0012586c      21780291       add   x1, x1, 0x9e
+│     │ │   0x00125870      e203132a       mov   w2, w19
+│     │ │   0x00125874      619c0094       bl    0x14c9f8
+│     └───> 0x00125878      e00314aa       mov   x0, x20
+│       │   0x0012587c      0a730094       bl    0x1424a4
+│       │   0x00125880      e0031f2a       mov   w0, wzr
+│      ┌──< 0x00125884      08000014       b     0x1258a4
+│      │└─> 0x00125888      400900f0       adrp  x0, 0x250000
+│      │    0x0012588c      a10900f0       adrp  x1, 0x25c000
+│      │    0x00125890      00683e91       add   x0, x0, 0xf9a
+│      │    0x00125894      21780291       add   x1, x1, 0x9e
+│      │    0x00125898      589c0094       bl    0x14c9f8
+│      │    0x0012589c      80608152       mov   w0, 0xb04
+│      │    0x001258a0      a000a072       movk  w0, 5, lsl 16
+│      │    ; CODE XREF from fcn.001257bc @ 0x125884
+│      └──> 0x001258a4      f44f42a9       ldp   x20, x19, [var_10h]
+│           0x001258a8      f50b40f9       ldr   x21, [var_20h]        ; [0x10:4]=0x14000004
+│           0x001258ac      fd7bc3a8       ldp   fp, lr, [sp], 0lr
+│           0x001258b0      ff2303d5       autibsp
+└           0x001258b4      c0035fd6       ret
+RIZIN_STATUS=0
 
------ commandForESS -----
-│           0x0000a6c0      add   fp, sp, 0x50
-│           0x0000a6c4      mov   x25, x0                              ; arg1
-│           0x0000a6c8      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000a6cc      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x0000a6d0      mov   x19, x6                              ; arg7
-│           0x0000a6d4      mov   x20, x5                              ; arg6
-│           0x0000a6d8      mov   w21, w4                              ; arg5
-│           0x0000a6dc      mov   x24, x3                              ; arg4
-│           0x0000a6e0      mov   x23, x2                              ; arg3
-│           0x0000a6e4      mov   w22, w1                              ; arg2
-│           0x0000a6e8      str   wzr, [fp, 0x1c]
-│           0x0000a6ec      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x0000a6f0      stp   xzr, x0, [fp, -0x10]
-│           0x0000a6f4      sub   x8, fp, 0x18
-│           0x0000a6f8      sub   x0, fp, 8
-│           0x0000a6fc      stur  xzr, [fp, -0x18]
-│           0x0000a700      bl    sym.imp.__errno
-│           0x0000a704      ldur  x8, [fp, -0x18]
-│       ┌─< 0x0000a708      cbz   x8, 0xa740
-│       │   0x0000a70c      mov   x0, x25
-│       │   0x0000a710      mov   x1, x24
-│       │   0x0000a714      mov   w2, w21
-│       │   0x0000a718      mov   w3, wzr
-│       │   0x0000a71c      mov   w4, 2
-│       │   0x0000a720      bl    fcn.000116e0
-│       │   0x0000a724      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x0000a728      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x0000a72c      cbz   w0, 0xa768
-│      ││   0x0000a730      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x0000a734      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x0000a738      mov   w0, 4
-│     ┌───< 0x0000a73c      b     0xa754
-│     ││└─> 0x0000a740      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x0000a744      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x0000a748      adrp  x2, data.00002000                    ; 0x2000
-
------ recoveryITL -----
-│           0x0000ac70      stp   x22, x21, [var_20h]
-│           0x0000ac74      stp   x20, x19, [var_10h]
-│           0x0000ac78      add   fp, sp, 0x20
-│           0x0000ac7c      mov   x23, x0                              ; arg1
-│           0x0000ac80      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000ac84      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x0000ac88      mov   w20, w4                              ; arg5
-│           0x0000ac8c      mov   x22, x3                              ; arg4
-│           0x0000ac90      mov   w21, w2                              ; arg3
-│           0x0000ac94      mov   x19, x1                              ; arg2
-│           0x0000ac98      str   wzr, [fp, 0x1c]
-│           0x0000ac9c      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x0000aca0      stur  x0, [fp, -8]
-│           0x0000aca4      add   x8, var_58h
-│           0x0000aca8      sub   x0, fp, 8
-│           0x0000acac      stp   xzr, xzr, [var_58h]
-│           0x0000acb0      bl    sym.imp.__errno
-│           0x0000acb4      ldr   x8, [var_58h]                        ; [0x8:4]=0
-│       ┌─< 0x0000acb8      cbz   x8, 0xacf0
-│       │   0x0000acbc      mov   x0, x23
-│       │   0x0000acc0      mov   x1, x22
-│       │   0x0000acc4      mov   w2, w20
-│       │   0x0000acc8      mov   w3, wzr
-│       │   0x0000accc      mov   w4, 1
-│       │   0x0000acd0      bl    fcn.000116e0
-│       │   0x0000acd4      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x0000acd8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x0000acdc      cbz   w0, 0xad18
-│      ││   0x0000ace0      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x0000ace4      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x0000ace8      mov   w0, 4
-│     ┌───< 0x0000acec      b     0xad04
-│     ││└─> 0x0000acf0      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x0000acf4      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x0000acf8      adrp  x2, data.00002000                    ; 0x2000
-
------ makeITLReq -----
-│           0x0000ae80      add   fp, sp, 0x70
-│           0x0000ae84      mov   x25, x0                              ; arg1
-│           0x0000ae88      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000ae8c      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x0000ae90      mov   x19, x6                              ; arg7
-│           0x0000ae94      mov   x20, x5                              ; arg6
-│           0x0000ae98      mov   w21, w4                              ; arg5
-│           0x0000ae9c      mov   x24, x3                              ; arg4
-│           0x0000aea0      mov   x22, x2                              ; arg3
-│           0x0000aea4      mov   x23, x1                              ; arg2
-│           0x0000aea8      str   wzr, [fp, 0x1c]
-│           0x0000aeac      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x0000aeb0      stp   xzr, x0, [fp, -0x10]
-│           0x0000aeb4      sub   x8, fp, 0x18
-│           0x0000aeb8      sub   x0, fp, 8
-│           0x0000aebc      stur  xzr, [fp, -0x18]
-│           0x0000aec0      bl    sym.imp.__errno
-│           0x0000aec4      ldur  x8, [fp, -0x18]
-│       ┌─< 0x0000aec8      cbz   x8, 0xaf00
-│       │   0x0000aecc      mov   x0, x25
-│       │   0x0000aed0      mov   x1, x24
-│       │   0x0000aed4      mov   w2, w21
-│       │   0x0000aed8      mov   w3, wzr
-│       │   0x0000aedc      mov   w4, 1
-│       │   0x0000aee0      bl    fcn.000116e0
-│       │   0x0000aee4      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x0000aee8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x0000aeec      cbz   w0, 0xaf28
-│      ││   0x0000aef0      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x0000aef4      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x0000aef8      mov   w0, 4
-│     ┌───< 0x0000aefc      b     0xaf14
-│     ││└─> 0x0000af00      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x0000af04      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x0000af08      adrp  x2, data.00002000                    ; 0x2000
-
------ getModesbit -----
-│           0x0000c0e8      stp   x22, x21, [var_90h + 0x70]
-│           0x0000c0ec      stp   x20, x19, [var_90h + 0x80]
-│           0x0000c0f0      add   fp, sp, 0x40
-│           0x0000c0f4      mov   x23, x0                              ; arg1
-│           0x0000c0f8      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000c0fc      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x0000c100      mov   x19, x4                              ; arg5
-│           0x0000c104      mov   x20, x3                              ; arg4
-│           0x0000c108      mov   w21, w2                              ; arg3
-│           0x0000c10c      mov   x22, x1                              ; arg2
-│           0x0000c110      stur  wzr, [fp, -4]
-│           0x0000c114      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x0000c118      stur  x0, [fp, -0x10]
-│           0x0000c11c      add   x8, var_e0h
-│           0x0000c120      sub   x0, fp, 0x10
-│           0x0000c124      stp   xzr, xzr, [var_90h + 0x30]
-│           0x0000c128      bl    sym.imp.__errno
-│           0x0000c12c      ldr   x8, [var_e0h]                        ; [0x20:4]=64 ; "@"
-│       ┌─< 0x0000c130      cbz   x8, 0xc168
-│       │   0x0000c134      mov   x0, x23
-│       │   0x0000c138      mov   x1, x22
-│       │   0x0000c13c      mov   w2, w21
-│       │   0x0000c140      mov   w3, wzr
-│       │   0x0000c144      mov   w4, 1
-│       │   0x0000c148      bl    fcn.000116e0
-│       │   0x0000c14c      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x0000c150      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x0000c154      cbz   w0, 0xc190
-│      ││   0x0000c158      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x0000c15c      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x0000c160      mov   w0, 4
-│     ┌───< 0x0000c164      b     0xc17c
-│     ││└─> 0x0000c168      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x0000c16c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x0000c170      adrp  x2, data.00002000                    ; 0x2000
-
------ getTokenInfoForJanus -----
-│           0x0000c374      stp   x22, x21, [var_110h + 0xf0]
-│           0x0000c378      stp   x20, x19, [var_110h + data.00000100]
-│           0x0000c37c      add   fp, sp, 0x40
-│           0x0000c380      mov   x23, x0                              ; arg1
-│           0x0000c384      adrp  x0, data.00002000                    ; 0x2000
-│           0x0000c388      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
-│           0x0000c38c      mov   x19, x4                              ; arg5
-│           0x0000c390      mov   x20, x3                              ; arg4
-│           0x0000c394      mov   w21, w2                              ; arg3
-│           0x0000c398      mov   x22, x1                              ; arg2
-│           0x0000c39c      stur  wzr, [fp, -4]
-│           0x0000c3a0      bl    sym.imp.strerror                     ; char *strerror(int errnum)
-│           0x0000c3a4      stur  x0, [fp, -0x10]
-│           0x0000c3a8      add   x8, var_160h
-│           0x0000c3ac      sub   x0, fp, 0x10
-│           0x0000c3b0      stp   xzr, xzr, [var_110h + 0xb0]
-│           0x0000c3b4      bl    sym.imp.__errno
-│           0x0000c3b8      ldr   x8, [var_160h]                       ; [0x20:4]=64 ; "@"
-│       ┌─< 0x0000c3bc      cbz   x8, 0xc3f4
-│       │   0x0000c3c0      mov   x0, x23
-│       │   0x0000c3c4      mov   x1, x22
-│       │   0x0000c3c8      mov   w2, w21
-│       │   0x0000c3cc      mov   w3, wzr
-│       │   0x0000c3d0      mov   w4, 1
-│       │   0x0000c3d4      bl    fcn.000116e0
-│       │   0x0000c3d8      adrp  x1, data.00003000                    ; 0x3000
-│       │   0x0000c3dc      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│      ┌──< 0x0000c3e0      cbz   w0, 0xc41c
-│      ││   0x0000c3e4      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x0000c3e8      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
-│      ││   0x0000c3ec      mov   w0, 4
-│     ┌───< 0x0000c3f0      b     0xc408
-│     ││└─> 0x0000c3f4      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x0000c3f8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
-│     ││    0x0000c3fc      adrp  x2, data.00002000                    ; 0x2000
+========== MODE BITS ADDRESS ==========
+RIZIN_STATUS=0
 
 ========== END ==========
-11:32:55 oleg@parrot ~ →
+11:48:55 oleg@parrot ~ →
