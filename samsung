@@ -1,1095 +1,748 @@
-11:05:00 oleg@parrot ~ → (line 14) ...
-rizin -q -A -c 'pdf @ 0xdff0; q' "$SERVER"
+11:06:18 oleg@parrot ~ → BASE="$HOME/a26-analysis/engmode/current"
+JNI="$BASE/system-lib64/lib.engmodejni.samsung.so"
+HAL="$BASE/system-lib64/lib.engmode.samsung.so"
+
+echo "========== PACKAGE AUTHORIZATION =========="
+readelf -Ws "$JNI" | c++filt | grep -iE 'em_check_package|check_package'
+rizin -q -A -c 'pdf @ sym.em_check_package; q' "$JNI"
 
 echo
-echo "========== UPDATE TOKEN CACHE =========="
-rizin -q -A -c 'pdf @ 0xf080; q' "$SERVER"
+echo "========== JNI LOADER RELOCATIONS =========="
+readelf -rW "$JNI" | grep -iE 'dlopen|dlsym|dlclose'
 
 echo
-echo "========== JNI: GET SERVER TIME =========="
-rizin -q -A -c 'pdf @ 0x48a8; q' "$JNI"
+echo "========== HAL SYMBOLS =========="
+nm -D -C --defined-only "$HAL" |
+grep -iE 'getServerTime|makeTokenReq|getRequestMsg|isTokenInstalled|caller_check'
 
 echo
-echo "========== JNI: MAKE TOKEN REQUEST =========="
-rizin -q -A -c 'pdf @ 0x4b28; q' "$JNI"
-
-echo
-echo "========== JNI: GET REQUEST MESSAGE =========="
-rizin -q -A -c 'pdf @ 0x4f64; q' "$JNI"
-
-echo
-echo "========== JNI: CHECK TOKEN =========="
-rizin -q -A -c 'pdf @ 0x576c; q' "$JNI"
-
-echo
-echo "========== JNI IMPORTS =========="
-readelf -Ws "$JNI" | c++filt | grep -iE 'engmode|Engmode|JNI|Binder|service|token|time|request'
-========== WRITE ESI ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x0000a000.
-            ; CODE XREFS from fcn.000165c0 @ 0x165c4, 0x165cc
-            ;-- EngineeringModeWorld::writeEsi():
-┌ method.EngineeringModeWorld.writeEsi(int64_t arg1);
+echo "========== HAL IMPLEMENTATION =========="
+rizin -q -A -c 'pdf @ sym.engmodeManager_hal_getServerTime; pdf @ sym.engmodeManager_hal_makeTokenReq; pdf @ sym.engmodeManager_hal_getRequestMsg; pdf @ sym.engmodeManager_hal_isTokenInstalled; q' "$HAL"
+========== PACKAGE AUTHORIZATION ==========
+    24: 00000000000070a8  1300 FUNC    LOCAL  DEFAULT   15 em_check_package
+ERROR: Cannot determine entrypoint, using 0x00004000.
+            ; XREFS: CALL 0x00004364  CALL 0x00004924  CALL 0x00004ce4  CALL 0x000050c0  CALL 0x000053a8
+            ; XREFS: CALL 0x000055d4  CALL 0x000057c8  CALL 0x00005988  CALL 0x00005b4c  CALL 0x00006018
+            ; XREFS: CALL 0x000061fc  CALL 0x0000642c  CALL 0x0000673c  CALL 0x00006990  CALL 0x00006bb0
+            ; XREFS: CALL 0x00006db8
+┌ sym.em_check_package(int64_t arg1, int64_t arg2, int64_t arg3);
 │           ; arg int64_t arg1 @ x0
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000ddc0      stp   fp, lr, [sp, -0x20]!                 ; RELOC TARGET 64 EngineeringModeWorld::writeEsi() @ 0x0000ddc0 ; EngineeringModeWorld::writeEsi()
-│           0x0000ddc4      stp   x20, x19, [var_10h]
-│           0x0000ddc8      mov   fp, sp
-│           0x0000ddcc      mov   x19, x0                              ; arg1
-│           0x0000ddd0      ldr   x1, [x0, 0x10]                       ; [0x10:4]=0xb70003 ; arg1
-│           0x0000ddd4      mov   w0, 3
-│           0x0000ddd8      mov   w2, 0x2c00
-│           0x0000dddc      bl    fcn.00016360                         ; fcn.00016360
-│           0x0000dde0      mov   w20, w0
-│       ┌─< 0x0000dde4      cbz   w0, 0xde00
-│       │   0x0000dde8      adrp  x1, data.00005000                    ; 0x5000
-│       │   0x0000ddec      adrp  x2, data.00005000                    ; 0x5000
-│       │   0x0000ddf0      add   x1, x1, 0xe4c                        ; 0x5e4c ; "engmode_world" ; const char *tag
-│       │   0x0000ddf4      add   x2, x2, 0xfb8                        ; 0x5fb8 ; "Failed to write steady\n" ; const char *fmt
-│       │   0x0000ddf8      mov   w0, 6
-│       │   0x0000ddfc      bl    sym.imp.__android_log_print          ; sym.imp.__android_log_print ; int __android_log_print(enum androidLogPriority prio, const char *tag, const char *fmt)
-│       └─> 0x0000de00      ldr   x0, [x19, 0x10]                      ; [0x10:4]=0xb70003
-│       ┌─< 0x0000de04      cbz   x0, 0xde10
-│       │   0x0000de08      bl    sym.imp.free                         ; sym.imp.free ; void free(void *ptr)
-│       │   0x0000de0c      str   xzr, [x19, 0x10]
-│       └─> 0x0000de10      mov   w0, w20
-│           0x0000de14      ldp   x20, x19, [var_10h]
-│           0x0000de18      ldp   fp, lr, [sp], 0x20
-└           0x0000de1c      ret
-
-========== WRITE TOKEN ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x0000a000.
-            ; CODE XREFS from fcn.00016600 @ 0x16604, 0x1660c
-            ;-- EngineeringModeWorld::writeToken(unsigned char*, unsigned int):
-┌ method.EngineeringModeWorld.writeToken_unsigned_char___unsigned_int();
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000df80      stp   fp, lr, [sp, -0x20]!                 ; RELOC TARGET 64 EngineeringModeWorld::writeToken(unsigned char*, unsigned int) @ 0x0000df80 ; EngineeringModeWorld::writeToken(unsigned char*, unsigned int)
-│           0x0000df84      str   x19, [var_10h]
-│           0x0000df88      mov   fp, sp
-│       ┌─< 0x0000df8c      cbz   x1, 0xdfbc
-│       │   0x0000df90      mov   w0, 2
-│       │   0x0000df94      bl    fcn.00016360                         ; fcn.00016360
-│       │   0x0000df98      mov   w19, w0
-│      ┌──< 0x0000df9c      cbz   w0, 0xdfdc
-│      ││   0x0000dfa0      adrp  x1, data.00005000                    ; 0x5000
-│      ││   0x0000dfa4      adrp  x2, data.00006000                    ; 0x6000
-│      ││   0x0000dfa8      add   x1, x1, 0xe4c                        ; 0x5e4c ; "engmode_world" ; const char *tag
-│      ││   0x0000dfac      add   x2, x2, 0x149                        ; 0x6149 ; "Failed to write steady for token\n" ; const char *fmt
-│      ││   0x0000dfb0      mov   w0, 6
-│      ││   0x0000dfb4      bl    sym.imp.__android_log_print          ; sym.imp.__android_log_print ; int __android_log_print(enum androidLogPriority prio, const char *tag, const char *fmt)
-│     ┌───< 0x0000dfb8      b     0xdfdc
-│     ││└─> 0x0000dfbc      adrp  x0, data.00006000                    ; 0x6000
-│     ││    0x0000dfc0      adrp  x1, data.00006000                    ; 0x6000
-│     ││    0x0000dfc4      add   x0, x0, 0x3f6                        ; 0x63f6 ; "%s: parameter(%u) is null.\n" ; const char *format
-│     ││    0x0000dfc8      add   x1, x1, 0xfbc                        ; 0x6fbc ; "writeToken"
-│     ││    0x0000dfcc      mov   w2, 1
-│     ││    0x0000dfd0      bl    sym.imp.printf                       ; sym.imp.printf ; int printf(const char *format)
-│     ││    0x0000dfd4      mov   w19, 1
-│     ││    0x0000dfd8      movk  w19, 0xd045, lsl 16
-│     ││    ; CODE XREF from method.EngineeringModeWorld.writeToken_unsigned_char___unsigned_int @ 0xdfb8
-│     └└──> 0x0000dfdc      mov   w0, w19
-│           0x0000dfe0      ldr   x19, [var_10h]                       ; [0x10:4]=0xb70003
-│           0x0000dfe4      ldp   fp, lr, [sp], 0x20
-└           0x0000dfe8      ret
-
-========== LAST TOKEN STATUS ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x0000a000.
-            ; CODE XREFS from fcn.00016610 @ 0x16614, 0x1661c
-            ;-- EngineeringModeWorld::writeLastTokenStatus(unsigned char const*):
-┌ method.EngineeringModeWorld.writeLastTokenStatus_unsigned_char_const(int64_t arg2);
 │           ; arg int64_t arg2 @ x1
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000dff0      stp   fp, lr, [sp, -0x20]!                 ; RELOC TARGET 64 EngineeringModeWorld::writeLastTokenStatus(unsigned char const*) @ 0x0000dff0 ; EngineeringModeWorld::writeLastTokenStatus(unsigned char const*)
-│           0x0000dff4      stp   x20, x19, [var_10h]
-│           0x0000dff8      mov   fp, sp
-│       ┌─< 0x0000dffc      cbz   x1, 0xe03c
-│       │   0x0000e000      mov   w0, 4
-│       │   0x0000e004      mov   w2, 3
-│       │   0x0000e008      mov   x20, x1                              ; arg2
-│       │   0x0000e00c      bl    fcn.00016360                         ; fcn.00016360
-│       │   0x0000e010      mov   w19, w0
-│      ┌──< 0x0000e014      cbz   w0, 0xe05c
-│      ││   0x0000e018      adrp  x1, data.00005000                    ; 0x5000
-│      ││   0x0000e01c      adrp  x2, data.00007000                    ; 0x7000
-│      ││   0x0000e020      add   x1, x1, 0xe4c                        ; 0x5e4c ; "engmode_world" ; const char *tag
-│      ││   0x0000e024      add   x2, x2, data.00000868                ; 0x868 ; const char *fmt
-│      ││   0x0000e028      mov   w0, 6
-│      ││   0x0000e02c      mov   x3, x20
-│      ││   0x0000e030      mov   w4, w19
-│      ││   0x0000e034      bl    sym.imp.__android_log_print          ; sym.imp.__android_log_print ; int __android_log_print(enum androidLogPriority prio, const char *tag, const char *fmt)
-│     ┌───< 0x0000e038      b     0xe05c
-│     ││└─> 0x0000e03c      adrp  x0, data.00006000                    ; 0x6000
-│     ││    0x0000e040      adrp  x1, data.00006000                    ; 0x6000
-│     ││    0x0000e044      add   x0, x0, 0x3f6                        ; 0x63f6 ; "%s: parameter(%u) is null.\n" ; const char *format
-│     ││    0x0000e048      add   x1, x1, 0x466                        ; 0x6466 ; "writeLastTokenStatus"
-│     ││    0x0000e04c      mov   w2, 1
-│     ││    0x0000e050      bl    sym.imp.printf                       ; sym.imp.printf ; int printf(const char *format)
-│     ││    0x0000e054      mov   w19, 1
-│     ││    0x0000e058      movk  w19, 0xd046, lsl 16
-│     ││    ; CODE XREF from method.EngineeringModeWorld.writeLastTokenStatus_unsigned_char_const @ 0xe038
-│     └└──> 0x0000e05c      mov   w0, w19
-│           0x0000e060      ldp   x20, x19, [var_10h]
-│           0x0000e064      ldp   fp, lr, [sp], 0x20
-└           0x0000e068      ret
-
-========== UPDATE TOKEN CACHE ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x0000a000.
-            ; CODE XREFS from fcn.00016680 @ 0x16684, 0x1668c
-            ;-- EngineeringModeWorld::updateTokenCache():
-┌ method.EngineeringModeWorld.updateTokenCache(int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           ; var int64_t var_3ch @ stack - 0x3c
-│           ; var int64_t var_38h @ stack - 0x38
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var const char *var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x0000f080      sub   sp, sp, 0x40                         ; RELOC TARGET 64 EngineeringModeWorld::updateTokenCache() @ 0x0000f080 ; EngineeringModeWorld::updateTokenCache()
-│           0x0000f084      stp   fp, lr, [var_30h]
-│           0x0000f088      add   fp, sp, 0x10
-│           0x0000f08c      str   x21, [var_20h]
-│           0x0000f090      stp   x20, x19, [var_10h]
-│           0x0000f094      mrs   x21, TPIDR_EL0
-│           0x0000f098      mov   w1, 0x1000
-│           0x0000f09c      ldr   x8, [x21, 0x28]                      ; [0x28:4]=0x18028
-│           0x0000f0a0      mov   x19, x0                              ; arg1
-│           0x0000f0a4      mov   w0, 1
-│           0x0000f0a8      movk  w1, 1, lsl 16
-│           0x0000f0ac      str   x8, [var_38h]
-│           0x0000f0b0      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│           0x0000f0b4      str   wzr, [var_3ch]
-│       ┌─< 0x0000f0b8      cbz   x0, 0xf0e4
-│       │   0x0000f0bc      ldr   x8, [x19]
-│       │   0x0000f0c0      mov   x20, x0
-│       │   0x0000f0c4      add   x2, var_3ch
-│       │   0x0000f0c8      mov   x0, x19
-│       │   0x0000f0cc      mov   x1, x20
-│       │   0x0000f0d0      ldr   x8, [x8, 0x80]                       ; [0x80:4]=0
-│       │   0x0000f0d4      blr   x8
-│       │   0x0000f0d8      mov   x0, x20                              ; void *ptr
-│       │   0x0000f0dc      bl    sym.imp.free                         ; sym.imp.free ; void free(void *ptr)
-│      ┌──< 0x0000f0e0      b     0xf0fc
-│      │└─> 0x0000f0e4      adrp  x1, data.00005000                    ; 0x5000
-│      │    0x0000f0e8      adrp  x2, data.00006000                    ; 0x6000
-│      │    0x0000f0ec      add   x1, x1, 0xe4c                        ; 0x5e4c ; "engmode_world" ; const char *tag
-│      │    0x0000f0f0      add   x2, x2, 0xbdb                        ; 0x6bdb ; "Failed to allocate message buffer\n" ; const char *fmt
-│      │    0x0000f0f4      mov   w0, 6
-│      │    0x0000f0f8      bl    sym.imp.__android_log_print          ; sym.imp.__android_log_print ; int __android_log_print(enum androidLogPriority prio, const char *tag, const char *fmt)
-│      │    ; CODE XREF from method.EngineeringModeWorld.updateTokenCache @ 0xf0e0
-│      └──> 0x0000f0fc      ldr   x8, [x21, 0x28]                      ; [0x28:4]=0x18028
-│           0x0000f100      ldr   x9, [var_38h]                        ; [0x8:4]=0
-│           0x0000f104      cmp   x8, x9
-│       ┌─< 0x0000f108      b.ne  0xf120
-│       │   0x0000f10c      ldp   x20, x19, [var_10h]
-│       │   0x0000f110      ldp   fp, lr, [var_30h]
-│       │   0x0000f114      ldr   x21, [var_20h]                       ; [0x20:4]=64 ; "@"
-│       │   0x0000f118      add   sp, sp, 0x40
-│       │   0x0000f11c      ret
-└       └─> 0x0000f120      bl    sym.imp.__stack_chk_fail             ; sym.imp.__stack_chk_fail ; void __stack_chk_fail(void)
-
-========== JNI: GET SERVER TIME ==========
-ERROR: Cannot determine entrypoint, using 0x00004000.
-┌ sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getServerTime(int64_t arg1, int64_t arg3);
-│           ; arg int64_t arg1 @ x0
 │           ; arg int64_t arg3 @ x2
+│           ; var int64_t var_60h @ stack - 0x60
+│           ; var int64_t var_50h @ stack - 0x50
 │           ; var int64_t var_40h @ stack - 0x40
 │           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x000048a8      paciasp
-│           0x000048ac      sub   sp, sp, 0x50
-│           0x000048b0      stp   fp, lr, [var_40h]
-│           0x000048b4      stp   x24, x23, [var_30h]
-│           0x000048b8      stp   x22, x21, [var_20h]
-│           0x000048bc      stp   x20, x19, [var_10h]
-│           0x000048c0      add   fp, sp, 0x10
-│           0x000048c4      mov   x22, x2                              ; arg3
-│           0x000048c8      mov   x21, x0                              ; arg1
-│           0x000048cc      adrp  x1, data.00001000                    ; 0x1000
-│           0x000048d0      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│           0x000048d4      adrp  x2, data.00001000                    ; 0x1000
-│           0x000048d8      add   x2, x2, 0x2a0                        ; 0x12a0 ; "EM version = %s"
-│           0x000048dc      adrp  x3, data.00001000                    ; 0x1000
-│           0x000048e0      add   x3, x3, 0xabc                        ; 0x1abc ; "30.2.06"
-│           0x000048e4      mov   w0, 4
-│           0x000048e8      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│           0x000048ec      mov   w0, 1
-│           0x000048f0      mov   w1, 9
-│           0x000048f4      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│           0x000048f8      mov   x19, x0
-│           0x000048fc      mov   w8, 8
-│           0x00004900      mov   w0, 1
-│           0x00004904      mov   w1, data.00000208                    ; 0x208
-│           0x00004908      stur  w8, [fp, -4]
-│           0x0000490c      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│       ┌─< 0x00004910      cbz   x0, 0x4958
-│       │   0x00004914      mov   x20, x0
-│       │   0x00004918      mov   x0, x21                              ; int64_t arg1
-│       │   0x0000491c      mov   x1, x22                              ; int64_t arg2
-│       │   0x00004920      mov   x2, x20                              ; int64_t arg3
-│       │   0x00004924      bl    sym.em_check_package                 ; sym.em_check_package
-│      ┌──< 0x00004928      cbz   w0, 0x4984
-│      ││   0x0000492c      mov   w4, w0
-│      ││   0x00004930      adrp  x1, data.00001000                    ; 0x1000
-│      ││   0x00004934      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      ││   0x00004938      adrp  x2, data.00001000                    ; 0x1000
-│      ││   0x0000493c      add   x2, x2, 0x517                        ; 0x1517 ; "%s : Failed to check package(0x%08x)\n"
-│      ││   0x00004940      adrp  x3, data.00001000                    ; 0x1000
-│      ││   0x00004944      add   x3, x3, 0x5d2                        ; 0x15d2 ; "getServerTime"
-│      ││   0x00004948      mov   w0, 6
-│      ││   0x0000494c      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      ││   0x00004950      mov   x21, xzr
-│     ┌───< 0x00004954      b     0x4ad4
-│     ││└─> 0x00004958      adrp  x1, data.00001000                    ; 0x1000
-│     ││    0x0000495c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     ││    0x00004960      adrp  x2, data.00001000                    ; 0x1000
-│     ││    0x00004964      add   x2, x2, 0x4f5                        ; 0x14f5 ; "%s : Memory allocation is failed\n"
-│     ││    0x00004968      adrp  x3, data.00001000                    ; 0x1000
-│     ││    0x0000496c      add   x3, x3, 0x5d2                        ; 0x15d2 ; "getServerTime"
-│     ││    0x00004970      mov   w0, 6
-│     ││    0x00004974      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│     ││    0x00004978      mov   x21, xzr
-│     ││┌─< 0x0000497c      cbnz  x19, 0x4ae0
-│    ┌────< 0x00004980      b     0x4ae8
-│    ││└──> 0x00004984      adrp  x0, data.00001000                    ; 0x1000
-│    ││ │   0x00004988      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│    ││ │   0x0000498c      mov   w1, wzr
-│    ││ │   0x00004990      bl    sym.imp.dlsym                        ; sym.imp.dlsym
-│    ││┌──< 0x00004994      cbz   w0, 0x49c0
-│    ││││   0x00004998      adrp  x1, data.00001000                    ; 0x1000
-│    ││││   0x0000499c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│    ││││   0x000049a0      adrp  x2, data.00001000                    ; 0x1000
-│    ││││   0x000049a4      add   x2, x2, 0x75c                        ; 0x175c ; "%s : file isn't existed\n"
-│    ││││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getServerTime @ 0x4a40
-│   ┌─────> 0x000049a8      adrp  x3, data.00001000                    ; 0x1000
-│   ╎││││   0x000049ac      add   x3, x3, 0x5d2                        ; 0x15d2 ; "getServerTime"
-│   ╎││││   0x000049b0      mov   w0, 6
-│   ╎││││   0x000049b4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│   ╎││││   0x000049b8      mov   x21, xzr
-│  ┌──────< 0x000049bc      b     0x4ad4
-│  │╎││└──> 0x000049c0      adrp  x0, data.00001000                    ; 0x1000
-│  │╎││ │   0x000049c4      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│  │╎││ │   0x000049c8      mov   w1, 1
-│  │╎││ │   0x000049cc      bl    sym.imp.dlclose                      ; sym.imp.dlclose
-│  │╎││┌──< 0x000049d0      cbz   x0, 0x4a30
-│  │╎││││   0x000049d4      adrp  x1, data.00001000                    ; 0x1000
-│  │╎││││   0x000049d8      add   x1, x1, 0x95d                        ; 0x195d ; "engmodeManager_hal_getServerTime"
-│  │╎││││   0x000049dc      mov   x22, x0
-│  │╎││││   0x000049e0      bl    sym.imp.__strlen_chk                 ; sym.imp.__strlen_chk
-│ ┌───────< 0x000049e4      cbz   x0, 0x4a44
-│ ││╎││││   0x000049e8      mov   x8, x0
-│ ││╎││││   0x000049ec      sub   x3, fp, 4
-│ ││╎││││   0x000049f0      mov   x0, x20
-│ ││╎││││   0x000049f4      mov   w1, data.00000208                    ; 0x208
-│ ││╎││││   0x000049f8      mov   x2, x19
-│ ││╎││││   0x000049fc      blr   x8
-│ ────────< 0x00004a00      cbz   w0, 0x4a6c
-│ ││╎││││   0x00004a04      mov   w4, w0
-│ ││╎││││   0x00004a08      adrp  x1, data.00001000                    ; 0x1000
-│ ││╎││││   0x00004a0c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│ ││╎││││   0x00004a10      adrp  x2, data.00001000                    ; 0x1000
-│ ││╎││││   0x00004a14      add   x2, x2, 0x721                        ; 0x1721 ; "%s : Failed to get server time(%d)\n"
-│ ││╎││││   0x00004a18      adrp  x3, data.00001000                    ; 0x1000
-│ ││╎││││   0x00004a1c      add   x3, x3, 0x5d2                        ; 0x15d2 ; "getServerTime"
-│ ││╎││││   0x00004a20      mov   w0, 6
-│ ││╎││││   0x00004a24      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│ ││╎││││   0x00004a28      mov   x21, xzr
-│ ────────< 0x00004a2c      b     0x4acc
-│ ││╎││└──> 0x00004a30      adrp  x1, data.00001000                    ; 0x1000
-│ ││╎││ │   0x00004a34      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│ ││╎││ │   0x00004a38      adrp  x2, data.00001000                    ; 0x1000
-│ ││╎││ │   0x00004a3c      add   x2, x2, 0x310                        ; 0x1310 ; "%s : dlopen is failed\n"
-│ ││└─────< 0x00004a40      b     0x49a8
-│ └───────> 0x00004a44      adrp  x1, data.00001000                    ; 0x1000
-│  │ ││ │   0x00004a48      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  │ ││ │   0x00004a4c      adrp  x2, data.00001000                    ; 0x1000
-│  │ ││ │   0x00004a50      add   x2, x2, 0x411                        ; 0x1411 ; "%s : can't get symbol\n"
-│  │ ││ │   0x00004a54      adrp  x3, data.00001000                    ; 0x1000
-│  │ ││ │   0x00004a58      add   x3, x3, 0x5d2                        ; 0x15d2 ; "getServerTime"
-│  │ ││ │   0x00004a5c      mov   w0, 6
-│  │ ││ │   0x00004a60      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  │ ││ │   0x00004a64      mov   x21, xzr
-│  │ ││┌──< 0x00004a68      b     0x4acc
-│ ────────> 0x00004a6c      ldr   x8, [x21]
-│  │ ││││   0x00004a70      mov   x0, x21
-│  │ ││││   0x00004a74      mov   x1, x19
-│  │ ││││   0x00004a78      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
-│  │ ││││   0x00004a7c      blr   x8
-│  │ ││││   0x00004a80      adrp  x23, data.00001000                   ; 0x1000
-│  │ ││││   0x00004a84      add   x23, x23, 0x6dc                      ; 0x16dc ; "engmode_jni"
-│  │ ││││   0x00004a88      adrp  x24, data.00001000                   ; 0x1000
-│  │ ││││   0x00004a8c      add   x24, x24, 0x5d2                      ; 0x15d2 ; "getServerTime"
-│  │ ││││   0x00004a90      mov   x21, x0
-│  │ ││││   0x00004a94      adrp  x2, data.00001000                    ; 0x1000
-│  │ ││││   0x00004a98      add   x2, x2, 0x89e                        ; 0x189e ; "%s : mssage = %s"
-│  │ ││││   0x00004a9c      mov   w0, 6
-│  │ ││││   0x00004aa0      mov   x1, x23
-│  │ ││││   0x00004aa4      mov   x3, x24
-│  │ ││││   0x00004aa8      mov   x4, x19
-│  │ ││││   0x00004aac      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  │ ││││   0x00004ab0      ldur  w4, [fp, -4]
-│  │ ││││   0x00004ab4      adrp  x2, data.00001000                    ; 0x1000
-│  │ ││││   0x00004ab8      add   x2, x2, 0x53d                        ; 0x153d ; "%s : size = %d"
-│  │ ││││   0x00004abc      mov   w0, 6
-│  │ ││││   0x00004ac0      mov   x1, x23
-│  │ ││││   0x00004ac4      mov   x3, x24
-│  │ ││││   0x00004ac8      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  │ ││││   ; CODE XREFS from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getServerTime @ 0x4a2c, 0x4a68
-│ ─────└──> 0x00004acc      mov   x0, x22
-│  │ ││ │   0x00004ad0      bl    sym.imp.__vsnprintf_chk              ; sym.imp.__vsnprintf_chk
-│  │ ││ │   ; CODE XREFS from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getServerTime @ 0x4954, 0x49bc
-│  └──└───> 0x00004ad4      mov   x0, x20                              ; const char *src
-│    │  │   0x00004ad8      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│    │ ┌──< 0x00004adc      cbz   x19, 0x4ae8
-│    │ │└─> 0x00004ae0      mov   x0, x19                              ; const char *src
-│    │ │    0x00004ae4      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│    │ │    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getServerTime @ 0x4980
-│    └─└──> 0x00004ae8      adrp  x1, data.00001000                    ; 0x1000
-│           0x00004aec      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│           0x00004af0      adrp  x2, data.00001000                    ; 0x1000
-│           0x00004af4      add   x2, x2, 0xa95                        ; 0x1a95 ; "%s : bye\n"
-│           0x00004af8      adrp  x3, data.00001000                    ; 0x1000
-│           0x00004afc      add   x3, x3, 0x5d2                        ; 0x15d2 ; "getServerTime"
-│           0x00004b00      mov   w0, 6
-│           0x00004b04      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│           0x00004b08      mov   x0, x21
-│           0x00004b0c      ldp   x20, x19, [var_10h]
-│           0x00004b10      ldp   x22, x21, [var_20h]
-│           0x00004b14      ldp   x24, x23, [var_30h]
-│           0x00004b18      ldp   fp, lr, [var_40h]
-│           0x00004b1c      add   sp, sp, 0x50
-│           0x00004b20      autiasp
-└           0x00004b24      ret
+│           0x000070a8      paciasp
+│           0x000070ac      sub   sp, sp, 0x170
+│           0x000070b0      stp   fp, lr, [var_60h]
+│           0x000070b4      stp   x28, x27, [var_50h]
+│           0x000070b8      stp   x26, x25, [var_40h]
+│           0x000070bc      stp   x24, x23, [var_30h]
+│           0x000070c0      stp   x22, x21, [var_20h]
+│           0x000070c4      stp   x20, x19, [var_10h]
+│           0x000070c8      add   fp, sp, data.00000110                ; 0x110
+│           0x000070cc      movi  v0.2d, 0000000000000000
+│           0x000070d0      ldr   x8, [x0]                             ; arg1
+│           0x000070d4      strb  wzr, [sp, 0x100]                     ; arg1
+│           0x000070d8      mov   x20, x2                              ; arg3
+│           0x000070dc      mov   x21, x1                              ; arg2
+│           0x000070e0      mov   x19, x0                              ; arg1
+│           0x000070e4      stp   q0, q0, [sp]
+│           0x000070e8      stp   q0, q0, [sp, 0x20]
+│           0x000070ec      stp   q0, q0, [sp, 0x40]
+│           0x000070f0      stp   q0, q0, [sp, 0x60]
+│           0x000070f4      stp   q0, q0, [sp, 0x80]
+│           0x000070f8      stp   q0, q0, [sp, 0xa0]
+│           0x000070fc      stp   q0, q0, [sp, 0xc0]
+│           0x00007100      stp   q0, q0, [sp, 0xe0]
+│           0x00007104      ldr   x8, [x8, 0xf8]                       ; [0xf8:4]=0x8000 obj.__dso_handle
+│           0x00007108      blr   x8
+│           0x0000710c      ldr   x8, [x19]
+│           0x00007110      mov   x22, x0                              ; arg1
+│           0x00007114      mov   x0, x19
+│           0x00007118      mov   x1, x22
+│           0x0000711c      mov   x2, xzr
+│           0x00007120      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
+│           0x00007124      blr   x8
+│           0x00007128      adrp  x26, obj.__dso_handle                ; 0x8000
+│           0x0000712c      and   w8, w0, 0xff
+│           0x00007130      ldr   x26, [x26, data.000001e8]            ; [0x1e8:4]=0
+│           0x00007134      cmp   w8, 1
+│       ┌─< 0x00007138      b.ne  0x7150
+│       │   0x0000713c      adrp  x1, data.00001000                    ; 0x1000
+│       │   0x00007140      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│       │   0x00007144      adrp  x2, data.00001000                    ; 0x1000
+│       │   0x00007148      add   x2, x2, 0x8dc                        ; 0x18dc ; "Can't get object class"
+│      ┌──< 0x0000714c      b     0x72c8
+│      │└─> 0x00007150      ldr   x8, [x19]
+│      │    0x00007154      adrp  x2, data.00001000                    ; 0x1000
+│      │    0x00007158      add   x2, x2, 0x82f                        ; 0x182f ; "getPackageManager"
+│      │    0x0000715c      adrp  x3, data.00001000                    ; 0x1000
+│      │    0x00007160      add   x3, x3, 0x7d5                        ; 0x17d5 ; "()Landroid/content/pm/PackageManager;"
+│      │    0x00007164      mov   x0, x19
+│      │    0x00007168      ldr   x8, [x8, data.00000108]              ; [0x108:4]=0x290
+│      │    0x0000716c      mov   x1, x22
+│      │    0x00007170      blr   x8
+│      │┌─< 0x00007174      cbz   x0, 0x71cc
+│      ││   0x00007178      ldr   x8, [x19]
+│      ││   0x0000717c      mov   x2, x0
+│      ││   0x00007180      mov   x0, x19
+│      ││   0x00007184      mov   x1, x21
+│      ││   0x00007188      ldr   x8, [x8, data.00001000]              ; [data.00000110:4]=0x1000 data.00001000
+│      ││   0x0000718c      blr   x8
+│      ││   0x00007190      ldr   x8, [x19]
+│      ││   0x00007194      mov   x23, x0
+│      ││   0x00007198      mov   x0, x19
+│      ││   0x0000719c      mov   x1, x23
+│      ││   0x000071a0      mov   x2, xzr
+│      ││   0x000071a4      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
+│      ││   0x000071a8      blr   x8
+│      ││   0x000071ac      and   w8, w0, 0xff
+│      ││   0x000071b0      cmp   w8, 1
+│     ┌───< 0x000071b4      b.ne  0x71e0
+│     │││   0x000071b8      adrp  x1, data.00001000                    ; 0x1000
+│     │││   0x000071bc      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│     │││   0x000071c0      adrp  x2, data.00001000                    ; 0x1000
+│     │││   0x000071c4      add   x2, x2, 0x49b                        ; 0x149b ; "Can't get getPackageManager"
+│    ┌────< 0x000071c8      b     0x72c8
+│    │││└─> 0x000071cc      adrp  x1, data.00001000                    ; 0x1000
+│    │││    0x000071d0      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│    │││    0x000071d4      adrp  x2, data.00001000                    ; 0x1000
+│    │││    0x000071d8      add   x2, x2, 0x7fb                        ; 0x17fb ; "Can't get method id of getPackageManager"
+│    │││┌─< 0x000071dc      b     0x72c8
+│    │└───> 0x000071e0      ldr   x8, [x19]
+│    │ ││   0x000071e4      mov   x0, x19
+│    │ ││   0x000071e8      mov   x1, x23
+│    │ ││   0x000071ec      ldr   x8, [x8, 0xf8]                       ; [0xf8:4]=0x8000 obj.__dso_handle
+│    │ ││   0x000071f0      blr   x8
+│    │ ││   0x000071f4      ldr   x8, [x19]
+│    │ ││   0x000071f8      mov   x24, x0
+│    │ ││   0x000071fc      mov   x0, x19
+│    │ ││   0x00007200      mov   x1, x24
+│    │ ││   0x00007204      mov   x2, xzr
+│    │ ││   0x00007208      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
+│    │ ││   0x0000720c      blr   x8
+│    │ ││   0x00007210      and   w8, w0, 0xff
+│    │ ││   0x00007214      cmp   w8, 1
+│    │┌───< 0x00007218      b.ne  0x7230
+│    ││││   0x0000721c      adrp  x1, data.00001000                    ; 0x1000
+│    ││││   0x00007220      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│    ││││   0x00007224      adrp  x2, data.00001000                    ; 0x1000
+│    ││││   0x00007228      add   x2, x2, 0x327                        ; 0x1327 ; "Can't get getPackageManager class"
+│   ┌─────< 0x0000722c      b     0x72c8
+│   ││└───> 0x00007230      ldr   x8, [x19]
+│   ││ ││   0x00007234      adrp  x2, data.00001000                    ; 0x1000
+│   ││ ││   0x00007238      add   x2, x2, 0x8af                        ; 0x18af ; "getPackageName"
+│   ││ ││   0x0000723c      adrp  x3, data.00001000                    ; 0x1000
+│   ││ ││   0x00007240      add   x3, x3, 0x349                        ; 0x1349 ; "()Ljava/lang/String;"
+│   ││ ││   0x00007244      mov   x0, x19
+│   ││ ││   0x00007248      ldr   x8, [x8, data.00000108]              ; [0x108:4]=0x290
+│   ││ ││   0x0000724c      mov   x1, x22
+│   ││ ││   0x00007250      blr   x8
+│   ││┌───< 0x00007254      cbz   x0, 0x72b8
+│   │││││   0x00007258      ldr   x8, [x19]
+│   │││││   0x0000725c      mov   x2, x0
+│   │││││   0x00007260      mov   x0, x19
+│   │││││   0x00007264      mov   x1, x21
+│   │││││   0x00007268      ldr   x8, [x8, data.00001000]              ; [data.00000110:4]=0x1000 data.00001000
+│   │││││   0x0000726c      blr   x8
+│   │││││   0x00007270      ldr   x8, [x19]
+│   │││││   0x00007274      mov   x21, x0
+│   │││││   0x00007278      mov   x0, x19
+│   │││││   0x0000727c      mov   x1, x23
+│   │││││   0x00007280      mov   x2, xzr
+│   │││││   0x00007284      ldr   x8, [x8, 0xc0]                       ; [0xc0:4]=0x4000 pc
+│   │││││   0x00007288      blr   x8
+│   │││││   0x0000728c      and   w8, w0, 0xff
+│   │││││   0x00007290      cmp   w8, 1
+│  ┌──────< 0x00007294      b.ne  0x73ec
+│  ││││││   0x00007298      adrp  x1, data.00001000                    ; 0x1000
+│  ││││││   0x0000729c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│  ││││││   0x000072a0      adrp  x2, data.00001000                    ; 0x1000
+│  ││││││   0x000072a4      add   x2, x2, 0xa34                        ; 0x1a34 ; "Can't get package name"
+│  ││││││   0x000072a8      mov   w0, 6
+│  ││││││   0x000072ac      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│  ││││││   0x000072b0      mov   x22, xzr
+│ ┌───────< 0x000072b4      b     0x72d8
+│ ││││└───> 0x000072b8      adrp  x1, data.00001000                    ; 0x1000
+│ ││││ ││   0x000072bc      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│ ││││ ││   0x000072c0      adrp  x2, data.00001000                    ; 0x1000
+│ ││││ ││   0x000072c4      add   x2, x2, 0x568                        ; 0x1568 ; "Can't get method id of package name"
+│ ││││ ││   ; CODE XREFS from sym.em_check_package @ 0x714c, 0x71c8, 0x71dc, 0x722c
+│ ││└└─└└─> 0x000072c8      mov   w0, 6
+│ ││        0x000072cc      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│ ││        0x000072d0      mov   x22, xzr
+│ ││        0x000072d4      mov   x21, xzr
+│ ││        ; CODE XREFS from sym.em_check_package @ 0x72b4, 0x7444, 0x7568
+│ └────┌┌─> 0x000072d8      mov   w8, 0x4f4e                           ; 'NO'
+│  │   ╎╎   0x000072dc      mov   w9, 0x4e55                           ; 'UN'
+│  │   ╎╎   0x000072e0      mov   w24, -5
+│  │   ╎╎   0x000072e4      movk  w8, 0x4e57, lsl 16
+│  │   ╎╎   0x000072e8      movk  w9, 0x4e4b, lsl 16
+│  │   ╎╎   0x000072ec      mov   w23, -5
+│  │   ╎╎   0x000072f0      stur  w8, [sp, 3]
+│  │   ╎╎   0x000072f4      str   w9, [sp]
+│  │   ╎╎   0x000072f8      strb  wzr, [sp, 7]
+│  │   ╎╎   ; CODE XREF from sym.em_check_package @ 0x75b8
+│  │  ┌───> 0x000072fc      ldr   x25, [x26]                           ; [0x9090:4]=0
+│  │  ╎╎╎                                                              ; reloc.target.__progname
+│  │  ╎╎╎   0x00007300      mov   x0, x25
+│  │  ╎╎╎   0x00007304      bl    fcn.000077d8                         ; fcn.000077d8
+│  │  ╎╎╎   0x00007308      cmp   x0, 0x101
+│  │ ┌────< 0x0000730c      b.lo  0x7338
+│  │ │╎╎╎   0x00007310      adrp  x1, data.00001000                    ; 0x1000
+│  │ │╎╎╎   0x00007314      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│  │ │╎╎╎   0x00007318      adrp  x2, data.00001000                    ; 0x1000
+│  │ │╎╎╎   0x0000731c      add   x2, x2, 0x6bb                        ; 0x16bb ; "Invalid process name size"
+│  │ │╎╎╎   0x00007320      mov   w0, 6
+│  │ │╎╎╎   0x00007324      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│  │ │╎╎╎   0x00007328      mov   w25, 0x19
+│  │ │╎╎╎   0x0000732c      mov   w6, -1
+│  │ │╎╎╎   0x00007330      movk  w25, 0xc001, lsl 16
+│  │┌─────< 0x00007334      b     0x737c
+│  ││└────> 0x00007338      mov   x2, x0
+│  ││ ╎╎╎   0x0000733c      mov   x0, x20
+│  ││ ╎╎╎   0x00007340      mov   x1, x25
+│  ││ ╎╎╎   0x00007344      bl    fcn.000077f0                         ; fcn.000077f0
+│  ││ ╎╎╎   0x00007348      bl    sym.imp.dlopen                       ; sym.imp.dlopen
+│  ││ ╎╎╎   0x0000734c      mov   w25, w0
+│  ││ ╎╎╎   0x00007350      mov   x0, sp                               ; const char *s
+│  ││ ╎╎╎   0x00007354      mov   w1, 0x101
+│  ││ ╎╎╎   0x00007358      bl    sym.imp.strlen                       ; sym.imp.strlen ; size_t strlen(const char *s)
+│  ││ ╎╎╎   0x0000735c      mov   x2, x0
+│  ││ ╎╎╎   0x00007360      add   x0, x20, 0x100
+│  ││ ╎╎╎   0x00007364      mov   x1, sp
+│  ││ ╎╎╎   0x00007368      bl    fcn.000077f0                         ; fcn.000077f0
+│  ││ ╎╎╎   0x0000736c      mov   w6, w25
+│  ││ ╎╎╎   0x00007370      mov   w25, wzr
+│  ││ ╎╎╎   0x00007374      str   w24, [x20, 0x204]
+│  ││ ╎╎╎   0x00007378      str   w6, [x20, data.00000200]
+│  ││ ╎╎╎   ; CODE XREF from sym.em_check_package @ 0x7334
+│  │└─────> 0x0000737c      ldr   x4, [x26]                            ; [0x9090:4]=0
+│  │  ╎╎╎                                                              ; reloc.target.__progname
+│  │  ╎╎╎   0x00007380      adrp  x1, data.00001000                    ; 0x1000
+│  │  ╎╎╎   0x00007384      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│  │  ╎╎╎   0x00007388      adrp  x2, data.00001000                    ; 0x1000
+│  │  ╎╎╎   0x0000738c      add   x2, x2, 0x775                        ; 0x1775 ; "%s : client info : %s/%s/%d/%d\n"
+│  │  ╎╎╎   0x00007390      adrp  x3, data.00001000                    ; 0x1000
+│  │  ╎╎╎   0x00007394      add   x3, x3, 0x62a                        ; 0x162a ; "em_check_package"
+│  │  ╎╎╎   0x00007398      mov   w0, 4
+│  │  ╎╎╎   0x0000739c      mov   x5, x22
+│  │  ╎╎╎   0x000073a0      mov   w7, w23
+│  │  ╎╎╎   0x000073a4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│  │ ┌────< 0x000073a8      cbz   x22, 0x73c4
+│  │ │╎╎╎   0x000073ac      ldr   x8, [x19]
+│  │ │╎╎╎   0x000073b0      mov   x0, x19
+│  │ │╎╎╎   0x000073b4      mov   x1, x21
+│  │ │╎╎╎   0x000073b8      mov   x2, x22
+│  │ │╎╎╎   0x000073bc      ldr   x8, [x8, data.00000208]              ; [data.00000550:4]=0x208 data.00000208
+│  │ │╎╎╎   0x000073c0      blr   x8
+│  │ └────> 0x000073c4      mov   w0, w25
+│  │  ╎╎╎   0x000073c8      ldp   x20, x19, [var_10h]
+│  │  ╎╎╎   0x000073cc      ldp   x22, x21, [var_20h]
+│  │  ╎╎╎   0x000073d0      ldp   x24, x23, [var_30h]
+│  │  ╎╎╎   0x000073d4      ldp   x26, x25, [var_40h]
+│  │  ╎╎╎   0x000073d8      ldp   x28, x27, [var_50h]
+│  │  ╎╎╎   0x000073dc      ldp   fp, lr, [var_60h]
+│  │  ╎╎╎   0x000073e0      add   sp, sp, 0x170
+│  │  ╎╎╎   0x000073e4      autiasp
+│  │  ╎╎╎   0x000073e8      ret
+│  └──────> 0x000073ec      ldr   x8, [x19]
+│     ╎╎╎   0x000073f0      mov   x0, x19
+│     ╎╎╎   0x000073f4      mov   x1, x21
+│     ╎╎╎   0x000073f8      mov   x2, xzr
+│     ╎╎╎   0x000073fc      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate] ; [data.00000548:4]=0x5564 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate ; "dU"
+│     ╎╎╎   0x00007400      blr   x8
+│     ╎╎╎   0x00007404      mov   x22, x0
+│    ┌────< 0x00007408      cbz   x0, 0x7448
+│    │╎╎╎   0x0000740c      mov   x0, x22
+│    │╎╎╎   0x00007410      bl    fcn.000077d8                         ; fcn.000077d8
+│    │╎╎╎   0x00007414      sub   x8, x0, 0x101
+│    │╎╎╎   0x00007418      cmn   x8, 0x101
+│   ┌─────< 0x0000741c      b.hi  0x745c
+│   ││╎╎╎   0x00007420      mov   x0, x22
+│   ││╎╎╎   0x00007424      bl    fcn.000077d8                         ; fcn.000077d8
+│   ││╎╎╎   0x00007428      mov   x3, x0
+│   ││╎╎╎   0x0000742c      adrp  x1, data.00001000                    ; 0x1000
+│   ││╎╎╎   0x00007430      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│   ││╎╎╎   0x00007434      adrp  x2, data.00001000                    ; 0x1000
+│   ││╎╎╎   0x00007438      add   x2, x2, 0x8f3                        ; 0x18f3 ; "pkg name length isn't normal(%lu)"
+│   ││╎╎╎   0x0000743c      mov   w0, 6
+│   ││╎╎╎   0x00007440      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│   ││╎└──< 0x00007444      b     0x72d8
+│   │└────> 0x00007448      adrp  x1, data.00001000                    ; 0x1000
+│   │ ╎ ╎   0x0000744c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│   │ ╎ ╎   0x00007450      adrp  x2, data.00001000                    ; 0x1000
+│   │ ╎ ╎   0x00007454      add   x2, x2, 0xac4                        ; 0x1ac4 ; "Failed to convert jstring to char *"
+│   │ ╎┌──< 0x00007458      b     0x7560
+│   └─────> 0x0000745c      ldr   x8, [x19]
+│     ╎│╎   0x00007460      adrp  x2, data.00001000                    ; 0x1000
+│     ╎│╎   0x00007464      add   x2, x2, 0x65f                        ; 0x165f ; "checkSignatures"
+│     ╎│╎   0x00007468      adrp  x3, data.00001000                    ; 0x1000
+│     ╎│╎   0x0000746c      add   x3, x3, 0x35e                        ; 0x135e ; "(Ljava/lang/String;Ljava/lang/String;)I"
+│     ╎│╎   0x00007470      mov   x0, x19
+│     ╎│╎   0x00007474      ldr   x8, [x8, data.00000108]              ; [0x108:4]=0x290
+│     ╎│╎   0x00007478      mov   x1, x24
+│     ╎│╎   0x0000747c      blr   x8
+│    ┌────< 0x00007480      cbz   x0, 0x7550
+│    │╎│╎   0x00007484      ldr   x8, [x19]
+│    │╎│╎   0x00007488      mov   x25, x0
+│    │╎│╎   0x0000748c      adrp  x1, data.00001000                    ; 0x1000
+│    │╎│╎   0x00007490      add   x1, x1, 0x889                        ; 0x1889 ; "android"
+│    │╎│╎   0x00007494      mov   x0, x19
+│    │╎│╎   0x00007498      ldr   x27, [x8, data.00000188]             ; [0x188:4]=1
+│    │╎│╎   0x0000749c      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
+│    │╎│╎   0x000074a0      blr   x8
+│    │╎│╎   0x000074a4      ldr   x8, [x19]
+│    │╎│╎   0x000074a8      ldr   x1, [x26]                            ; [0x9090:4]=0
+│    │╎│╎                                                              ; reloc.target.__progname
+│    │╎│╎   0x000074ac      mov   x24, x0
+│    │╎│╎   0x000074b0      mov   x0, x19
+│    │╎│╎   0x000074b4      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
+│    │╎│╎   0x000074b8      blr   x8
+│    │╎│╎   0x000074bc      mov   x4, x0
+│    │╎│╎   0x000074c0      mov   x0, x19
+│    │╎│╎   0x000074c4      mov   x1, x23
+│    │╎│╎   0x000074c8      mov   x2, x25
+│    │╎│╎   0x000074cc      mov   x3, x24
+│    │╎│╎   0x000074d0      blr   x27
+│    │╎│╎   0x000074d4      mov   w24, w0
+│   ┌─────< 0x000074d8      cbz   w0, 0x756c
+│   ││╎│╎   0x000074dc      adrp  x1, data.00001000                    ; 0x1000
+│   ││╎│╎   0x000074e0      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│   ││╎│╎   0x000074e4      adrp  x2, data.00001000                    ; 0x1000
+│   ││╎│╎   0x000074e8      add   x2, x2, 0x5a8                        ; 0x15a8 ; "Package signature information %d"
+│   ││╎│╎   0x000074ec      mov   w0, 4
+│   ││╎│╎   0x000074f0      mov   w3, w24
+│   ││╎│╎   0x000074f4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│   ││╎│╎   0x000074f8      ldr   x8, [x19]
+│   ││╎│╎   0x000074fc      adrp  x1, data.00001000                    ; 0x1000
+│   ││╎│╎   0x00007500      add   x1, x1, 0x889                        ; 0x1889 ; "android"
+│   ││╎│╎   0x00007504      mov   x0, x19
+│   ││╎│╎   0x00007508      ldr   x27, [x8, data.00000188]             ; [0x188:4]=1
+│   ││╎│╎   0x0000750c      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
+│   ││╎│╎   0x00007510      blr   x8
+│   ││╎│╎   0x00007514      ldr   x8, [x19]
+│   ││╎│╎   0x00007518      mov   x24, x0
+│   ││╎│╎   0x0000751c      mov   x0, x19
+│   ││╎│╎   0x00007520      mov   x1, x22
+│   ││╎│╎   0x00007524      ldr   x8, [x8, data.00000538]              ; [0x538:4]=0x43c ; "<\U00000004"
+│   ││╎│╎   0x00007528      blr   x8
+│   ││╎│╎   0x0000752c      mov   x4, x0
+│   ││╎│╎   0x00007530      mov   x0, x19
+│   ││╎│╎   0x00007534      mov   x1, x23
+│   ││╎│╎   0x00007538      mov   x2, x25
+│   ││╎│╎   0x0000753c      mov   x3, x24
+│   ││╎│╎   0x00007540      blr   x27
+│   ││╎│╎   0x00007544      mov   w24, w0
+│   ││╎│╎   0x00007548      mov   w23, w0
+│  ┌──────< 0x0000754c      b     0x7570
+│  ││└────> 0x00007550      adrp  x1, data.00001000                    ; 0x1000
+│  ││ ╎│╎   0x00007554      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│  ││ ╎│╎   0x00007558      adrp  x2, data.00001000                    ; 0x1000
+│  ││ ╎│╎   0x0000755c      add   x2, x2, 0x2cf                        ; 0x12cf ; "Can't get method id of check signature"
+│  ││ ╎│╎   ; CODE XREF from sym.em_check_package @ 0x7458
+│  ││ ╎└──> 0x00007560      mov   w0, 6
+│  ││ ╎ ╎   0x00007564      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│  ││ ╎ └─< 0x00007568      b     0x72d8
+│  │└─────> 0x0000756c      mov   w23, wzr
+│  │  ╎     ; CODE XREF from sym.em_check_package @ 0x754c
+│  └──────> 0x00007570      adrp  x1, data.00001000                    ; 0x1000
+│     ╎     0x00007574      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
+│     ╎     0x00007578      adrp  x2, data.00001000                    ; 0x1000
+│     ╎     0x0000757c      add   x2, x2, 0x5a8                        ; 0x15a8 ; "Package signature information %d"
+│     ╎     0x00007580      mov   w0, 4
+│     ╎     0x00007584      mov   w3, w23
+│     ╎     0x00007588      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
+│     ╎     0x0000758c      mov   x0, x22
+│     ╎     0x00007590      bl    fcn.000077d8                         ; fcn.000077d8
+│     ╎     0x00007594      mov   x2, x0                               ; size_t n
+│     ╎     0x00007598      mov   x0, sp                               ; void *s1
+│     ╎     0x0000759c      mov   x1, x22                              ; const void *s2
+│     ╎     0x000075a0      mov   w3, 0x101
+│     ╎     0x000075a4      mov   x25, sp
+│     ╎     0x000075a8      bl    sym.imp.memcpy                       ; sym.imp.memcpy ; void *memcpy(void *s1, const void *s2, size_t n)
+│     ╎     0x000075ac      mov   x0, x22
+│     ╎     0x000075b0      bl    fcn.000077d8                         ; fcn.000077d8
+│     ╎     0x000075b4      strb  wzr, [x25, x0]
+└     └───< 0x000075b8      b     0x72fc
 
-========== JNI: MAKE TOKEN REQUEST ==========
-ERROR: Cannot determine entrypoint, using 0x00004000.
-┌ sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq(int64_t arg1, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7);
+========== JNI LOADER RELOCATIONS ==========
+0000000000008238  0000000700000402 R_AARCH64_JUMP_SLOT    0000000000000000 dlopen@LIBC + 0
+0000000000008240  0000000800000402 R_AARCH64_JUMP_SLOT    0000000000000000 dlsym@LIBC + 0
+0000000000008250  0000000a00000402 R_AARCH64_JUMP_SLOT    0000000000000000 dlclose@LIBC + 0
+
+========== HAL SYMBOLS ==========
+000000000000cf6c T engmodeManager_hal_getRequestMsg
+000000000000d340 T engmodeManager_hal_getServerTime
+000000000000c820 T engmodeManager_hal_isTokenInstalled
+000000000000d0bc T engmodeManager_hal_makeTokenReq
+000000000000873c T EngmodeManager::caller_check(unsigned char const*, int, int, int)
+000000000000a194 T EngmodeManager::makeTokenReq(char const*, char const*, unsigned char const*, int, char const*, unsigned char const*, int, unsigned char*, int*)
+0000000000009d20 T EngmodeManager::getRequestMsg(char const*, char const*, unsigned char const*, int, int, unsigned char const*, int, unsigned char*, int*)
+000000000000a9d4 T EngmodeManager::getServerTime(unsigned char const*, int, unsigned char*, int*)
+0000000000008fe0 T EngmodeManager::isTokenInstalled(unsigned char const*, int)
+
+========== HAL IMPLEMENTATION ==========
+WARNING: There is no program header.
+WARNING: There is no program header.
+ERROR: Cannot determine entrypoint, using 0x00008000.
+┌ sym.engmodeManager_hal_getServerTime(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4);
 │           ; arg int64_t arg1 @ x0
+│           ; arg int64_t arg2 @ x1
+│           ; arg int64_t arg3 @ x2
+│           ; arg int64_t arg4 @ x3
+│           ; var int64_t var_148h @ stack - 0x148
+│           ; var int64_t var_40h @ stack - 0x40
+│           ; var int64_t var_30h @ stack - 0x30
+│           ; var int64_t var_20h @ stack - 0x20
+│           ; var int64_t var_10h @ stack - 0x10
+│           0x0000d340      paciasp
+│           0x0000d344      sub   sp, sp, 0x150
+│           0x0000d348      stp   fp, lr, [var_40h]
+│           0x0000d34c      stp   x28, x23, [var_30h]
+│           0x0000d350      stp   x22, x21, [var_20h]
+│           0x0000d354      stp   x20, x19, [var_10h]
+│           0x0000d358      add   fp, sp, data.00000110                ; 0x110
+│           0x0000d35c      mov   x19, x3                              ; arg4
+│           0x0000d360      mov   x20, x2                              ; arg3
+│           0x0000d364      mov   w21, w1                              ; arg2
+│           0x0000d368      mov   x22, x0                              ; arg1
+│           0x0000d36c      adrp  x1, data.00003000                    ; 0x3000
+│           0x0000d370      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│           0x0000d374      adrp  x2, data.00002000                    ; 0x2000
+│           0x0000d378      add   x2, x2, 0xd17
+│           0x0000d37c      adrp  x3, data.00003000                    ; 0x3000
+│           0x0000d380      add   x3, x3, 0x20f                        ; 0x320f ; "engmodeManager_hal_getServerTime"
+│           0x0000d384      mov   w0, 3
+│           0x0000d388      bl    fcn.00011968                         ; fcn.00011968
+│           0x0000d38c      movi  v0.2d, 0000000000000000
+│           0x0000d390      mov   w8, data.000003e8                    ; 0x3e8
+│           0x0000d394      mov   w0, 0xb8
+│           0x0000d398      stp   q0, q0, [var_data.00000148 + 0x8]
+│           0x0000d39c      stp   q0, q0, [var_data.00000148 + 0x28]
+│           0x0000d3a0      stp   q0, q0, [var_data.00000148 + 0x48]
+│           0x0000d3a4      stp   q0, q0, [var_data.00000148 + 0x68]
+│           0x0000d3a8      stp   q0, q0, [var_data.00000148 + 0x88]
+│           0x0000d3ac      stp   q0, q0, [var_data.00000148 + 0xa8]
+│           0x0000d3b0      stp   q0, q0, [var_data.00000148 + 0xc8]
+│           0x0000d3b4      stp   q0, q0, [var_data.00000148 + 0xe8]
+│           0x0000d3b8      str   q0, [sp]
+│           0x0000d3bc      str   w8, [sp]
+│           0x0000d3c0      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000d3c4      mov   x23, x0
+│           0x0000d3c8      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
+│           0x0000d3cc      mov   x0, sp
+│           0x0000d3d0      mov   x1, x22
+│           0x0000d3d4      mov   w2, w21
+│           0x0000d3d8      mov   x3, x20
+│           0x0000d3dc      mov   x4, x19
+│           0x0000d3e0      str   x23, [var_148h]
+│           0x0000d3e4      bl    fcn.00011830                         ; fcn.00011830
+│           0x0000d3e8      ldr   x19, [var_data.00000148]             ; [0x8:4]=0
+│       ┌─< 0x0000d3ec      cbz   x19, 0xd440
+│       │   0x0000d3f0      mov   x21, x19
+│       │   0x0000d3f4      mov   w20, w0
+│       │   0x0000d3f8      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
+│       │   0x0000d3fc      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000d400      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
+│       │   0x0000d404      mov   x0, xzr
+│       │   0x0000d408      str   x21, [x19]
+│       │   0x0000d40c      str   xzr, [x19, 0x10]
+│       │   0x0000d410      str   xzr, [x21]
+│      ┌──< 0x0000d414      tbz   w8, 0, 0xd42c
+│      ││   0x0000d418      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
+│      ││   0x0000d41c      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
+│      ││   0x0000d420      and   x1, x8, 0xfffffffffffffffe
+│      ││   0x0000d424      bl    fcn.00011a88                         ; fcn.00011a88
+│      ││   0x0000d428      ldr   x0, [x19, 8]                         ; [0x8:4]=0
+│      └──> 0x0000d42c      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000d430      mov   x0, x19
+│       │   0x0000d434      mov   w1, 0xb8
+│       │   0x0000d438      bl    fcn.00011a88                         ; fcn.00011a88
+│       │   0x0000d43c      mov   w0, w20
+│       └─> 0x0000d440      ldp   x20, x19, [var_10h]
+│           0x0000d444      ldp   x22, x21, [var_20h]
+│           0x0000d448      ldp   x28, x23, [var_30h]
+│           0x0000d44c      ldp   fp, lr, [var_40h]
+│           0x0000d450      add   sp, sp, 0x150
+│           0x0000d454      autiasp
+└           0x0000d458      ret
+┌ sym.engmodeManager_hal_makeTokenReq(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+│           ; arg int64_t arg1 @ x0
+│           ; arg int64_t arg2 @ x1
 │           ; arg int64_t arg3 @ x2
 │           ; arg int64_t arg4 @ x3
 │           ; arg int64_t arg5 @ x4
 │           ; arg int64_t arg6 @ x5
 │           ; arg int64_t arg7 @ x6
+│           ; arg int64_t arg8 @ x7
+│           ; var int64_t var_180h @ stack - 0x180
+│           ; var int64_t var_178h @ stack - 0x178
 │           ; var int64_t var_60h @ stack - 0x60
-│           ; var const char *var_50h @ stack - 0x50
+│           ; var int64_t var_50h @ stack - 0x50
 │           ; var int64_t var_40h @ stack - 0x40
 │           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x00004b28      paciasp
-│           0x00004b2c      sub   sp, sp, 0x70
-│           0x00004b30      stp   fp, lr, [var_60h]
-│           0x00004b34      str   x27, [var_50h]
-│           0x00004b38      stp   x26, x25, [var_40h]
-│           0x00004b3c      stp   x24, x23, [var_30h]
-│           0x00004b40      stp   x22, x21, [var_20h]
-│           0x00004b44      stp   x20, x19, [var_10h]
-│           0x00004b48      add   fp, sp, 0x10
-│           0x00004b4c      mov   x21, x3                              ; arg4
-│           0x00004b50      mov   x25, x2                              ; arg3
-│           0x00004b54      mov   x23, x0                              ; arg1
-│           0x00004b58      adrp  x1, data.00001000                    ; 0x1000
-│           0x00004b5c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│           0x00004b60      adrp  x2, data.00001000                    ; 0x1000
-│           0x00004b64      add   x2, x2, 0x2a0                        ; 0x12a0 ; "EM version = %s"
-│           0x00004b68      adrp  x3, data.00001000                    ; 0x1000
-│           0x00004b6c      add   x3, x3, 0xabc                        ; 0x1abc ; "30.2.06"
-│           0x00004b70      mov   w0, 4
-│           0x00004b74      mov   x24, x6                              ; arg7
-│           0x00004b78      mov   x26, x5                              ; arg6
-│           0x00004b7c      mov   x22, x4                              ; arg5
-│           0x00004b80      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│           0x00004b84      mov   w1, 0x119e
-│           0x00004b88      mov   w0, 1
-│           0x00004b8c      mov   w20, 0x119e
-│           0x00004b90      movk  w1, 1, lsl 16
-│           0x00004b94      movk  w20, 1, lsl 16
-│           0x00004b98      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│           0x00004b9c      ldr   x8, [x23]
-│           0x00004ba0      mov   x19, x0
-│           0x00004ba4      mov   x0, x23
-│           0x00004ba8      mov   x1, x21
-│           0x00004bac      mov   x2, xzr
-│           0x00004bb0      str   w20, [fp, 0x1c]
-│           0x00004bb4      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate] ; [data.00000548:4]=0x5564 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate ; "dU"
-│           0x00004bb8      blr   x8
-│       ┌─< 0x00004bbc      cbz   x0, 0x4be8
-│       │   0x00004bc0      mov   x27, x0
-│       │   0x00004bc4      bl    fcn.00007790                         ; fcn.00007790
-│       │   0x00004bc8      ldr   x8, [x23]
-│       │   0x00004bcc      mov   x20, x0
-│       │   0x00004bd0      mov   x0, x23
-│       │   0x00004bd4      mov   x1, x21
-│       │   0x00004bd8      mov   x2, x27
-│       │   0x00004bdc      ldr   x8, [x8, data.00000208]              ; [data.00000550:4]=0x208 data.00000208
-│       │   0x00004be0      blr   x8
-│      ┌──< 0x00004be4      b     0x4c04
-│      │└─> 0x00004be8      adrp  x1, data.00001000                    ; 0x1000
-│      │    0x00004bec      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      │    0x00004bf0      adrp  x2, data.00001000                    ; 0x1000
-│      │    0x00004bf4      add   x2, x2, 0x48a                        ; 0x148a ; "Invalid argument"
-│      │    0x00004bf8      mov   w0, 6
-│      │    0x00004bfc      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      │    0x00004c00      mov   x20, xzr
-│      │    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4be4
-│      └──> 0x00004c04      ldr   x8, [x23]
-│           0x00004c08      mov   x0, x23
-│           0x00004c0c      mov   x1, x22
-│           0x00004c10      mov   x2, xzr
-│           0x00004c14      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate] ; [data.00000548:4]=0x5564 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate ; "dU"
-│           0x00004c18      blr   x8
-│       ┌─< 0x00004c1c      cbz   x0, 0x4c48
-│       │   0x00004c20      mov   x27, x0
-│       │   0x00004c24      bl    fcn.00007790                         ; fcn.00007790
-│       │   0x00004c28      ldr   x8, [x23]
-│       │   0x00004c2c      mov   x21, x0
-│       │   0x00004c30      mov   x0, x23
-│       │   0x00004c34      mov   x1, x22
-│       │   0x00004c38      mov   x2, x27
-│       │   0x00004c3c      ldr   x8, [x8, data.00000208]              ; [data.00000550:4]=0x208 data.00000208
-│       │   0x00004c40      blr   x8
-│      ┌──< 0x00004c44      b     0x4c64
-│      │└─> 0x00004c48      adrp  x1, data.00001000                    ; 0x1000
-│      │    0x00004c4c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      │    0x00004c50      adrp  x2, data.00001000                    ; 0x1000
-│      │    0x00004c54      add   x2, x2, 0x48a                        ; 0x148a ; "Invalid argument"
-│      │    0x00004c58      mov   w0, 6
-│      │    0x00004c5c      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      │    0x00004c60      mov   x21, xzr
-│      │    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4c44
-│      └──> 0x00004c64      ldr   x8, [x23]
-│           0x00004c68      mov   x0, x23
-│           0x00004c6c      mov   x1, x24
-│           0x00004c70      mov   x2, xzr
-│           0x00004c74      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate] ; [data.00000548:4]=0x5564 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate ; "dU"
-│           0x00004c78      blr   x8
-│       ┌─< 0x00004c7c      cbz   x0, 0x4ca8
-│       │   0x00004c80      mov   x27, x0
-│       │   0x00004c84      bl    fcn.00007790                         ; fcn.00007790
-│       │   0x00004c88      ldr   x8, [x23]
-│       │   0x00004c8c      mov   x22, x0
-│       │   0x00004c90      mov   x0, x23
-│       │   0x00004c94      mov   x1, x24
-│       │   0x00004c98      mov   x2, x27
-│       │   0x00004c9c      ldr   x8, [x8, data.00000208]              ; [data.00000550:4]=0x208 data.00000208
-│       │   0x00004ca0      blr   x8
-│      ┌──< 0x00004ca4      b     0x4cc4
-│      │└─> 0x00004ca8      adrp  x1, data.00001000                    ; 0x1000
-│      │    0x00004cac      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      │    0x00004cb0      adrp  x2, data.00001000                    ; 0x1000
-│      │    0x00004cb4      add   x2, x2, 0x48a                        ; 0x148a ; "Invalid argument"
-│      │    0x00004cb8      mov   w0, 6
-│      │    0x00004cbc      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      │    0x00004cc0      mov   x22, xzr
-│      │    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4ca4
-│      └──> 0x00004cc4      mov   w0, 1
-│           0x00004cc8      mov   w1, data.00000208                    ; 0x208
-│           0x00004ccc      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│       ┌─< 0x00004cd0      cbz   x0, 0x4d18
-│       │   0x00004cd4      mov   x24, x0
-│       │   0x00004cd8      mov   x0, x23                              ; int64_t arg1
-│       │   0x00004cdc      mov   x1, x25                              ; int64_t arg2
-│       │   0x00004ce0      mov   x2, x24                              ; int64_t arg3
-│       │   0x00004ce4      bl    sym.em_check_package                 ; sym.em_check_package
-│      ┌──< 0x00004ce8      cbz   w0, 0x4d4c
-│      ││   0x00004cec      mov   w4, w0
-│      ││   0x00004cf0      adrp  x1, data.00001000                    ; 0x1000
-│      ││   0x00004cf4      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      ││   0x00004cf8      adrp  x2, data.00001000                    ; 0x1000
-│      ││   0x00004cfc      add   x2, x2, 0x517                        ; 0x1517 ; "%s : Failed to check package(0x%08x)\n"
-│      ││   0x00004d00      adrp  x3, data.00001000                    ; 0x1000
-│      ││   0x00004d04      add   x3, x3, 0x64c                        ; 0x164c ; "makeTokenReq"
-│      ││   0x00004d08      mov   w0, 6
-│      ││   0x00004d0c      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      ││   0x00004d10      mov   x25, xzr
-│     ┌───< 0x00004d14      b     0x4dc8
-│     ││└─> 0x00004d18      adrp  x1, data.00001000                    ; 0x1000
-│     ││    0x00004d1c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     ││    0x00004d20      adrp  x2, data.00001000                    ; 0x1000
-│     ││    0x00004d24      add   x2, x2, 0x4f5                        ; 0x14f5 ; "%s : Memory allocation is failed\n"
-│     ││    0x00004d28      adrp  x3, data.00001000                    ; 0x1000
-│     ││    0x00004d2c      add   x3, x3, 0x64c                        ; 0x164c ; "makeTokenReq"
-│     ││    0x00004d30      mov   w0, 6
-│     ││    0x00004d34      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│     ││    0x00004d38      mov   w8, 3
-│     ││    0x00004d3c      mov   x27, xzr
-│     ││    0x00004d40      mov   x25, xzr
-│     ││    0x00004d44      str   w8, [fp, 0x1c]
-│     ││┌─< 0x00004d48      b     0x4ddc
-│     │└──> 0x00004d4c      ldr   x8, [x23]
-│     │ │   0x00004d50      mov   x0, x23                              ; size_t nmeb
-│     │ │   0x00004d54      mov   x1, x26                              ; size_t size
-│     │ │   0x00004d58      ldr   x8, [x8, data.00000558]              ; [0x558:4]=0x363 ; "c\U00000003"
-│     │ │   0x00004d5c      blr   x8
-│     │ │   0x00004d60      mov   w27, w0
-│     │ │   0x00004d64      mov   w0, 1
-│     │ │   0x00004d68      sxtw  x1, w27
-│     │ │   0x00004d6c      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│     │ │   0x00004d70      ldr   x8, [x23]
-│     │ │   0x00004d74      mov   x25, x0
-│     │ │   0x00004d78      mov   x0, x23
-│     │ │   0x00004d7c      mov   x1, x26
-│     │ │   0x00004d80      mov   w2, wzr
-│     │ │   0x00004d84      mov   w3, w27
-│     │ │   0x00004d88      ldr   x8, [x8, data.00000230]              ; [data.00000640:4]=0x230 data.00000230 ; "0\U00000002"
-│     │ │   0x00004d8c      mov   x4, x25
-│     │ │   0x00004d90      blr   x8
-│     │ │   0x00004d94      adrp  x0, data.00001000                    ; 0x1000
-│     │ │   0x00004d98      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│     │ │   0x00004d9c      mov   w1, wzr
-│     │ │   0x00004da0      bl    sym.imp.dlsym                        ; sym.imp.dlsym
-│     │┌──< 0x00004da4      cbz   w0, 0x4e3c
-│     │││   0x00004da8      adrp  x1, data.00001000                    ; 0x1000
-│     │││   0x00004dac      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     │││   0x00004db0      adrp  x2, data.00001000                    ; 0x1000
-│     │││   0x00004db4      add   x2, x2, 0x75c                        ; 0x175c ; "%s : file isn't existed\n"
-│     │││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4ed0
-│    ┌────> 0x00004db8      adrp  x3, data.00001000                    ; 0x1000
-│    ╎│││   0x00004dbc      add   x3, x3, 0x64c                        ; 0x164c ; "makeTokenReq"
-│    ╎│││   0x00004dc0      mov   w0, 6
-│    ╎│││   0x00004dc4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│    ╎│││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4d14
-│    ╎└───> 0x00004dc8      mov   w8, 3
-│    ╎ ││   0x00004dcc      mov   x0, x24                              ; const char *src
-│    ╎ ││   0x00004dd0      str   w8, [fp, 0x1c]
-│    ╎ ││   0x00004dd4      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│    ╎ ││   0x00004dd8      mov   x27, xzr
-│    ╎ ││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4d48
-│    ╎┌─└─> 0x00004ddc      mov   x0, x19                              ; const char *src
-│    ╎╎│    0x00004de0      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│    ╎╎│    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4f60
-│   ┌───┌─> 0x00004de4      cbz   x25, 0x4df0
-│   │╎╎│╎   0x00004de8      mov   x0, x25                              ; const char *src
-│   │╎╎│╎   0x00004dec      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│  ┌└─────> 0x00004df0      cbz   x20, 0x4dfc
-│  │ ╎╎│╎   0x00004df4      mov   x0, x20                              ; const char *src
-│  │ ╎╎│╎   0x00004df8      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│  └┌─────< 0x00004dfc      cbz   x21, 0x4e08
-│   │╎╎│╎   0x00004e00      mov   x0, x21                              ; const char *src
-│   │╎╎│╎   0x00004e04      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│  ┌└─────> 0x00004e08      cbz   x22, 0x4e14
-│  │ ╎╎│╎   0x00004e0c      mov   x0, x22                              ; const char *src
-│  │ ╎╎│╎   0x00004e10      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│  └──────> 0x00004e14      mov   x0, x27
-│    ╎╎│╎   0x00004e18      ldp   x20, x19, [var_10h]
-│    ╎╎│╎   0x00004e1c      ldr   x27, [var_50h]                       ; [0x20:4]=64 ; "@"
-│    ╎╎│╎   0x00004e20      ldp   x22, x21, [var_20h]
-│    ╎╎│╎   0x00004e24      ldp   x24, x23, [var_30h]
-│    ╎╎│╎   0x00004e28      ldp   x26, x25, [var_40h]
-│    ╎╎│╎   0x00004e2c      ldp   fp, lr, [var_60h]
-│    ╎╎│╎   0x00004e30      add   sp, sp, 0x70
-│    ╎╎│╎   0x00004e34      autiasp
-│    ╎╎│╎   0x00004e38      ret
-│    ╎╎└──> 0x00004e3c      adrp  x0, data.00001000                    ; 0x1000
-│    ╎╎ ╎   0x00004e40      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│    ╎╎ ╎   0x00004e44      mov   w1, 1
-│    ╎╎ ╎   0x00004e48      bl    sym.imp.dlclose                      ; sym.imp.dlclose
-│    ╎╎┌──< 0x00004e4c      cbz   x0, 0x4ec0
-│    ╎╎│╎   0x00004e50      adrp  x1, data.00001000                    ; 0x1000
-│    ╎╎│╎   0x00004e54      add   x1, x1, 0x841                        ; 0x1841 ; "engmodeManager_hal_makeTokenReq"
-│    ╎╎│╎   0x00004e58      mov   x26, x0
-│    ╎╎│╎   0x00004e5c      bl    sym.imp.__strlen_chk                 ; sym.imp.__strlen_chk
-│   ┌─────< 0x00004e60      cbz   x0, 0x4ed4
-│   │╎╎│╎   0x00004e64      mov   x8, x0
-│   │╎╎│╎   0x00004e68      add   x9, fp, 0x1c
-│   │╎╎│╎   0x00004e6c      mov   x0, x20
-│   │╎╎│╎   0x00004e70      mov   x1, x21
-│   │╎╎│╎   0x00004e74      mov   x2, x25
-│   │╎╎│╎   0x00004e78      mov   w3, w27
-│   │╎╎│╎   0x00004e7c      mov   x4, x22
-│   │╎╎│╎   0x00004e80      mov   x5, x24
-│   │╎╎│╎   0x00004e84      mov   w6, data.00000208                    ; 0x208
-│   │╎╎│╎   0x00004e88      mov   x7, x19
-│   │╎╎│╎   0x00004e8c      str   x9, [sp]
-│   │╎╎│╎   0x00004e90      blr   x8
-│  ┌──────< 0x00004e94      cbz   w0, 0x4f14
-│  ││╎╎│╎   0x00004e98      mov   w4, w0
-│  ││╎╎│╎   0x00004e9c      adrp  x1, data.00001000                    ; 0x1000
-│  ││╎╎│╎   0x00004ea0      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  ││╎╎│╎   0x00004ea4      adrp  x2, data.00001000                    ; 0x1000
-│  ││╎╎│╎   0x00004ea8      add   x2, x2, 0xa14                        ; 0x1a14 ; "%s : Failed to get message(%d)\n"
-│  ││╎╎│╎   0x00004eac      adrp  x3, data.00001000                    ; 0x1000
-│  ││╎╎│╎   0x00004eb0      add   x3, x3, 0x64c                        ; 0x164c ; "makeTokenReq"
-│  ││╎╎│╎   0x00004eb4      mov   w0, 6
-│  ││╎╎│╎   0x00004eb8      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│ ┌───────< 0x00004ebc      b     0x4ef4
-│ │││╎╎└──> 0x00004ec0      adrp  x1, data.00001000                    ; 0x1000
-│ │││╎╎ ╎   0x00004ec4      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│ │││╎╎ ╎   0x00004ec8      adrp  x2, data.00001000                    ; 0x1000
-│ │││╎╎ ╎   0x00004ecc      add   x2, x2, 0x310                        ; 0x1310 ; "%s : dlopen is failed\n"
-│ │││└────< 0x00004ed0      b     0x4db8
-│ ││└─────> 0x00004ed4      adrp  x1, data.00001000                    ; 0x1000
-│ ││  ╎ ╎   0x00004ed8      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│ ││  ╎ ╎   0x00004edc      adrp  x2, data.00001000                    ; 0x1000
-│ ││  ╎ ╎   0x00004ee0      add   x2, x2, 0x411                        ; 0x1411 ; "%s : can't get symbol\n"
-│ ││  ╎ ╎   0x00004ee4      adrp  x3, data.00001000                    ; 0x1000
-│ ││  ╎ ╎   0x00004ee8      add   x3, x3, 0x64c                        ; 0x164c ; "makeTokenReq"
-│ ││  ╎ ╎   0x00004eec      mov   w0, 6
-│ ││  ╎ ╎   0x00004ef0      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│ ││  ╎ ╎   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4ebc
-│ └───────> 0x00004ef4      mov   w8, 0x5245                           ; 'ER'
-│  │  ╎ ╎   0x00004ef8      mov   w9, 0x52                             ; 'R'
-│  │  ╎ ╎   0x00004efc      mov   x27, xzr
-│  │  ╎ ╎   0x00004f00      strh  w8, [x19]
-│  │  ╎ ╎   0x00004f04      mov   w8, 3
-│  │  ╎ ╎   0x00004f08      strb  w9, [x19, 2]
-│  │  ╎ ╎   0x00004f0c      str   w8, [fp, 0x1c]
-│  │  ╎┌──< 0x00004f10      b     0x4f4c
-│  └──────> 0x00004f14      ldr   x8, [x23]
-│     ╎│╎   0x00004f18      ldr   w1, [fp, 0x1c]                       ; [0x1c:4]=0
-│     ╎│╎   0x00004f1c      mov   x0, x23
-│     ╎│╎   0x00004f20      ldr   x8, [x8, data.00000580]              ; [0x580:4]=0x33c ; "<\U00000003"
-│     ╎│╎   0x00004f24      blr   x8
-│     ╎│╎   0x00004f28      ldr   x8, [x23]
-│     ╎│╎   0x00004f2c      ldr   w3, [fp, 0x1c]                       ; [0x1c:4]=0
-│     ╎│╎   0x00004f30      mov   x27, x0
-│     ╎│╎   0x00004f34      mov   x0, x23
-│     ╎│╎   0x00004f38      mov   x1, x27
-│     ╎│╎   0x00004f3c      mov   w2, wzr
-│     ╎│╎   0x00004f40      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_sendFuseCmd] ; [data.00000680:4]=0x6b54 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_sendFuseCmd ; "Tk"
-│     ╎│╎   0x00004f44      mov   x4, x19
-│     ╎│╎   0x00004f48      blr   x8
-│     ╎│╎   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq @ 0x4f10
-│     ╎└──> 0x00004f4c      mov   x0, x26
-│     ╎ ╎   0x00004f50      bl    sym.imp.__vsnprintf_chk              ; sym.imp.__vsnprintf_chk
-│     ╎ ╎   0x00004f54      mov   x0, x24                              ; const char *src
-│     ╎ ╎   0x00004f58      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│     └───< 0x00004f5c      cbnz  x19, 0x4ddc
-└       └─< 0x00004f60      b     0x4de4
-
-========== JNI: GET REQUEST MESSAGE ==========
-ERROR: Cannot determine entrypoint, using 0x00004000.
-┌ sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg(int64_t arg1, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7);
+│           0x0000d0bc      paciasp
+│           0x0000d0c0      sub   sp, sp, data.00000190                ; 0x190 ; "R\xe5td\U00000004"
+│           0x0000d0c4      stp   fp, lr, [var_60h]
+│           0x0000d0c8      stp   x28, x27, [var_50h]
+│           0x0000d0cc      stp   x26, x25, [var_40h]
+│           0x0000d0d0      stp   x24, x23, [var_30h]
+│           0x0000d0d4      stp   x22, x21, [var_20h]
+│           0x0000d0d8      stp   x20, x19, [var_10h]
+│           0x0000d0dc      add   fp, sp, data.00000130                ; 0x130
+│           0x0000d0e0      mov   w23, w3                              ; arg4
+│           0x0000d0e4      mov   x24, x2                              ; arg3
+│           0x0000d0e8      mov   x25, x1                              ; arg2
+│           0x0000d0ec      ldr   x28, [fp, 0x60]                      ; [0x60:4]=0x2a0
+│           0x0000d0f0      mov   x26, x0                              ; arg1
+│           0x0000d0f4      adrp  x1, data.00003000                    ; 0x3000
+│           0x0000d0f8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│           0x0000d0fc      adrp  x2, data.00002000                    ; 0x2000
+│           0x0000d100      add   x2, x2, 0xd17
+│           0x0000d104      adrp  x3, data.00002000                    ; 0x2000
+│           0x0000d108      add   x3, x3, 0xfe2                        ; 0x2fe2 ; "engmodeManager_hal_makeTokenReq"
+│           0x0000d10c      mov   w0, 3
+│           0x0000d110      mov   x19, x7                              ; arg8
+│           0x0000d114      mov   w20, w6                              ; arg7
+│           0x0000d118      mov   x21, x5                              ; arg6
+│           0x0000d11c      mov   x22, x4                              ; arg5
+│           0x0000d120      bl    fcn.00011968                         ; fcn.00011968
+│           0x0000d124      movi  v0.2d, 0000000000000000
+│           0x0000d128      mov   w8, data.000003e8                    ; 0x3e8
+│           0x0000d12c      mov   w0, 0xb8
+│           0x0000d130      stp   q0, q0, [var_178h + 0x8]
+│           0x0000d134      stp   q0, q0, [var_178h + 0x28]
+│           0x0000d138      stp   q0, q0, [var_178h + 0x48]
+│           0x0000d13c      stp   q0, q0, [var_178h + 0x68]
+│           0x0000d140      stp   q0, q0, [var_178h + 0x88]
+│           0x0000d144      stp   q0, q0, [var_178h + 0xa8]
+│           0x0000d148      stp   q0, q0, [var_178h + 0xc8]
+│           0x0000d14c      stp   q0, q0, [var_178h + 0xe8]
+│           0x0000d150      str   q0, [var_180h]
+│           0x0000d154      str   w8, [var_180h]
+│           0x0000d158      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000d15c      mov   x27, x0
+│           0x0000d160      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
+│           0x0000d164      add   x0, var_data.00000180
+│           0x0000d168      mov   x1, x26
+│           0x0000d16c      mov   x2, x25
+│           0x0000d170      mov   x3, x24
+│           0x0000d174      mov   w4, w23
+│           0x0000d178      mov   x5, x22
+│           0x0000d17c      mov   x6, x21
+│           0x0000d180      mov   w7, w20
+│           0x0000d184      str   x27, [var_178h]
+│           0x0000d188      stp   x19, x28, [sp]
+│           0x0000d18c      bl    fcn.00011800                         ; fcn.00011800
+│           0x0000d190      ldr   x19, [var_178h]                      ; [0x18:4]=0
+│       ┌─< 0x0000d194      cbz   x19, 0xd1e8
+│       │   0x0000d198      mov   x21, x19
+│       │   0x0000d19c      mov   w20, w0
+│       │   0x0000d1a0      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
+│       │   0x0000d1a4      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000d1a8      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
+│       │   0x0000d1ac      mov   x0, xzr
+│       │   0x0000d1b0      str   x21, [x19]
+│       │   0x0000d1b4      str   xzr, [x19, 0x10]
+│       │   0x0000d1b8      str   xzr, [x21]
+│      ┌──< 0x0000d1bc      tbz   w8, 0, 0xd1d4
+│      ││   0x0000d1c0      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
+│      ││   0x0000d1c4      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
+│      ││   0x0000d1c8      and   x1, x8, 0xfffffffffffffffe
+│      ││   0x0000d1cc      bl    fcn.00011a88                         ; fcn.00011a88
+│      ││   0x0000d1d0      ldr   x0, [x19, 8]                         ; [0x8:4]=0
+│      └──> 0x0000d1d4      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000d1d8      mov   x0, x19
+│       │   0x0000d1dc      mov   w1, 0xb8
+│       │   0x0000d1e0      bl    fcn.00011a88                         ; fcn.00011a88
+│       │   0x0000d1e4      mov   w0, w20
+│       └─> 0x0000d1e8      ldp   x20, x19, [var_10h]
+│           0x0000d1ec      ldp   x22, x21, [var_20h]
+│           0x0000d1f0      ldp   x24, x23, [var_30h]
+│           0x0000d1f4      ldp   x26, x25, [var_40h]
+│           0x0000d1f8      ldp   x28, x27, [var_50h]
+│           0x0000d1fc      ldp   fp, lr, [var_60h]
+│           0x0000d200      add   sp, sp, data.00000190
+│           0x0000d204      autiasp
+└           0x0000d208      ret
+┌ sym.engmodeManager_hal_getRequestMsg(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
 │           ; arg int64_t arg1 @ x0
+│           ; arg int64_t arg2 @ x1
 │           ; arg int64_t arg3 @ x2
 │           ; arg int64_t arg4 @ x3
 │           ; arg int64_t arg5 @ x4
 │           ; arg int64_t arg6 @ x5
 │           ; arg int64_t arg7 @ x6
+│           ; arg int64_t arg8 @ x7
+│           ; var int64_t var_180h @ stack - 0x180
+│           ; var int64_t var_178h @ stack - 0x178
 │           ; var int64_t var_60h @ stack - 0x60
-│           ; var const char *var_50h @ stack - 0x50
+│           ; var int64_t var_50h @ stack - 0x50
 │           ; var int64_t var_40h @ stack - 0x40
 │           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x00004f64      paciasp
-│           0x00004f68      sub   sp, sp, 0x70
-│           0x00004f6c      stp   fp, lr, [var_60h]
-│           0x00004f70      str   x27, [var_50h]
-│           0x00004f74      stp   x26, x25, [var_40h]
-│           0x00004f78      stp   x24, x23, [var_30h]
-│           0x00004f7c      stp   x22, x21, [var_20h]
-│           0x00004f80      stp   x20, x19, [var_10h]
-│           0x00004f84      add   fp, sp, 0x10
-│           0x00004f88      mov   x21, x3                              ; arg4
-│           0x00004f8c      mov   x24, x2                              ; arg3
-│           0x00004f90      mov   x22, x0                              ; arg1
-│           0x00004f94      adrp  x1, data.00001000                    ; 0x1000
-│           0x00004f98      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│           0x00004f9c      adrp  x2, data.00001000                    ; 0x1000
-│           0x00004fa0      add   x2, x2, 0x2a0                        ; 0x12a0 ; "EM version = %s"
-│           0x00004fa4      adrp  x3, data.00001000                    ; 0x1000
-│           0x00004fa8      add   x3, x3, 0xabc                        ; 0x1abc ; "30.2.06"
-│           0x00004fac      mov   w0, 4
-│           0x00004fb0      mov   w25, w6                              ; arg7
-│           0x00004fb4      mov   x26, x5                              ; arg6
-│           0x00004fb8      mov   x23, x4                              ; arg5
-│           0x00004fbc      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│           0x00004fc0      mov   w1, 0x119e
-│           0x00004fc4      mov   w0, 1
-│           0x00004fc8      mov   w20, 0x119e
-│           0x00004fcc      movk  w1, 1, lsl 16
-│           0x00004fd0      movk  w20, 1, lsl 16
-│           0x00004fd4      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│           0x00004fd8      ldr   x8, [x22]
-│           0x00004fdc      mov   x19, x0
-│           0x00004fe0      mov   x0, x22
-│           0x00004fe4      mov   x1, x21
-│           0x00004fe8      mov   x2, xzr
-│           0x00004fec      str   w20, [fp, 0x1c]
-│           0x00004ff0      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate] ; [data.00000548:4]=0x5564 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate ; "dU"
-│           0x00004ff4      blr   x8
-│       ┌─< 0x00004ff8      cbz   x0, 0x5024
-│       │   0x00004ffc      mov   x27, x0
-│       │   0x00005000      bl    fcn.00007790                         ; fcn.00007790
-│       │   0x00005004      ldr   x8, [x22]
-│       │   0x00005008      mov   x20, x0
-│       │   0x0000500c      mov   x0, x22
-│       │   0x00005010      mov   x1, x21
-│       │   0x00005014      mov   x2, x27
-│       │   0x00005018      ldr   x8, [x8, data.00000208]              ; [data.00000550:4]=0x208 data.00000208
-│       │   0x0000501c      blr   x8
-│      ┌──< 0x00005020      b     0x5040
-│      │└─> 0x00005024      adrp  x1, data.00001000                    ; 0x1000
-│      │    0x00005028      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      │    0x0000502c      adrp  x2, data.00001000                    ; 0x1000
-│      │    0x00005030      add   x2, x2, 0x48a                        ; 0x148a ; "Invalid argument"
-│      │    0x00005034      mov   w0, 6
-│      │    0x00005038      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      │    0x0000503c      mov   x20, xzr
-│      │    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x5020
-│      └──> 0x00005040      ldr   x8, [x22]
-│           0x00005044      mov   x0, x22
-│           0x00005048      mov   x1, x23
-│           0x0000504c      mov   x2, xzr
-│           0x00005050      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate] ; [data.00000548:4]=0x5564 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate ; "dU"
-│           0x00005054      blr   x8
-│       ┌─< 0x00005058      cbz   x0, 0x5084
-│       │   0x0000505c      mov   x27, x0
-│       │   0x00005060      bl    fcn.00007790                         ; fcn.00007790
-│       │   0x00005064      ldr   x8, [x22]
-│       │   0x00005068      mov   x21, x0
-│       │   0x0000506c      mov   x0, x22
-│       │   0x00005070      mov   x1, x23
-│       │   0x00005074      mov   x2, x27
-│       │   0x00005078      ldr   x8, [x8, data.00000208]              ; [data.00000550:4]=0x208 data.00000208
-│       │   0x0000507c      blr   x8
-│      ┌──< 0x00005080      b     0x50a0
-│      │└─> 0x00005084      adrp  x1, data.00001000                    ; 0x1000
-│      │    0x00005088      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      │    0x0000508c      adrp  x2, data.00001000                    ; 0x1000
-│      │    0x00005090      add   x2, x2, 0x48a                        ; 0x148a ; "Invalid argument"
-│      │    0x00005094      mov   w0, 6
-│      │    0x00005098      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      │    0x0000509c      mov   x21, xzr
-│      │    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x5080
-│      └──> 0x000050a0      mov   w0, 1
-│           0x000050a4      mov   w1, data.00000208                    ; 0x208
-│           0x000050a8      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│       ┌─< 0x000050ac      cbz   x0, 0x50f4
-│       │   0x000050b0      mov   x23, x0
-│       │   0x000050b4      mov   x0, x22                              ; int64_t arg1
-│       │   0x000050b8      mov   x1, x24                              ; int64_t arg2
-│       │   0x000050bc      mov   x2, x23                              ; int64_t arg3
-│       │   0x000050c0      bl    sym.em_check_package                 ; sym.em_check_package
-│      ┌──< 0x000050c4      cbz   w0, 0x5128
-│      ││   0x000050c8      mov   w4, w0
-│      ││   0x000050cc      adrp  x1, data.00001000                    ; 0x1000
-│      ││   0x000050d0      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      ││   0x000050d4      adrp  x2, data.00001000                    ; 0x1000
-│      ││   0x000050d8      add   x2, x2, 0x517                        ; 0x1517 ; "%s : Failed to check package(0x%08x)\n"
-│      ││   0x000050dc      adrp  x3, data.00001000                    ; 0x1000
-│      ││   0x000050e0      add   x3, x3, 0x4b7                        ; 0x14b7 ; "getRequestMsg"
-│      ││   0x000050e4      mov   w0, 6
-│      ││   0x000050e8      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│      ││   0x000050ec      mov   x24, xzr
-│     ┌───< 0x000050f0      b     0x51a4
-│     ││└─> 0x000050f4      adrp  x1, data.00001000                    ; 0x1000
-│     ││    0x000050f8      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     ││    0x000050fc      adrp  x2, data.00001000                    ; 0x1000
-│     ││    0x00005100      add   x2, x2, 0x4f5                        ; 0x14f5 ; "%s : Memory allocation is failed\n"
-│     ││    0x00005104      adrp  x3, data.00001000                    ; 0x1000
-│     ││    0x00005108      add   x3, x3, 0x4b7                        ; 0x14b7 ; "getRequestMsg"
-│     ││    0x0000510c      mov   w0, 6
-│     ││    0x00005110      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│     ││    0x00005114      mov   w8, 3
-│     ││    0x00005118      mov   x25, xzr
-│     ││    0x0000511c      mov   x24, xzr
-│     ││    0x00005120      str   w8, [fp, 0x1c]
-│     ││┌─< 0x00005124      b     0x51b8
-│     │└──> 0x00005128      ldr   x8, [x22]
-│     │ │   0x0000512c      mov   x0, x22                              ; size_t nmeb
-│     │ │   0x00005130      mov   x1, x26                              ; size_t size
-│     │ │   0x00005134      ldr   x8, [x8, data.00000558]              ; [0x558:4]=0x363 ; "c\U00000003"
-│     │ │   0x00005138      blr   x8
-│     │ │   0x0000513c      mov   w27, w0
-│     │ │   0x00005140      mov   w0, 1
-│     │ │   0x00005144      sxtw  x1, w27
-│     │ │   0x00005148      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│     │ │   0x0000514c      ldr   x8, [x22]
-│     │ │   0x00005150      mov   x24, x0
-│     │ │   0x00005154      mov   x0, x22
-│     │ │   0x00005158      mov   x1, x26
-│     │ │   0x0000515c      mov   w2, wzr
-│     │ │   0x00005160      mov   w3, w27
-│     │ │   0x00005164      ldr   x8, [x8, data.00000230]              ; [data.00000640:4]=0x230 data.00000230 ; "0\U00000002"
-│     │ │   0x00005168      mov   x4, x24
-│     │ │   0x0000516c      blr   x8
-│     │ │   0x00005170      adrp  x0, data.00001000                    ; 0x1000
-│     │ │   0x00005174      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│     │ │   0x00005178      mov   w1, wzr
-│     │ │   0x0000517c      bl    sym.imp.dlsym                        ; sym.imp.dlsym
-│     │┌──< 0x00005180      cbz   w0, 0x520c
-│     │││   0x00005184      adrp  x1, data.00001000                    ; 0x1000
-│     │││   0x00005188      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     │││   0x0000518c      adrp  x2, data.00001000                    ; 0x1000
-│     │││   0x00005190      add   x2, x2, 0x75c                        ; 0x175c ; "%s : file isn't existed\n"
-│     │││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x52a0
-│    ┌────> 0x00005194      adrp  x3, data.00001000                    ; 0x1000
-│    ╎│││   0x00005198      add   x3, x3, 0x4b7                        ; 0x14b7 ; "getRequestMsg"
-│    ╎│││   0x0000519c      mov   w0, 6
-│    ╎│││   0x000051a0      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│    ╎│││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x50f0
-│    ╎└───> 0x000051a4      mov   w8, 3
-│    ╎ ││   0x000051a8      mov   x0, x23                              ; const char *src
-│    ╎ ││   0x000051ac      str   w8, [fp, 0x1c]
-│    ╎ ││   0x000051b0      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│    ╎ ││   0x000051b4      mov   x25, xzr
-│    ╎ ││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x5124
-│    ╎┌─└─> 0x000051b8      mov   x0, x19                              ; const char *src
-│    ╎╎│    0x000051bc      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│    ╎╎│    ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x5330
-│   ┌───┌─> 0x000051c0      cbz   x24, 0x51cc
-│   │╎╎│╎   0x000051c4      mov   x0, x24                              ; const char *src
-│   │╎╎│╎   0x000051c8      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│  ┌└─────> 0x000051cc      cbz   x20, 0x51d8
-│  │ ╎╎│╎   0x000051d0      mov   x0, x20                              ; const char *src
-│  │ ╎╎│╎   0x000051d4      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│  └┌─────< 0x000051d8      cbz   x21, 0x51e4
-│   │╎╎│╎   0x000051dc      mov   x0, x21                              ; const char *src
-│   │╎╎│╎   0x000051e0      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│   └─────> 0x000051e4      mov   x0, x25
-│    ╎╎│╎   0x000051e8      ldp   x20, x19, [var_10h]
-│    ╎╎│╎   0x000051ec      ldr   x27, [var_50h]                       ; [0x20:4]=64 ; "@"
-│    ╎╎│╎   0x000051f0      ldp   x22, x21, [var_20h]
-│    ╎╎│╎   0x000051f4      ldp   x24, x23, [var_30h]
-│    ╎╎│╎   0x000051f8      ldp   x26, x25, [var_40h]
-│    ╎╎│╎   0x000051fc      ldp   fp, lr, [var_60h]
-│    ╎╎│╎   0x00005200      add   sp, sp, 0x70
-│    ╎╎│╎   0x00005204      autiasp
-│    ╎╎│╎   0x00005208      ret
-│    ╎╎└──> 0x0000520c      adrp  x0, data.00001000                    ; 0x1000
-│    ╎╎ ╎   0x00005210      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│    ╎╎ ╎   0x00005214      mov   w1, 1
-│    ╎╎ ╎   0x00005218      bl    sym.imp.dlclose                      ; sym.imp.dlclose
-│    ╎╎┌──< 0x0000521c      cbz   x0, 0x5290
-│    ╎╎│╎   0x00005220      adrp  x1, data.00001000                    ; 0x1000
-│    ╎╎│╎   0x00005224      add   x1, x1, 0x69a                        ; 0x169a ; "engmodeManager_hal_getRequestMsg"
-│    ╎╎│╎   0x00005228      mov   x26, x0
-│    ╎╎│╎   0x0000522c      bl    sym.imp.__strlen_chk                 ; sym.imp.__strlen_chk
-│   ┌─────< 0x00005230      cbz   x0, 0x52a4
-│   │╎╎│╎   0x00005234      mov   x8, x0
-│   │╎╎│╎   0x00005238      add   x9, fp, 0x1c
-│   │╎╎│╎   0x0000523c      mov   x0, x20
-│   │╎╎│╎   0x00005240      mov   x1, x21
-│   │╎╎│╎   0x00005244      mov   x2, x24
-│   │╎╎│╎   0x00005248      mov   w3, w27
-│   │╎╎│╎   0x0000524c      mov   w4, w25
-│   │╎╎│╎   0x00005250      mov   x5, x23
-│   │╎╎│╎   0x00005254      mov   w6, data.00000208                    ; 0x208
-│   │╎╎│╎   0x00005258      mov   x7, x19
-│   │╎╎│╎   0x0000525c      str   x9, [sp]
-│   │╎╎│╎   0x00005260      blr   x8
-│  ┌──────< 0x00005264      cbz   w0, 0x52e4
-│  ││╎╎│╎   0x00005268      mov   w4, w0
-│  ││╎╎│╎   0x0000526c      adrp  x1, data.00001000                    ; 0x1000
-│  ││╎╎│╎   0x00005270      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  ││╎╎│╎   0x00005274      adrp  x2, data.00001000                    ; 0x1000
-│  ││╎╎│╎   0x00005278      add   x2, x2, 0xa14                        ; 0x1a14 ; "%s : Failed to get message(%d)\n"
-│  ││╎╎│╎   0x0000527c      adrp  x3, data.00001000                    ; 0x1000
-│  ││╎╎│╎   0x00005280      add   x3, x3, 0x4b7                        ; 0x14b7 ; "getRequestMsg"
-│  ││╎╎│╎   0x00005284      mov   w0, 6
-│  ││╎╎│╎   0x00005288      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│ ┌───────< 0x0000528c      b     0x52c4
-│ │││╎╎└──> 0x00005290      adrp  x1, data.00001000                    ; 0x1000
-│ │││╎╎ ╎   0x00005294      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│ │││╎╎ ╎   0x00005298      adrp  x2, data.00001000                    ; 0x1000
-│ │││╎╎ ╎   0x0000529c      add   x2, x2, 0x310                        ; 0x1310 ; "%s : dlopen is failed\n"
-│ │││└────< 0x000052a0      b     0x5194
-│ ││└─────> 0x000052a4      adrp  x1, data.00001000                    ; 0x1000
-│ ││  ╎ ╎   0x000052a8      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│ ││  ╎ ╎   0x000052ac      adrp  x2, data.00001000                    ; 0x1000
-│ ││  ╎ ╎   0x000052b0      add   x2, x2, 0x411                        ; 0x1411 ; "%s : can't get symbol\n"
-│ ││  ╎ ╎   0x000052b4      adrp  x3, data.00001000                    ; 0x1000
-│ ││  ╎ ╎   0x000052b8      add   x3, x3, 0x4b7                        ; 0x14b7 ; "getRequestMsg"
-│ ││  ╎ ╎   0x000052bc      mov   w0, 6
-│ ││  ╎ ╎   0x000052c0      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│ ││  ╎ ╎   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x528c
-│ └───────> 0x000052c4      mov   w8, 0x5245                           ; 'ER'
-│  │  ╎ ╎   0x000052c8      mov   w9, 0x52                             ; 'R'
-│  │  ╎ ╎   0x000052cc      mov   x25, xzr
-│  │  ╎ ╎   0x000052d0      strh  w8, [x19]
-│  │  ╎ ╎   0x000052d4      mov   w8, 3
-│  │  ╎ ╎   0x000052d8      strb  w9, [x19, 2]
-│  │  ╎ ╎   0x000052dc      str   w8, [fp, 0x1c]
-│  │  ╎┌──< 0x000052e0      b     0x531c
-│  └──────> 0x000052e4      ldr   x8, [x22]
-│     ╎│╎   0x000052e8      ldr   w1, [fp, 0x1c]                       ; [0x1c:4]=0
-│     ╎│╎   0x000052ec      mov   x0, x22
-│     ╎│╎   0x000052f0      ldr   x8, [x8, data.00000580]              ; [0x580:4]=0x33c ; "<\U00000003"
-│     ╎│╎   0x000052f4      blr   x8
-│     ╎│╎   0x000052f8      ldr   x8, [x22]
-│     ╎│╎   0x000052fc      ldr   w3, [fp, 0x1c]                       ; [0x1c:4]=0
-│     ╎│╎   0x00005300      mov   x25, x0
-│     ╎│╎   0x00005304      mov   x0, x22
-│     ╎│╎   0x00005308      mov   x1, x25
-│     ╎│╎   0x0000530c      mov   w2, wzr
-│     ╎│╎   0x00005310      ldr   x8, [x8, sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_sendFuseCmd] ; [data.00000680:4]=0x6b54 sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_sendFuseCmd ; "Tk"
-│     ╎│╎   0x00005314      mov   x4, x19
-│     ╎│╎   0x00005318      blr   x8
-│     ╎│╎   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg @ 0x52e0
-│     ╎└──> 0x0000531c      mov   x0, x26
-│     ╎ ╎   0x00005320      bl    sym.imp.__vsnprintf_chk              ; sym.imp.__vsnprintf_chk
-│     ╎ ╎   0x00005324      mov   x0, x23                              ; const char *src
-│     ╎ ╎   0x00005328      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│     └───< 0x0000532c      cbnz  x19, 0x51b8
-└       └─< 0x00005330      b     0x51c0
-
-========== JNI: CHECK TOKEN ==========
-ERROR: Cannot determine entrypoint, using 0x00004000.
-┌ sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_isTokenInstalled(int64_t arg1, int64_t arg3);
+│           0x0000cf6c      paciasp
+│           0x0000cf70      sub   sp, sp, data.00000190                ; 0x190 ; "R\xe5td\U00000004"
+│           0x0000cf74      stp   fp, lr, [var_60h]
+│           0x0000cf78      stp   x28, x27, [var_50h]
+│           0x0000cf7c      stp   x26, x25, [var_40h]
+│           0x0000cf80      stp   x24, x23, [var_30h]
+│           0x0000cf84      stp   x22, x21, [var_20h]
+│           0x0000cf88      stp   x20, x19, [var_10h]
+│           0x0000cf8c      add   fp, sp, data.00000130                ; 0x130
+│           0x0000cf90      mov   w23, w3                              ; arg4
+│           0x0000cf94      mov   x24, x2                              ; arg3
+│           0x0000cf98      mov   x25, x1                              ; arg2
+│           0x0000cf9c      ldr   x28, [fp, 0x60]                      ; [0x60:4]=0x2a0
+│           0x0000cfa0      mov   x26, x0                              ; arg1
+│           0x0000cfa4      adrp  x1, data.00003000                    ; 0x3000
+│           0x0000cfa8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│           0x0000cfac      adrp  x2, data.00002000                    ; 0x2000
+│           0x0000cfb0      add   x2, x2, 0xd17
+│           0x0000cfb4      adrp  x3, data.00002000                    ; 0x2000
+│           0x0000cfb8      add   x3, x3, 0xdb5                        ; 0x2db5 ; "engmodeManager_hal_getRequestMsg"
+│           0x0000cfbc      mov   w0, 3
+│           0x0000cfc0      mov   x19, x7                              ; arg8
+│           0x0000cfc4      mov   w20, w6                              ; arg7
+│           0x0000cfc8      mov   x21, x5                              ; arg6
+│           0x0000cfcc      mov   w22, w4                              ; arg5
+│           0x0000cfd0      bl    fcn.00011968                         ; fcn.00011968
+│           0x0000cfd4      movi  v0.2d, 0000000000000000
+│           0x0000cfd8      mov   w8, data.000003e8                    ; 0x3e8
+│           0x0000cfdc      mov   w0, 0xb8
+│           0x0000cfe0      stp   q0, q0, [var_178h + 0x8]
+│           0x0000cfe4      stp   q0, q0, [var_178h + 0x28]
+│           0x0000cfe8      stp   q0, q0, [var_178h + 0x48]
+│           0x0000cfec      stp   q0, q0, [var_178h + 0x68]
+│           0x0000cff0      stp   q0, q0, [var_178h + 0x88]
+│           0x0000cff4      stp   q0, q0, [var_178h + 0xa8]
+│           0x0000cff8      stp   q0, q0, [var_178h + 0xc8]
+│           0x0000cffc      stp   q0, q0, [var_178h + 0xe8]
+│           0x0000d000      str   q0, [var_180h]
+│           0x0000d004      str   w8, [var_180h]
+│           0x0000d008      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000d00c      mov   x27, x0
+│           0x0000d010      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
+│           0x0000d014      add   x0, var_data.00000180
+│           0x0000d018      mov   x1, x26
+│           0x0000d01c      mov   x2, x25
+│           0x0000d020      mov   x3, x24
+│           0x0000d024      mov   w4, w23
+│           0x0000d028      mov   w5, w22
+│           0x0000d02c      mov   x6, x21
+│           0x0000d030      mov   w7, w20
+│           0x0000d034      str   x27, [var_178h]
+│           0x0000d038      stp   x19, x28, [sp]
+│           0x0000d03c      bl    fcn.000117e8                         ; fcn.000117e8
+│           0x0000d040      ldr   x19, [var_178h]                      ; [0x18:4]=0
+│       ┌─< 0x0000d044      cbz   x19, 0xd098
+│       │   0x0000d048      mov   x21, x19
+│       │   0x0000d04c      mov   w20, w0
+│       │   0x0000d050      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
+│       │   0x0000d054      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000d058      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
+│       │   0x0000d05c      mov   x0, xzr
+│       │   0x0000d060      str   x21, [x19]
+│       │   0x0000d064      str   xzr, [x19, 0x10]
+│       │   0x0000d068      str   xzr, [x21]
+│      ┌──< 0x0000d06c      tbz   w8, 0, 0xd084
+│      ││   0x0000d070      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
+│      ││   0x0000d074      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
+│      ││   0x0000d078      and   x1, x8, 0xfffffffffffffffe
+│      ││   0x0000d07c      bl    fcn.00011a88                         ; fcn.00011a88
+│      ││   0x0000d080      ldr   x0, [x19, 8]                         ; [0x8:4]=0
+│      └──> 0x0000d084      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000d088      mov   x0, x19
+│       │   0x0000d08c      mov   w1, 0xb8
+│       │   0x0000d090      bl    fcn.00011a88                         ; fcn.00011a88
+│       │   0x0000d094      mov   w0, w20
+│       └─> 0x0000d098      ldp   x20, x19, [var_10h]
+│           0x0000d09c      ldp   x22, x21, [var_20h]
+│           0x0000d0a0      ldp   x24, x23, [var_30h]
+│           0x0000d0a4      ldp   x26, x25, [var_40h]
+│           0x0000d0a8      ldp   x28, x27, [var_50h]
+│           0x0000d0ac      ldp   fp, lr, [var_60h]
+│           0x0000d0b0      add   sp, sp, data.00000190
+│           0x0000d0b4      autiasp
+└           0x0000d0b8      ret
+┌ sym.engmodeManager_hal_isTokenInstalled(int64_t arg1, int64_t arg2);
 │           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg3 @ x2
+│           ; arg int64_t arg2 @ x1
+│           ; var int64_t var_138h @ stack - 0x138
+│           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x0000576c      paciasp
-│           0x00005770      stp   fp, lr, [sp, -0]!
-│           0x00005774      str   x21, [var_20h]
-│           0x00005778      stp   x20, x19, [var_10h]
-│           0x0000577c      mov   fp, sp
-│           0x00005780      mov   x20, x2                              ; arg3
-│           0x00005784      mov   x21, x0                              ; arg1
-│           0x00005788      adrp  x1, data.00001000                    ; 0x1000
-│           0x0000578c      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│           0x00005790      adrp  x2, data.00001000                    ; 0x1000
-│           0x00005794      add   x2, x2, 0x2a0                        ; 0x12a0 ; "EM version = %s"
-│           0x00005798      adrp  x3, data.00001000                    ; 0x1000
-│           0x0000579c      add   x3, x3, 0xabc                        ; 0x1abc ; "30.2.06"
-│           0x000057a0      mov   w0, 4
-│           0x000057a4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│           0x000057a8      mov   w0, 1
-│           0x000057ac      mov   w1, data.00000208                    ; 0x208
-│           0x000057b0      bl    sym.imp.calloc                       ; sym.imp.calloc ; void *calloc(size_t nmeb, size_t size)
-│       ┌─< 0x000057b4      cbz   x0, 0x57fc
-│       │   0x000057b8      mov   x19, x0
-│       │   0x000057bc      mov   x0, x21                              ; int64_t arg1
-│       │   0x000057c0      mov   x1, x20                              ; int64_t arg2
-│       │   0x000057c4      mov   x2, x19                              ; int64_t arg3
-│       │   0x000057c8      bl    sym.em_check_package                 ; sym.em_check_package
-│      ┌──< 0x000057cc      cbz   w0, 0x5820
-│      ││   0x000057d0      mov   w20, w0
-│      ││   0x000057d4      adrp  x1, data.00001000                    ; 0x1000
-│      ││   0x000057d8      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│      ││   0x000057dc      adrp  x2, data.00001000                    ; 0x1000
-│      ││   0x000057e0      add   x2, x2, 0x517                        ; 0x1517 ; "%s : Failed to check package(0x%08x)\n"
-│      ││   0x000057e4      adrp  x3, data.00001000                    ; 0x1000
-│      ││   0x000057e8      add   x3, x3, 0x2b0                        ; 0x12b0 ; "isTokenInstalled"
-│      ││   0x000057ec      mov   w0, 6
-│      ││   0x000057f0      mov   w4, w20
-│      ││   0x000057f4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│     ┌───< 0x000057f8      b     0x590c
-│     ││└─> 0x000057fc      mov   w20, 1
-│     ││    0x00005800      adrp  x0, data.00001000                    ; 0x1000
-│     ││    0x00005804      add   x0, x0, 0x86d                        ; 0x186d ; "%s: parameter(%u) is null.\n" ; enum androidLogPriority prio
-│     ││    0x00005808      adrp  x1, data.00001000                    ; 0x1000
-│     ││    0x0000580c      add   x1, x1, 0x2b0                        ; 0x12b0 ; "isTokenInstalled" ; const char *tag
-│     ││    0x00005810      mov   w2, 1
-│     ││    0x00005814      movk  w20, 0xc005, lsl 16
-│     ││    0x00005818      bl    sym.imp.__android_log_print          ; sym.imp.__android_log_print ; int __android_log_print(enum androidLogPriority prio, const char *tag, const char *fmt)
-│     ││┌─< 0x0000581c      b     0x5914
-│     │└──> 0x00005820      adrp  x0, data.00001000                    ; 0x1000
-│     │ │   0x00005824      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│     │ │   0x00005828      mov   w1, wzr
-│     │ │   0x0000582c      bl    sym.imp.dlsym                        ; sym.imp.dlsym
-│     │┌──< 0x00005830      cbz   w0, 0x5864
-│     │││   0x00005834      adrp  x1, data.00001000                    ; 0x1000
-│     │││   0x00005838      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│     │││   0x0000583c      adrp  x2, data.00001000                    ; 0x1000
-│     │││   0x00005840      add   x2, x2, 0x75c                        ; 0x175c ; "%s : file isn't existed\n"
-│     │││   0x00005844      adrp  x3, data.00001000                    ; 0x1000
-│     │││   0x00005848      add   x3, x3, 0x2b0                        ; 0x12b0 ; "isTokenInstalled"
-│     │││   0x0000584c      mov   w0, 6
-│     │││   0x00005850      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│     │││   0x00005854      mov   w8, 1
-│     │││   0x00005858      movk  w8, 0xc005, lsl 16
-│     │││   0x0000585c      add   w20, w8, 0xf
-│    ┌────< 0x00005860      b     0x590c
-│    ││└──> 0x00005864      adrp  x0, data.00001000                    ; 0x1000
-│    ││ │   0x00005868      add   x0, x0, 0x938                        ; 0x1938 ; "/system/lib64/lib.engmode.samsung.so"
-│    ││ │   0x0000586c      mov   w1, 1
-│    ││ │   0x00005870      bl    sym.imp.dlclose                      ; sym.imp.dlclose
-│    ││┌──< 0x00005874      cbz   x0, 0x58a8
-│    ││││   0x00005878      adrp  x1, data.00001000                    ; 0x1000
-│    ││││   0x0000587c      add   x1, x1, 0x6ed                        ; 0x16ed ; "engmodeManager_hal_isTokenInstalled"
-│    ││││   0x00005880      mov   x21, x0
-│    ││││   0x00005884      bl    sym.imp.__strlen_chk                 ; sym.imp.__strlen_chk
-│   ┌─────< 0x00005888      cbz   x0, 0x58d8
-│   │││││   0x0000588c      mov   x8, x0
-│   │││││   0x00005890      mov   x0, x19
-│   │││││   0x00005894      mov   w1, data.00000208                    ; 0x208
-│   │││││   0x00005898      blr   x8
-│   │││││   0x0000589c      cmp   w0, 1
-│   │││││   0x000058a0      csinc w20, w0, wzr, hi
-│  ┌──────< 0x000058a4      b     0x5904
-│  ││││└──> 0x000058a8      adrp  x1, data.00001000                    ; 0x1000
-│  ││││ │   0x000058ac      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  ││││ │   0x000058b0      adrp  x2, data.00001000                    ; 0x1000
-│  ││││ │   0x000058b4      add   x2, x2, 0x310                        ; 0x1310 ; "%s : dlopen is failed\n"
-│  ││││ │   0x000058b8      adrp  x3, data.00001000                    ; 0x1000
-│  ││││ │   0x000058bc      add   x3, x3, 0x2b0                        ; 0x12b0 ; "isTokenInstalled"
-│  ││││ │   0x000058c0      mov   w0, 6
-│  ││││ │   0x000058c4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  ││││ │   0x000058c8      mov   w8, 1
-│  ││││ │   0x000058cc      movk  w8, 0xc005, lsl 16
-│  ││││ │   0x000058d0      orr   w20, w8, 0x10
-│  ││││┌──< 0x000058d4      b     0x590c
-│  │└─────> 0x000058d8      adrp  x1, data.00001000                    ; 0x1000
-│  │ ││││   0x000058dc      add   x1, x1, 0x6dc                        ; 0x16dc ; "engmode_jni"
-│  │ ││││   0x000058e0      adrp  x2, data.00001000                    ; 0x1000
-│  │ ││││   0x000058e4      add   x2, x2, 0x4cf                        ; 0x14cf ; "%s : Failed to load func\n"
-│  │ ││││   0x000058e8      adrp  x3, data.00001000                    ; 0x1000
-│  │ ││││   0x000058ec      add   x3, x3, 0x2b0                        ; 0x12b0 ; "isTokenInstalled"
-│  │ ││││   0x000058f0      mov   w0, 6
-│  │ ││││   0x000058f4      bl    sym.imp.getuid                       ; sym.imp.getuid ; uid_t getuid(void)
-│  │ ││││   0x000058f8      mov   w8, 1
-│  │ ││││   0x000058fc      movk  w8, 0xc005, lsl 16
-│  │ ││││   0x00005900      add   w20, w8, 0x11
-│  │ ││││   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_isTokenInstalled @ 0x58a4
-│  └──────> 0x00005904      mov   x0, x21
-│    ││││   0x00005908      bl    sym.imp.__vsnprintf_chk              ; sym.imp.__vsnprintf_chk
-│    ││││   ; CODE XREFS from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_isTokenInstalled @ 0x57f8, 0x5860, 0x58d4
-│    └└└──> 0x0000590c      mov   x0, x19                              ; const char *src
-│       │   0x00005910      bl    sym.imp.strdup                       ; sym.imp.strdup ; char *strdup(const char *src)
-│       │   ; CODE XREF from sym.Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_isTokenInstalled @ 0x581c
-│       └─> 0x00005914      mov   w0, w20
-│           0x00005918      ldp   x20, x19, [var_10h]
-│           0x0000591c      ldr   x21, [var_20h]                       ; [0x10:4]=0xb70003
-│           0x00005920      ldp   fp, lr, [sp], 0
-│           0x00005924      autiasp
-└           0x00005928      ret
-
-========== JNI IMPORTS ==========
-    20: 00000000000048a8   640 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getServerTime
-    21: 0000000000005cbc   764 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getStatusWithSignature
-    22: 0000000000004b28  1084 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq
-    23: 0000000000005564   520 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate
-    24: 000000000000592c   448 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_removeToken
-    25: 00000000000065f0   828 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeITLReq
-    26: 0000000000004848    96 FUNC    GLOBAL DEFAULT   15 Java_com_android_server_SatsService_commandForESS
-    27: 0000000000004f64   976 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg
-    28: 0000000000005aec   464 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getStatus
-    29: 0000000000005fb8   452 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getTUC
-    30: 00000000000063c8   552 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_installToken
-    31: 000000000000692c   552 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_recoveryITL
-    32: 0000000000004238    96 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_commandForESS
-    33: 0000000000005334   560 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getID
-    34: 000000000000576c   448 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_isTokenInstalled
-    35: 000000000000617c   588 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getToken
-    36: 0000000000006b54   444 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_sendFuseCmd
-    37: 0000000000006d10   920 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getTokenInfoForJanus
-    19: 0000000000000000     0 FILE    LOCAL  DEFAULT  ABS em_jni.c
-    50: 0000000000004238    96 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_commandForESS
-    51: 0000000000004848    96 FUNC    GLOBAL DEFAULT   15 Java_com_android_server_SatsService_commandForESS
-    52: 00000000000048a8   640 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getServerTime
-    53: 0000000000004b28  1084 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeTokenReq
-    54: 0000000000004f64   976 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getRequestMsg
-    55: 0000000000005334   560 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getID
-    56: 0000000000005564   520 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getExpiryDate
-    57: 000000000000576c   448 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_isTokenInstalled
-    58: 000000000000592c   448 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_removeToken
-    59: 0000000000005aec   464 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getStatus
-    60: 0000000000005cbc   764 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getStatusWithSignature
-    61: 0000000000005fb8   452 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getTUC
-    62: 000000000000617c   588 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getToken
-    63: 00000000000063c8   552 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_installToken
-    64: 00000000000065f0   828 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_makeITLReq
-    65: 000000000000692c   552 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_recoveryITL
-    66: 0000000000006b54   444 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_sendFuseCmd
-    67: 0000000000006d10   920 FUNC    GLOBAL DEFAULT   15 Java_com_samsung_android_service_EngineeringMode_EngineeringModeManager_00024EngineeringModeNative_getTokenInfoForJanus
-11:05:07 oleg@parrot ~ →
+│           0x0000c820      paciasp
+│           0x0000c824      sub   sp, sp, data.00000140                ; 0x140
+│           0x0000c828      stp   fp, lr, [var_30h]
+│           0x0000c82c      stp   x28, x21, [var_20h]
+│           0x0000c830      stp   x20, x19, [var_10h]
+│           0x0000c834      add   fp, sp, data.00000110                ; 0x110
+│           0x0000c838      mov   w19, w1                              ; arg2
+│           0x0000c83c      mov   x20, x0                              ; arg1
+│           0x0000c840      adrp  x1, data.00003000                    ; 0x3000
+│           0x0000c844      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│           0x0000c848      adrp  x2, data.00002000                    ; 0x2000
+│           0x0000c84c      add   x2, x2, 0xd17
+│           0x0000c850      adrp  x3, data.00002000                    ; 0x2000
+│           0x0000c854      add   x3, x3, 0xe25                        ; 0x2e25 ; "engmodeManager_hal_isTokenInstalled"
+│           0x0000c858      mov   w0, 3
+│           0x0000c85c      bl    fcn.00011968                         ; fcn.00011968
+│           0x0000c860      movi  v0.2d, 0000000000000000
+│           0x0000c864      mov   w8, data.000003e8                    ; 0x3e8
+│           0x0000c868      mov   w0, 0xb8
+│           0x0000c86c      stp   q0, q0, [var_138h + 0x8]
+│           0x0000c870      stp   q0, q0, [var_138h + 0x28]
+│           0x0000c874      stp   q0, q0, [var_138h + 0x48]
+│           0x0000c878      stp   q0, q0, [var_138h + 0x68]
+│           0x0000c87c      stp   q0, q0, [var_138h + 0x88]
+│           0x0000c880      stp   q0, q0, [var_138h + 0xa8]
+│           0x0000c884      stp   q0, q0, [var_138h + 0xc8]
+│           0x0000c888      stp   q0, q0, [var_138h + 0xe8]
+│           0x0000c88c      str   q0, [sp]
+│           0x0000c890      str   w8, [sp]
+│           0x0000c894      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000c898      mov   x21, x0
+│           0x0000c89c      bl    method.client.client                 ; method.client.client ;  method.client.client(int64_t arg1)
+│           0x0000c8a0      mov   x0, sp
+│           0x0000c8a4      mov   x1, x20
+│           0x0000c8a8      mov   w2, w19
+│           0x0000c8ac      str   x21, [var_138h]
+│           0x0000c8b0      bl    fcn.00011728                         ; fcn.00011728
+│           0x0000c8b4      ldr   x19, [var_138h]                      ; [0x8:4]=0
+│       ┌─< 0x0000c8b8      cbz   x19, 0xc90c
+│       │   0x0000c8bc      mov   x21, x19
+│       │   0x0000c8c0      mov   w20, w0
+│       │   0x0000c8c4      ldr   x0, [x21, 8]!                        ; [0x8:4]=0 ; int64_t arg1
+│       │   0x0000c8c8      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000c8cc      ldrb  w8, [x19, 0x88]                      ; [0x88:4]=0
+│       │   0x0000c8d0      mov   x0, xzr
+│       │   0x0000c8d4      str   x21, [x19]
+│       │   0x0000c8d8      str   xzr, [x19, 0x10]
+│       │   0x0000c8dc      str   xzr, [x21]
+│      ┌──< 0x0000c8e0      tbz   w8, 0, 0xc8f8
+│      ││   0x0000c8e4      ldr   x8, [x19, 0x88]                      ; [0x88:4]=0
+│      ││   0x0000c8e8      ldr   x0, [x19, 0x98]                      ; [0x98:4]=0x49a8
+│      ││   0x0000c8ec      and   x1, x8, 0xfffffffffffffffe
+│      ││   0x0000c8f0      bl    fcn.00011a88                         ; fcn.00011a88
+│      ││   0x0000c8f4      ldr   x0, [x19, 8]                         ; [0x8:4]=0
+│      └──> 0x0000c8f8      bl    method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__stdbl    0xe184 ; method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void ;  method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void(int64_t arg1)
+│       │   0x0000c8fc      mov   x0, x19
+│       │   0x0000c900      mov   w1, 0xb8
+│       │   0x0000c904      bl    fcn.00011a88                         ; fcn.00011a88
+│       │   0x0000c908      mov   w0, w20
+│       └─> 0x0000c90c      ldp   x20, x19, [var_10h]
+│           0x0000c910      ldp   x28, x21, [var_20h]
+│           0x0000c914      ldp   fp, lr, [var_30h]
+│           0x0000c918      add   sp, sp, data.00000140
+│           0x0000c91c      autiasp
+└           0x0000c920      ret
+11:06:51 oleg@parrot ~ →
