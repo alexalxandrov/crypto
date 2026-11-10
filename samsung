@@ -1,661 +1,466 @@
-11:13:42 oleg@parrot ~ → (line 18) ...
-axt @ 0x2b1c
-axt @ 0x2b31
-axt @ 0x2b66
-axt @ 0x2d40
-axt @ 0x2d56
-axt @ 0x2d6e
-axt @ 0x2e7e
-axt @ 0x2ea1
-axt @ 0x2eb7
-axt @ 0x2f6b
-axt @ 0x2f86
-axt @ 0x3025
-axt @ 0x3070
-axt @ 0x308e
-axt @ 0x31a1
-axt @ 0x31c2
-axt @ 0x32c5
-axt @ 0x3433
-axt @ 0x3485
-axt @ 0x2da7
-q' "$HAL"
+11:15:42 oleg@parrot ~ → BASE="$HOME/a26-analysis/engmode/current"
+HAL="$BASE/system-lib64/lib.engmode.samsung.so"
+
+echo "========== CLIENT REGISTRATION WRAPPERS =========="
+rizin -q -A -c '
+axt @ 0x11a88
+pdf @ 0x11a88
+axt @ 0x11b78
+pdf @ 0x11b78
+axt @ 0x10590
+q' "$HAL" 2>/dev/null
 
 echo
-echo "========== MODE REGISTRATION CALLS =========="
-rizin -q -A -c 'axt @ 0x10638; pdf @ 0x10638; q' "$HAL"
-========== REGISTER CLIENTS: ACTUAL CODE ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x00008000.
-│           0x0000e240      stp   x22, x21, [var_20h]
-│           0x0000e244      stp   x20, x19, [var_10h]
-│           0x0000e248      mov   fp, sp
-│           0x0000e24c      sub   sp, sp, 0x900
-│           0x0000e250      nop
-│           0x0000e254      adr   x8, str.system_server                ; 0x2da7
-│           0x0000e258      str   xzr, [sp]
-│           0x0000e25c      ldr   x22, [x8]                            ; [0x2da7:4]=0x74737973 ; "system_server"
-│           0x0000e260      ldur  x23, [x8, 5]                         ; [0x5:4]=257
-│           0x0000e264      mov   w21, 0x1a
-│           0x0000e268      sub   x20, fp, 0xa0
-│           0x0000e26c      ldr   w24, [x0, 0x7c]                      ; [0x7c:4]=4 ; arg1
-│           0x0000e270      sub   x25, fp, 0x20
-│           0x0000e274      sub   x1, fp, 0x20                         ; int64_t arg3
-│           0x0000e278      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e27c      mov   x19, x0                              ; arg1
-│           0x0000e280      sturb w21, [fp, -0x20]
---
-│       │   0x0000e330      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000e334      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000e338      mov   w0, 0x20
-│           0x0000e33c      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000e340      adrp  x8, data.00003000                    ; 0x3000
-│           0x0000e344      add   x8, x8, 0x70                         ; 0x3070 ; "com.sec.android.app.emservice"
-│           0x0000e348      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000e34c      ldr   q1, [x8]                             ; [0x3070:4]=0x2e6d6f63 ; "com.sec.android.app.emservice"
-│           0x0000e350      ldur  q2, [x8, 0xd]                        ; [0xd:4]=0x3000000
-│           0x0000e354      ldr   q0, [x9, method.client.checkPath]    ; [data.00000730:4]=0x10d8c method.client.checkPath
-│           0x0000e358      stur  x0, [fp, -0x40]
-│           0x0000e35c      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000e360      sub   x22, fp, 0x50
-│           0x0000e364      str   q1, [x0]
-│           0x0000e368      sub   x1, fp, 0x50                         ; int64_t arg3
-│           0x0000e36c      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e370      stur  q2, [x0, 0xd]
---
-│       │   0x0000e434      ldur  x8, [fp, -0x70]
-│       │   0x0000e438      ldur  x0, [fp, -0x60]
-│       │   0x0000e43c      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000e440      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000e444      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e448      add   x8, x8, 0xa03                        ; 0x2a03 ; "com.sec.bcservice"
-│           0x0000e44c      mov   w21, 0x22                            ; '"'
-│           0x0000e450      ldr   q0, [x8]                             ; [0x2a03:4]=0x2e6d6f63 ; "com.sec.bcservice"
-│           0x0000e454      mov   w22, 0x65                            ; 'e'
-│           0x0000e458      ldr   w23, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000e45c      sub   x24, fp, 0x88
-│           0x0000e460      sub   x1, fp, 0x88                         ; int64_t arg3
-│           0x0000e464      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e468      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e46c      sturb w21, [fp, -0x88]
-│           0x0000e470      sturh w22, [x20, 0x29]
-│           0x0000e474      str   q0, [var_900h]
---
-│       │   0x0000e51c      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000e520      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000e524      mov   w0, 0x30                             ; '0'
-│           0x0000e528      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000e52c      adrp  x8, data.00003000                    ; 0x3000
-│           0x0000e530      add   x8, x8, 0x8e                         ; 0x308e ; "com.samsung.toolkit.ga_settingapplication"
-│           0x0000e534      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000e538      ldp   q0, q1, [x8]                         ; [0x308e:4]=0x2e6d6f63 ; "com.samsung.toolkit.ga_settingapplication"
-│           0x0000e53c      ldr   q2, [x9, data.00000630]              ; [0x630:4]=0
-│           0x0000e540      stur  x0, [fp, -0xb0]
-│           0x0000e544      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000e548      sub   x21, fp, 0xc0
-│           0x0000e54c      strb  wzr, [x0, 0x29]
-│           0x0000e550      sub   x1, fp, 0xc0                         ; int64_t arg3
-│           0x0000e554      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e558      stp   q1, q0, [var_910h]
-│           0x0000e55c      stp   q0, q1, [x0]
---
-│           0x0000e694      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e698      mov   w20, 0x7070                          ; 'pp'
-│           0x0000e69c      str   x0, [var_160h]
-│           0x0000e6a0      ldr   q0, [x8, data.00000800]              ; [0x800:4]=0x6b9
-│           0x0000e6a4      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000e6a8      add   x8, x8, 0xe7e                        ; 0x2e7e ; "com.sec.android.app.servicemodeapp"
-│           0x0000e6ac      ldp   q1, q2, [x8]                         ; [0x2e7e:4]=0x2e6d6f63 ; "com.sec.android.app.servicemodeapp"
-│           0x0000e6b0      strh  w20, [x0, 0x20]
-│           0x0000e6b4      strb  wzr, [x0, 0x22]
-│           0x0000e6b8      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000e6bc      add   x22, arg3                            ; 0x7e0
-│                                                                      ; data.000007e0
-│           0x0000e6c0      add   x1, arg3                             ; 0x7e0
-│                                                                      ; data.000007e0 ; int64_t arg3
-│           0x0000e6c4      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e6c8      str   q0, [arg3]
---
-│       │   0x0000e790      ldr   x0, [var_180h]                       ; data.000007d0
-│       │                                                              ; [0x7d0:4]=254
-│       │   0x0000e794      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000e798      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000e79c      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000e7a0      add   x9, x9, 0x986                        ; 0x2986 ; "com.fdm.soomagent"
-│           0x0000e7a4      mov   w8, 0x22                             ; '"'
-│           0x0000e7a8      ldr   q0, [x9]                             ; [0x2986:4]=0x2e6d6f63 ; "com.fdm.soomagent"
-│           0x0000e7ac      mov   w10, 0x74                            ; 't'
-│           0x0000e7b0      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000e7b4      add   x22, var_1a8h                        ; 0x7a8 ; "x\xd5"
-│           0x0000e7b8      add   x1, var_1a8h                         ; 0x7a8 ; "x\xd5" ; int64_t arg3
-│           0x0000e7bc      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e7c0      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e7c4      strb  w8, [var_1a8h]
-│           0x0000e7c8      sturh w10, [x21, 0x89]
-│           0x0000e7cc      str   q0, [var_900h]
---
-│     │ │   0x0000e8c4      ldr   x0, [x20, 0x10]                      ; [0x10:4]=0xb70003
-│     │ │   0x0000e8c8      and   x1, x8, 0xfffffffffffffffe
-│     │ │   0x0000e8cc      bl    fcn.00011a88                         ; fcn.00011a88
-│     │ │   ; CODE XREF from method.client.registerClients @ 0xe888
-│     └─└─> 0x0000e8d0      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000e8d4      add   x9, x9, 0xb1c                        ; 0x2b1c ; "com.samsung.knox.kss"
-│           0x0000e8d8      mov   w10, 0x6b2e                          ; '.k'
-│           0x0000e8dc      ldr   q0, [x9]                             ; [0x2b1c:4]=0x2e6d6f63 ; "com.samsung.knox.kss"
-│           0x0000e8e0      mov   w8, 0x28                             ; '('
-│           0x0000e8e4      movk  w10, 0x7373, lsl 16
-│           0x0000e8e8      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000e8ec      add   x22, var_1f0h                        ; 0x760 ; "L\xbe"
-│           0x0000e8f0      add   x1, var_1f0h                         ; 0x760 ; "L\xbe" ; int64_t arg3
-│           0x0000e8f4      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000e8f8      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000e8fc      strb  w8, [var_1f0h]
-│           0x0000e900      stur  w10, [x21, 0x41]
---
-│     │ │   0x0000ea08      ldr   x0, [x21, 0x10]                      ; [0x10:4]=0xb70003
-│     │ │   0x0000ea0c      and   x1, x8, 0xfffffffffffffffe
-│     │ │   0x0000ea10      bl    fcn.00011a88                         ; fcn.00011a88
-│     │ │   ; CODE XREF from method.client.registerClients @ 0xe9d0
-│     └─└─> 0x0000ea14      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000ea18      add   x8, x8, 0xea1                        ; 0x2ea1 ; "com.sec.facatfunction"
-│           0x0000ea1c      mov   w22, 0x2a                            ; '*'
-│           0x0000ea20      ldr   q0, [x8]                             ; [0x2ea1:4]=0x2e6d6f63 ; "com.sec.facatfunction"
-│           0x0000ea24      ldur  x21, [x8, 0xd]                       ; [0xd:4]=0x3000000
-│           0x0000ea28      ldr   w23, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000ea2c      add   x24, var_238h                        ; 0x718 ; "`\x99"
-│           0x0000ea30      add   x1, var_238h                         ; 0x718 ; "`\x99" ; int64_t arg3
-│           0x0000ea34      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000ea38      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000ea3c      strb  w22, [var_238h]
-│           0x0000ea40      str   q0, [var_900h]
-│           0x0000ea44      stur  q0, [x20, 0xf1]
---
-│     │ │   0x0000eb84      bl    fcn.00011a88                         ; fcn.00011a88
-│     │ │   ; CODE XREF from method.client.registerClients @ 0xeb40
-│     └─└─> 0x0000eb88      mov   w0, 0x20
-│           0x0000eb8c      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000eb90      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000eb94      add   x8, x8, 0x8f0                        ; 0x28f0 ; "com.sec.android.sherlocksetting"
-│           0x0000eb98      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000eb9c      ldr   q1, [x8]                             ; [0x28f0:4]=0x2e6d6f63 ; "com.sec.android.sherlocksetting"
-│           0x0000eba0      ldur  q2, [x8, 0xf]                        ; [0xf:4]=0xb7000300
-│           0x0000eba4      ldr   q0, [x9, data.000006e0]              ; [0x6e0:4]=333 ; "M\U00000001"
-│           0x0000eba8      str   x0, [var_290h]
-│           0x0000ebac      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000ebb0      add   x22, var_2a0h                        ; 0x6b0
-│                                                                      ; data.000006b0
-│           0x0000ebb4      str   q1, [x0]
-│           0x0000ebb8      add   x1, var_2a0h                         ; 0x6b0
-│                                                                      ; data.000006b0 ; int64_t arg3
---
-│     │││   ; CODE XREF from method.client.registerClients @ 0xec9c
-│     └───> 0x0000ecdc      ldr   x8, [x8]
-│      ││   0x0000ece0      and   x1, x8, 0xfffffffffffffffe
-│      ││   0x0000ece4      bl    fcn.00011a88                         ; fcn.00011a88
-│      └└─> 0x0000ece8      adrp  x9, data.00003000                    ; 0x3000
-│           0x0000ecec      add   x9, x9, 0x2c5                        ; 0x32c5 ; "com.sec.imsservice"
-│           0x0000ecf0      mov   w8, 0x24                             ; '$'
-│           0x0000ecf4      ldr   q0, [x9]                             ; [0x32c5:4]=0x2e6d6f63 ; "com.sec.imsservice"
-│           0x0000ecf8      mov   w10, 0x6563                          ; 'ce'
-│           0x0000ecfc      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000ed00      add   x22, var_section..note.android.pad_segment ; 0x658
-│                                                                      ; data.00000658
-│           0x0000ed04      add   x1, var_section..note.android.pad_segment ; 0x658
-│                                                                      ; data.00000658 ; int64_t arg3
-│           0x0000ed08      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000ed0c      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000ed10      strb  w8, [var_2f8h]
---
-│     │ │   0x0000ee24      bl    fcn.00011a88                         ; fcn.00011a88
-│     │ │   ; CODE XREF from method.client.registerClients @ 0xeddc
-│     └─└─> 0x0000ee28      mov   w0, 0x20
-│           0x0000ee2c      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000ee30      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000ee34      add   x8, x8, 0x85d                        ; 0x285d ; "com.samsung.oobsimulator"
-│           0x0000ee38      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000ee3c      ldr   q0, [x8]                             ; [0x285d:4]=0x2e6d6f63 ; "com.samsung.oobsimulator"
-│           0x0000ee40      ldr   x20, [x8, 0x10]                      ; [0x10:4]=0xb70003
-│           0x0000ee44      ldr   q1, [x9, data.000005e0]              ; [0x5e0:4]=0
-│           0x0000ee48      str   x0, [var_330h]
-│           0x0000ee4c      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000ee50      add   x22, var_data.00000340               ; 0x610
-│                                                                      ; data.00000610
-│           0x0000ee54      str   q0, [x0]
-│           0x0000ee58      add   x1, var_data.00000340                ; 0x610
-│                                                                      ; data.00000610 ; int64_t arg3
---
-│       │   0x0000ef2c      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000ef30      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000ef34      mov   w0, 0x1a
-│           0x0000ef38      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000ef3c      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000ef40      add   x8, x8, 0x998                        ; 0x2998 ; "com.samsung.android.rlc"
-│           0x0000ef44      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000ef48      ldr   q1, [x8]                             ; [0x2998:4]=0x2e6d6f63 ; "com.samsung.android.rlc"
-│           0x0000ef4c      ldur  x20, [x8, 0xf]                       ; [0xf:4]=0xb7000300
-│           0x0000ef50      ldr   q0, [x9, data.000005f0]              ; [0x5f0:4]=0xd60 "." ; "`\r"
-│           0x0000ef54      str   x0, [var_370h]
-│           0x0000ef58      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000ef5c      add   x22, var_data.00000380               ; 0x5d0
-│                                                                      ; data.000005d0
-│           0x0000ef60      str   q1, [x0]
-│           0x0000ef64      add   x1, var_data.00000380                ; 0x5d0
-│                                                                      ; data.000005d0 ; int64_t arg3
---
-│       │   0x0000f038      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000f03c      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000f040      mov   w0, 0x28                             ; '('
-│           0x0000f044      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000f048      adrp  x8, data.00003000                    ; 0x3000
-│           0x0000f04c      add   x8, x8, 0x1a1                        ; 0x31a1 ; "com.sec.android.app.hwmoduletest"
-│           0x0000f050      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000f054      ldp   q0, q1, [x8]                         ; [0x31a1:4]=0x2e6d6f63 ; "com.sec.android.app.hwmoduletest"
-│           0x0000f058      ldr   q2, [x9, data.00000680]              ; [0x680:4]=0xd98 "."
-│           0x0000f05c      str   x0, [var_3b0h]
-│           0x0000f060      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000f064      add   x21, var_data.000003c0               ; 0x590 ; "/\r"
-│           0x0000f068      strb  wzr, [x0, 0x20]
-│           0x0000f06c      add   x1, var_data.000003c0                ; 0x590 ; "/\r" ; int64_t arg3
-│           0x0000f070      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000f074      stp   q0, q1, [x0]
-│           0x0000f078      mov   x0, x19                              ; unsigned long long arg1
---
-│       │   0x0000f138      ldr   x0, [var_data.000003d0]              ; data.00000580
-│       │                                                              ; [0x580:4]=0
-│       │   0x0000f13c      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000f140      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000f144      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000f148      add   x9, x9, 0xd40                        ; 0x2d40 ; "com.sec.keystringmain"
-│           0x0000f14c      mov   w8, 0x2a                             ; '*'
-│           0x0000f150      ldr   q0, [x9]                             ; [0x2d40:4]=0x2e6d6f63 ; "com.sec.keystringmain"
-│           0x0000f154      ldur  x21, [x9, 0xd]                       ; [0xd:4]=0x3000000
-│           0x0000f158      add   x22, var_data.000003f8               ; 0x558
-│                                                                      ; data.00000558
-│           0x0000f15c      add   x1, var_data.000003f8                ; 0x558
-│                                                                      ; data.00000558 ; int64_t arg3
-│           0x0000f160      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000f164      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000f168      strb  w8, [var_3f8h]
-│           0x0000f16c      str   q0, [var_920h]
---
-│     │ │   ; CODE XREF from method.client.registerClients @ 0xf22c
-│     └─└─> 0x0000f274      mov   w0, 0x1a
-│           0x0000f278      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000f27c      ldr   q0, [var_segment.PHDR]               ; [0x50:4]=64
-│           0x0000f280      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000f284      add   x8, x8, 0xd56                        ; 0x2d56 ; "com.sec.keystringscreen"
-│           0x0000f288      ldur  x20, [x8, 0xf]                       ; [0xf:4]=0xb7000300
-│           0x0000f28c      str   x0, [var_430h]
-│           0x0000f290      add   x21, var_data.00000440               ; 0x510
-│                                                                      ; data.00000510
-│           0x0000f294      str   q0, [var_440h]
-│           0x0000f298      ldr   q0, [x8]                             ; [0x2d56:4]=0x2e6d6f63 ; "com.sec.keystringscreen"
-│           0x0000f29c      add   x1, var_data.00000440                ; 0x510
-│                                                                      ; data.00000510 ; int64_t arg3
-│           0x0000f2a0      strb  wzr, [x0, 0x17]
-│           0x0000f2a4      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000f2a8      str   q0, [x0]
-│           0x0000f2ac      stur  x20, [x0, 0xf]
-│           0x0000f2b0      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000f2b4      str   q0, [var_920h]
-│           0x0000f2b8      stur  x21, [fp, -8]
---
-│      ││   0x0000f3c4      bl    fcn.00011a88                         ; fcn.00011a88
-│      └└─> 0x0000f3c8      mov   w0, 0x20
-│           0x0000f3cc      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000f3d0      ldr   q0, [var_8f0h]                       ; [0x60:4]=0x2a0 "."
-│           0x0000f3d4      adrp  x8, data.00003000                    ; 0x3000
-│           0x0000f3d8      add   x8, x8, 0x1c2                        ; 0x31c2 ; "com.samsung.knox.securefolder"
-│           0x0000f3dc      ldur  q1, [x8, 0xd]                        ; [0xd:4]=0x3000000
-│           0x0000f3e0      str   x0, [var_490h]
-│           0x0000f3e4      add   x20, var_data.000004a0               ; 0x4b0
-│                                                                      ; data.000004b0
-│           0x0000f3e8      str   q0, [var_4a0h]
-│           0x0000f3ec      ldr   q0, [x8]                             ; [0x31c2:4]=0x2e6d6f63 ; "com.samsung.knox.securefolder"
-│           0x0000f3f0      add   x1, var_data.000004a0                ; 0x4b0
-│                                                                      ; data.000004b0 ; int64_t arg3
-│           0x0000f3f4      strb  wzr, [x0, 0x1d]
-│           0x0000f3f8      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000f3fc      str   q0, [x0]
-│           0x0000f400      stur  q1, [x0, 0xd]
-│           0x0000f404      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000f408      stp   q1, q0, [var_930h]
-│           0x0000f40c      stur  x20, [fp, -8]
---
-│      └└─> 0x0000f51c      mov   w0, 0x20
-│           0x0000f520      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000f524      ldr   q0, [var_910h]                       ; segment.PHDR
-│                                                                      ; [0x40:4]=6
-│           0x0000f528      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000f52c      add   x8, x8, 0xeb7                        ; 0x2eb7 ; "com.samsung.android.bixby.agent"
-│           0x0000f530      ldur  q1, [x8, 0xf]                        ; [0xf:4]=0xb7000300
-│           0x0000f534      str   x0, [var_4f0h]
-│           0x0000f538      add   x20, var_data.00000500               ; 0x450
-│                                                                      ; data.00000450
-│           0x0000f53c      str   q0, [var_500h]
-│           0x0000f540      ldr   q0, [x8]                             ; [0x2eb7:4]=0x2e6d6f63 ; "com.samsung.android.bixby.agent"
-│           0x0000f544      add   x1, var_data.00000500                ; 0x450
-│                                                                      ; data.00000450 ; int64_t arg3
-│           0x0000f548      strb  wzr, [x0, 0x1f]
-│           0x0000f54c      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000f550      str   q0, [x0]
-│           0x0000f554      stur  q1, [x0, 0xf]
-│           0x0000f558      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000f55c      stp   q1, q0, [sp]
-│           0x0000f560      stur  x20, [fp, -8]
---
-│      ││   0x0000f668      and   x1, x8, 0xfffffffffffffffe
-│      ││   0x0000f66c      bl    fcn.00011a88                         ; fcn.00011a88
-│      └└─> 0x0000f670      mov   w0, 0x20
-│           0x0000f674      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000f678      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000f67c      add   x8, x8, 0xf6b                        ; 0x2f6b ; "com.samsung.rcaframebuffer"
-│           0x0000f680      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000f684      ldr   q0, [x8]                             ; [0x2f6b:4]=0x2e6d6f63 ; "com.samsung.rcaframebuffer"
-│           0x0000f688      ldur  q1, [x8, 0xa]                        ; [0xa:4]=0
-│           0x0000f68c      ldr   q2, [x9, method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int] ; [data.00000700:4]=0x96d4 method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int
-│           0x0000f690      str   x0, [var_550h]
-│           0x0000f694      add   x20, var_data.00000560               ; 0x3f0
-│                                                                      ; data.000003f0
-│           0x0000f698      add   x1, var_data.00000560                ; 0x3f0
-│                                                                      ; data.000003f0 ; int64_t arg3
-│           0x0000f69c      str   q0, [x0]
-│           0x0000f6a0      sub   x2, fp, 8                            ; const void *arg2
---
-│       │   0x0000f774      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000f778      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000f77c      mov   w0, 0x20
-│           0x0000f780      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000f784      adrp  x8, data.00003000                    ; 0x3000
-│           0x0000f788      add   x8, x8, 0x433                        ; 0x3433 ; "com.samsung.android.kgclient"
-│           0x0000f78c      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000f790      ldr   q0, [x8]                             ; [0x3433:4]=0x2e6d6f63 ; "com.samsung.android.kgclient"
-│           0x0000f794      ldur  q1, [x8, 0xc]                        ; [0xc:4]=0
-│           0x0000f798      ldr   q2, [x9, data.00000810]              ; [0x810:4]=336 ; "P\U00000001"
-│           0x0000f79c      str   x0, [var_590h]
-│           0x0000f7a0      add   x20, var_data.000005a0               ; 0x3b0 ; "$\t"
-│           0x0000f7a4      add   x1, var_data.000005a0                ; 0x3b0 ; "$\t" ; int64_t arg3
-│           0x0000f7a8      str   q0, [x0]
-│           0x0000f7ac      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000f7b0      stur  q1, [x0, 0xc]
-│           0x0000f7b4      strb  wzr, [x0, 0x1c]
---
-│       │   0x0000f880      ldr   x0, [var_data.000005b0]              ; data.000003a0
-│       │                                                              ; [0x3a0:4]=0
-│       │   0x0000f884      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000f888      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000f88c      adrp  x8, data.00003000                    ; 0x3000
-│           0x0000f890      add   x8, x8, 0x25                         ; 0x3025 ; "com.sec.veg.wass"
-│           0x0000f894      strb  w21, [var_5d8h]
-│           0x0000f898      ldr   q0, [x8]                             ; [0x3025:4]=0x2e6d6f63 ; "com.sec.veg.wass"
-│           0x0000f89c      add   x21, var_5d8h                        ; 0x378
-│                                                                      ; data.00000378
-│           0x0000f8a0      add   x1, var_5d8h                         ; 0x378
-│                                                                      ; data.00000378 ; int64_t arg3
-│           0x0000f8a4      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000f8a8      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000f8ac      strb  wzr, [var_5c8h + 0x1]
-│           0x0000f8b0      str   q0, [var_910h]
-│           0x0000f8b4      stur  q0, [x20, 0x19]
---
-│       │   0x0000f95c      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000f960      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000f964      mov   w0, 0x20
-│           0x0000f968      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000f96c      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000f970      add   x8, x8, 0xb31                        ; 0x2b31 ; "com.samsung.android.cidmanager"
-│           0x0000f974      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000f978      ldr   q0, [x8]                             ; [0x2b31:4]=0x2e6d6f63 ; "com.samsung.android.cidmanager"
-│           0x0000f97c      ldur  q1, [x8, 0xe]                        ; [0xe:4]=0x30000
-│           0x0000f980      ldr   q2, [x9, data.00000610]              ; [0x610:4]=0
-│           0x0000f984      str   x0, [var_600h]
-│           0x0000f988      add   x20, var_data.00000610               ; 0x340
-│                                                                      ; data.00000340
-│           0x0000f98c      add   x1, var_data.00000610                ; 0x340
-│                                                                      ; data.00000340 ; int64_t arg3
-│           0x0000f990      str   q0, [x0]
-│           0x0000f994      sub   x2, fp, 8                            ; const void *arg2
---
-│     │ │   0x0000fc90      bl    fcn.00011a88                         ; fcn.00011a88
-│     │ │   ; CODE XREF from method.client.registerClients @ 0xfc4c
-│     └─└─> 0x0000fc94      mov   w0, 0x28                             ; '('
-│           0x0000fc98      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x0000fc9c      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000fca0      add   x8, x8, 0xd6e                        ; 0x2d6e ; "com.sec.enterprise.knox.cloudmdm.smdms"
-│           0x0000fca4      adrp  x9, data.00002000                    ; 0x2000
-│           0x0000fca8      ldp   q0, q1, [x8]                         ; [0x2d6e:4]=0x2e6d6f63 ; "com.sec.enterprise.knox.cloudmdm.smdms"
-│           0x0000fcac      ldur  x21, [x8, 0x1e]                      ; [0x1e:4]=0x400000
-│           0x0000fcb0      ldr   q2, [x9, data.000006c0]              ; [0x6c0:4]=0
-│           0x0000fcb4      str   x0, [var_6c0h]
-│           0x0000fcb8      add   x22, var_data.000006d0               ; 0x280
-│                                                                      ; data.00000280
-│           0x0000fcbc      strb  wzr, [x0, 0x26]
-│           0x0000fcc0      add   x1, var_data.000006d0                ; 0x280
-│                                                                      ; data.00000280 ; int64_t arg3
-│           0x0000fcc4      sub   x2, fp, 8                            ; const void *arg2
---
-│       │   0x0000ff44      ldr   x0, [var_data.00000740]              ; data.00000210
-│       │                                                              ; [0x210:4]=0
-│       │   0x0000ff48      and   x1, x8, 0xfffffffffffffffe
-│       │   0x0000ff4c      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x0000ff50      adrp  x8, data.00002000                    ; 0x2000
-│           0x0000ff54      add   x8, x8, 0x8cd                        ; 0x28cd ; "com.android.system"
-│           0x0000ff58      mov   w21, 0x24                            ; '$'
-│           0x0000ff5c      ldr   q0, [x8]                             ; [0x28cd:4]=0x2e6d6f63 ; "com.android.system"
-│           0x0000ff60      mov   w22, 0x6d65                          ; 'em'
-│           0x0000ff64      ldr   w23, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x0000ff68      add   x24, var_768h                        ; 0x1e8
-│                                                                      ; data.000001e8
-│           0x0000ff6c      add   x1, var_768h                         ; 0x1e8
-│                                                                      ; data.000001e8 ; int64_t arg3
-│           0x0000ff70      sub   x2, fp, 8                            ; const void *arg2
-│           0x0000ff74      mov   x0, x19                              ; unsigned long long arg1
-│           0x0000ff78      strb  w21, [var_768h]
---
-│       │   0x000100b0      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x000100b4      mov   w0, 0x1a
-│           0x000100b8      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│           0x000100bc      ldr   q0, [var_segment.PHDR]               ; [0x50:4]=64
-│           0x000100c0      adrp  x8, data.00002000                    ; 0x2000
-│           0x000100c4      add   x8, x8, 0x910                        ; 0x2910 ; "com.samsung.gpuwatchapp"
-│           0x000100c8      ldur  x21, [x8, 0xf]                       ; [0xf:4]=0xb7000300
-│           0x000100cc      str   x0, [var_7c0h]
-│           0x000100d0      ldr   w22, [x19, 0x7c]                     ; [0x7c:4]=4
-│           0x000100d4      str   q0, [var_7d0h]
-│           0x000100d8      ldr   q0, [x8]                             ; [0x2910:4]=0x2e6d6f63 ; "com.samsung.gpuwatchapp"
-│           0x000100dc      add   x23, var_data.000007d0               ; 0x180 ; "P\U00000002"
-│           0x000100e0      strb  wzr, [x0, 0x17]
-│           0x000100e4      add   x1, var_data.000007d0                ; 0x180 ; "P\U00000002" ; int64_t arg3
-│           0x000100e8      sub   x2, fp, 8                            ; const void *arg2
-│           0x000100ec      str   q0, [x0]
-│           0x000100f0      stur  x21, [x0, 0xf]
-│           0x000100f4      mov   x0, x19                              ; unsigned long long arg1
-│           0x000100f8      str   q0, [var_8f0h]
-│           0x000100fc      stur  x23, [fp, -8]
---
-│       │   0x000101a8      ldr   x0, [var_data.000007e0]              ; data.00000170
-│       │                                                              ; [0x170:4]=0x14030 segment.DYNAMIC ; "0@\U00000001"
-│       │   0x000101ac      and   x1, x8, 0xfffffffffffffffe
-│       │   0x000101b0      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x000101b4      adrp  x8, data.00003000                    ; 0x3000
-│           0x000101b8      add   x8, x8, 0x485                        ; 0x3485 ; "com.val.hardware"
-│           0x000101bc      mov   w21, 0x20
-│           0x000101c0      ldr   q0, [x8]                             ; [0x3485:4]=0x2e6d6f63 ; "com.val.hardware"
-│           0x000101c4      add   x22, var_808h                        ; 0x148 ; "0"
-│           0x000101c8      add   x1, var_808h                         ; 0x148 ; "0" ; int64_t arg3
-│           0x000101cc      sub   x2, fp, 8                            ; const void *arg2
-│           0x000101d0      mov   x0, x19                              ; unsigned long long arg1
-│           0x000101d4      strb  wzr, [var_7f8h + 0x1]
-│           0x000101d8      strb  w21, [var_808h]
-│           0x000101dc      str   q0, [var_8f0h]
-│           0x000101e0      stur  q0, [x20, 0x61]
-│           0x000101e4      stur  x22, [fp, -8]
---
-│       │   0x000102bc      ldr   x0, [var_828h]                       ; data.00000128
-│       │                                                              ; [0x128:4]=0x18000 segment.LOAD3
-│       │   0x000102c0      and   x1, x8, 0xfffffffffffffffe
-│       │   0x000102c4      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x000102c8      adrp  x8, data.00002000                    ; 0x2000
-│           0x000102cc      add   x8, x8, 0xb66                        ; 0x2b66 ; "com.longcheer.midtest"
-│           0x000102d0      mov   w22, 0x2a                            ; '*'
-│           0x000102d4      ldr   q0, [x8]                             ; [0x2b66:4]=0x2e6d6f63 ; "com.longcheer.midtest"
-│           0x000102d8      ldur  x21, [x8, 0xd]                       ; [0xd:4]=0x3000000
-│           0x000102dc      add   x23, var_850h
-│           0x000102e0      add   x1, var_850h                         ; int64_t arg3
-│           0x000102e4      sub   x2, fp, 8                            ; const void *arg2
-│           0x000102e8      mov   x0, x19                              ; unsigned long long arg1
-│           0x000102ec      strb  w22, [var_850h]
-│           0x000102f0      str   q0, [var_8f0h]
-│           0x000102f4      stur  q0, [x20, 0x19]
-│           0x000102f8      stur  x21, [x20, 0x26]
---
-│       │   0x000103dc      ldr   x8, [var_880h]                       ; [0xd0:4]=0x9d10
-│       │   0x000103e0      ldr   x0, [var_870h]                       ; [0xe0:4]=0x4000
-│       │   0x000103e4      and   x1, x8, 0xfffffffffffffffe
-│       │   0x000103e8      bl    fcn.00011a88                         ; fcn.00011a88
-│       └─> 0x000103ec      adrp  x9, data.00002000                    ; 0x2000
-│           0x000103f0      add   x9, x9, 0xf86                        ; 0x2f86 ; "com.factory.mmigroup"
-│           0x000103f4      mov   w10, 0x6f72                          ; 'ro'
-│           0x000103f8      ldr   q0, [x9]                             ; [0x2f86:4]=0x2e6d6f63 ; "com.factory.mmigroup"
-│           0x000103fc      mov   w8, 0x28                             ; '('
-│           0x00010400      movk  w10, 0x7075, lsl 16
-│           0x00010404      add   x20, var_898h
-│           0x00010408      add   x1, var_898h                         ; int64_t arg3
-│           0x0001040c      sub   x2, fp, 8                            ; const void *arg2
-│           0x00010410      mov   x0, x19                              ; unsigned long long arg1
-│           0x00010414      strb  w8, [var_898h]
-│           0x00010418      stur  w10, [var_888h + 0x1]
-│           0x0001041c      str   q0, [var_8f0h]
+echo "========== REGISTRATION CALL-SITE CONTEXT =========="
+rizin -q -A -c 'pdf @ 0xe230; q' "$HAL" 2>/dev/null |
+grep -E -B 18 -A 5 'bl +fcn\.00011a88|bl +fcn\.00011b78|setClientMode'
 
-========== XREFS: ALL CLIENT PACKAGE NAMES ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x00008000.
-method.client.registerClients 0xee34 [DATA] add x8, x8, str.com.samsung.oobsimulator
-method.client.registerClients 0xee3c [DATA] ldr q0, [x8]
-method.client.registerClients 0xff54 [DATA] add x8, x8, str.com.android.system
-method.client.registerClients 0xff5c [DATA] ldr q0, [x8]
-method.client.registerClients 0xeb94 [DATA] add x8, x8, str.com.sec.android.sherlocksetting
-method.client.registerClients 0xeb9c [DATA] ldr q1, [x8]
-method.client.registerClients 0x100c4 [DATA] add x8, x8, str.com.samsung.gpuwatchapp
-method.client.registerClients 0x100d8 [DATA] ldr q0, [x8]
-method.client.registerClients 0xe7a0 [DATA] add x9, x9, str.com.fdm.soomagent
-method.client.registerClients 0xe7a8 [DATA] ldr q0, [x9]
-method.client.registerClients 0xef40 [DATA] add x8, x8, str.com.samsung.android.rlc
-method.client.registerClients 0xef48 [DATA] ldr q1, [x8]
-method.client.registerClients 0xe448 [DATA] add x8, x8, str.com.sec.bcservice
-method.client.registerClients 0xe450 [DATA] ldr q0, [x8]
-method.client.registerClients 0xe8d4 [DATA] add x9, x9, str.com.samsung.knox.kss
-method.client.registerClients 0xe8dc [DATA] ldr q0, [x9]
-method.client.registerClients 0xf970 [DATA] add x8, x8, str.com.samsung.android.cidmanager
-method.client.registerClients 0xf978 [DATA] ldr q0, [x8]
-method.client.registerClients 0x102cc [DATA] add x8, x8, str.com.longcheer.midtest
-method.client.registerClients 0x102d4 [DATA] ldr q0, [x8]
-method.client.registerClients 0xf148 [DATA] add x9, x9, str.com.sec.keystringmain
-method.client.registerClients 0xf150 [DATA] ldr q0, [x9]
-method.client.registerClients 0xf284 [DATA] add x8, x8, str.com.sec.keystringscreen
-method.client.registerClients 0xf298 [DATA] ldr q0, [x8]
-method.client.registerClients 0xfca0 [DATA] add x8, x8, str.com.sec.enterprise.knox.cloudmdm.smdms
-method.client.registerClients 0xfca8 [DATA] ldp q0, q1, [x8]
-method.client.registerClients 0xe6a8 [DATA] add x8, x8, str.com.sec.android.app.servicemodeapp
-method.client.registerClients 0xe6ac [DATA] ldp q1, q2, [x8]
-method.client.registerClients 0xea18 [DATA] add x8, x8, str.com.sec.facatfunction
-method.client.registerClients 0xea20 [DATA] ldr q0, [x8]
-method.client.registerClients 0xf52c [DATA] add x8, x8, str.com.samsung.android.bixby.agent
-method.client.registerClients 0xf540 [DATA] ldr q0, [x8]
-method.client.registerClients 0xf67c [DATA] add x8, x8, str.com.samsung.rcaframebuffer
-method.client.registerClients 0xf684 [DATA] ldr q0, [x8]
-method.client.registerClients 0x103f0 [DATA] add x9, x9, str.com.factory.mmigroup
-method.client.registerClients 0x103f8 [DATA] ldr q0, [x9]
-method.client.registerClients 0xf890 [DATA] add x8, x8, 0x25
-method.client.registerClients 0xf898 [DATA] ldr q0, [x8]
-method.client.registerClients 0xe344 [DATA] add x8, x8, 0x70
-method.client.registerClients 0xe34c [DATA] ldr q1, [x8]
-method.client.registerClients 0xe530 [DATA] add x8, x8, 0x8e
-method.client.registerClients 0xe538 [DATA] ldp q0, q1, [x8]
-method.client.registerClients 0xf04c [DATA] add x8, x8, str.com.sec.android.app.hwmoduletest
-method.client.registerClients 0xf054 [DATA] ldp q0, q1, [x8]
-method.client.registerClients 0xf3d8 [DATA] add x8, x8, str.com.samsung.knox.securefolder
-method.client.registerClients 0xf3ec [DATA] ldr q0, [x8]
-method.client.registerClients 0xecec [DATA] add x9, x9, str.com.sec.imsservice
-method.client.registerClients 0xecf4 [DATA] ldr q0, [x9]
-method.client.registerClients 0xf788 [DATA] add x8, x8, str.com.samsung.android.kgclient
-method.client.registerClients 0xf790 [DATA] ldr q0, [x8]
-method.client.registerClients 0x101b8 [DATA] add x8, x8, str.com.val.hardware
-method.client.registerClients 0x101c0 [DATA] ldr q0, [x8]
-method.client.registerClients 0xe254 [STRING] adr x8, str.system_server
-method.client.registerClients 0xe25c [DATA] ldr x22, [x8]
+echo
+echo "========== CLIENT CHECK IMPLEMENTATION =========="
+rizin -q -A -c '
+pdf @ 0x10af0
+pdf @ 0x10b84
+q' "$HAL" 2>/dev/null
+========== CLIENT REGISTRATION WRAPPERS ==========
+method.EngmodeManager.caller_check_unsigned_char_const___int__int__int 0x89b8 [CALL] bl fcn.00011a88
+method.EngmodeManager.caller_check_unsigned_char_const___int__int__int 0x8a10 [CALL] bl fcn.00011a88
+method.EngmodeManager.caller_check_unsigned_char_const___int__int__int 0x8a60 [CALL] bl fcn.00011a88
+method.EngmodeManager.getStatus_int__unsigned_char_const___int 0x8d8c [CALL] bl fcn.00011a88
+method.EngmodeManager.getStatus_int__unsigned_char_const___int 0x8da4 [CALL] bl fcn.00011a88
+method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int 0x8f3c [CALL] bl fcn.00011a88
+method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int 0x8f48 [CALL] bl fcn.00011a88
+method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int 0x98a4 [CALL] bl fcn.00011a88
+method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int 0x98bc [CALL] bl fcn.00011a88
+method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int 0x98c8 [CALL] bl fcn.00011a88
+method.EngmodeManager.getId_unsigned_char_const___int__unsigned_char___int 0x9c64 [CALL] bl fcn.00011a88
+method.EngmodeManager.getId_unsigned_char_const___int__unsigned_char___int 0x9c7c [CALL] bl fcn.00011a88
+method.EngmodeManager.getId_unsigned_char_const___int__unsigned_char___int 0x9c88 [CALL] bl fcn.00011a88
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0x9fe8 [CALL] bl fcn.00011a88
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0xa000 [CALL] bl fcn.00011a88
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0xa0ac [CALL] bl fcn.00011a88
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0xa0c4 [CALL] bl fcn.00011a88
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0xa0d0 [CALL] bl fcn.00011a88
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0xa0e8 [CALL] bl fcn.00011a88
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0xa0f4 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa4d8 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa520 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa538 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa5b8 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa5d0 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa5dc [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa5f4 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa600 [CALL] bl fcn.00011a88
+method.EngmodeManager.commandForEss_int__char_const___unsigned_char_const___int__unsigned_char___int 0xa868 [CALL] bl fcn.00011a88
+method.EngmodeManager.commandForEss_int__char_const___unsigned_char_const___int__unsigned_char___int 0xa910 [CALL] bl fcn.00011a88
+method.EngmodeManager.commandForEss_int__char_const___unsigned_char_const___int__unsigned_char___int 0xa928 [CALL] bl fcn.00011a88
+method.EngmodeManager.commandForEss_int__char_const___unsigned_char_const___int__unsigned_char___int 0xa934 [CALL] bl fcn.00011a88
+method.EngmodeManager.getServerTime_unsigned_char_const___int__unsigned_char___int 0xaba4 [CALL] bl fcn.00011a88
+method.EngmodeManager.getServerTime_unsigned_char_const___int__unsigned_char___int 0xabbc [CALL] bl fcn.00011a88
+method.EngmodeManager.getServerTime_unsigned_char_const___int__unsigned_char___int 0xabc8 [CALL] bl fcn.00011a88
+method.EngmodeManager.recoveryItl_unsigned_char_const___int__unsigned_char_const___int 0xadbc [CALL] bl fcn.00011a88
+method.EngmodeManager.recoveryItl_unsigned_char_const___int__unsigned_char_const___int 0xadc8 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeItlReq_char_const___char_const___unsigned_char_const___int__unsigned_char___int 0xb094 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeItlReq_char_const___char_const___unsigned_char_const___int__unsigned_char___int 0xb0ac [CALL] bl fcn.00011a88
+method.EngmodeManager.makeItlReq_char_const___char_const___unsigned_char_const___int__unsigned_char___int 0xb154 [CALL] bl fcn.00011a88
+method.EngmodeManager.makeItlReq_char_const___char_const___unsigned_char_const___int__unsigned_char___int 0xb16c [CALL] bl fcn.00011a88
+method.EngmodeManager.makeItlReq_char_const___char_const___unsigned_char_const___int__unsigned_char___int 0xb178 [CALL] bl fcn.00011a88
+method.EngmodeManager.getToken_unsigned_char_const___int__unsigned_char___int 0xb3e8 [CALL] bl fcn.00011a88
+method.EngmodeManager.getToken_unsigned_char_const___int__unsigned_char___int 0xb400 [CALL] bl fcn.00011a88
+method.EngmodeManager.getToken_unsigned_char_const___int__unsigned_char___int 0xb40c [CALL] bl fcn.00011a88
+method.EngmodeManager.setPriorityTime_char_const___unsigned_char_const___int__unsigned_char___int 0xb7cc [CALL] bl fcn.00011a88
+method.EngmodeManager.setPriorityTime_char_const___unsigned_char_const___int__unsigned_char___int 0xb874 [CALL] bl fcn.00011a88
+method.EngmodeManager.setPriorityTime_char_const___unsigned_char_const___int__unsigned_char___int 0xb88c [CALL] bl fcn.00011a88
+method.EngmodeManager.setPriorityTime_char_const___unsigned_char_const___int__unsigned_char___int 0xb898 [CALL] bl fcn.00011a88
+method.EngmodeManager.getPriorityTime_unsigned_char_const___int__unsigned_char___int 0xbb04 [CALL] bl fcn.00011a88
+method.EngmodeManager.getPriorityTime_unsigned_char_const___int__unsigned_char___int 0xbb1c [CALL] bl fcn.00011a88
+method.EngmodeManager.getPriorityTime_unsigned_char_const___int__unsigned_char___int 0xbb28 [CALL] bl fcn.00011a88
+method.EngmodeManager.getLastTokenStatus_unsigned_char_const___int__unsigned_char___int 0xbd90 [CALL] bl fcn.00011a88
+method.EngmodeManager.getLastTokenStatus_unsigned_char_const___int__unsigned_char___int 0xbda8 [CALL] bl fcn.00011a88
+method.EngmodeManager.getLastTokenStatus_unsigned_char_const___int__unsigned_char___int 0xbdb4 [CALL] bl fcn.00011a88
+method.EngmodeManager.getStringModes_unsigned_char_const___int__unsigned_char___int 0xc01c [CALL] bl fcn.00011a88
+method.EngmodeManager.getStringModes_unsigned_char_const___int__unsigned_char___int 0xc034 [CALL] bl fcn.00011a88
+method.EngmodeManager.getStringModes_unsigned_char_const___int__unsigned_char___int 0xc040 [CALL] bl fcn.00011a88
+method.EngmodeManager.getModesbit_unsigned_char_const___int__unsigned_char___int 0xc2a8 [CALL] bl fcn.00011a88
+method.EngmodeManager.getModesbit_unsigned_char_const___int__unsigned_char___int 0xc2c0 [CALL] bl fcn.00011a88
+method.EngmodeManager.getModesbit_unsigned_char_const___int__unsigned_char___int 0xc2cc [CALL] bl fcn.00011a88
+method.EngmodeManager.getTokenInfoForJanus_unsigned_char_const___int__unsigned_char___int 0xc534 [CALL] bl fcn.00011a88
+method.EngmodeManager.getTokenInfoForJanus_unsigned_char_const___int__unsigned_char___int 0xc54c [CALL] bl fcn.00011a88
+method.EngmodeManager.getTokenInfoForJanus_unsigned_char_const___int__unsigned_char___int 0xc558 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getStatus 0xc6cc [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getStatus 0xc6e0 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_installToken 0xc7e8 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_installToken 0xc7fc [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_isTokenInstalled 0xc8f0 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_isTokenInstalled 0xc904 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_removeToken 0xc9f4 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_removeToken 0xca08 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getNumOfModes 0xcaf8 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getNumOfModes 0xcb0c [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_sendFuseCmd 0xcbfc [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_sendFuseCmd 0xcc10 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getVersion 0xcd00 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getVersion 0xcd14 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getExpiryDate 0xce18 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getExpiryDate 0xce2c [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getID 0xcf34 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getID 0xcf48 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getRequestMsg 0xd07c [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getRequestMsg 0xd090 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_makeTokenReq 0xd1cc [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_makeTokenReq 0xd1e0 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_commandForESS 0xd304 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_commandForESS 0xd318 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getServerTime 0xd424 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getServerTime 0xd438 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_recoveryITL 0xd540 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_recoveryITL 0xd554 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_makeITLReq 0xd670 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_makeITLReq 0xd684 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getToken 0xd790 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getToken 0xd7a4 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getTUC 0xd8a4 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getTUC 0xd8b8 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_setPriorityTime 0xd9cc [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_setPriorityTime 0xd9e0 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getPriorityTime 0xdaec [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getPriorityTime 0xdb00 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getLastTokenStatus 0xdc08 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getLastTokenStatus 0xdc1c [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getStringModes 0xdd24 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getStringModes 0xdd38 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getModesbit 0xde40 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getModesbit 0xde54 [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getTokenInfoForJanus 0xdf5c [CALL] bl fcn.00011a88
+sym.engmodeManager_hal_getTokenInfoForJanus 0xdf70 [CALL] bl fcn.00011a88
+method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void 0xe1c8 [CALL] bl fcn.00011a88
+method.std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.destroy_std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void 0xe1e0 [CODE] b fcn.00011a88
+method.std::__1::__tree_int__std::__1::less_int___std::__1::allocator_int___.destroy_std::__1::__tree_node_int__void 0xe228 [CODE] b fcn.00011a88
+method.client.registerClients 0xe2fc [CALL] bl fcn.00011a88
+method.client.registerClients 0xe334 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe3f4 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe440 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe4e8 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe520 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe5e0 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe688 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe748 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe798 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe840 [CALL] bl fcn.00011a88
+method.client.registerClients 0xe8cc [CALL] bl fcn.00011a88
+method.client.registerClients 0xe97c [CALL] bl fcn.00011a88
+method.client.registerClients 0xea10 [CALL] bl fcn.00011a88
+method.client.registerClients 0xeabc [CALL] bl fcn.00011a88
+method.client.registerClients 0xeaf8 [CALL] bl fcn.00011a88
+method.client.registerClients 0xeb84 [CALL] bl fcn.00011a88
+method.client.registerClients 0xec44 [CALL] bl fcn.00011a88
+method.client.registerClients 0xece4 [CALL] bl fcn.00011a88
+method.client.registerClients 0xed90 [CALL] bl fcn.00011a88
+method.client.registerClients 0xee24 [CALL] bl fcn.00011a88
+method.client.registerClients 0xeee4 [CALL] bl fcn.00011a88
+method.client.registerClients 0xef30 [CALL] bl fcn.00011a88
+method.client.registerClients 0xeff0 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf03c [CALL] bl fcn.00011a88
+method.client.registerClients 0xf0f4 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf140 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf1e4 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf270 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf324 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf3c4 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf478 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf518 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf5cc [CALL] bl fcn.00011a88
+method.client.registerClients 0xf66c [CALL] bl fcn.00011a88
+method.client.registerClients 0xf728 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf778 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf830 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf888 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf924 [CALL] bl fcn.00011a88
+method.client.registerClients 0xf960 [CALL] bl fcn.00011a88
+method.client.registerClients 0xfa1c [CALL] bl fcn.00011a88
+method.client.registerClients 0xfa6c [CALL] bl fcn.00011a88
+method.client.registerClients 0xfb0c [CALL] bl fcn.00011a88
+method.client.registerClients 0xfb5c [CALL] bl fcn.00011a88
+method.client.registerClients 0xfc04 [CALL] bl fcn.00011a88
+method.client.registerClients 0xfc90 [CALL] bl fcn.00011a88
+method.client.registerClients 0xfd4c [CALL] bl fcn.00011a88
+method.client.registerClients 0xfd9c [CALL] bl fcn.00011a88
+method.client.registerClients 0xfe44 [CALL] bl fcn.00011a88
+method.client.registerClients 0xfe80 [CALL] bl fcn.00011a88
+method.client.registerClients 0xff18 [CALL] bl fcn.00011a88
+method.client.registerClients 0xff4c [CALL] bl fcn.00011a88
+method.client.registerClients 0xfffc [CALL] bl fcn.00011a88
+method.client.registerClients 0x10038 [CALL] bl fcn.00011a88
+method.client.registerClients 0x10074 [CALL] bl fcn.00011a88
+method.client.registerClients 0x100b0 [CALL] bl fcn.00011a88
+method.client.registerClients 0x10168 [CALL] bl fcn.00011a88
+method.client.registerClients 0x101b0 [CALL] bl fcn.00011a88
+method.client.registerClients 0x10250 [CALL] bl fcn.00011a88
+method.client.registerClients 0x10288 [CALL] bl fcn.00011a88
+method.client.registerClients 0x102c4 [CALL] bl fcn.00011a88
+method.client.registerClients 0x1036c [CALL] bl fcn.00011a88
+method.client.registerClients 0x103a8 [CALL] bl fcn.00011a88
+method.client.registerClients 0x103e8 [CALL] bl fcn.00011a88
+method.client.registerClients 0x10494 [CALL] bl fcn.00011a88
+method.client.registerClients 0x1052c [CALL] bl fcn.00011a88
+method.client.registerClients 0x1056c [CALL] bl fcn.00011a88
+method.client.setVersion 0x107a0 [CALL] bl fcn.00011a88
+method.client.setVersion 0x107ec [CALL] bl fcn.00011a88
+method.client.setVersion 0x10838 [CALL] bl fcn.00011a88
+method.client.setVersion 0x10884 [CALL] bl fcn.00011a88
+method.client.setVersion 0x108d0 [CALL] bl fcn.00011a88
+            ; XREFS(186)
+┌ fcn.00011a88();
+│           0x00011a88      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x00011a8c      ldr   x17, [x16, data.00000408]            ; [0x408:4]=0
+│           ;-- memset:
+│           0x00011a90      add   x16, x16, data.00000408              ; 0x408
+└           0x00011a94      br    x17
+method.client.registerClients 0xe31c [CALL] bl fcn.00011b78
+method.client.registerClients 0xe428 [CALL] bl fcn.00011b78
+method.client.registerClients 0xe508 [CALL] bl fcn.00011b78
+method.client.registerClients 0xe628 [CALL] bl fcn.00011b78
+method.client.registerClients 0xe66c [CALL] bl fcn.00011b78
+method.client.registerClients 0xe780 [CALL] bl fcn.00011b78
+method.client.registerClients 0xe87c [CALL] bl fcn.00011b78
+method.client.registerClients 0xe8b4 [CALL] bl fcn.00011b78
+method.client.registerClients 0xe9c4 [CALL] bl fcn.00011b78
+method.client.registerClients 0xe9f8 [CALL] bl fcn.00011b78
+method.client.registerClients 0xeae0 [CALL] bl fcn.00011b78
+method.client.registerClients 0xeb34 [CALL] bl fcn.00011b78
+method.client.registerClients 0xeb6c [CALL] bl fcn.00011b78
+method.client.registerClients 0xec88 [CALL] bl fcn.00011b78
+method.client.registerClients 0xecc8 [CALL] bl fcn.00011b78
+method.client.registerClients 0xedd0 [CALL] bl fcn.00011b78
+method.client.registerClients 0xee0c [CALL] bl fcn.00011b78
+method.client.registerClients 0xef18 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf024 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf128 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf220 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf258 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf368 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf3a8 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf4bc [CALL] bl fcn.00011b78
+method.client.registerClients 0xf4fc [CALL] bl fcn.00011b78
+method.client.registerClients 0xf610 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf650 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf760 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf870 [CALL] bl fcn.00011b78
+method.client.registerClients 0xf948 [CALL] bl fcn.00011b78
+method.client.registerClients 0xfa54 [CALL] bl fcn.00011b78
+method.client.registerClients 0xfb44 [CALL] bl fcn.00011b78
+method.client.registerClients 0xfc40 [CALL] bl fcn.00011b78
+method.client.registerClients 0xfc78 [CALL] bl fcn.00011b78
+method.client.registerClients 0xfd84 [CALL] bl fcn.00011b78
+method.client.registerClients 0xfe68 [CALL] bl fcn.00011b78
+method.client.registerClients 0xff34 [CALL] bl fcn.00011b78
+method.client.registerClients 0x10020 [CALL] bl fcn.00011b78
+method.client.registerClients 0x1005c [CALL] bl fcn.00011b78
+method.client.registerClients 0x10098 [CALL] bl fcn.00011b78
+method.client.registerClients 0x10198 [CALL] bl fcn.00011b78
+method.client.registerClients 0x10270 [CALL] bl fcn.00011b78
+method.client.registerClients 0x102ac [CALL] bl fcn.00011b78
+method.client.registerClients 0x10390 [CALL] bl fcn.00011b78
+method.client.registerClients 0x103d0 [CALL] bl fcn.00011b78
+method.client.registerClients 0x104d8 [CALL] bl fcn.00011b78
+method.client.registerClients 0x10514 [CALL] bl fcn.00011b78
+method.client.registerClients 0x10554 [CALL] bl fcn.00011b78
+            ; XREFS(49)
+┌ fcn.00011b78();
+│           0x00011b78      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x00011b7c      ldr   x17, [x16, data.00000458]            ; [0x458:4]=0x9ac
+│           0x00011b80      add   x16, x16, data.00000458              ; 0x458
+└           0x00011b84      br    x17
 
-========== MODE REGISTRATION CALLS ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x00008000.
-fcn.00011b78 0x11b7c [DATA] ldr x17, method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int
-fcn.00011b78 0x11b84 [CODE] br x17
-            ; CODE XREFS from fcn.00011b78 @ 0x11b7c, 0x11b84
-            ;-- client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int):
-┌ method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int(int64_t arg1, int64_t arg3, int64_t arg2);
-│           ; arg int64_t arg1 @ x0
+========== REGISTRATION CALL-SITE CONTEXT ==========
+
+========== CLIENT CHECK IMPLEMENTATION ==========
+            ;-- client::checkSignature(int, int):
+┌ method.client.checkSignature_int__int(unsigned long long arg1, unsigned long long arg3, unsigned long long arg2);
+│           ; arg unsigned long long arg1 @ x0
+│           ; arg unsigned long long arg2 @ x1
+│           ; arg unsigned long long arg3 @ x2
+│           0x00010af0      paciasp                                    ; client::checkSignature(int, int)
+│           0x00010af4      stp   fp, lr, [sp, -0x10]!
+│           0x00010af8      mov   fp, sp
+│           0x00010afc      ldr   x8, [x0, 0x18]                       ; [0x18:4]=0 ; arg1
+│           0x00010b00      ldr   w9, [x0, 0x80]                       ; [0x80:4]=0 ; arg1
+│           0x00010b04      ldrb  w8, [x8, 0x5a]                       ; [0x5a:4]=0
+│           0x00010b08      cmp   w8, 1                                ; arg1
+│           0x00010b0c      ccmp  w2, w9, 4, eq                        ; arg3
+│       ┌─< 0x00010b10      b.ne  0x10b2c
+│       │   0x00010b14      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x00010b18      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│       │   0x00010b1c      adrp  x2, data.00003000                    ; 0x3000
+│       │   0x00010b20      add   x2, x2, 0x496                        ; 0x3496 ; "Signature check completed"
+│       │   0x00010b24      mov   w0, 4
+│      ┌──< 0x00010b28      b     0x10b4c
+│      │└─> 0x00010b2c      ldr   w8, [x0, 0x7c]                       ; [0x7c:4]=4 ; arg1
+│      │    0x00010b30      cmp   w1, w8                               ; arg2
+│      │┌─< 0x00010b34      b.ne  0x10b58
+│      ││   0x00010b38      adrp  x1, data.00003000                    ; 0x3000
+│      ││   0x00010b3c      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│      ││   0x00010b40      adrp  x2, data.00002000                    ; 0x2000
+│      ││   0x00010b44      add   x2, x2, 0xa15                        ; 0x2a15 ; "This is system client, pass checking signature"
+│      ││   0x00010b48      mov   w0, 3
+│      ││   ; CODE XREF from method.client.checkSignature_int__int @ 0x10b28
+│      └──> 0x00010b4c      bl    fcn.00011968                         ; fcn.00011968
+│       │   0x00010b50      mov   w0, 1
+│      ┌──< 0x00010b54      b     0x10b78
+│      │└─> 0x00010b58      mov   w3, w2                               ; arg3
+│      │    0x00010b5c      adrp  x1, data.00003000                    ; 0x3000
+│      │    0x00010b60      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│      │    0x00010b64      adrp  x2, data.00002000                    ; 0x2000
+│      │    0x00010b68      add   x2, x2, 0xf9b                        ; 0x2f9b ; "Failed to check signature(%d)\n"
+│      │    0x00010b6c      mov   w0, 6
+│      │    0x00010b70      bl    fcn.00011968                         ; fcn.00011968
+│      │    0x00010b74      mov   w0, wzr
+│      │    ; CODE XREF from method.client.checkSignature_int__int @ 0x10b54
+│      └──> 0x00010b78      ldp   fp, lr, [sp], 0x10
+│           0x00010b7c      autiasp
+└           0x00010b80      ret
+            ; CODE XREFS from method.std::__1.to_string(int) @ 0x11a14, 0x11a1c
+            ;-- client::checkClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int):
+┌ method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int(int64_t arg2, unsigned long long arg1, int64_t arg5, int64_t arg4, int64_t arg3);
+│           ; arg unsigned long long arg1 @ x0
 │           ; arg int64_t arg2 @ x1
 │           ; arg int64_t arg3 @ x2
-│           ; var const void *var_38h @ stack - 0x38
+│           ; arg int64_t arg4 @ x3
+│           ; arg int64_t arg5 @ x4
 │           ; var int64_t var_30h @ stack - 0x30
 │           ; var int64_t var_20h @ stack - 0x20
 │           ; var int64_t var_10h @ stack - 0x10
-│           0x00010638      paciasp                                    ; RELOC TARGET 64 client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int) @ 0x00010638 ; client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int)
-│           0x0001063c      sub   sp, sp, 0x40
-│           0x00010640      stp   fp, lr, [var_30h]
-│           0x00010644      stp   x22, x21, [var_20h]
-│           0x00010648      stp   x20, x19, [var_10h]
-│           0x0001064c      add   fp, sp, 0x10
-│           0x00010650      mov   w20, w2                              ; arg3
-│           0x00010654      add   x2, var_38h                          ; const void *arg2
-│           0x00010658      str   x1, [var_38h]                        ; arg2
-│           0x0001065c      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1bl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x00010660      mov   x22, x0
-│           0x00010664      mov   x19, x0
-│           0x00010668      ldr   x8, [x22, 0x48]!                     ; [0x48:4]=64
-│       ┌─< 0x0001066c      cbnz  x8, 0x10684
-│       │   0x00010670      mov   x21, x22
-│      ┌──< 0x00010674      b     0x106a8
-│     ┌───> 0x00010678      ldr   x8, [x21]
-│     ╎││   0x0001067c      mov   x22, x21
-│    ┌────< 0x00010680      cbz   x8, 0x106a8
-│   ┌───└─> 0x00010684      mov   x21, x8
-│   ╎│╎│    0x00010688      ldr   w8, [x8, 0x1c]                       ; [0x1c:4]=0
-│   ╎│╎│    0x0001068c      cmp   w20, w8
-│   ╎│└───< 0x00010690      b.lt  0x10678
-│   ╎│ │    0x00010694      cmp   w8, w20
-│   ╎│ │┌─< 0x00010698      b.ge  0x106f0
-│   ╎│ ││   0x0001069c      ldr   x8, [x21, 8]                         ; [0x8:4]=0
-│   └─────< 0x000106a0      cbnz  x8, 0x10684
-│    │ ││   0x000106a4      add   x22, x21, 8
-│    │ ││   ; CODE XREF from method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int @ 0x10674
-│    └─└──> 0x000106a8      mov   w0, 0x20
-│       │   0x000106ac      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
-│       │   0x000106b0      str   w20, [x0, 0x1c]
-│       │   0x000106b4      stp   xzr, xzr, [x0]
-│       │   0x000106b8      str   x21, [x0, 0x10]
-│       │   0x000106bc      str   x0, [x22]
-│       │   0x000106c0      ldr   x8, [x19, 0x40]                      ; segment.PHDR
-│       │                                                              ; [0x40:4]=6
-│       │   0x000106c4      ldr   x8, [x8]
-│      ┌──< 0x000106c8      cbz   x8, 0x106d8
-│      ││   0x000106cc      str   x8, [x19, 0x40]
-│      ││   0x000106d0      ldr   x1, [x22]
-│     ┌───< 0x000106d4      b     0x106dc
-│     │└──> 0x000106d8      mov   x1, x0
-│     │ │   ; CODE XREF from method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int @ 0x106d4
-│     └───> 0x000106dc      ldr   x0, [x19, 0x48]                      ; [0x48:4]=64 ; unsigned long long arg1
-│       │   0x000106e0      bl    method.void_std::__1.__tree_balance_after_insert_abi:nn220000__std::__1::__tree_node_baseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeel    0x113a0 ; method.void_std::__1.__tree_balance_after_insert_abi:nn220000__std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void ;  method.void_std::__1.__tree_balance_after_insert_abi:nn220000__std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void_____std::__1::__tree_node_base_void(unsigned long long arg1, unsigned long long arg2)
-│       │   0x000106e4      ldr   x8, [x19, 0x50]                      ; [0x50:4]=64
-│       │   0x000106e8      add   x8, x8, 1
-│       │   0x000106ec      str   x8, [x19, 0x50]
-│       └─> 0x000106f0      ldp   x20, x19, [var_10h]
-│           0x000106f4      ldp   x22, x21, [var_20h]
-│           0x000106f8      ldp   fp, lr, [var_30h]
-│           0x000106fc      add   sp, sp, 0x40
-│           0x00010700      autiasp
-└           0x00010704      ret
-11:14:33 oleg@parrot ~ →
+│           0x00010b84      paciasp                                    ; RELOC TARGET 64 client::checkClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int) @ 0x00010b84 ; client::checkClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int, int)
+│           0x00010b88      stp   fp, lr, [sp, -0x40]!
+│           0x00010b8c      str   x23, [var_30h]
+│           0x00010b90      stp   x22, x21, [var_20h]
+│           0x00010b94      stp   x20, x19, [var_10h]
+│           0x00010b98      mov   fp, sp
+│           0x00010b9c      ldrb  w8, [x1]                             ; arg2
+│           0x00010ba0      ldr   x9, [x1, 0x10]                       ; [0x10:4]=0xb70003 ; arg2
+│           0x00010ba4      mov   w19, w4                              ; arg5
+│           0x00010ba8      mov   w21, w3                              ; arg4
+│           0x00010bac      mov   w20, w2                              ; arg3
+│           0x00010bb0      mov   x23, x1                              ; arg2
+│           0x00010bb4      tst   w8, 1                                ; arg1
+│           0x00010bb8      mov   x22, x0                              ; arg1
+│           0x00010bbc      adrp  x2, data.00002000                    ; 0x2000
+│           0x00010bc0      add   x2, x2, 0xe59                        ; 0x2e59 ; "%s: [ProcessName = %s]"
+│           0x00010bc4      csinc x4, x9, x1, ne
+│           0x00010bc8      adrp  x1, data.00003000                    ; 0x3000
+│           0x00010bcc      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│           0x00010bd0      adrp  x3, data.00002000                    ; 0x2000
+│           0x00010bd4      add   x3, x3, 0xfba                        ; 0x2fba ; "checkClient"
+│           0x00010bd8      mov   w0, 4
+│           0x00010bdc      bl    fcn.00011968                         ; fcn.00011968
+│           0x00010be0      mov   x0, x22                              ; unsigned long long arg1
+│           0x00010be4      mov   x1, x23                              ; int64_t arg2
+│           0x00010be8      bl    method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char_______________________________________l    0x11550 ; method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char______std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const ;  method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char______std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const(unsigned long long arg1, int64_t arg2)
+│           0x00010bec      add   x8, x22, 8
+│           0x00010bf0      str   x0, [x22, 0x18]
+│           0x00010bf4      cmp   x8, x0
+│       ┌─< 0x00010bf8      b.eq  0x10cb0
+│       │   0x00010bfc      ldrb  w8, [x0, 0x58]                       ; [0x58:4]=64
+│       │   0x00010c00      cmp   w8, 1
+│      ┌──< 0x00010c04      b.ne  0x10c14
+│      ││   0x00010c08      ldr   w4, [x0, 0x38]                       ; [0x38:4]=0x40000c
+│      ││   0x00010c0c      cmp   w4, w20
+│     ┌───< 0x00010c10      b.ne  0x10cfc
+│     │└──> 0x00010c14      bl    fcn.00011b90                         ; fcn.00011b90
+│     │┌──< 0x00010c18      tbz   w0, 0, 0x10ccc
+│     │││   0x00010c1c      ldr   x8, [x22, 0x18]                      ; [0x18:4]=0
+│     │││   0x00010c20      ldrb  w9, [x8, 0x59]                       ; [0x59:4]=0
+│     │││   0x00010c24      cmp   w9, 1
+│    ┌────< 0x00010c28      b.ne  0x10c74
+│    ││││   0x00010c2c      mov   x9, x8
+│    ││││   0x00010c30      ldr   x10, [x9, 0x48]!                     ; [0x48:4]=64
+│   ┌─────< 0x00010c34      cbz   x10, 0x10d1c
+│   │││││   0x00010c38      mov   w12, 8
+│   │││││   0x00010c3c      mov   x11, x9
+│  ┌──────> 0x00010c40      ldr   w13, [x10, 0x1c]                     ; [0x1c:4]=0
+│  ╎│││││   0x00010c44      cmp   w13, w21
+│  ╎│││││   0x00010c48      csel  x13, x12, xzr, lt
+│  ╎│││││   0x00010c4c      csel  x11, x11, x10, lt
+│  ╎│││││   0x00010c50      ldr   x10, [x10, x13]
+│  └──────< 0x00010c54      cbnz  x10, 0x10c40
+│   │││││   0x00010c58      cmp   x11, x9
+│  ┌──────< 0x00010c5c      b.eq  0x10d1c
+│  ││││││   0x00010c60      ldr   w10, [x11, 0x1c]                     ; [0x1c:4]=0
+│  ││││││   0x00010c64      cmp   w21, w10
+│  ││││││   0x00010c68      csel  x9, x9, x11, lt
+│  ││││││   0x00010c6c      str   x9, [x22, 0x20]
+│ ┌───────< 0x00010c70      b.lt  0x10d20
+│ │││└────> 0x00010c74      ldrb  w8, [x8, 0x5a]                       ; [0x5a:4]=0
+│ │││ │││   0x00010c78      cmp   w8, 1
+│ │││┌────< 0x00010c7c      b.ne  0x10d3c
+│ │││││││   0x00010c80      ldr   w8, [x22, 0x80]                      ; [0x80:4]=0
+│ │││││││   0x00010c84      cmp   w19, w8
+│ ────────< 0x00010c88      b.eq  0x10d3c
+│ │││││││   0x00010c8c      ldr   w8, [x22, 0x7c]                      ; [0x7c:4]=4
+│ │││││││   0x00010c90      adrp  x1, data.00003000                    ; 0x3000
+│ │││││││   0x00010c94      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ │││││││   0x00010c98      cmp   w20, w8
+│ ────────< 0x00010c9c      b.ne  0x10d5c
+│ │││││││   0x00010ca0      adrp  x2, data.00002000                    ; 0x2000
+│ │││││││   0x00010ca4      add   x2, x2, 0xa15                        ; 0x2a15 ; "This is system client, pass checking signature"
+│ │││││││   0x00010ca8      mov   w0, 3
+│ ────────< 0x00010cac      b     0x10d50
+│ ││││││└─> 0x00010cb0      adrp  x1, data.00003000                    ; 0x3000
+│ ││││││    0x00010cb4      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ ││││││    0x00010cb8      adrp  x2, data.00003000                    ; 0x3000
+│ ││││││    0x00010cbc      add   x2, x2, 0x3cc                        ; 0x33cc ; "Cannot find client"
+│ ││││││    0x00010cc0      mov   w0, 6
+│ ││││││    0x00010cc4      bl    fcn.00011968                         ; fcn.00011968
+│ ││││││┌─< 0x00010cc8      b     0x10d70
+│ │││││└──> 0x00010ccc      ldrb  w8, [x23]
+│ │││││ │   0x00010cd0      ldr   x9, [x23, 0x10]                      ; [0x10:4]=0xb70003
+│ │││││ │   0x00010cd4      add   x10, x23, 1
+│ │││││ │   0x00010cd8      adrp  x1, data.00003000                    ; 0x3000
+│ │││││ │   0x00010cdc      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ │││││ │   0x00010ce0      adrp  x2, data.00002000                    ; 0x2000
+│ │││││ │   0x00010ce4      add   x2, x2, 0xdd6                        ; 0x2dd6 ; "Process authentication failed for %s"
+│ │││││ │   0x00010ce8      tst   w8, 1
+│ │││││ │   0x00010cec      mov   w0, 6
+│ │││││ │   0x00010cf0      csel  x3, x10, x9, eq
+│ │││││ │   0x00010cf4      bl    fcn.00011968                         ; fcn.00011968
+│ │││││┌──< 0x00010cf8      b     0x10d70
+│ ││││└───> 0x00010cfc      adrp  x1, data.00003000                    ; 0x3000
+│ ││││ ││   0x00010d00      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│ ││││ ││   0x00010d04      adrp  x2, data.00002000                    ; 0x2000
+│ ││││ ││   0x00010d08      add   x2, x2, 0xb81                        ; 0x2b81 ; "UID permission error(%d, %d)"
+│ ││││ ││   0x00010d0c      mov   w0, 6
+│ ││││ ││   0x00010d10      mov   w3, w20
+│ ││││ ││   0x00010d14      bl    fcn.00011968                         ; fcn.00011968
+│ ││││┌───< 0x00010d18      b     0x10d70
+│ │└└─────> 0x00010d1c      str   x9, [x22, 0x20]
+│ └───────> 0x00010d20      adrp  x1, data.00003000                    ; 0x3000
+│    ││││   0x00010d24      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│    ││││   0x00010d28      adrp  x2, data.00002000                    ; 0x2000
+│    ││││   0x00010d2c      add   x2, x2, 0xfc6                        ; 0x2fc6 ; "MODE permission error(%d)"
+│    ││││   0x00010d30      mov   w0, 6
+│    ││││   0x00010d34      mov   w3, w21
+│   ┌─────< 0x00010d38      b     0x10d6c
+│ ───└────> 0x00010d3c      adrp  x1, data.00003000                    ; 0x3000
+│   │ │││   0x00010d40      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
+│   │ │││   0x00010d44      adrp  x2, data.00003000                    ; 0x3000
+│   │ │││   0x00010d48      add   x2, x2, 0x496                        ; 0x3496 ; "Signature check completed"
+│   │ │││   0x00010d4c      mov   w0, 4
+│   │ │││   ; CODE XREF from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10cac
+│ ────────> 0x00010d50      bl    fcn.00011968                         ; fcn.00011968
+│   │ │││   0x00010d54      mov   w0, 1
+│   │┌────< 0x00010d58      b     0x10d74
+│ ────────> 0x00010d5c      adrp  x2, data.00002000                    ; 0x2000
+│   │││││   0x00010d60      add   x2, x2, 0xf9b                        ; 0x2f9b ; "Failed to check signature(%d)\n"
+│   │││││   0x00010d64      mov   w0, 6
+│   │││││   0x00010d68      mov   w3, w19
+│   │││││   ; CODE XREF from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10d38
+│   └─────> 0x00010d6c      bl    fcn.00011968                         ; fcn.00011968
+│    ││││   ; CODE XREFS from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10cc8, 0x10cf8, 0x10d18
+│    │└└└─> 0x00010d70      mov   w0, wzr
+│    │      ; CODE XREF from method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int @ 0x10d58
+│    └────> 0x00010d74      ldp   x20, x19, [var_10h]
+│           0x00010d78      ldr   x23, [var_30h]                       ; [0x10:4]=0xb70003
+│           0x00010d7c      ldp   x22, x21, [var_20h]
+│           0x00010d80      ldp   fp, lr, [sp], 0x40
+│           0x00010d84      autiasp
+└           0x00010d88      ret
+11:16:31 oleg@parrot ~ →
