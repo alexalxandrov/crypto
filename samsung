@@ -1,4 +1,4 @@
-11:31:29 oleg@parrot ~ → (line 15) ...
+11:32:44 oleg@parrot ~ → (line 14) ...
     "getStatus:0x8b10" \
     "installToken:0x8de0" \
     "isTokenInstalled:0x8fe0" \
@@ -16,159 +16,106 @@ do
     ADDR="${SPEC#*:}"
 
     echo
-    echo "----- $NAME ($ADDR) -----"
+    echo "----- $NAME -----"
 
     rizin -q -A -e scr.color=false -c "pdf @ $ADDR; q" "$HAL" 2>/dev/null |
-    grep -E -B 16 -A 7 'checkPermission|checkClient|checkSignature|sendFuseCmd|installToken'
+    grep -B 24 -A 10 'bl    fcn.000116e0'
 done
 
 echo
 echo "========== END =========="
-========== PERMISSION CHECK IMPLEMENTATION ==========
-            ; CODE XREFS from sym.imp.access @ 0x11a2c, 0x11a34
-            ;-- client::checkPermission(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int):
-┌ method.client.checkPermission_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int(int64_t arg2, unsigned long long arg1, int64_t arg4, int64_t arg3);
-│           ; arg unsigned long long arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg4 @ x3
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x00010ed0      paciasp                                    ; RELOC TARGET 64 client::checkPermission(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int) @ 0x00010ed0 ; client::checkPermission(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, int)
-│           0x00010ed4      stp   fp, lr, [sp, -0lr]!
-│           0x00010ed8      stp   x22, x21, [var_20h]
-│           0x00010edc      stp   x20, x19, [var_10h]
-│           0x00010ee0      mov   fp, sp
-│           0x00010ee4      ldrb  w8, [x1]                             ; arg2
-│           0x00010ee8      ldr   x9, [x1, 0x10]                       ; [0x10:4]=0xb70003 ; arg2
-│           0x00010eec      mov   w19, w3                              ; arg4
-│           0x00010ef0      mov   w20, w2                              ; arg3
-│           0x00010ef4      mov   x22, x1                              ; arg2
-│           0x00010ef8      mov   x21, x0                              ; arg1
-│           0x00010efc      tst   w8, 1                                ; arg1
-│           0x00010f00      adrp  x2, data.00002000                    ; 0x2000
-│           0x00010f04      add   x2, x2, 0xe59                        ; 0x2e59 ; "%s: [ProcessName = %s]"
-│           0x00010f08      csinc x4, x9, x1, ne
-│           0x00010f0c      adrp  x1, data.00003000                    ; 0x3000
-│           0x00010f10      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│           0x00010f14      adrp  x3, data.00002000                    ; 0x2000
-│           0x00010f18      add   x3, x3, 0x89e                        ; 0x289e ; "checkPermission"
-│           0x00010f1c      mov   w0, 4
-│           0x00010f20      bl    fcn.00011968
-│           0x00010f24      mov   x0, x21                              ; unsigned long long arg1
-│           0x00010f28      mov   x1, x22                              ; int64_t arg2
-│           0x00010f2c      bl    method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char__bl    0x11550 ; method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char______std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const ;  method.std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.find_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char______std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const(unsigned long long arg1, int64_t arg2)
-│           0x00010f30      add   x8, x21, 8
-│           0x00010f34      str   x0, [x21, 0x18]
-│           0x00010f38      cmp   x8, x0
-│       ┌─< 0x00010f3c      b.eq  0x10fa0
-│       │   0x00010f40      ldrb  w8, [x0, 0x58]                       ; [0x58:4]=64
-│       │   0x00010f44      cmp   w8, 1
-│      ┌──< 0x00010f48      b.ne  0x10f58
-│      ││   0x00010f4c      ldr   w4, [x0, 0x38]                       ; [0x38:4]=0x40000c
-│      ││   0x00010f50      cmp   w4, w20
-│     ┌───< 0x00010f54      b.ne  0x10fec
-│     │└──> 0x00010f58      bl    fcn.00011b90
-│     │┌──< 0x00010f5c      tbz   w0, 0, 0x10fbc
-│     │││   0x00010f60      ldr   x8, [x21, 0x18]                      ; [0x18:4]=0
-│     │││   0x00010f64      ldrb  w8, [x8, 0x5a]                       ; [0x5a:4]=0
-│     │││   0x00010f68      cmp   w8, 1
-│    ┌────< 0x00010f6c      b.ne  0x1100c
-│    ││││   0x00010f70      ldr   w8, [x21, 0x80]                      ; [0x80:4]=0
-│    ││││   0x00010f74      cmp   w19, w8
-│   ┌─────< 0x00010f78      b.eq  0x1100c
-│   │││││   0x00010f7c      ldr   w8, [x21, 0x7c]                      ; [0x7c:4]=4
-│   │││││   0x00010f80      adrp  x1, data.00003000                    ; 0x3000
-│   │││││   0x00010f84      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│   │││││   0x00010f88      cmp   w20, w8
-│  ┌──────< 0x00010f8c      b.ne  0x1102c
-│  ││││││   0x00010f90      adrp  x2, data.00002000                    ; 0x2000
-│  ││││││   0x00010f94      add   x2, x2, 0xa15                        ; 0x2a15 ; "This is system client, pass checking signature"
-│  ││││││   0x00010f98      mov   w0, 3
-│ ┌───────< 0x00010f9c      b     0x11020
-│ ││││││└─> 0x00010fa0      adrp  x1, data.00003000                    ; 0x3000
-│ ││││││    0x00010fa4      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│ ││││││    0x00010fa8      adrp  x2, data.00003000                    ; 0x3000
-│ ││││││    0x00010fac      add   x2, x2, 0x3cc                        ; 0x33cc ; "Cannot find client"
-│ ││││││    0x00010fb0      mov   w0, 6
-│ ││││││    0x00010fb4      bl    fcn.00011968
-│ ││││││┌─< 0x00010fb8      b     0x11040
-│ │││││└──> 0x00010fbc      ldrb  w8, [x22]
-│ │││││ │   0x00010fc0      ldr   x9, [x22, 0x10]                      ; [0x10:4]=0xb70003
-│ │││││ │   0x00010fc4      add   x10, x22, 1
-│ │││││ │   0x00010fc8      adrp  x1, data.00003000                    ; 0x3000
-│ │││││ │   0x00010fcc      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│ │││││ │   0x00010fd0      adrp  x2, data.00002000                    ; 0x2000
-│ │││││ │   0x00010fd4      add   x2, x2, 0xdd6                        ; 0x2dd6 ; "Process authentication failed for %s"
-│ │││││ │   0x00010fd8      tst   w8, 1
-│ │││││ │   0x00010fdc      mov   w0, 6
-│ │││││ │   0x00010fe0      csel  x3, x10, x9, eq
-│ │││││ │   0x00010fe4      bl    fcn.00011968
-│ │││││┌──< 0x00010fe8      b     0x11040
-│ ││││└───> 0x00010fec      adrp  x1, data.00003000                    ; 0x3000
-│ ││││ ││   0x00010ff0      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│ ││││ ││   0x00010ff4      adrp  x2, data.00002000                    ; 0x2000
-│ ││││ ││   0x00010ff8      add   x2, x2, 0xb81                        ; 0x2b81 ; "UID permission error(%d, %d)"
-│ ││││ ││   0x00010ffc      mov   w0, 6
-│ ││││ ││   0x00011000      mov   w3, w20
-│ ││││ ││   0x00011004      bl    fcn.00011968
-│ ││││┌───< 0x00011008      b     0x11040
-│ ││└└────> 0x0001100c      adrp  x1, data.00003000                    ; 0x3000
-│ ││  │││   0x00011010      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│ ││  │││   0x00011014      adrp  x2, data.00003000                    ; 0x3000
-│ ││  │││   0x00011018      add   x2, x2, 0x496                        ; 0x3496 ; "Signature check completed"
-│ ││  │││   0x0001101c      mov   w0, 4
-│ ││  │││   ; CODE XREF from method.client.checkPermission_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int @ 0x10f9c
-│ └───────> 0x00011020      bl    fcn.00011968
-│  │  │││   0x00011024      mov   w0, 1
-│  │ ┌────< 0x00011028      b     0x11044
-│  └──────> 0x0001102c      adrp  x2, data.00002000                    ; 0x2000
-│    ││││   0x00011030      add   x2, x2, 0xf9b                        ; 0x2f9b ; "Failed to check signature(%d)\n"
-│    ││││   0x00011034      mov   w0, 6
-│    ││││   0x00011038      mov   w3, w19
-│    ││││   0x0001103c      bl    fcn.00011968
-│    ││││   ; CODE XREFS from method.client.checkPermission_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int @ 0x10fb8, 0x10fe8, 0x11008
-│    │└└└─> 0x00011040      mov   w0, wzr
-│    │      ; CODE XREF from method.client.checkPermission_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int @ 0x11028
-│    └────> 0x00011044      ldp   x20, x19, [var_10h]
-│           0x00011048      ldp   x22, x21, [var_20h]
-│           0x0001104c      ldp   fp, lr, [sp], 0lr
-│           0x00011050      autiasp
-└           0x00011054      ret
-sym.imp.access 0x11a2c [DATA] ldr x17, method.client.checkPermission_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int
-sym.imp.access 0x11a34 [CODE] br x17
-method.std::__1.to_string(int) 0x11a14 [DATA] ldr x17, method.client.checkClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__int__int
-method.std::__1.to_string(int) 0x11a1c [CODE] br x17
+========== COMMON AUTHORIZATION HANDLER ==========
+            ; XREFS(23)
+┌ fcn.000116e0();
+│           0x000116e0      adrp  x16, segment.GNU_RELRO               ; 0x14000
+│           0x000116e4      ldr   x17, [x16, data.000002d0]            ; [0x2d0:4]=32 ; " "
+│           0x000116e8      add   x16, x16, data.000002d0              ; 0x2d0 ; " "
+└           0x000116ec      br    x17
+method.EngmodeManager.getStatus_int__unsigned_char_const___int 0x8bf8 [CALL] bl fcn.000116e0
+method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int 0x8e50 [CALL] bl fcn.000116e0
+method.EngmodeManager.isTokenInstalled_unsigned_char_const___int 0x9044 [CALL] bl fcn.000116e0
+method.EngmodeManager.removeToken_unsigned_char_const___int 0x91a8 [CALL] bl fcn.000116e0
+method.EngmodeManager.getNumOfModes_unsigned_char_const___int 0x930c [CALL] bl fcn.000116e0
+method.EngmodeManager.sendFuseCmd_unsigned_char_const___int 0x9470 [CALL] bl fcn.000116e0
+method.EngmodeManager.getVersion_unsigned_char_const___int 0x95d4 [CALL] bl fcn.000116e0
+method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int 0x9744 [CALL] bl fcn.000116e0
+method.EngmodeManager.getId_unsigned_char_const___int__unsigned_char___int 0x9b04 [CALL] bl fcn.000116e0
+method.EngmodeManager.getRequestMsg_char_const___char_const___unsigned_char_const___int__int__unsigned_char_const___int__unsigned_char___int 0x9da4 [CALL] bl fcn.000116e0
+method.EngmodeManager.makeTokenReq_char_const___char_const___unsigned_char_const___int__char_const___unsigned_char_const___int__unsigned_char___int 0xa218 [CALL] bl fcn.000116e0
+method.EngmodeManager.commandForEss_int__char_const___unsigned_char_const___int__unsigned_char___int 0xa720 [CALL] bl fcn.000116e0
+method.EngmodeManager.getServerTime_unsigned_char_const___int__unsigned_char___int 0xaa44 [CALL] bl fcn.000116e0
+method.EngmodeManager.recoveryItl_unsigned_char_const___int__unsigned_char_const___int 0xacd0 [CALL] bl fcn.000116e0
+method.EngmodeManager.makeItlReq_char_const___char_const___unsigned_char_const___int__unsigned_char___int 0xaee0 [CALL] bl fcn.000116e0
+method.EngmodeManager.getToken_unsigned_char_const___int__unsigned_char___int 0xb288 [CALL] bl fcn.000116e0
+method.EngmodeManager.getTuc_int__unsigned_char_const___int 0xb50c [CALL] bl fcn.000116e0
+method.EngmodeManager.setPriorityTime_char_const___unsigned_char_const___int__unsigned_char___int 0xb688 [CALL] bl fcn.000116e0
+method.EngmodeManager.getPriorityTime_unsigned_char_const___int__unsigned_char___int 0xb9a4 [CALL] bl fcn.000116e0
+method.EngmodeManager.getLastTokenStatus_unsigned_char_const___int__unsigned_char___int 0xbc30 [CALL] bl fcn.000116e0
+method.EngmodeManager.getStringModes_unsigned_char_const___int__unsigned_char___int 0xbebc [CALL] bl fcn.000116e0
+method.EngmodeManager.getModesbit_unsigned_char_const___int__unsigned_char___int 0xc148 [CALL] bl fcn.000116e0
+method.EngmodeManager.getTokenInfoForJanus_unsigned_char_const___int__unsigned_char___int 0xc3d4 [CALL] bl fcn.000116e0
 
-========== SENSITIVE HAL OPERATIONS ==========
+========== CALL ARGUMENTS: SENSITIVE OPERATIONS ==========
 
------ getStatus (0x8b10) -----
+----- getStatus -----
+│           0x00008b98      stp   x8, x8, [var_80h + 0x20]
+│           0x00008b9c      stp   q0, q0, [x0]
+│           0x00008ba0      stp   q0, q0, [x0, 0x20]
+│           0x00008ba4      stp   q0, q0, [x0, 0x40]
+│           0x00008ba8      stp   q0, q0, [x0, 0x60]
+│           0x00008bac      stp   q0, q0, [x0, 0x80]
+│           0x00008bb0      stp   q0, q0, [x0, 0xa0]
+│           0x00008bb4      stp   q0, q0, [x0, 0xc0]
+│           0x00008bb8      stp   q0, q0, [x0, 0xe0]
+│           0x00008bbc      adrp  x0, data.00002000                    ; 0x2000
+│           0x00008bc0      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x00008bc4      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x00008bc8      stp   xzr, x0, [var_90h]
+│           0x00008bcc      add   x8, var_98h
+│           0x00008bd0      add   x0, var_88h
+│           0x00008bd4      str   xzr, [var_98h]
+│           0x00008bd8      bl    sym.imp.__errno
+│           0x00008bdc      ldr   x8, [var_98h]                        ; [0x8:4]=0
+│       ┌─< 0x00008be0      cbz   x8, 0x8c34
+│       │   0x00008be4      mov   x0, x23
+│       │   0x00008be8      mov   x1, x20
+│       │   0x00008bec      mov   w2, w24
+│       │   0x00008bf0      mov   w3, w19
+│       │   0x00008bf4      mov   w4, wzr
+│       │   0x00008bf8      bl    fcn.000116e0
+│       │   0x00008bfc      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x00008c00      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x00008c04      cbz   w0, 0x8c5c
+│      ││   0x00008c08      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x00008c0c      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x00008c10      mov   w0, 4
+│      ││   0x00008c14      bl    fcn.00011968
+│      ││   0x00008c18      ldr   w8, [x20, data.00000200]             ; [0x200:4]=0x6474e551 ; "Q\xe5td\U00000006"
+│      ││   0x00008c1c      ldr   w9, [x23]
+│      ││   0x00008c20      cmp   w8, w9
 
------ installToken (0x8de0) -----
-            ; CODE XREFS from fcn.00011710 @ 0x11714, 0x1171c
-            ;-- EngmodeManager::installToken(int, unsigned char const*, unsigned char const*, int):
-┌ method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int(int64_t arg1, int64_t arg5, int64_t arg4, int64_t arg3, int64_t arg2);
-│           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg4 @ x3
-│           ; arg int64_t arg5 @ x4
-│           ; var int64_t var_100h @ stack - 0x100
-│           ; var int64_t var_f8h @ stack - 0xf8
-│           ; var int64_t var_f0h @ stack - 0xf0
-│           ; var int64_t var_e0h @ stack - 0xe0
-│           ; var int64_t var_d0h @ stack - 0xd0
-│           ; var int64_t var_c0h @ stack - 0xc0
-│           ; var int64_t var_b0h @ stack - 0xb0
-│           0x00008de0      paciasp                                    ; RELOC TARGET 64 EngmodeManager::installToken(int, unsigned char const*, unsigned char const*, int) @ 0x00008de0 ; EngmodeManager::installToken(int, unsigned char const*, unsigned char const*, int)
-│           0x00008de4      sub   sp, sp, 0x60
-│           0x00008de8      stp   fp, lr, [var_b0h + 0x70]
-│           0x00008dec      str   x23, [var_b0h + 0x80]
+----- installToken -----
 │           0x00008df0      stp   x22, x21, [var_b0h + 0x90]
 │           0x00008df4      stp   x20, x19, [var_b0h + 0xa0]
 │           0x00008df8      add   fp, sp, 0x20
 │           0x00008dfc      mov   x23, x0                              ; arg1
---
+│           0x00008e00      adrp  x0, data.00002000                    ; 0x2000
+│           0x00008e04      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x00008e08      mov   w20, w4                              ; arg5
+│           0x00008e0c      mov   x22, x3                              ; arg4
+│           0x00008e10      mov   x19, x2                              ; arg3
+│           0x00008e14      mov   w21, w1                              ; arg2
+│           0x00008e18      str   wzr, [fp, 0x1c]
+│           0x00008e1c      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x00008e20      stur  x0, [fp, -8]
+│           0x00008e24      add   x8, var_f8h
+│           0x00008e28      sub   x0, fp, 8
+│           0x00008e2c      stp   xzr, xzr, [var_b0h + 0x58]
+│           0x00008e30      bl    sym.imp.__errno
+│           0x00008e34      ldr   x8, [var_f8h]                        ; [0x8:4]=0
+│       ┌─< 0x00008e38      cbz   x8, 0x8e70
+│       │   0x00008e3c      mov   x0, x23
+│       │   0x00008e40      mov   x1, x22
 │       │   0x00008e44      mov   w2, w20
 │       │   0x00008e48      mov   w3, wzr
 │       │   0x00008e4c      mov   w4, 1
@@ -183,85 +130,82 @@ method.std::__1.to_string(int) 0x11a1c [CODE] br x17
 │     ││└─> 0x00008e70      adrp  x1, data.00003000                    ; 0x3000
 │     ││    0x00008e74      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
 │     ││    0x00008e78      adrp  x2, data.00002000                    ; 0x2000
-│     ││    0x00008e7c      add   x2, x2, 0xa65                        ; 0x2a65 ; "Engmode HAL service not available"
-│     ││    0x00008e80      mov   w0, 6
-│     ││    ; CODE XREF from method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int @ 0x8e6c
-│     └───> 0x00008e84      bl    fcn.00011968
-│      │    0x00008e88      mov   w19, -1
-│      │    0x00008e8c      ldr   x20, [var_f0h]                       ; [0x10:4]=0xb70003
-│      │┌─< 0x00008e90      cbnz  x20, 0x8f60
-│     ┌───< 0x00008e94      b     0x8f88
-│     │└──> 0x00008e98      adrp  x2, data.00003000                    ; 0x3000
-│     │ │   0x00008e9c      add   x2, x2, data.000002d8                ; 0x2d8
---
-│     │ │   0x00008eb8      stp   xzr, xzr, [x0, 8]
-│     │ │   0x00008ebc      str   xzr, [x0]
-│     │┌──< 0x00008ec0      cbz   w21, 0x8ef4
-│    ┌────< 0x00008ec4      tbnz  w21, 0x1f, 0x8fdc
-│    ││││   0x00008ec8      mov   x0, x22                              ; const void *s1
-│    ││││   0x00008ecc      bl    sym.imp.memcmp                       ; int memcmp(const void *s1, const void *s2, size_t n)
-│    ││││   0x00008ed0      add   x23, x0, x22
-│    ││││   0x00008ed4      mov   w1, wzr
-│    ││││   0x00008ed8      mov   x2, x22
-│    ││││   0x00008edc      mov   x21, x0
-│    ││││   0x00008ee0      str   x0, [x20]
-│    ││││   0x00008ee4      str   x23, [x20, 0x10]
-│    ││││   0x00008ee8      bl    fcn.00011c98
-│    ││││   0x00008eec      str   x23, [x20, 8]
-│   ┌─────< 0x00008ef0      b     0x8ef8
-│   │││└──> 0x00008ef4      mov   x21, xzr
-│   │││ │   ; CODE XREF from method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int @ 0x8ef0
-│   └─────> 0x00008ef8      mov   x0, x21
-│    ││ │   0x00008efc      mov   x1, x19
-│    ││ │   0x00008f00      mov   x2, x22
-│    ││ │   0x00008f04      bl    fcn.00011cb0
-│    ││ │   0x00008f08      ldr   x0, [var_f8h]                        ; [0x8:4]=0
-│    ││ │   0x00008f0c      str   xzr, [sp]
-│    ││ │   0x00008f10      add   x2, fp, 0x1c
---
-│    ││ │   0x00008f48      bl    fcn.00011a88
-│    ││ │   0x00008f4c      ldr   x0, [sp]
-│    ││ │   0x00008f50      ldr   w19, [fp, 0x1c]                      ; [0x1c:4]=0
-│    ││ │   0x00008f54      bl    fcn.00011ae8
-│    ││ │   0x00008f58      ldr   x20, [var_f0h]                       ; [0x10:4]=0xb70003
-│    ││┌──< 0x00008f5c      cbz   x20, 0x8f88
-│    │││└─> 0x00008f60      add   x1, x20, 8                           ; int64_t arg2
-│    │││    0x00008f64      mov   x0, -1                               ; int64_t arg1
-│    │││    0x00008f68      bl    sym.__aarch64_ldadd8_acq_rel
-│    │││┌─< 0x00008f6c      cbnz  x0, 0x8f88
-│    ││││   0x00008f70      ldr   x8, [x20]
-│    ││││   0x00008f74      mov   x0, x20
-│    ││││   0x00008f78      ldr   x8, [x8, 0x10]                       ; [0x10:4]=0xb70003
-│    ││││   0x00008f7c      blr   x8
-│    ││││   0x00008f80      mov   x0, x20
-│    ││││   0x00008f84      bl    fcn.00011b60
-│    ││││   ; CODE XREF from method.EngmodeManager.installToken_int__unsigned_char_const___unsigned_char_const___int @ 0x8e94
-│    │└└└─> 0x00008f88      ldur  x20, [fp, -8]
-│    │  ┌─< 0x00008f8c      cbz   x20, 0x8f98
-│    │  │   0x00008f90      mov   x0, x20
-│    │  │   0x00008f94      bl    fcn.00011b00
-│    │  └─> 0x00008f98      ldur  x8, [fp, -8]
-│    │      0x00008f9c      cmp   x20, x8
-│    │  ┌─< 0x00008fa0      b.ne  0x8fc4
 
------ isTokenInstalled (0x8fe0) -----
+----- isTokenInstalled -----
+│           0x00008fe4      sub   sp, sp, 0x50
+│           0x00008fe8      stp   fp, lr, [var_30h]
+│           0x00008fec      str   x21, [var_20h]
+│           0x00008ff0      stp   x20, x19, [var_10h]
+│           0x00008ff4      add   fp, sp, 0x20
+│           0x00008ff8      mov   x21, x0                              ; arg1
+│           0x00008ffc      adrp  x0, data.00002000                    ; 0x2000
+│           0x00009000      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x00009004      mov   w19, w2                              ; arg3
+│           0x00009008      mov   x20, x1                              ; arg2
+│           0x0000900c      str   wzr, [fp, 0x1c]
+│           0x00009010      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x00009014      stur  x0, [fp, -8]
+│           0x00009018      add   x8, var_48h
+│           0x0000901c      sub   x0, fp, 8
+│           0x00009020      stp   xzr, xzr, [var_48h]
+│           0x00009024      bl    sym.imp.__errno
+│           0x00009028      ldr   x8, [var_48h]                        ; [0x8:4]=0
+│       ┌─< 0x0000902c      cbz   x8, 0x9064
+│       │   0x00009030      mov   x0, x21
+│       │   0x00009034      mov   x1, x20
+│       │   0x00009038      mov   w2, w19
+│       │   0x0000903c      mov   w3, wzr
+│       │   0x00009040      mov   w4, 1
+│       │   0x00009044      bl    fcn.000116e0
+│       │   0x00009048      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x0000904c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x00009050      cbz   w0, 0x908c
+│      ││   0x00009054      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x00009058      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000905c      mov   w0, 4
+│     ┌───< 0x00009060      b     0x9078
+│     ││└─> 0x00009064      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x00009068      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000906c      adrp  x2, data.00002000                    ; 0x2000
 
------ removeToken (0x9144) -----
+----- removeToken -----
+│           0x00009148      sub   sp, sp, 0x50
+│           0x0000914c      stp   fp, lr, [var_60h + 0x30]
+│           0x00009150      str   x21, [var_60h + 0x40]
+│           0x00009154      stp   x20, x19, [var_60h + 0x50]
+│           0x00009158      add   fp, sp, 0x20
+│           0x0000915c      mov   x21, x0                              ; arg1
+│           0x00009160      adrp  x0, data.00002000                    ; 0x2000
+│           0x00009164      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x00009168      mov   w19, w2                              ; arg3
+│           0x0000916c      mov   x20, x1                              ; arg2
+│           0x00009170      str   wzr, [fp, 0x1c]
+│           0x00009174      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x00009178      stur  x0, [fp, -8]
+│           0x0000917c      add   x8, var_98h
+│           0x00009180      sub   x0, fp, 8
+│           0x00009184      stp   xzr, xzr, [var_60h + 0x18]
+│           0x00009188      bl    sym.imp.__errno
+│           0x0000918c      ldr   x8, [var_98h]                        ; [0x8:4]=0
+│       ┌─< 0x00009190      cbz   x8, 0x91c8
+│       │   0x00009194      mov   x0, x21
+│       │   0x00009198      mov   x1, x20
+│       │   0x0000919c      mov   w2, w19
+│       │   0x000091a0      mov   w3, wzr
+│       │   0x000091a4      mov   w4, 1
+│       │   0x000091a8      bl    fcn.000116e0
+│       │   0x000091ac      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x000091b0      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x000091b4      cbz   w0, 0x91f0
+│      ││   0x000091b8      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x000091bc      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x000091c0      mov   w0, 4
+│     ┌───< 0x000091c4      b     0x91dc
+│     ││└─> 0x000091c8      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x000091cc      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x000091d0      adrp  x2, data.00002000                    ; 0x2000
 
------ sendFuseCmd (0x940c) -----
-            ; CODE XREFS from fcn.00011770 @ 0x11774, 0x1177c
-            ;-- EngmodeManager::sendFuseCmd(unsigned char const*, int):
-┌ method.EngmodeManager.sendFuseCmd_unsigned_char_const___int(int64_t arg1, int64_t arg3, int64_t arg2);
-│           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; var int64_t var_140h @ stack - 0x140
-│           ; var int64_t var_138h @ stack - 0x138
-│           ; var int64_t var_130h @ stack - 0x130
-│           ; var int64_t var_120h @ stack - 0x120
-│           ; var int64_t var_110h @ stack - 0x110
-│           ; var int64_t var_100h @ stack - 0x100
-│           0x0000940c      paciasp                                    ; RELOC TARGET 64 EngmodeManager::sendFuseCmd(unsigned char const*, int) @ 0x0000940c ; EngmodeManager::sendFuseCmd(unsigned char const*, int)
+----- sendFuseCmd -----
 │           0x00009410      sub   sp, sp, 0x50
 │           0x00009414      stp   fp, lr, [var_100h + 0xd0]
 │           0x00009418      str   x21, [var_100h + 0xe0]
@@ -269,7 +213,20 @@ method.std::__1.to_string(int) 0x11a1c [CODE] br x17
 │           0x00009420      add   fp, sp, 0x20
 │           0x00009424      mov   x21, x0                              ; arg1
 │           0x00009428      adrp  x0, data.00002000                    ; 0x2000
---
+│           0x0000942c      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x00009430      mov   w19, w2                              ; arg3
+│           0x00009434      mov   x20, x1                              ; arg2
+│           0x00009438      str   wzr, [fp, 0x1c]
+│           0x0000943c      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x00009440      stur  x0, [fp, -8]
+│           0x00009444      add   x8, var_138h
+│           0x00009448      sub   x0, fp, 8
+│           0x0000944c      stp   xzr, xzr, [var_100h + 0xb8]
+│           0x00009450      bl    sym.imp.__errno
+│           0x00009454      ldr   x8, [var_138h]                       ; [0x8:4]=0
+│       ┌─< 0x00009458      cbz   x8, 0x9490
+│       │   0x0000945c      mov   x0, x21
+│       │   0x00009460      mov   x1, x20
 │       │   0x00009464      mov   w2, w19
 │       │   0x00009468      mov   w3, wzr
 │       │   0x0000946c      mov   w4, 1
@@ -284,55 +241,265 @@ method.std::__1.to_string(int) 0x11a1c [CODE] br x17
 │     ││└─> 0x00009490      adrp  x1, data.00003000                    ; 0x3000
 │     ││    0x00009494      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
 │     ││    0x00009498      adrp  x2, data.00002000                    ; 0x2000
-│     ││    0x0000949c      add   x2, x2, 0xa65                        ; 0x2a65 ; "Engmode HAL service not available"
-│     ││    0x000094a0      mov   w0, 6
-│     ││    ; CODE XREF from method.EngmodeManager.sendFuseCmd_unsigned_char_const___int @ 0x948c
-│     └───> 0x000094a4      bl    fcn.00011968
-│      │    0x000094a8      mov   w19, -1
-│      │    0x000094ac      ldr   x20, [var_130h]                      ; [0x10:4]=0xb70003
-│      │┌─< 0x000094b0      cbnz  x20, 0x94f8
-│     ┌───< 0x000094b4      b     0x9520
-│     │└──> 0x000094b8      adrp  x2, data.00003000                    ; 0x3000
-│     │ │   0x000094bc      add   x2, x2, data.000002d8                ; 0x2d8
---
-│     │ │   0x000094e0      blr   x9
-│     │ │   0x000094e4      ldr   x0, [sp]
-│     │ │   0x000094e8      ldr   w19, [fp, 0x1c]                      ; [0x1c:4]=0
-│     │ │   0x000094ec      bl    fcn.00011ae8
-│     │ │   0x000094f0      ldr   x20, [var_130h]                      ; [0x10:4]=0xb70003
-│     │┌──< 0x000094f4      cbz   x20, 0x9520
-│     ││└─> 0x000094f8      add   x1, x20, 8                           ; int64_t arg2
-│     ││    0x000094fc      mov   x0, -1                               ; int64_t arg1
-│     ││    0x00009500      bl    sym.__aarch64_ldadd8_acq_rel
-│     ││┌─< 0x00009504      cbnz  x0, 0x9520
-│     │││   0x00009508      ldr   x8, [x20]
-│     │││   0x0000950c      mov   x0, x20
-│     │││   0x00009510      ldr   x8, [x8, 0x10]                       ; [0x10:4]=0xb70003
-│     │││   0x00009514      blr   x8
-│     │││   0x00009518      mov   x0, x20
-│     │││   0x0000951c      bl    fcn.00011b60
-│     │││   ; CODE XREF from method.EngmodeManager.sendFuseCmd_unsigned_char_const___int @ 0x94b4
-│     └└└─> 0x00009520      ldur  x20, [fp, -8]
-│       ┌─< 0x00009524      cbz   x20, 0x9530
-│       │   0x00009528      mov   x0, x20
-│       │   0x0000952c      bl    fcn.00011b00
-│       └─> 0x00009530      ldur  x8, [fp, -8]
-│           0x00009534      cmp   x20, x8
-│       ┌─< 0x00009538      b.ne  0x9558
 
------ getRequestMsg (0x9d20) -----
+----- getRequestMsg -----
+│           0x00009d44      mov   x21, x0                              ; arg1
+│           0x00009d48      adrp  x0, data.00002000                    ; 0x2000
+│           0x00009d4c      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x00009d50      mov   w19, w7                              ; arg8
+│           0x00009d54      mov   x20, x6                              ; arg7
+│           0x00009d58      mov   w22, w5                              ; arg6
+│           0x00009d5c      mov   w26, w4                              ; arg5
+│           0x00009d60      mov   x25, x3                              ; arg4
+│           0x00009d64      mov   x23, x2                              ; arg3
+│           0x00009d68      mov   x24, x1                              ; arg2
+│           0x00009d6c      stur  wzr, [fp, -4]
+│           0x00009d70      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x00009d74      stp   xzr, x0, [fp, -0x18]
+│           0x00009d78      sub   x8, fp, 0x20
+│           0x00009d7c      sub   x0, fp, 0x10
+│           0x00009d80      stur  xzr, [fp, -0x20]
+│           0x00009d84      bl    sym.imp.__errno
+│           0x00009d88      ldur  x8, [fp, -0x20]
+│       ┌─< 0x00009d8c      cbz   x8, 0x9dc4
+│       │   0x00009d90      mov   x0, x21
+│       │   0x00009d94      mov   x1, x20
+│       │   0x00009d98      mov   w2, w19
+│       │   0x00009d9c      mov   w3, wzr
+│       │   0x00009da0      mov   w4, 1
+│       │   0x00009da4      bl    fcn.000116e0
+│      ┌──< 0x00009da8      cbz   w0, 0x9df0
+│      ││   0x00009dac      adrp  x1, data.00003000                    ; 0x3000
+│      ││   0x00009db0      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ││   0x00009db4      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x00009db8      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x00009dbc      mov   w0, 4
+│     ┌───< 0x00009dc0      b     0x9dd8
+│     ││└─> 0x00009dc4      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x00009dc8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x00009dcc      adrp  x2, data.00002000                    ; 0x2000
 
------ makeTokenReq (0xa194) -----
+----- makeTokenReq -----
+│           0x0000a1b8      mov   x21, x0                              ; arg1
+│           0x0000a1bc      adrp  x0, data.00002000                    ; 0x2000
+│           0x0000a1c0      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x0000a1c4      mov   w19, w7                              ; arg8
+│           0x0000a1c8      mov   x20, x6                              ; arg7
+│           0x0000a1cc      mov   x22, x5                              ; arg6
+│           0x0000a1d0      mov   w26, w4                              ; arg5
+│           0x0000a1d4      mov   x25, x3                              ; arg4
+│           0x0000a1d8      mov   x23, x2                              ; arg3
+│           0x0000a1dc      mov   x24, x1                              ; arg2
+│           0x0000a1e0      stur  wzr, [fp, -4]
+│           0x0000a1e4      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x0000a1e8      stp   xzr, x0, [fp, -0x18]
+│           0x0000a1ec      sub   x8, fp, 0x20
+│           0x0000a1f0      sub   x0, fp, 0x10
+│           0x0000a1f4      stur  xzr, [fp, -0x20]
+│           0x0000a1f8      bl    sym.imp.__errno
+│           0x0000a1fc      ldur  x8, [fp, -0x20]
+│       ┌─< 0x0000a200      cbz   x8, 0xa238
+│       │   0x0000a204      mov   x0, x21
+│       │   0x0000a208      mov   x1, x20
+│       │   0x0000a20c      mov   w2, w19
+│       │   0x0000a210      mov   w3, wzr
+│       │   0x0000a214      mov   w4, 1
+│       │   0x0000a218      bl    fcn.000116e0
+│      ┌──< 0x0000a21c      cbz   w0, 0xa264
+│      ││   0x0000a220      adrp  x1, data.00003000                    ; 0x3000
+│      ││   0x0000a224      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ││   0x0000a228      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000a22c      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000a230      mov   w0, 4
+│     ┌───< 0x0000a234      b     0xa24c
+│     ││└─> 0x0000a238      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x0000a23c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000a240      adrp  x2, data.00002000                    ; 0x2000
 
------ commandForESS (0xa6a0) -----
+----- commandForESS -----
+│           0x0000a6c0      add   fp, sp, 0x50
+│           0x0000a6c4      mov   x25, x0                              ; arg1
+│           0x0000a6c8      adrp  x0, data.00002000                    ; 0x2000
+│           0x0000a6cc      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x0000a6d0      mov   x19, x6                              ; arg7
+│           0x0000a6d4      mov   x20, x5                              ; arg6
+│           0x0000a6d8      mov   w21, w4                              ; arg5
+│           0x0000a6dc      mov   x24, x3                              ; arg4
+│           0x0000a6e0      mov   x23, x2                              ; arg3
+│           0x0000a6e4      mov   w22, w1                              ; arg2
+│           0x0000a6e8      str   wzr, [fp, 0x1c]
+│           0x0000a6ec      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x0000a6f0      stp   xzr, x0, [fp, -0x10]
+│           0x0000a6f4      sub   x8, fp, 0x18
+│           0x0000a6f8      sub   x0, fp, 8
+│           0x0000a6fc      stur  xzr, [fp, -0x18]
+│           0x0000a700      bl    sym.imp.__errno
+│           0x0000a704      ldur  x8, [fp, -0x18]
+│       ┌─< 0x0000a708      cbz   x8, 0xa740
+│       │   0x0000a70c      mov   x0, x25
+│       │   0x0000a710      mov   x1, x24
+│       │   0x0000a714      mov   w2, w21
+│       │   0x0000a718      mov   w3, wzr
+│       │   0x0000a71c      mov   w4, 2
+│       │   0x0000a720      bl    fcn.000116e0
+│       │   0x0000a724      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x0000a728      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x0000a72c      cbz   w0, 0xa768
+│      ││   0x0000a730      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000a734      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000a738      mov   w0, 4
+│     ┌───< 0x0000a73c      b     0xa754
+│     ││└─> 0x0000a740      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x0000a744      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000a748      adrp  x2, data.00002000                    ; 0x2000
 
------ recoveryITL (0xac60) -----
+----- recoveryITL -----
+│           0x0000ac70      stp   x22, x21, [var_20h]
+│           0x0000ac74      stp   x20, x19, [var_10h]
+│           0x0000ac78      add   fp, sp, 0x20
+│           0x0000ac7c      mov   x23, x0                              ; arg1
+│           0x0000ac80      adrp  x0, data.00002000                    ; 0x2000
+│           0x0000ac84      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x0000ac88      mov   w20, w4                              ; arg5
+│           0x0000ac8c      mov   x22, x3                              ; arg4
+│           0x0000ac90      mov   w21, w2                              ; arg3
+│           0x0000ac94      mov   x19, x1                              ; arg2
+│           0x0000ac98      str   wzr, [fp, 0x1c]
+│           0x0000ac9c      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x0000aca0      stur  x0, [fp, -8]
+│           0x0000aca4      add   x8, var_58h
+│           0x0000aca8      sub   x0, fp, 8
+│           0x0000acac      stp   xzr, xzr, [var_58h]
+│           0x0000acb0      bl    sym.imp.__errno
+│           0x0000acb4      ldr   x8, [var_58h]                        ; [0x8:4]=0
+│       ┌─< 0x0000acb8      cbz   x8, 0xacf0
+│       │   0x0000acbc      mov   x0, x23
+│       │   0x0000acc0      mov   x1, x22
+│       │   0x0000acc4      mov   w2, w20
+│       │   0x0000acc8      mov   w3, wzr
+│       │   0x0000accc      mov   w4, 1
+│       │   0x0000acd0      bl    fcn.000116e0
+│       │   0x0000acd4      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x0000acd8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x0000acdc      cbz   w0, 0xad18
+│      ││   0x0000ace0      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000ace4      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000ace8      mov   w0, 4
+│     ┌───< 0x0000acec      b     0xad04
+│     ││└─> 0x0000acf0      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x0000acf4      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000acf8      adrp  x2, data.00002000                    ; 0x2000
 
------ makeITLReq (0xae60) -----
+----- makeITLReq -----
+│           0x0000ae80      add   fp, sp, 0x70
+│           0x0000ae84      mov   x25, x0                              ; arg1
+│           0x0000ae88      adrp  x0, data.00002000                    ; 0x2000
+│           0x0000ae8c      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x0000ae90      mov   x19, x6                              ; arg7
+│           0x0000ae94      mov   x20, x5                              ; arg6
+│           0x0000ae98      mov   w21, w4                              ; arg5
+│           0x0000ae9c      mov   x24, x3                              ; arg4
+│           0x0000aea0      mov   x22, x2                              ; arg3
+│           0x0000aea4      mov   x23, x1                              ; arg2
+│           0x0000aea8      str   wzr, [fp, 0x1c]
+│           0x0000aeac      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x0000aeb0      stp   xzr, x0, [fp, -0x10]
+│           0x0000aeb4      sub   x8, fp, 0x18
+│           0x0000aeb8      sub   x0, fp, 8
+│           0x0000aebc      stur  xzr, [fp, -0x18]
+│           0x0000aec0      bl    sym.imp.__errno
+│           0x0000aec4      ldur  x8, [fp, -0x18]
+│       ┌─< 0x0000aec8      cbz   x8, 0xaf00
+│       │   0x0000aecc      mov   x0, x25
+│       │   0x0000aed0      mov   x1, x24
+│       │   0x0000aed4      mov   w2, w21
+│       │   0x0000aed8      mov   w3, wzr
+│       │   0x0000aedc      mov   w4, 1
+│       │   0x0000aee0      bl    fcn.000116e0
+│       │   0x0000aee4      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x0000aee8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x0000aeec      cbz   w0, 0xaf28
+│      ││   0x0000aef0      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000aef4      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000aef8      mov   w0, 4
+│     ┌───< 0x0000aefc      b     0xaf14
+│     ││└─> 0x0000af00      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x0000af04      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000af08      adrp  x2, data.00002000                    ; 0x2000
 
------ getModesbit (0xc0d8) -----
+----- getModesbit -----
+│           0x0000c0e8      stp   x22, x21, [var_90h + 0x70]
+│           0x0000c0ec      stp   x20, x19, [var_90h + 0x80]
+│           0x0000c0f0      add   fp, sp, 0x40
+│           0x0000c0f4      mov   x23, x0                              ; arg1
+│           0x0000c0f8      adrp  x0, data.00002000                    ; 0x2000
+│           0x0000c0fc      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x0000c100      mov   x19, x4                              ; arg5
+│           0x0000c104      mov   x20, x3                              ; arg4
+│           0x0000c108      mov   w21, w2                              ; arg3
+│           0x0000c10c      mov   x22, x1                              ; arg2
+│           0x0000c110      stur  wzr, [fp, -4]
+│           0x0000c114      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x0000c118      stur  x0, [fp, -0x10]
+│           0x0000c11c      add   x8, var_e0h
+│           0x0000c120      sub   x0, fp, 0x10
+│           0x0000c124      stp   xzr, xzr, [var_90h + 0x30]
+│           0x0000c128      bl    sym.imp.__errno
+│           0x0000c12c      ldr   x8, [var_e0h]                        ; [0x20:4]=64 ; "@"
+│       ┌─< 0x0000c130      cbz   x8, 0xc168
+│       │   0x0000c134      mov   x0, x23
+│       │   0x0000c138      mov   x1, x22
+│       │   0x0000c13c      mov   w2, w21
+│       │   0x0000c140      mov   w3, wzr
+│       │   0x0000c144      mov   w4, 1
+│       │   0x0000c148      bl    fcn.000116e0
+│       │   0x0000c14c      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x0000c150      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x0000c154      cbz   w0, 0xc190
+│      ││   0x0000c158      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000c15c      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000c160      mov   w0, 4
+│     ┌───< 0x0000c164      b     0xc17c
+│     ││└─> 0x0000c168      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x0000c16c      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000c170      adrp  x2, data.00002000                    ; 0x2000
 
------ getTokenInfoForJanus (0xc364) -----
+----- getTokenInfoForJanus -----
+│           0x0000c374      stp   x22, x21, [var_110h + 0xf0]
+│           0x0000c378      stp   x20, x19, [var_110h + data.00000100]
+│           0x0000c37c      add   fp, sp, 0x40
+│           0x0000c380      mov   x23, x0                              ; arg1
+│           0x0000c384      adrp  x0, data.00002000                    ; 0x2000
+│           0x0000c388      add   x0, x0, 0x820                        ; 0x2820 ; "vendor.samsung.hardware.security.engmode.ISehEngmode/default" ; int errnum
+│           0x0000c38c      mov   x19, x4                              ; arg5
+│           0x0000c390      mov   x20, x3                              ; arg4
+│           0x0000c394      mov   w21, w2                              ; arg3
+│           0x0000c398      mov   x22, x1                              ; arg2
+│           0x0000c39c      stur  wzr, [fp, -4]
+│           0x0000c3a0      bl    sym.imp.strerror                     ; char *strerror(int errnum)
+│           0x0000c3a4      stur  x0, [fp, -0x10]
+│           0x0000c3a8      add   x8, var_160h
+│           0x0000c3ac      sub   x0, fp, 0x10
+│           0x0000c3b0      stp   xzr, xzr, [var_110h + 0xb0]
+│           0x0000c3b4      bl    sym.imp.__errno
+│           0x0000c3b8      ldr   x8, [var_160h]                       ; [0x20:4]=64 ; "@"
+│       ┌─< 0x0000c3bc      cbz   x8, 0xc3f4
+│       │   0x0000c3c0      mov   x0, x23
+│       │   0x0000c3c4      mov   x1, x22
+│       │   0x0000c3c8      mov   w2, w21
+│       │   0x0000c3cc      mov   w3, wzr
+│       │   0x0000c3d0      mov   w4, 1
+│       │   0x0000c3d4      bl    fcn.000116e0
+│       │   0x0000c3d8      adrp  x1, data.00003000                    ; 0x3000
+│       │   0x0000c3dc      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│      ┌──< 0x0000c3e0      cbz   w0, 0xc41c
+│      ││   0x0000c3e4      adrp  x2, data.00003000                    ; 0x3000
+│      ││   0x0000c3e8      add   x2, x2, 0x111                        ; 0x3111 ; "Caller check fail"
+│      ││   0x0000c3ec      mov   w0, 4
+│     ┌───< 0x0000c3f0      b     0xc408
+│     ││└─> 0x0000c3f4      adrp  x1, data.00003000                    ; 0x3000
+│     ││    0x0000c3f8      add   x1, x1, 0x34a                        ; 0x334a ; "engmode_client_aidl"
+│     ││    0x0000c3fc      adrp  x2, data.00002000                    ; 0x2000
 
 ========== END ==========
-11:31:41 oleg@parrot ~ →
+11:32:55 oleg@parrot ~ →
