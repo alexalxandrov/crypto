@@ -1,501 +1,349 @@
-11:50:19 oleg@parrot ~ → (line 142) ...
-set -e
+11:52:57 oleg@parrot ~ → (line 33) ...
+run_rz "CALLER OF 0x1257bc AND ALTERNATIVE BACKEND CALLER" \
+'pd 32 @ 0x17e130; pd 32 @ 0x17cf98'
 
-{
-    echo
-    echo "========== STATUS =========="
-    echo "Rizin exit: $STATUS"
-    echo "Direct call references:"
-    cat "$CALLS"
-    echo
-    echo "ADRP references:"
-    cat "$ADRPS"
-    echo
-    echo "Report: $OUT"
-} >> "$OUT"
+# 2. Every other candidate direct call site.
+run_rz "OTHER BACKEND CALL SITES" \
+'pd 32 @ 0x123d90; pd 32 @ 0x125110; pd 32 @ 0x125250; pd 32 @ 0x1252d8; pd 32 @ 0x1253f8; pd 32 @ 0x125704; pd 32 @ 0x125800'
+
+# 3. Storage implementation and lower-level functions.
+run_rz "STORAGE BACKEND IMPLEMENTATION" \
+'pdf @ 0x123f14; pdf @ 0x124e0c; pdf @ 0x123590; pdf @ 0x1257bc'
+
+# 4. Data structures and cross-references.
+run_rz "GLOBAL STORAGE STATE AND REFERENCES" \
+'px 64 @ 0x56f4d0; px 64 @ 0x56f8e0; axt @ 0x56f4d8; axt @ 0x56f4e8; axt @ 0x56f8f0; axt @ 0x56f8f4; axt @ 0x1257bc; axt @ 0x123f14'
 
 echo
-echo "========== COMPLETED =========="
-echo "Rizin exit: $STATUS"
-echo "Report size: $(stat -c '%s' "$OUT") bytes"
+echo "========== COMPLETE =========="
 echo "Report: $OUT"
+echo "Size: $(stat -c '%s' "$OUT") bytes"
 echo
-echo "========== FIRST 100 LINES =========="
-head -100 "$OUT"
+echo "========== REPORT =========="
+cat "$OUT"
 BASH
 
-S-BOOT SHA256 VERIFIED
-========== DIRECT BL REFERENCES ==========
-RPMB_WRAPPER               001257bc : 1
-    CALLSITE 0017e170
-RPMB_BACKEND_CANDIDATE     00123f14 : 9
-    CALLSITE 00123dd0
-    CALLSITE 00123e00
-    CALLSITE 00125150
-    CALLSITE 00125290
-    CALLSITE 00125318
-    CALLSITE 00125438
-    CALLSITE 00125744
-    CALLSITE 00125840
-    CALLSITE 0017cfd8
-STEADY_ENTRY               00189d8c : 1
-    CALLSITE 001142ac
-MODE_BITS_COPY             0018962c : 1
-    CALLSITE 00189fc4
-TOKEN_HELPER               00189b50 : 8
-    CALLSITE 00188ce8
-    CALLSITE 00189000
-    CALLSITE 0018966c
-    CALLSITE 00189f88
-    CALLSITE 0018a048
-    CALLSITE 0018a2a4
-    CALLSITE 0018a2f8
-    CALLSITE 0018a884
-TOKEN_DATA_HELPER          001390c0 : 76
-    CALLSITE 0010a448
-    CALLSITE 0010d5e0
-    CALLSITE 0010d868
-    CALLSITE 0011059c
-    CALLSITE 0011060c
-    CALLSITE 00110668
-    CALLSITE 00110830
-    CALLSITE 00111790
-    CALLSITE 0011188c
-    CALLSITE 001119b0
-    CALLSITE 00111a44
-    CALLSITE 00111cb0
-    CALLSITE 00111e14
-    CALLSITE 00111fec
-    CALLSITE 0011571c
-    CALLSITE 001158c8
-    CALLSITE 00115994
-    CALLSITE 0014220c
-    CALLSITE 00142258
-    CALLSITE 00150c84
-    CALLSITE 00150fa0
-    CALLSITE 001510bc
-    CALLSITE 0015519c
-    CALLSITE 001552bc
-    CALLSITE 0016e7ec
-    CALLSITE 0016e970
-    CALLSITE 00170c9c
-    CALLSITE 00170db4
-    CALLSITE 00172698
-    CALLSITE 001756c0
-    CALLSITE 00175b88
-    CALLSITE 00175e24
-    CALLSITE 00178e14
-    CALLSITE 001791fc
-    CALLSITE 00179328
-    CALLSITE 0017944c
-    CALLSITE 00179578
-    CALLSITE 0017969c
-    CALLSITE 00179738
-    CALLSITE 0017a5e8
-    CALLSITE 0017a72c
-    CALLSITE 0017b058
-    CALLSITE 0017b174
-    CALLSITE 0017b294
-    CALLSITE 0017b3a0
-    CALLSITE 0017ba8c
-    CALLSITE 0017bbe0
-    CALLSITE 0017be40
-    CALLSITE 0017c404
-    CALLSITE 0017d534
-    CALLSITE 0017fd08
-    CALLSITE 00188874
-    CALLSITE 00188d84
-    CALLSITE 00188e0c
-    CALLSITE 0018909c
-    CALLSITE 00189124
-    CALLSITE 00189704
-    CALLSITE 00189800
-    CALLSITE 00189ebc
-    CALLSITE 0018a0f0
-    CALLSITE 0018a3ac
-    CALLSITE 0018a4a8
-    CALLSITE 0018aa0c
-    CALLSITE 0018b554
-    CALLSITE 0018d5ac
-    CALLSITE 0018d9c0
-    CALLSITE 0018dcd4
-    CALLSITE 0018e018
-    CALLSITE 0018e890
-    CALLSITE 0018eac0
-    CALLSITE 0018eebc
-    CALLSITE 0018fbc8
-    CALLSITE 0018fcb4
-    CALLSITE 0019200c
-    CALLSITE 00195a30
-    CALLSITE 001afacc
-VALIDATION_HELPER          001690d8 : 8
-    CALLSITE 0016d324
-    CALLSITE 00188e28
-    CALLSITE 00189140
-    CALLSITE 0018981c
-    CALLSITE 00189ed8
-    CALLSITE 0018a12c
-    CALLSITE 0018a5d8
-    CALLSITE 0018aa44
-TOKEN_LOOKUP               0018996c : 7
-    CALLSITE 00188cc0
-    CALLSITE 00188fd8
-    CALLSITE 00189644
-    CALLSITE 00189e14
-    CALLSITE 0018a020
-    CALLSITE 0018a2d0
-    CALLSITE 0018a8e0
-STEADY_PRECHECK            0017d674 : 3
-    CALLSITE 0017c770
-    CALLSITE 00182a0c
-    CALLSITE 00189da0
-LOCK_STATE_CHECK           0010a9a8 : 4
-    CALLSITE 00114474
-    CALLSITE 0017bb08
-    CALLSITE 0017c424
-    CALLSITE 00189dac
+========== COMPLETE ==========
+Report: /home/oleg/sboot_unlock_probe_20261110_235300.txt
+Size: 19538 bytes
 
-========== ADRP REFERENCES TO PAGE 0x5a6000 ==========
-Total: 232
-    00111ef0  destination register x22
-    0011206c  destination register x22
-    00112348  destination register x22
-    00114ab4  destination register x19
-    00115bd4  destination register x0
-    00144e44  destination register x8
-    0016fd18  destination register x22
-    0016fe0c  destination register x0
-    001760e0  destination register x0
-    0017643c  destination register x0
-    0017666c  destination register x28
-    0017673c  destination register x8
-    0017674c  destination register x0
-    00176768  destination register x0
-    00176784  destination register x0
-    001767a0  destination register x0
-    001767c8  destination register x8
-    0017686c  destination register x8
-    00176b50  destination register x0
-    00176d14  destination register x0
-    00176d30  destination register x0
-    00176d4c  destination register x0
-    00176d68  destination register x0
-    00176e30  destination register x0
-    00176e4c  destination register x0
-    00177b80  destination register x20
-    0017dbb8  destination register x0
-    0017dca0  destination register x0
-    0017dcbc  destination register x0
-    0017dcd8  destination register x0
-    0017dcf4  destination register x0
-    0017dd10  destination register x0
-    0017dd2c  destination register x0
-    0017e4ec  destination register x8
-    0017ee8c  destination register x8
-    0017ef2c  destination register x0
-    0017f014  destination register x8
-    0017f0bc  destination register x8
-    0017f130  destination register x0
-    0017f14c  destination register x0
-    0017f168  destination register x0
-    0017f184  destination register x0
-    0017f1a0  destination register x0
-    0017f1bc  destination register x0
-    0017f984  destination register x0
-    0017f9bc  destination register x0
-    0017f9d8  destination register x0
-    0017f9f4  destination register x0
-    0017fa10  destination register x0
-    0017fa3c  destination register x2
-    0017fad0  destination register x8
-    00183b64  destination register x22
-    00183f08  destination register x0
-    00183f40  destination register x0
-    00183f70  destination register x0
-    00183fa4  destination register x0
-    00184040  destination register x0
-    001840a8  destination register x0
-    001840cc  destination register x0
-    001840f0  destination register x0
-    00184108  destination register x0
-    00184120  destination register x0
-    00184138  destination register x0
-    0018419c  destination register x0
-    001841b8  destination register x0
-    00184268  destination register x0
-    0018447c  destination register x0
-    001844a0  destination register x0
-    001844dc  destination register x5
-    00184ddc  destination register x19
-    00184de4  destination register x9
-    00184e34  destination register x19
-    00184e68  destination register x8
-    00184f54  destination register x8
-    00185ac8  destination register x2
-    00185af4  destination register x19
-    00185b0c  destination register x1
-    00185b20  destination register x0
-    00185b50  destination register x4
-    001862d8  destination register x8
-    00186318  destination register x8
-    00186828  destination register x9
-    001870d4  destination register x21
-    00187adc  destination register x19
-    00187ba4  destination register x10
-    00187c10  destination register x19
-    00187d4c  destination register x19
-    00187d50  destination register x0
-    00187d9c  destination register x11
-    00187df0  destination register x8
-    00187e3c  destination register x8
-    00187e5c  destination register x9
-    00187e68  destination register x19
-    00187e80  destination register x8
-    00187f6c  destination register x0
-    00187fc4  destination register x21
-    00187ffc  destination register x8
-    0018801c  destination register x8
-    00188040  destination register x9
-    0018809c  destination register x0
-    001880bc  destination register x9
-    001880d0  destination register x22
-    0018821c  destination register x10
-    00188224  destination register x11
-    00188248  destination register x19
-    00188254  destination register x21
-    001882a0  destination register x0
-    001882e0  destination register x0
-    00188354  destination register x19
-    001883c4  destination register x9
-    00188410  destination register x21
-    00188444  destination register x9
-    00188450  destination register x8
-    0018849c  destination register x21
-    00188570  destination register x9
-    001885d4  destination register x8
-    00188608  destination register x8
-    00188640  destination register x8
-    00188668  destination register x21
-    001886f0  destination register x20
-    00188998  destination register x8
-    00188a1c  destination register x20
-    00188a78  destination register x24
-    00188a7c  destination register x23
-    00188d04  destination register x21
-    00188e14  destination register x21
-    00188ecc  destination register x20
-    00188f60  destination register x19
-    00188f74  destination register x8
-    0018901c  destination register x21
-    0018912c  destination register x21
-    001891e4  destination register x20
-    00189274  destination register x19
-    00189288  destination register x8
-    001895ec  destination register x10
-    00189618  destination register x1
-    00189688  destination register x21
-    00189808  destination register x21
-    00189894  destination register x20
-    00189934  destination register x20
-    00189984  destination register x20
-    001899a4  destination register x21
-    001899b8  destination register x22
-    00189b60  destination register x19
-    00189b88  destination register x19
-    00189bb0  destination register x19
-    00189bec  destination register x8
-    00189da4  destination register x8
-    00189e3c  destination register x21
-    00189ec4  destination register x20
-    00189f50  destination register x21
-    0018a070  destination register x23
-    0018a118  destination register x22
-    0018a1ac  destination register x21
-    0018a330  destination register x23
-    0018a524  destination register x21
-    0018a560  destination register x21
-    0018a5cc  destination register x22
-    0018a624  destination register x21
-    0018a90c  destination register x25
-    0018a92c  destination register x1
-    0018aa30  destination register x23
-    0018aaf4  destination register x22
-    0018ac14  destination register x0
-    0018c018  destination register x23
-    0018c8c8  destination register x9
-    0018c910  destination register x8
-    0018c92c  destination register x8
-    0018c9f4  destination register x8
-    0018ca30  destination register x8
-    0018cb60  destination register x9
-    0018cb80  destination register x28
-    0018cb90  destination register x8
-    0018ccdc  destination register x9
-    0018cd68  destination register x8
-    0018cd74  destination register x9
-    0018cd90  destination register x8
-    0018cd9c  destination register x9
-    0018cdb8  destination register x8
-    0018cdc4  destination register x9
-    0018cde0  destination register x8
-    0018cdec  destination register x9
-    0018ce08  destination register x8
-    0018ce14  destination register x9
-    0018ce30  destination register x8
-    0018ce40  destination register x9
-    0018ce5c  destination register x8
-    0018ce68  destination register x9
-    0018ce84  destination register x8
-    0018ce90  destination register x9
-    0018cebc  destination register x8
-    0018cec8  destination register x9
-    0018cee4  destination register x8
-    0018cef0  destination register x9
-    0018cf0c  destination register x8
-    0018cf18  destination register x9
-    0018d530  destination register x8
-    0018d55c  destination register x8
-    0018d5b4  destination register x26
-    0018d8a0  destination register x8
-    0018dd7c  destination register x23
-    0018e1f4  destination register x28
-    0018e21c  destination register x28
-    0018e398  destination register x8
-    0018e3a4  destination register x19
-    0018e3c0  destination register x28
-    0018e3dc  destination register x28
-    0018e464  destination register x8
-    0018e470  destination register x19
-    0018e4f8  destination register x12
-    0018e578  destination register x28
-    0018e6a4  destination register x8
-    0018e6b0  destination register x19
-    0018e6f4  destination register x8
-    0018e734  destination register x9
-    0018f170  destination register x8
-    0018f1dc  destination register x27
-    0018f208  destination register x23
-    0018f3bc  destination register x27
-    0018f434  destination register x28
-    0018f4ec  destination register x27
-    0018f534  destination register x11
-    0018f554  destination register x10
-    0018f824  destination register x20
-    0018f860  destination register x8
-    0018fe78  destination register x24
-    0018fe7c  destination register x22
-    0018fee4  destination register x23
-    0018fee8  destination register x25
-    0019092c  destination register x8
-    00190960  destination register x0
-    00190a04  destination register x8
+========== REPORT ==========
 
-Running targeted ARM64 analysis...
+========== CALLER OF 0x1257bc AND ALTERNATIVE BACKEND CALLER ==========
+            0x0017e130      63ecfe97       bl    0x1392bc
+            0x0017e134      0001a052       mov   w0, 0x80000
+            0x0017e138      21008052       mov   w1, 1
+            0x0017e13c      10c1ff97       bl    0x16e57c
+            0x0017e140      81008052       mov   w1, 4
+            0x0017e144      23008052       mov   w3, 1
+            0x0017e148      e0031f2a       mov   w0, wzr
+            0x0017e14c      e2031faa       mov   x2, xzr
+            0x0017e150      a048ff97       bl    0x1503d0
+            0x0017e154      e0031f2a       mov   w0, wzr
+            0x0017e158      804aff97       bl    0x150b58
+            0x0017e15c      e103002a       mov   w1, w0
+            0x0017e160      e0060090       adrp  x0, 0x25a000
+            0x0017e164      00682391       add   x0, x0, 0x8da
+            0x0017e168      243aff97       bl    0x14c9f8
+            0x0017e16c      e003132a       mov   w0, w19
+            0x0017e170      939dfe97       bl    0x1257bc
+        ┌─< 0x0017e174      20030034       cbz   w0, 0x17e1d8
+        │   0x0017e178      40008052       mov   w0, 2
+        │   0x0017e17c      e1fcfe97       bl    0x13d500
+        │   0x0017e180      f403002a       mov   w20, w0
+        │   0x0017e184      85fffe97       bl    0x13df98
+        │   0x0017e188      950600f0       adrp  x21, 0x251000
+        │   0x0017e18c      b5c62591       add   x21, x21, 0x971
+        │   0x0017e190      e303002a       mov   w3, w0
+        │   0x0017e194      40018052       mov   w0, 0xa
+        │   0x0017e198      e21fa052       mov   w2, 0xff0000
+        │   0x0017e19c      e103142a       mov   w1, w20
+        │   0x0017e1a0      e40315aa       mov   x4, x21
+        │   0x0017e1a4      45fffe97       bl    0x13deb8
+        │   0x0017e1a8      e00315aa       mov   x0, x21
+        │   0x0017e1ac      133aff97       bl    0x14c9f8
+        ┌─< 0x0017cf98      19000014       b     0x17cffc
+        │   0x0017cf9c      e803142a       mov   w8, w20
+        │   0x0017cfa0      16f57ed3       lsl   x22, x8, 2
+        │   0x0017cfa4      a36a76b8       ldr   w3, [x21, x22]
+        │   0x0017cfa8      c0070090       adrp  x0, 0x274000
+        │   0x0017cfac      e10600d0       adrp  x1, 0x25a000
+        │   0x0017cfb0      00e41991       add   x0, x0, 0x679
+        │   0x0017cfb4      21942291       add   x1, x1, 0x8a5
+        │   0x0017cfb8      e203142a       mov   w2, w20
+        │   0x0017cfbc      e403132a       mov   w4, w19
+        │   0x0017cfc0      8e3eff97       bl    0x14c9f8
+        │   0x0017cfc4      e2030091       mov   x2, sp
+        │   0x0017cfc8      a3730091       add   x3, fp, 0x1c
+        │   0x0017cfcc      20008052       mov   w0, 1
+        │   0x0017cfd0      21008052       mov   w1, 1
+        │   0x0017cfd4      b36a36b8       str   w19, [x21, x22]
+        │   0x0017cfd8      cf9bfe97       bl    0x123f14
+       ┌──< 0x0017cfdc      e0010034       cbz   w0, 0x17d018
+       ││   0x0017cfe0      a23b4079       ldrh  w2, [fp, 0x1c]        ; [0x1c:4]=0
+       ││   0x0017cfe4      000800b0       adrp  x0, 0x27d000
+       ││   0x0017cfe8      00a00b91       add   x0, x0, 0x2e8
+       ││   0x0017cfec      e10600d0       adrp  x1, 0x25a000
+       ││   0x0017cff0      21942291       add   x1, x1, 0x8a5
+       ││   0x0017cff4      813eff97       bl    0x14c9f8
+       ││   0x0017cff8      00008012       mov   w0, -1
+       │└─> 0x0017cffc      f44f53a9       ldp   x20, x19, [sp, 0x130]
+       │    0x0017d000      f65752a9       ldp   x22, x21, [sp, 0x120]
+       │    0x0017d004      fc8b40f9       ldr   x28, [sp, 0x110]      ; [0x110:4]=0xb4000020
+       │    0x0017d008      fd7b50a9       ldp   fp, lr, [sp, 0x100]
+       │    0x0017d00c      ff030591       add   sp, sp, 0x140
+       │    0x0017d010      ff2303d5       autibsp
+       │    0x0017d014      c0035fd6       ret
 
-========== COMPLETED ==========
-Rizin exit: 0
-Report size: 111210 bytes
-Report: /home/oleg/sboot_callgraph_20261110_235023.txt
+RIZIN_STATUS=0
 
-========== FIRST 100 LINES ==========
+========== OTHER BACKEND CALL SITES ==========
+        ┌─< 0x00123d90      a00800b4       cbz   x0, 0x123ea4
+        │   0x00123d94      8806140b       add   w8, w20, w20, lsl 1
+        │   0x00123d98      02208052       mov   w2, 0x100
+        │   0x00123d9c      e1031f2a       mov   w1, wzr
+        │   0x00123da0      f30300aa       mov   x19, x0
+        │   0x00123da4      14290011       add   w20, w8, 0xa
+        │   0x00123da8      d5a60094       bl    0x14d8fc
+        │   0x00123dac      a1630091       add   x1, fp, 0x18
+        │   0x00123db0      02018052       mov   w2, 8
+        │   0x00123db4      e00313aa       mov   x0, x19
+        │   0x00123db8      15a60094       bl    0x14d60c
+        │   0x00123dbc      a31300d1       sub   x3, fp, 4
+        │   0x00123dc0      21008052       mov   w1, 1
+        │   0x00123dc4      e003142a       mov   w0, w20
+        │   0x00123dc8      e20313aa       mov   x2, x19
+        │   0x00123dcc      bfc31f78       sturh wzr, [fp, -4]
+        │   0x00123dd0      51000094       bl    0x123f14
+       ┌──< 0x00123dd4      e0020034       cbz   w0, 0x123e30
+       ││   0x00123dd8      e203002a       mov   w2, w0
+       ││   0x00123ddc      a00800f0       adrp  x0, 0x23a000
+       ││   0x00123de0      00b01491       add   x0, x0, 0x52c
+       ││   0x00123de4      e1031f2a       mov   w1, wzr
+       ││   0x00123de8      04a30094       bl    0x14c9f8
+       ││   0x00123dec      a31300d1       sub   x3, fp, 4
+       ││   0x00123df0      21008052       mov   w1, 1
+       ││   0x00123df4      e003142a       mov   w0, w20
+       ││   0x00123df8      e20313aa       mov   x2, x19
+       ││   0x00123dfc      bfc31f78       sturh wzr, [fp, -4]
+       ││   0x00123e00      45000094       bl    0x123f14
+      ┌───< 0x00123e04      60010034       cbz   w0, 0x123e30
+      │││   0x00123e08      e203002a       mov   w2, w0
+      │││   0x00123e0c      a00800f0       adrp  x0, 0x23a000
+            0x00125110      e1031f2a       mov   w1, wzr
+            0x00125114      f50300aa       mov   x21, x0
+            0x00125118      f9a10094       bl    0x14d8fc
+            0x0012511c      f6da44b9       ldr   w22, [x23, 0x4d8]     ; [0x4d8:4]=0xb900411f
+            0x00125120      49008052       mov   w9, 2
+            0x00125124      28008052       mov   w8, 1
+            0x00125128      a90a00b9       str   w9, [x21, 8]
+            0x0012512c      492200d0       adrp  x9, 0x56f000
+            0x00125130      a31300d1       sub   x3, fp, 4
+            0x00125134      21008052       mov   w1, 1
+            0x00125138      e003162a       mov   w0, w22
+            0x0012513c      e20315aa       mov   x2, x21
+            0x00125140      b4220029       stp   w20, w8, [x21]
+            0x00125144      a8fe00b9       str   w8, [x21, 0xfc]
+            0x00125148      28f108b9       str   w8, [x9, 0x8f0]
+            0x0012514c      bfc31f78       sturh wzr, [fp, -4]
+            0x00125150      71fbff97       bl    0x123f14
+        ┌─< 0x00125154      20080034       cbz   w0, 0x125258
+        │   0x00125158      f403002a       mov   w20, w0
+        │   0x0012515c      a00800b0       adrp  x0, 0x23a000
+        │   0x00125160      00881691       add   x0, x0, 0x5a2
+       ┌──< 0x00125164      72000014       b     0x12532c
+       ││   0x00125168      400900f0       adrp  x0, 0x250000
+       ││   0x0012516c      210a00f0       adrp  x1, 0x26c000
+       ││   0x00125170      94608152       mov   w20, 0xb04
+       ││   0x00125174      00683e91       add   x0, x0, 0xf9a
+       ││   0x00125178      21383291       add   x1, x1, 0xc8e
+       ││   0x0012517c      b400a072       movk  w20, 5, lsl 16
+       ││   0x00125180      1e9e0094       bl    0x14c9f8
+       ││   0x00125184      800a00b0       adrp  x0, 0x276000
+       ││   0x00125188      00680291       add   x0, x0, 0x9a
+       ││   0x0012518c      1b9e0094       bl    0x14c9f8
+        ╎   0x00125250      ea9d0094       bl    0x14c9f8
+       ┌──< 0x00125254      3a000014       b     0x12533c
+       │╎   0x00125258      402200d0       adrp  x0, 0x56f000
+       │╎   0x0012525c      00d02391       add   x0, x0, 0x8f4
+       │╎   0x00125260      82018052       mov   w2, 0xc
+       │╎   0x00125264      e10315aa       mov   x1, x21
+       │╎   0x00125268      e9a00094       bl    0x14d60c
+       │╎   0x0012526c      02408052       mov   w2, 0x200
+       │╎   0x00125270      e00315aa       mov   x0, x21
+       │╎   0x00125274      e1031f2a       mov   w1, wzr
+       │╎   0x00125278      a1a10094       bl    0x14d8fc
+       │╎   0x0012527c      c0060011       add   w0, w22, 1
+       │╎   0x00125280      a31300d1       sub   x3, fp, 4
+       │╎   0x00125284      41008052       mov   w1, 2
+       │╎   0x00125288      e20315aa       mov   x2, x21
+       │╎   0x0012528c      bfc31f78       sturh wzr, [fp, -4]
+       │╎   0x00125290      21fbff97       bl    0x123f14
+      ┌───< 0x00125294      80030034       cbz   w0, 0x125304
+      ││╎   0x00125298      f403002a       mov   w20, w0
+      ││╎   0x0012529c      200900f0       adrp  x0, 0x24c000
+      ││╎   0x001252a0      006c0991       add   x0, x0, 0x25b
+     ┌────< 0x001252a4      22000014       b     0x12532c
+     │││╎   0x001252a8      400900f0       adrp  x0, 0x250000
+     │││╎   0x001252ac      210a00b0       adrp  x1, 0x26a000
+     │││╎   0x001252b0      94608152       mov   w20, 0xb04
+     │││╎   0x001252b4      00683e91       add   x0, x0, 0xf9a
+     │││╎   0x001252b8      21e43091       add   x1, x1, 0xc39
+     │││╎   0x001252bc      b400a072       movk  w20, 5, lsl 16
+     │││╎   0x001252c0      ce9d0094       bl    0x14c9f8
+     │││╎   0x001252c4      000900d0       adrp  x0, 0x247000
+     │││╎   0x001252c8      00a82b91       add   x0, x0, 0xaea
+     │││└─< 0x001252cc      b0ffff17       b     0x12518c
+      ╎╎╎   0x001252d8      02408052       mov   w2, 0x200
+      ╎╎╎   0x001252dc      e10313aa       mov   x1, x19
+      ╎╎╎   0x001252e0      cba00094       bl    0x14d60c
+      ╎╎╎   0x001252e4      e00313aa       mov   x0, x19
+      ╎╎╎   0x001252e8      6f740094       bl    0x1424a4
+      ╎╎╎   0x001252ec      200a00b0       adrp  x0, 0x26a000
+      ╎╎╎   0x001252f0      010900d0       adrp  x1, 0x247000
+      ╎╎╎   0x001252f4      00383091       add   x0, x0, 0xc0e
+      ╎╎╎   0x001252f8      211c2c91       add   x1, x1, 0xb07
+      ╎╎╎   0x001252fc      bf9d0094       bl    0x14c9f8
+      └───< 0x00125300      a5ffff17       b     0x125194
+       ╎╎   0x00125304      c0160011       add   w0, w22, 5
+       ╎╎   0x00125308      a31300d1       sub   x3, fp, 4
+       ╎╎   0x0012530c      41008052       mov   w1, 2
+       ╎╎   0x00125310      e20315aa       mov   x2, x21
+       ╎╎   0x00125314      bfc31f78       sturh wzr, [fp, -4]
+       ╎╎   0x00125318      fffaff97       bl    0x123f14
+       ╎╎   0x0012531c      f403002a       mov   w20, w0
+      ┌───< 0x00125320      80000034       cbz   w0, 0x125330
+      │╎╎   0x00125324      00090090       adrp  x0, 0x245000
+      │╎╎   0x00125328      00f41d91       add   x0, x0, 0x77d
+      │╎╎   0x0012532c      b39d0094       bl    0x14c9f8
+      └───> 0x00125330      e00315aa       mov   x0, x21
+       ╎╎   0x00125334      5c740094       bl    0x1424a4
+       └──< 0x00125338      94e9ff34       cbz   w20, 0x125068
+        ╎   0x0012533c      c00800f0       adrp  x0, 0x240000
+        ╎   0x00125340      00d02991       add   x0, x0, 0xa74
+        └─< 0x00125344      32ffff17       b     0x12500c
+            0x00125348      7f2303d5       pacibsp
+            0x0012534c      fd7bbea9       stp   fp, lr, [sp, -0x20]!
+            0x00125350      f30b00f9       str   x19, [sp, 0x10]
+            0x00125354      fd030091       mov   fp, sp
+            0x001253f8      4b2200d0       adrp  x11, 0x56f000
+            0x001253fc      6bd944b9       ldr   w11, [x11, 0x4d8]     ; [0x4d8:4]=0xb900411f
+            0x00125400      492200d0       adrp  x9, 0x56f000
+            0x00125404      08f07dd3       lsl   x8, x0, 3
+            0x00125408      29c11391       add   x9, x9, 0x4f0
+            0x0012540c      0afc45d3       lsr   x10, x0, 5
+            0x00125410      216928f8       str   x1, [x9, x8]
+            0x00125414      085d7892       and   x8, x8, 0xffffff00
+            0x00125418      2201088b       add   x2, x9, x8
+            0x0012541c      48010b0b       add   w8, w10, w11
+            0x00125420      15050011       add   w21, w8, 1
+            0x00125424      f30300aa       mov   x19, x0
+            0x00125428      a3730091       add   x3, fp, 0x1c
+            0x0012542c      21008052       mov   w1, 1
+            0x00125430      e003152a       mov   w0, w21
+            0x00125434      bf3b0079       strh  wzr, [fp, 0x1c]
+            0x00125438      b7faff97       bl    0x123f14
+            0x0012543c      f403002a       mov   w20, w0
+        ┌─< 0x00125440      60010034       cbz   w0, 0x12546c
+        │   0x00125444      a0090090       adrp  x0, 0x259000
+        │   0x00125448      c10800b0       adrp  x1, 0x23e000
+        │   0x0012544c      003c3d91       add   x0, x0, 0xf4f
+        │   0x00125450      21041c91       add   x1, x1, 0x701
+        │   0x00125454      e203152a       mov   w2, w21
+        │   0x00125458      689d0094       bl    0x14c9f8
+        │   0x0012545c      e00800d0       adrp  x0, 0x243000
+        │   0x00125460      00080391       add   x0, x0, 0xc2
+        │   0x00125464      e10313aa       mov   x1, x19
+        │   0x00125468      649d0094       bl    0x14c9f8
+        └─> 0x0012546c      e003142a       mov   w0, w20
+            0x00125470      f44f42a9       ldp   x20, x19, [sp, 0x20]
+            0x00125474      f50b40f9       ldr   x21, [sp, 0x10]       ; [0x10:4]=0x14000004
+       ╎╎   0x00125704      143b00b9       str   w20, [x24, 0x38]
+       ╎╎   0x00125708      c19f0094       bl    0x14d60c
+       ╎╎   0x0012570c      28a35339       ldrb  w8, [x25, 0x4e8]      ; [0x4e8:4]=0xb900511f
+       ╎╎   0x00125710      1f050071       cmp   w8, 1
+      ┌───< 0x00125714      a1020054       b.ne  0x125768
+      │╎╎   0x00125718      482200d0       adrp  x8, 0x56f000
+      │╎╎   0x0012571c      08d944b9       ldr   w8, [x8, 0x4d8]       ; [0x4d8:4]=0xb900411f
+      │╎╎   0x00125720      497f0153       lsr   w9, w26, 1
+      │╎╎   0x00125724      2a5d1853       lsl   w10, w9, 8
+      │╎╎   0x00125728      c2020a8b       add   x2, x22, x10
+      │╎╎   0x0012572c      2801080b       add   w8, w9, w8
+      │╎╎   0x00125730      14150011       add   w20, w8, 5
+      │╎╎   0x00125734      a31300d1       sub   x3, fp, 4
+      │╎╎   0x00125738      21008052       mov   w1, 1
+      │╎╎   0x0012573c      e003142a       mov   w0, w20
+      │╎╎   0x00125740      bfc31f78       sturh wzr, [fp, -4]
+      │╎╎   0x00125744      f4f9ff97       bl    0x123f14
+      │└──< 0x00125748      60f9ff34       cbz   w0, 0x125674
+      │ ╎   0x0012574c      f303002a       mov   w19, w0
+      │ ╎   0x00125750      a0090090       adrp  x0, 0x259000
+      │ ╎   0x00125754      c10800b0       adrp  x1, 0x23e000
+      │ ╎   0x00125758      003c3d91       add   x0, x0, 0xf4f
+      │ ╎   0x0012575c      21041c91       add   x1, x1, 0x701
+      │ ╎   0x00125760      e203142a       mov   w2, w20
+      │ ╎   0x00125764      a59c0094       bl    0x14c9f8
+      └───> 0x00125768      e00800d0       adrp  x0, 0x243000
+        ╎   0x0012576c      00680391       add   x0, x0, 0xda
+        ╎   0x00125770      a29c0094       bl    0x14c9f8
+        ╎   0x00125774      e003132a       mov   w0, w19
+        └─< 0x00125778      bfffff17       b     0x125674
+            0x0012577c      7f2303d5       pacibsp
+            0x00125780      482200d0       adrp  x8, 0x56f000
+            0x00125800      e00314aa       mov   x0, x20
+            0x00125804      829f0094       bl    0x14d60c
+            0x00125808      482200d0       adrp  x8, 0x56f000
+            0x0012580c      08a15339       ldrb  w8, [x8, 0x4e8]       ; [0x4e8:4]=0xb900511f
+            0x00125810      492200d0       adrp  x9, 0x56f000
+            0x00125814      33f108b9       str   w19, [x9, 0x8f0]
+            0x00125818      93fe00b9       str   w19, [x20, 0xfc]
+            0x0012581c      1f050071       cmp   w8, 1
+        ┌─< 0x00125820      01020054       b.ne  0x125860
+        │   0x00125824      482200d0       adrp  x8, 0x56f000
+        │   0x00125828      15d944b9       ldr   w21, [x8, 0x4d8]      ; [0x4d8:4]=0xb900411f
+        │   0x0012582c      a3730091       add   x3, fp, 0x1c
+        │   0x00125830      21008052       mov   w1, 1
+        │   0x00125834      e20314aa       mov   x2, x20
+        │   0x00125838      e003152a       mov   w0, w21
+        │   0x0012583c      bf3b0079       strh  wzr, [fp, 0x1c]
+        │   0x00125840      b5f9ff97       bl    0x123f14
+       ┌──< 0x00125844      a0010034       cbz   w0, 0x125878
+       ││   0x00125848      a0090090       adrp  x0, 0x259000
+       ││   0x0012584c      c10800b0       adrp  x1, 0x23e000
+       ││   0x00125850      003c3d91       add   x0, x0, 0xf4f
+       ││   0x00125854      21041c91       add   x1, x1, 0x701
+       ││   0x00125858      e203152a       mov   w2, w21
+       ││   0x0012585c      679c0094       bl    0x14c9f8
+       │└─> 0x00125860      a00800b0       adrp  x0, 0x23a000
+       │    0x00125864      a10900f0       adrp  x1, 0x25c000
+       │    0x00125868      00f41591       add   x0, x0, 0x57d
+       │    0x0012586c      21780291       add   x1, x1, 0x9e
+       │    0x00125870      e203132a       mov   w2, w19
+       │    0x00125874      619c0094       bl    0x14c9f8
+       └──> 0x00125878      e00314aa       mov   x0, x20
+            0x0012587c      0a730094       bl    0x1424a4
 
-========== TARGETED HELPER DISASSEMBLY ==========
-┌ fcn.00123f14(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4);
-│           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg4 @ x3
-│           ; var int64_t var_a0h @ stack - 0xa0
-│           ; var int64_t var_9eh @ stack - 0x9e
-│           ; var int64_t var_9ch @ stack - 0x9c
-│           ; var int64_t var_9ah @ stack - 0x9a
-│           ; var int64_t var_98h @ stack - 0x98
-│           ; var int64_t var_86h @ stack - 0x86
-│           ; var int64_t var_60h @ stack - 0x60
-│           ; var int64_t var_50h @ stack - 0x50
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x00123f14      7f2303d5       pacibsp
-│           0x00123f18      ff8302d1       sub   sp, sp, 0xa0
-│           0x00123f1c      fd7b04a9       stp   fp, lr, [var_60h]
-│           0x00123f20      fc6f05a9       stp   x28, x27, [var_50h]
-│           0x00123f24      fa6706a9       stp   x26, x25, [var_40h]
-│           0x00123f28      f85f07a9       stp   x24, x23, [var_30h]
-│           0x00123f2c      f65708a9       stp   x22, x21, [var_20h]
-│           0x00123f30      f44f09a9       stp   x20, x19, [var_10h]
-│           0x00123f34      fd030191       add   fp, sp, 0x40
-│           0x00123f38      f30303aa       mov   x19, x3               ; arg4
-│           0x00123f3c      f60302aa       mov   x22, x2               ; arg3
-│           0x00123f40      f703012a       mov   w23, w1               ; arg2
-│           0x00123f44      f803002a       mov   w24, w0               ; arg1
-│           0x00123f48      92fdff97       bl    0x123590
-│       ┌─< 0x00123f4c      80030036       tbz   w0, 0, 0x123fbc
-│       │   0x00123f50      0803170b       add   w8, w24, w23
-│       │   0x00123f54      0a050051       sub   w10, w8, 1
-│       │   0x00123f58      08390011       add   w8, w8, 0xe
-│       │   0x00123f5c      5f010071       cmp   w10, 0
-│       │   0x00123f60      093f0011       add   w9, w24, 0xf
-│       │   0x00123f64      08b18a1a       csel  w8, w8, w10, lt
-│       │   0x00123f68      1f030071       cmp   w24, 0
-│       │   0x00123f6c      29b1981a       csel  w9, w9, w24, lt
-│       │   0x00123f70      087d0413       asr   w8, w8, 4
-│       │   0x00123f74      397d0413       asr   w25, w9, 4
-│       │   0x00123f78      0801194b       sub   w8, w8, w25
-│       │   0x00123f7c      1a050011       add   w26, w8, 1
-│       │   0x00123f80      484f1453       lsl   w8, w26, 12
-│       │   0x00123f84      007d4093       sxtw  x0, w8
-│       │   0x00123f88      fd780094       bl    0x14237c
-│      ┌──< 0x00123f8c      e00500b4       cbz   x0, 0x124048
-│      ││   0x00123f90      f40300aa       mov   x20, x0
-│      ││   0x00123f94      e003192a       mov   w0, w25
-│      ││   0x00123f98      e1031a2a       mov   w1, w26
-│      ││   0x00123f9c      e20314aa       mov   x2, x20
-│      ││   0x00123fa0      e30313aa       mov   x3, x19
-│      ││   0x00123fa4      9a030094       bl    0x124e0c
-│     ┌───< 0x00123fa8      a0050034       cbz   w0, 0x12405c
-│     │││   0x00123fac      f503002a       mov   w21, w0
-│     │││   0x00123fb0      a00a00f0       adrp  x0, 0x27a000
-│     │││   0x00123fb4      00801a91       add   x0, x0, 0x6a0
-│    ┌────< 0x00123fb8      94000014       b     0x124208
-│    │││└─> 0x00123fbc      68220090       adrp  x8, 0x56f000
-│    │││    0x00123fc0      08815339       ldrb  w8, [x8, 0x4e0]       ; [0x4e0:4]=0xb900491f
-│    │││┌─< 0x00123fc4      28030036       tbz   w8, 0, 0x124028
-│    ││││   0x00123fc8      e85a1753       lsl   w8, w23, 9
-│    ││││   0x00123fcc      197d4093       sxtw  x25, w8
-│    ││││   0x00123fd0      e00319aa       mov   x0, x25
-│    ││││   0x00123fd4      ea780094       bl    0x14237c
-│   ┌─────< 0x00123fd8      e00700b4       cbz   x0, 0x1240d4
-│   │││││   0x00123fdc      02408052       mov   w2, 0x200
-│   │││││   0x00123fe0      e1031f2a       mov   w1, wzr
-│   │││││   0x00123fe4      f40300aa       mov   x20, x0
-│   │││││   0x00123fe8      45a60094       bl    0x14d8fc
-│   │││││   0x00123fec      75220090       adrp  x21, 0x56f000
-│   │││││   0x00123ff0      b5122491       add   x21, x21, 0x904
-│   │││││   0x00123ff4      02028052       mov   w2, 0x10
-│   │││││   0x00123ff8      e00315aa       mov   x0, x21
-│   │││││   0x00123ffc      e1031f2a       mov   w1, wzr
-│   │││││   0x00124000      3fa60094       bl    0x14d8fc
-│   │││││   0x00124004      01028052       mov   w1, 0x10
-│   │││││   0x00124008      e00315aa       mov   x0, x21
-│   │││││   0x0012400c      d99bff97       bl    0x10af70
-│   │││││   0x00124010      f50300aa       mov   x21, x0
-│  ┌──────< 0x00124014      35070034       cbz   w21, 0x1240f8
-│  ││││││   0x00124018      200a00d0       adrp  x0, 0x26a000
-│  ││││││   0x0012401c      00803091       add   x0, x0, 0xc20
-│  ││││││   0x00124020      76a20094       bl    0x14c9f8
-│ ┌───────< 0x00124024      7c000014       b     0x124214
-│ ││││││└─> 0x00124028      e00900d0       adrp  x0, 0x262000
-│ ││││││    0x0012402c      610a00b0       adrp  x1, 0x271000
-│ ││││││    0x00124030      95608052       mov   w21, 0x304
-│ ││││││    0x00124034      00082691       add   x0, x0, 0x982
-│ ││││││    0x00124038      21bc1a91       add   x1, x1, 0x6af
-│ ││││││    0x0012403c      9500a072       movk  w21, 4, lsl 16
-│ ││││││    0x00124040      6ea20094       bl    0x14c9f8
-│ ││││││┌─< 0x00124044      76000014       b     0x12421c
-│ │││││└──> 0x00124048      60090090       adrp  x0, 0x250000
-│ │││││ │   0x0012404c      210900b0       adrp  x1, 0x249000
-│ │││││ │   0x00124050      00683e91       add   x0, x0, 0xf9a
-│ │││││ │   0x00124054      218c3d91       add   x1, x1, 0xf63
-11:50:25 oleg@parrot ~ →
+RIZIN_STATUS=0
+
+========== STORAGE BACKEND IMPLEMENTATION ==========
+ERROR: Cannot find function at 0x00123f14
+ERROR: Cannot find function at 0x00124e0c
+ERROR: Cannot find function at 0x00123590
+ERROR: Cannot find function at 0x001257bc
+
+RIZIN_STATUS=0
+
+========== GLOBAL STORAGE STATE AND REFERENCES ==========
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x0056f4d0  3bfc 0cc0 5bfc 0cc0 16e2 0cc0 4fe2 0c80  ;...[.......O...
+0x0056f4e0  48e2 0cc0 5cfc 0c80 45e2 0c80 3be2 0c80  H...\...E...;...
+0x0056f4f0  3de2 0c80 3ae2 0cc0 50e2 0cc0 18e2 0cc0  =...:...P.......
+0x0056f500  fa08 0dc0 c5fc 0cc0 dc08 0dc0 46e2 0cc0  ............F...
+- offset -   0 1  2 3  4 5  6 7  8 9  A B  C D  E F  0123456789ABCDEF
+0x0056f8e0  76e4 0cc0 11e2 0c80 86e4 0cc0 12e2 0cc0  v...............
+0x0056f8f0  11e5 0c80 87e4 0c80 bae2 0cc0 4be5 0c80  ............K...
+0x0056f900  28e5 0cc0 12e5 0cc0 79e5 0c80 09e5 0c80  (.......y.......
+0x0056f910  3fe5 0c80 0de4 0c80 25e5 0c80 7ce4 0cc0  ?.......%...|...
+
+RIZIN_STATUS=0
+11:53:02 oleg@parrot ~ →
