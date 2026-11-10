@@ -1,102 +1,598 @@
-11:12:35 oleg@parrot ~ → BASE="$HOME/a26-analysis/engmode/current"
-HAL="$BASE/system-lib64/lib.engmode.samsung.so"
-
-echo "========== FULL CLIENT REGISTRY (PSEUDOCODE) =========="
-rizin -q -A -c 'pdc @ 0xe230; q' "$HAL" |
-grep -i -C 3 -E 'system_server|com\.|kgclient|setClient|signature|permission|uid|path'
+11:13:42 oleg@parrot ~ → (line 18) ...
+axt @ 0x2b1c
+axt @ 0x2b31
+axt @ 0x2b66
+axt @ 0x2d40
+axt @ 0x2d56
+axt @ 0x2d6e
+axt @ 0x2e7e
+axt @ 0x2ea1
+axt @ 0x2eb7
+axt @ 0x2f6b
+axt @ 0x2f86
+axt @ 0x3025
+axt @ 0x3070
+axt @ 0x308e
+axt @ 0x31a1
+axt @ 0x31c2
+axt @ 0x32c5
+axt @ 0x3433
+axt @ 0x3485
+axt @ 0x2da7
+q' "$HAL"
 
 echo
-echo "========== CLIENT FLAG INITIALIZER =========="
-rizin -q -A -c 'pdf @ 0x10590; pdf @ 0x10638; q' "$HAL"
-
-echo
-echo "========== PROCESS EXECUTABLE PATH =========="
-rizin -q -A -c 'pdf @ 0x11058; q' "$HAL"
-
-echo
-echo "========== ALL CLIENT-RELATED STRING LOCATIONS =========="
-rizin -q -A -c 'izz~com.; izz~system_server; q' "$HAL"
-========== FULL CLIENT REGISTRY (PSEUDOCODE) ==========
+echo "========== MODE REGISTRATION CALLS =========="
+rizin -q -A -c 'axt @ 0x10638; pdf @ 0x10638; q' "$HAL"
+========== REGISTER CLIENTS: ACTUAL CODE ==========
 WARNING: There is no program header.
 WARNING: There is no program header.
 ERROR: Cannot determine entrypoint, using 0x00008000.
-ERROR: Command 'pdc' does not exist.
-ERROR: Displaying the help of command 'pd'.
+│           0x0000e240      stp   x22, x21, [var_20h]
+│           0x0000e244      stp   x20, x19, [var_10h]
+│           0x0000e248      mov   fp, sp
+│           0x0000e24c      sub   sp, sp, 0x900
+│           0x0000e250      nop
+│           0x0000e254      adr   x8, str.system_server                ; 0x2da7
+│           0x0000e258      str   xzr, [sp]
+│           0x0000e25c      ldr   x22, [x8]                            ; [0x2da7:4]=0x74737973 ; "system_server"
+│           0x0000e260      ldur  x23, [x8, 5]                         ; [0x5:4]=257
+│           0x0000e264      mov   w21, 0x1a
+│           0x0000e268      sub   x20, fp, 0xa0
+│           0x0000e26c      ldr   w24, [x0, 0x7c]                      ; [0x7c:4]=4 ; arg1
+│           0x0000e270      sub   x25, fp, 0x20
+│           0x0000e274      sub   x1, fp, 0x20                         ; int64_t arg3
+│           0x0000e278      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000e27c      mov   x19, x0                              ; arg1
+│           0x0000e280      sturb w21, [fp, -0x20]
+--
+│       │   0x0000e330      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000e334      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000e338      mov   w0, 0x20
+│           0x0000e33c      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000e340      adrp  x8, data.00003000                    ; 0x3000
+│           0x0000e344      add   x8, x8, 0x70                         ; 0x3070 ; "com.sec.android.app.emservice"
+│           0x0000e348      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000e34c      ldr   q1, [x8]                             ; [0x3070:4]=0x2e6d6f63 ; "com.sec.android.app.emservice"
+│           0x0000e350      ldur  q2, [x8, 0xd]                        ; [0xd:4]=0x3000000
+│           0x0000e354      ldr   q0, [x9, method.client.checkPath]    ; [data.00000730:4]=0x10d8c method.client.checkPath
+│           0x0000e358      stur  x0, [fp, -0x40]
+│           0x0000e35c      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000e360      sub   x22, fp, 0x50
+│           0x0000e364      str   q1, [x0]
+│           0x0000e368      sub   x1, fp, 0x50                         ; int64_t arg3
+│           0x0000e36c      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000e370      stur  q2, [x0, 0xd]
+--
+│       │   0x0000e434      ldur  x8, [fp, -0x70]
+│       │   0x0000e438      ldur  x0, [fp, -0x60]
+│       │   0x0000e43c      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000e440      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000e444      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000e448      add   x8, x8, 0xa03                        ; 0x2a03 ; "com.sec.bcservice"
+│           0x0000e44c      mov   w21, 0x22                            ; '"'
+│           0x0000e450      ldr   q0, [x8]                             ; [0x2a03:4]=0x2e6d6f63 ; "com.sec.bcservice"
+│           0x0000e454      mov   w22, 0x65                            ; 'e'
+│           0x0000e458      ldr   w23, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000e45c      sub   x24, fp, 0x88
+│           0x0000e460      sub   x1, fp, 0x88                         ; int64_t arg3
+│           0x0000e464      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000e468      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000e46c      sturb w21, [fp, -0x88]
+│           0x0000e470      sturh w22, [x20, 0x29]
+│           0x0000e474      str   q0, [var_900h]
+--
+│       │   0x0000e51c      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000e520      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000e524      mov   w0, 0x30                             ; '0'
+│           0x0000e528      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000e52c      adrp  x8, data.00003000                    ; 0x3000
+│           0x0000e530      add   x8, x8, 0x8e                         ; 0x308e ; "com.samsung.toolkit.ga_settingapplication"
+│           0x0000e534      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000e538      ldp   q0, q1, [x8]                         ; [0x308e:4]=0x2e6d6f63 ; "com.samsung.toolkit.ga_settingapplication"
+│           0x0000e53c      ldr   q2, [x9, data.00000630]              ; [0x630:4]=0
+│           0x0000e540      stur  x0, [fp, -0xb0]
+│           0x0000e544      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000e548      sub   x21, fp, 0xc0
+│           0x0000e54c      strb  wzr, [x0, 0x29]
+│           0x0000e550      sub   x1, fp, 0xc0                         ; int64_t arg3
+│           0x0000e554      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000e558      stp   q1, q0, [var_910h]
+│           0x0000e55c      stp   q0, q1, [x0]
+--
+│           0x0000e694      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000e698      mov   w20, 0x7070                          ; 'pp'
+│           0x0000e69c      str   x0, [var_160h]
+│           0x0000e6a0      ldr   q0, [x8, data.00000800]              ; [0x800:4]=0x6b9
+│           0x0000e6a4      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000e6a8      add   x8, x8, 0xe7e                        ; 0x2e7e ; "com.sec.android.app.servicemodeapp"
+│           0x0000e6ac      ldp   q1, q2, [x8]                         ; [0x2e7e:4]=0x2e6d6f63 ; "com.sec.android.app.servicemodeapp"
+│           0x0000e6b0      strh  w20, [x0, 0x20]
+│           0x0000e6b4      strb  wzr, [x0, 0x22]
+│           0x0000e6b8      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000e6bc      add   x22, arg3                            ; 0x7e0
+│                                                                      ; data.000007e0
+│           0x0000e6c0      add   x1, arg3                             ; 0x7e0
+│                                                                      ; data.000007e0 ; int64_t arg3
+│           0x0000e6c4      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000e6c8      str   q0, [arg3]
+--
+│       │   0x0000e790      ldr   x0, [var_180h]                       ; data.000007d0
+│       │                                                              ; [0x7d0:4]=254
+│       │   0x0000e794      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000e798      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000e79c      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000e7a0      add   x9, x9, 0x986                        ; 0x2986 ; "com.fdm.soomagent"
+│           0x0000e7a4      mov   w8, 0x22                             ; '"'
+│           0x0000e7a8      ldr   q0, [x9]                             ; [0x2986:4]=0x2e6d6f63 ; "com.fdm.soomagent"
+│           0x0000e7ac      mov   w10, 0x74                            ; 't'
+│           0x0000e7b0      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000e7b4      add   x22, var_1a8h                        ; 0x7a8 ; "x\xd5"
+│           0x0000e7b8      add   x1, var_1a8h                         ; 0x7a8 ; "x\xd5" ; int64_t arg3
+│           0x0000e7bc      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000e7c0      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000e7c4      strb  w8, [var_1a8h]
+│           0x0000e7c8      sturh w10, [x21, 0x89]
+│           0x0000e7cc      str   q0, [var_900h]
+--
+│     │ │   0x0000e8c4      ldr   x0, [x20, 0x10]                      ; [0x10:4]=0xb70003
+│     │ │   0x0000e8c8      and   x1, x8, 0xfffffffffffffffe
+│     │ │   0x0000e8cc      bl    fcn.00011a88                         ; fcn.00011a88
+│     │ │   ; CODE XREF from method.client.registerClients @ 0xe888
+│     └─└─> 0x0000e8d0      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000e8d4      add   x9, x9, 0xb1c                        ; 0x2b1c ; "com.samsung.knox.kss"
+│           0x0000e8d8      mov   w10, 0x6b2e                          ; '.k'
+│           0x0000e8dc      ldr   q0, [x9]                             ; [0x2b1c:4]=0x2e6d6f63 ; "com.samsung.knox.kss"
+│           0x0000e8e0      mov   w8, 0x28                             ; '('
+│           0x0000e8e4      movk  w10, 0x7373, lsl 16
+│           0x0000e8e8      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000e8ec      add   x22, var_1f0h                        ; 0x760 ; "L\xbe"
+│           0x0000e8f0      add   x1, var_1f0h                         ; 0x760 ; "L\xbe" ; int64_t arg3
+│           0x0000e8f4      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000e8f8      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000e8fc      strb  w8, [var_1f0h]
+│           0x0000e900      stur  w10, [x21, 0x41]
+--
+│     │ │   0x0000ea08      ldr   x0, [x21, 0x10]                      ; [0x10:4]=0xb70003
+│     │ │   0x0000ea0c      and   x1, x8, 0xfffffffffffffffe
+│     │ │   0x0000ea10      bl    fcn.00011a88                         ; fcn.00011a88
+│     │ │   ; CODE XREF from method.client.registerClients @ 0xe9d0
+│     └─└─> 0x0000ea14      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000ea18      add   x8, x8, 0xea1                        ; 0x2ea1 ; "com.sec.facatfunction"
+│           0x0000ea1c      mov   w22, 0x2a                            ; '*'
+│           0x0000ea20      ldr   q0, [x8]                             ; [0x2ea1:4]=0x2e6d6f63 ; "com.sec.facatfunction"
+│           0x0000ea24      ldur  x21, [x8, 0xd]                       ; [0xd:4]=0x3000000
+│           0x0000ea28      ldr   w23, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000ea2c      add   x24, var_238h                        ; 0x718 ; "`\x99"
+│           0x0000ea30      add   x1, var_238h                         ; 0x718 ; "`\x99" ; int64_t arg3
+│           0x0000ea34      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000ea38      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000ea3c      strb  w22, [var_238h]
+│           0x0000ea40      str   q0, [var_900h]
+│           0x0000ea44      stur  q0, [x20, 0xf1]
+--
+│     │ │   0x0000eb84      bl    fcn.00011a88                         ; fcn.00011a88
+│     │ │   ; CODE XREF from method.client.registerClients @ 0xeb40
+│     └─└─> 0x0000eb88      mov   w0, 0x20
+│           0x0000eb8c      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000eb90      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000eb94      add   x8, x8, 0x8f0                        ; 0x28f0 ; "com.sec.android.sherlocksetting"
+│           0x0000eb98      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000eb9c      ldr   q1, [x8]                             ; [0x28f0:4]=0x2e6d6f63 ; "com.sec.android.sherlocksetting"
+│           0x0000eba0      ldur  q2, [x8, 0xf]                        ; [0xf:4]=0xb7000300
+│           0x0000eba4      ldr   q0, [x9, data.000006e0]              ; [0x6e0:4]=333 ; "M\U00000001"
+│           0x0000eba8      str   x0, [var_290h]
+│           0x0000ebac      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000ebb0      add   x22, var_2a0h                        ; 0x6b0
+│                                                                      ; data.000006b0
+│           0x0000ebb4      str   q1, [x0]
+│           0x0000ebb8      add   x1, var_2a0h                         ; 0x6b0
+│                                                                      ; data.000006b0 ; int64_t arg3
+--
+│     │││   ; CODE XREF from method.client.registerClients @ 0xec9c
+│     └───> 0x0000ecdc      ldr   x8, [x8]
+│      ││   0x0000ece0      and   x1, x8, 0xfffffffffffffffe
+│      ││   0x0000ece4      bl    fcn.00011a88                         ; fcn.00011a88
+│      └└─> 0x0000ece8      adrp  x9, data.00003000                    ; 0x3000
+│           0x0000ecec      add   x9, x9, 0x2c5                        ; 0x32c5 ; "com.sec.imsservice"
+│           0x0000ecf0      mov   w8, 0x24                             ; '$'
+│           0x0000ecf4      ldr   q0, [x9]                             ; [0x32c5:4]=0x2e6d6f63 ; "com.sec.imsservice"
+│           0x0000ecf8      mov   w10, 0x6563                          ; 'ce'
+│           0x0000ecfc      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000ed00      add   x22, var_section..note.android.pad_segment ; 0x658
+│                                                                      ; data.00000658
+│           0x0000ed04      add   x1, var_section..note.android.pad_segment ; 0x658
+│                                                                      ; data.00000658 ; int64_t arg3
+│           0x0000ed08      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000ed0c      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000ed10      strb  w8, [var_2f8h]
+--
+│     │ │   0x0000ee24      bl    fcn.00011a88                         ; fcn.00011a88
+│     │ │   ; CODE XREF from method.client.registerClients @ 0xeddc
+│     └─└─> 0x0000ee28      mov   w0, 0x20
+│           0x0000ee2c      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000ee30      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000ee34      add   x8, x8, 0x85d                        ; 0x285d ; "com.samsung.oobsimulator"
+│           0x0000ee38      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000ee3c      ldr   q0, [x8]                             ; [0x285d:4]=0x2e6d6f63 ; "com.samsung.oobsimulator"
+│           0x0000ee40      ldr   x20, [x8, 0x10]                      ; [0x10:4]=0xb70003
+│           0x0000ee44      ldr   q1, [x9, data.000005e0]              ; [0x5e0:4]=0
+│           0x0000ee48      str   x0, [var_330h]
+│           0x0000ee4c      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000ee50      add   x22, var_data.00000340               ; 0x610
+│                                                                      ; data.00000610
+│           0x0000ee54      str   q0, [x0]
+│           0x0000ee58      add   x1, var_data.00000340                ; 0x610
+│                                                                      ; data.00000610 ; int64_t arg3
+--
+│       │   0x0000ef2c      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000ef30      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000ef34      mov   w0, 0x1a
+│           0x0000ef38      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000ef3c      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000ef40      add   x8, x8, 0x998                        ; 0x2998 ; "com.samsung.android.rlc"
+│           0x0000ef44      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000ef48      ldr   q1, [x8]                             ; [0x2998:4]=0x2e6d6f63 ; "com.samsung.android.rlc"
+│           0x0000ef4c      ldur  x20, [x8, 0xf]                       ; [0xf:4]=0xb7000300
+│           0x0000ef50      ldr   q0, [x9, data.000005f0]              ; [0x5f0:4]=0xd60 "." ; "`\r"
+│           0x0000ef54      str   x0, [var_370h]
+│           0x0000ef58      ldr   w21, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000ef5c      add   x22, var_data.00000380               ; 0x5d0
+│                                                                      ; data.000005d0
+│           0x0000ef60      str   q1, [x0]
+│           0x0000ef64      add   x1, var_data.00000380                ; 0x5d0
+│                                                                      ; data.000005d0 ; int64_t arg3
+--
+│       │   0x0000f038      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000f03c      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000f040      mov   w0, 0x28                             ; '('
+│           0x0000f044      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000f048      adrp  x8, data.00003000                    ; 0x3000
+│           0x0000f04c      add   x8, x8, 0x1a1                        ; 0x31a1 ; "com.sec.android.app.hwmoduletest"
+│           0x0000f050      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000f054      ldp   q0, q1, [x8]                         ; [0x31a1:4]=0x2e6d6f63 ; "com.sec.android.app.hwmoduletest"
+│           0x0000f058      ldr   q2, [x9, data.00000680]              ; [0x680:4]=0xd98 "."
+│           0x0000f05c      str   x0, [var_3b0h]
+│           0x0000f060      ldr   w20, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000f064      add   x21, var_data.000003c0               ; 0x590 ; "/\r"
+│           0x0000f068      strb  wzr, [x0, 0x20]
+│           0x0000f06c      add   x1, var_data.000003c0                ; 0x590 ; "/\r" ; int64_t arg3
+│           0x0000f070      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000f074      stp   q0, q1, [x0]
+│           0x0000f078      mov   x0, x19                              ; unsigned long long arg1
+--
+│       │   0x0000f138      ldr   x0, [var_data.000003d0]              ; data.00000580
+│       │                                                              ; [0x580:4]=0
+│       │   0x0000f13c      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000f140      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000f144      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000f148      add   x9, x9, 0xd40                        ; 0x2d40 ; "com.sec.keystringmain"
+│           0x0000f14c      mov   w8, 0x2a                             ; '*'
+│           0x0000f150      ldr   q0, [x9]                             ; [0x2d40:4]=0x2e6d6f63 ; "com.sec.keystringmain"
+│           0x0000f154      ldur  x21, [x9, 0xd]                       ; [0xd:4]=0x3000000
+│           0x0000f158      add   x22, var_data.000003f8               ; 0x558
+│                                                                      ; data.00000558
+│           0x0000f15c      add   x1, var_data.000003f8                ; 0x558
+│                                                                      ; data.00000558 ; int64_t arg3
+│           0x0000f160      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000f164      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000f168      strb  w8, [var_3f8h]
+│           0x0000f16c      str   q0, [var_920h]
+--
+│     │ │   ; CODE XREF from method.client.registerClients @ 0xf22c
+│     └─└─> 0x0000f274      mov   w0, 0x1a
+│           0x0000f278      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000f27c      ldr   q0, [var_segment.PHDR]               ; [0x50:4]=64
+│           0x0000f280      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000f284      add   x8, x8, 0xd56                        ; 0x2d56 ; "com.sec.keystringscreen"
+│           0x0000f288      ldur  x20, [x8, 0xf]                       ; [0xf:4]=0xb7000300
+│           0x0000f28c      str   x0, [var_430h]
+│           0x0000f290      add   x21, var_data.00000440               ; 0x510
+│                                                                      ; data.00000510
+│           0x0000f294      str   q0, [var_440h]
+│           0x0000f298      ldr   q0, [x8]                             ; [0x2d56:4]=0x2e6d6f63 ; "com.sec.keystringscreen"
+│           0x0000f29c      add   x1, var_data.00000440                ; 0x510
+│                                                                      ; data.00000510 ; int64_t arg3
+│           0x0000f2a0      strb  wzr, [x0, 0x17]
+│           0x0000f2a4      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000f2a8      str   q0, [x0]
+│           0x0000f2ac      stur  x20, [x0, 0xf]
+│           0x0000f2b0      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000f2b4      str   q0, [var_920h]
+│           0x0000f2b8      stur  x21, [fp, -8]
+--
+│      ││   0x0000f3c4      bl    fcn.00011a88                         ; fcn.00011a88
+│      └└─> 0x0000f3c8      mov   w0, 0x20
+│           0x0000f3cc      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000f3d0      ldr   q0, [var_8f0h]                       ; [0x60:4]=0x2a0 "."
+│           0x0000f3d4      adrp  x8, data.00003000                    ; 0x3000
+│           0x0000f3d8      add   x8, x8, 0x1c2                        ; 0x31c2 ; "com.samsung.knox.securefolder"
+│           0x0000f3dc      ldur  q1, [x8, 0xd]                        ; [0xd:4]=0x3000000
+│           0x0000f3e0      str   x0, [var_490h]
+│           0x0000f3e4      add   x20, var_data.000004a0               ; 0x4b0
+│                                                                      ; data.000004b0
+│           0x0000f3e8      str   q0, [var_4a0h]
+│           0x0000f3ec      ldr   q0, [x8]                             ; [0x31c2:4]=0x2e6d6f63 ; "com.samsung.knox.securefolder"
+│           0x0000f3f0      add   x1, var_data.000004a0                ; 0x4b0
+│                                                                      ; data.000004b0 ; int64_t arg3
+│           0x0000f3f4      strb  wzr, [x0, 0x1d]
+│           0x0000f3f8      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000f3fc      str   q0, [x0]
+│           0x0000f400      stur  q1, [x0, 0xd]
+│           0x0000f404      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000f408      stp   q1, q0, [var_930h]
+│           0x0000f40c      stur  x20, [fp, -8]
+--
+│      └└─> 0x0000f51c      mov   w0, 0x20
+│           0x0000f520      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000f524      ldr   q0, [var_910h]                       ; segment.PHDR
+│                                                                      ; [0x40:4]=6
+│           0x0000f528      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000f52c      add   x8, x8, 0xeb7                        ; 0x2eb7 ; "com.samsung.android.bixby.agent"
+│           0x0000f530      ldur  q1, [x8, 0xf]                        ; [0xf:4]=0xb7000300
+│           0x0000f534      str   x0, [var_4f0h]
+│           0x0000f538      add   x20, var_data.00000500               ; 0x450
+│                                                                      ; data.00000450
+│           0x0000f53c      str   q0, [var_500h]
+│           0x0000f540      ldr   q0, [x8]                             ; [0x2eb7:4]=0x2e6d6f63 ; "com.samsung.android.bixby.agent"
+│           0x0000f544      add   x1, var_data.00000500                ; 0x450
+│                                                                      ; data.00000450 ; int64_t arg3
+│           0x0000f548      strb  wzr, [x0, 0x1f]
+│           0x0000f54c      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000f550      str   q0, [x0]
+│           0x0000f554      stur  q1, [x0, 0xf]
+│           0x0000f558      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000f55c      stp   q1, q0, [sp]
+│           0x0000f560      stur  x20, [fp, -8]
+--
+│      ││   0x0000f668      and   x1, x8, 0xfffffffffffffffe
+│      ││   0x0000f66c      bl    fcn.00011a88                         ; fcn.00011a88
+│      └└─> 0x0000f670      mov   w0, 0x20
+│           0x0000f674      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000f678      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000f67c      add   x8, x8, 0xf6b                        ; 0x2f6b ; "com.samsung.rcaframebuffer"
+│           0x0000f680      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000f684      ldr   q0, [x8]                             ; [0x2f6b:4]=0x2e6d6f63 ; "com.samsung.rcaframebuffer"
+│           0x0000f688      ldur  q1, [x8, 0xa]                        ; [0xa:4]=0
+│           0x0000f68c      ldr   q2, [x9, method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int] ; [data.00000700:4]=0x96d4 method.EngmodeManager.getExpiryDate_unsigned_char_const___int__unsigned_char___int
+│           0x0000f690      str   x0, [var_550h]
+│           0x0000f694      add   x20, var_data.00000560               ; 0x3f0
+│                                                                      ; data.000003f0
+│           0x0000f698      add   x1, var_data.00000560                ; 0x3f0
+│                                                                      ; data.000003f0 ; int64_t arg3
+│           0x0000f69c      str   q0, [x0]
+│           0x0000f6a0      sub   x2, fp, 8                            ; const void *arg2
+--
+│       │   0x0000f774      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000f778      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000f77c      mov   w0, 0x20
+│           0x0000f780      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000f784      adrp  x8, data.00003000                    ; 0x3000
+│           0x0000f788      add   x8, x8, 0x433                        ; 0x3433 ; "com.samsung.android.kgclient"
+│           0x0000f78c      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000f790      ldr   q0, [x8]                             ; [0x3433:4]=0x2e6d6f63 ; "com.samsung.android.kgclient"
+│           0x0000f794      ldur  q1, [x8, 0xc]                        ; [0xc:4]=0
+│           0x0000f798      ldr   q2, [x9, data.00000810]              ; [0x810:4]=336 ; "P\U00000001"
+│           0x0000f79c      str   x0, [var_590h]
+│           0x0000f7a0      add   x20, var_data.000005a0               ; 0x3b0 ; "$\t"
+│           0x0000f7a4      add   x1, var_data.000005a0                ; 0x3b0 ; "$\t" ; int64_t arg3
+│           0x0000f7a8      str   q0, [x0]
+│           0x0000f7ac      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000f7b0      stur  q1, [x0, 0xc]
+│           0x0000f7b4      strb  wzr, [x0, 0x1c]
+--
+│       │   0x0000f880      ldr   x0, [var_data.000005b0]              ; data.000003a0
+│       │                                                              ; [0x3a0:4]=0
+│       │   0x0000f884      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000f888      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000f88c      adrp  x8, data.00003000                    ; 0x3000
+│           0x0000f890      add   x8, x8, 0x25                         ; 0x3025 ; "com.sec.veg.wass"
+│           0x0000f894      strb  w21, [var_5d8h]
+│           0x0000f898      ldr   q0, [x8]                             ; [0x3025:4]=0x2e6d6f63 ; "com.sec.veg.wass"
+│           0x0000f89c      add   x21, var_5d8h                        ; 0x378
+│                                                                      ; data.00000378
+│           0x0000f8a0      add   x1, var_5d8h                         ; 0x378
+│                                                                      ; data.00000378 ; int64_t arg3
+│           0x0000f8a4      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000f8a8      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000f8ac      strb  wzr, [var_5c8h + 0x1]
+│           0x0000f8b0      str   q0, [var_910h]
+│           0x0000f8b4      stur  q0, [x20, 0x19]
+--
+│       │   0x0000f95c      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000f960      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000f964      mov   w0, 0x20
+│           0x0000f968      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000f96c      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000f970      add   x8, x8, 0xb31                        ; 0x2b31 ; "com.samsung.android.cidmanager"
+│           0x0000f974      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000f978      ldr   q0, [x8]                             ; [0x2b31:4]=0x2e6d6f63 ; "com.samsung.android.cidmanager"
+│           0x0000f97c      ldur  q1, [x8, 0xe]                        ; [0xe:4]=0x30000
+│           0x0000f980      ldr   q2, [x9, data.00000610]              ; [0x610:4]=0
+│           0x0000f984      str   x0, [var_600h]
+│           0x0000f988      add   x20, var_data.00000610               ; 0x340
+│                                                                      ; data.00000340
+│           0x0000f98c      add   x1, var_data.00000610                ; 0x340
+│                                                                      ; data.00000340 ; int64_t arg3
+│           0x0000f990      str   q0, [x0]
+│           0x0000f994      sub   x2, fp, 8                            ; const void *arg2
+--
+│     │ │   0x0000fc90      bl    fcn.00011a88                         ; fcn.00011a88
+│     │ │   ; CODE XREF from method.client.registerClients @ 0xfc4c
+│     └─└─> 0x0000fc94      mov   w0, 0x28                             ; '('
+│           0x0000fc98      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x0000fc9c      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000fca0      add   x8, x8, 0xd6e                        ; 0x2d6e ; "com.sec.enterprise.knox.cloudmdm.smdms"
+│           0x0000fca4      adrp  x9, data.00002000                    ; 0x2000
+│           0x0000fca8      ldp   q0, q1, [x8]                         ; [0x2d6e:4]=0x2e6d6f63 ; "com.sec.enterprise.knox.cloudmdm.smdms"
+│           0x0000fcac      ldur  x21, [x8, 0x1e]                      ; [0x1e:4]=0x400000
+│           0x0000fcb0      ldr   q2, [x9, data.000006c0]              ; [0x6c0:4]=0
+│           0x0000fcb4      str   x0, [var_6c0h]
+│           0x0000fcb8      add   x22, var_data.000006d0               ; 0x280
+│                                                                      ; data.00000280
+│           0x0000fcbc      strb  wzr, [x0, 0x26]
+│           0x0000fcc0      add   x1, var_data.000006d0                ; 0x280
+│                                                                      ; data.00000280 ; int64_t arg3
+│           0x0000fcc4      sub   x2, fp, 8                            ; const void *arg2
+--
+│       │   0x0000ff44      ldr   x0, [var_data.00000740]              ; data.00000210
+│       │                                                              ; [0x210:4]=0
+│       │   0x0000ff48      and   x1, x8, 0xfffffffffffffffe
+│       │   0x0000ff4c      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x0000ff50      adrp  x8, data.00002000                    ; 0x2000
+│           0x0000ff54      add   x8, x8, 0x8cd                        ; 0x28cd ; "com.android.system"
+│           0x0000ff58      mov   w21, 0x24                            ; '$'
+│           0x0000ff5c      ldr   q0, [x8]                             ; [0x28cd:4]=0x2e6d6f63 ; "com.android.system"
+│           0x0000ff60      mov   w22, 0x6d65                          ; 'em'
+│           0x0000ff64      ldr   w23, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x0000ff68      add   x24, var_768h                        ; 0x1e8
+│                                                                      ; data.000001e8
+│           0x0000ff6c      add   x1, var_768h                         ; 0x1e8
+│                                                                      ; data.000001e8 ; int64_t arg3
+│           0x0000ff70      sub   x2, fp, 8                            ; const void *arg2
+│           0x0000ff74      mov   x0, x19                              ; unsigned long long arg1
+│           0x0000ff78      strb  w21, [var_768h]
+--
+│       │   0x000100b0      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x000100b4      mov   w0, 0x1a
+│           0x000100b8      bl    sym.imp.memcmp                       ; sym.imp.memcmp ; int memcmp(const void *s1, const void *s2, size_t n)
+│           0x000100bc      ldr   q0, [var_segment.PHDR]               ; [0x50:4]=64
+│           0x000100c0      adrp  x8, data.00002000                    ; 0x2000
+│           0x000100c4      add   x8, x8, 0x910                        ; 0x2910 ; "com.samsung.gpuwatchapp"
+│           0x000100c8      ldur  x21, [x8, 0xf]                       ; [0xf:4]=0xb7000300
+│           0x000100cc      str   x0, [var_7c0h]
+│           0x000100d0      ldr   w22, [x19, 0x7c]                     ; [0x7c:4]=4
+│           0x000100d4      str   q0, [var_7d0h]
+│           0x000100d8      ldr   q0, [x8]                             ; [0x2910:4]=0x2e6d6f63 ; "com.samsung.gpuwatchapp"
+│           0x000100dc      add   x23, var_data.000007d0               ; 0x180 ; "P\U00000002"
+│           0x000100e0      strb  wzr, [x0, 0x17]
+│           0x000100e4      add   x1, var_data.000007d0                ; 0x180 ; "P\U00000002" ; int64_t arg3
+│           0x000100e8      sub   x2, fp, 8                            ; const void *arg2
+│           0x000100ec      str   q0, [x0]
+│           0x000100f0      stur  x21, [x0, 0xf]
+│           0x000100f4      mov   x0, x19                              ; unsigned long long arg1
+│           0x000100f8      str   q0, [var_8f0h]
+│           0x000100fc      stur  x23, [fp, -8]
+--
+│       │   0x000101a8      ldr   x0, [var_data.000007e0]              ; data.00000170
+│       │                                                              ; [0x170:4]=0x14030 segment.DYNAMIC ; "0@\U00000001"
+│       │   0x000101ac      and   x1, x8, 0xfffffffffffffffe
+│       │   0x000101b0      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x000101b4      adrp  x8, data.00003000                    ; 0x3000
+│           0x000101b8      add   x8, x8, 0x485                        ; 0x3485 ; "com.val.hardware"
+│           0x000101bc      mov   w21, 0x20
+│           0x000101c0      ldr   q0, [x8]                             ; [0x3485:4]=0x2e6d6f63 ; "com.val.hardware"
+│           0x000101c4      add   x22, var_808h                        ; 0x148 ; "0"
+│           0x000101c8      add   x1, var_808h                         ; 0x148 ; "0" ; int64_t arg3
+│           0x000101cc      sub   x2, fp, 8                            ; const void *arg2
+│           0x000101d0      mov   x0, x19                              ; unsigned long long arg1
+│           0x000101d4      strb  wzr, [var_7f8h + 0x1]
+│           0x000101d8      strb  w21, [var_808h]
+│           0x000101dc      str   q0, [var_8f0h]
+│           0x000101e0      stur  q0, [x20, 0x61]
+│           0x000101e4      stur  x22, [fp, -8]
+--
+│       │   0x000102bc      ldr   x0, [var_828h]                       ; data.00000128
+│       │                                                              ; [0x128:4]=0x18000 segment.LOAD3
+│       │   0x000102c0      and   x1, x8, 0xfffffffffffffffe
+│       │   0x000102c4      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x000102c8      adrp  x8, data.00002000                    ; 0x2000
+│           0x000102cc      add   x8, x8, 0xb66                        ; 0x2b66 ; "com.longcheer.midtest"
+│           0x000102d0      mov   w22, 0x2a                            ; '*'
+│           0x000102d4      ldr   q0, [x8]                             ; [0x2b66:4]=0x2e6d6f63 ; "com.longcheer.midtest"
+│           0x000102d8      ldur  x21, [x8, 0xd]                       ; [0xd:4]=0x3000000
+│           0x000102dc      add   x23, var_850h
+│           0x000102e0      add   x1, var_850h                         ; int64_t arg3
+│           0x000102e4      sub   x2, fp, 8                            ; const void *arg2
+│           0x000102e8      mov   x0, x19                              ; unsigned long long arg1
+│           0x000102ec      strb  w22, [var_850h]
+│           0x000102f0      str   q0, [var_8f0h]
+│           0x000102f4      stur  q0, [x20, 0x19]
+│           0x000102f8      stur  x21, [x20, 0x26]
+--
+│       │   0x000103dc      ldr   x8, [var_880h]                       ; [0xd0:4]=0x9d10
+│       │   0x000103e0      ldr   x0, [var_870h]                       ; [0xe0:4]=0x4000
+│       │   0x000103e4      and   x1, x8, 0xfffffffffffffffe
+│       │   0x000103e8      bl    fcn.00011a88                         ; fcn.00011a88
+│       └─> 0x000103ec      adrp  x9, data.00002000                    ; 0x2000
+│           0x000103f0      add   x9, x9, 0xf86                        ; 0x2f86 ; "com.factory.mmigroup"
+│           0x000103f4      mov   w10, 0x6f72                          ; 'ro'
+│           0x000103f8      ldr   q0, [x9]                             ; [0x2f86:4]=0x2e6d6f63 ; "com.factory.mmigroup"
+│           0x000103fc      mov   w8, 0x28                             ; '('
+│           0x00010400      movk  w10, 0x7075, lsl 16
+│           0x00010404      add   x20, var_898h
+│           0x00010408      add   x1, var_898h                         ; int64_t arg3
+│           0x0001040c      sub   x2, fp, 8                            ; const void *arg2
+│           0x00010410      mov   x0, x19                              ; unsigned long long arg1
+│           0x00010414      strb  w8, [var_898h]
+│           0x00010418      stur  w10, [var_888h + 0x1]
+│           0x0001041c      str   q0, [var_8f0h]
 
-ERROR: Usage: pd[?]   # Print Disassembly
-│pd[jqt] [<n_instrs>]  # Disassemble N instructions (can be negative)
-│pda[jq=]              # Disassemble all possible opcodes (byte per byte)
-│pdb[jJ]               # Disassemble basic block
-│pdC [<n_instrs>]      # Prints the comments found in N instructions
-│pde[jqQ] [<n_instrs>] # Disassemble N instructions following execution flow from current PC
-│pdf[js]               # Disassemble a function
-│pdJ[?] [<n_instrs>]   # Disassemble N instructions as json containing the printed text
-│pdk                   # Disassemble all methods of a class
-│pdl[j] [<n_instrs>]   # Disassemble N instructions and prints its sizes
-│pdp[jq] [<limit>]     # Disassemble instructions and follows pointers to read ropchains
-│pdr[j.]               # Disassemble recursively across the function graph
-│pdR[jq]               # Disassemble recursively the block size bytes without analyzing functions
-│pds[fb]               # Summarize N bytes or current block or a function (strings, calls, jumps, refs)
-
-========== CLIENT FLAG INITIALIZER ==========
+========== XREFS: ALL CLIENT PACKAGE NAMES ==========
 WARNING: There is no program header.
 WARNING: There is no program header.
 ERROR: Cannot determine entrypoint, using 0x00008000.
-            ;-- client::setClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, bool, bool, bool):
-┌ method.client.setClient_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int__bool__bool__bool(int64_t arg1, int64_t arg3, int64_t arg6, int64_t arg5, int64_t arg4, int64_t arg2);
-│           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg4 @ x3
-│           ; arg int64_t arg5 @ x4
-│           ; arg int64_t arg6 @ x5
-│           ; var const void *var_48h @ stack - 0x48
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x00010590      paciasp                                    ; client::setClient(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int, bool, bool, bool)
-│           0x00010594      sub   sp, sp, 0x50
-│           0x00010598      stp   fp, lr, [var_40h]
-│           0x0001059c      stp   x24, x23, [var_30h]
-│           0x000105a0      stp   x22, x21, [var_20h]
-│           0x000105a4      stp   x20, x19, [var_10h]
-│           0x000105a8      add   fp, sp, 0x10
-│           0x000105ac      mov   w23, w2                              ; arg3
-│           0x000105b0      add   x2, var_48h                          ; const void *arg2
-│           0x000105b4      mov   w19, w5                              ; arg6
-│           0x000105b8      mov   w20, w4                              ; arg5
-│           0x000105bc      mov   w21, w3                              ; arg4
-│           0x000105c0      mov   x22, x1                              ; arg2
-│           0x000105c4      mov   x24, x0                              ; arg1
-│           0x000105c8      str   x1, [var_48h]                        ; arg2
-│           0x000105cc      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1bl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x000105d0      str   w23, [x0, 0x38]
-│           0x000105d4      add   x2, var_48h                          ; const void *arg2
-│           0x000105d8      mov   x0, x24                              ; unsigned long long arg1
-│           0x000105dc      mov   x1, x22                              ; int64_t arg3
-│           0x000105e0      str   x22, [var_48h]
-│           0x000105e4      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1bl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x000105e8      strb  w21, [x0, 0x58]
-│           0x000105ec      add   x2, var_48h                          ; const void *arg2
-│           0x000105f0      mov   x0, x24                              ; unsigned long long arg1
-│           0x000105f4      mov   x1, x22                              ; int64_t arg3
-│           0x000105f8      str   x22, [var_48h]
-│           0x000105fc      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1bl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x00010600      strb  w20, [x0, 0x59]
-│           0x00010604      add   x2, var_48h                          ; const void *arg2
-│           0x00010608      mov   x0, x24                              ; unsigned long long arg1
-│           0x0001060c      mov   x1, x22                              ; int64_t arg3
-│           0x00010610      str   x22, [var_48h]
-│           0x00010614      bl    method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1bl    0x11214 ; method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple ;  method.std::__1::pair_std::__1::__tree_iterator_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__tree_node_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___void_____long___bool__std::__1::__tree_std::__1::__value_type_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____Client___std::__1::__map_value_compare_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client___std::__1::less_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_______true___std::__1::allocator_std::__1::pair_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const__Client_____.__emplace_unique_key_args_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const____std::__1::tuple_____std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const___std::__1::piecewise_construct_t_const___std::__1::tuple_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char____const______std::__1::tuple(unsigned long long arg1, int64_t arg3, const void *arg2)
-│           0x00010618      strb  w19, [x0, 0x5a]
-│           0x0001061c      ldp   x20, x19, [var_10h]
-│           0x00010620      ldp   x22, x21, [var_20h]
-│           0x00010624      ldp   x24, x23, [var_30h]
-│           0x00010628      ldp   fp, lr, [var_40h]
-│           0x0001062c      add   sp, sp, 0x50
-│           0x00010630      autiasp
-└           0x00010634      ret
+method.client.registerClients 0xee34 [DATA] add x8, x8, str.com.samsung.oobsimulator
+method.client.registerClients 0xee3c [DATA] ldr q0, [x8]
+method.client.registerClients 0xff54 [DATA] add x8, x8, str.com.android.system
+method.client.registerClients 0xff5c [DATA] ldr q0, [x8]
+method.client.registerClients 0xeb94 [DATA] add x8, x8, str.com.sec.android.sherlocksetting
+method.client.registerClients 0xeb9c [DATA] ldr q1, [x8]
+method.client.registerClients 0x100c4 [DATA] add x8, x8, str.com.samsung.gpuwatchapp
+method.client.registerClients 0x100d8 [DATA] ldr q0, [x8]
+method.client.registerClients 0xe7a0 [DATA] add x9, x9, str.com.fdm.soomagent
+method.client.registerClients 0xe7a8 [DATA] ldr q0, [x9]
+method.client.registerClients 0xef40 [DATA] add x8, x8, str.com.samsung.android.rlc
+method.client.registerClients 0xef48 [DATA] ldr q1, [x8]
+method.client.registerClients 0xe448 [DATA] add x8, x8, str.com.sec.bcservice
+method.client.registerClients 0xe450 [DATA] ldr q0, [x8]
+method.client.registerClients 0xe8d4 [DATA] add x9, x9, str.com.samsung.knox.kss
+method.client.registerClients 0xe8dc [DATA] ldr q0, [x9]
+method.client.registerClients 0xf970 [DATA] add x8, x8, str.com.samsung.android.cidmanager
+method.client.registerClients 0xf978 [DATA] ldr q0, [x8]
+method.client.registerClients 0x102cc [DATA] add x8, x8, str.com.longcheer.midtest
+method.client.registerClients 0x102d4 [DATA] ldr q0, [x8]
+method.client.registerClients 0xf148 [DATA] add x9, x9, str.com.sec.keystringmain
+method.client.registerClients 0xf150 [DATA] ldr q0, [x9]
+method.client.registerClients 0xf284 [DATA] add x8, x8, str.com.sec.keystringscreen
+method.client.registerClients 0xf298 [DATA] ldr q0, [x8]
+method.client.registerClients 0xfca0 [DATA] add x8, x8, str.com.sec.enterprise.knox.cloudmdm.smdms
+method.client.registerClients 0xfca8 [DATA] ldp q0, q1, [x8]
+method.client.registerClients 0xe6a8 [DATA] add x8, x8, str.com.sec.android.app.servicemodeapp
+method.client.registerClients 0xe6ac [DATA] ldp q1, q2, [x8]
+method.client.registerClients 0xea18 [DATA] add x8, x8, str.com.sec.facatfunction
+method.client.registerClients 0xea20 [DATA] ldr q0, [x8]
+method.client.registerClients 0xf52c [DATA] add x8, x8, str.com.samsung.android.bixby.agent
+method.client.registerClients 0xf540 [DATA] ldr q0, [x8]
+method.client.registerClients 0xf67c [DATA] add x8, x8, str.com.samsung.rcaframebuffer
+method.client.registerClients 0xf684 [DATA] ldr q0, [x8]
+method.client.registerClients 0x103f0 [DATA] add x9, x9, str.com.factory.mmigroup
+method.client.registerClients 0x103f8 [DATA] ldr q0, [x9]
+method.client.registerClients 0xf890 [DATA] add x8, x8, 0x25
+method.client.registerClients 0xf898 [DATA] ldr q0, [x8]
+method.client.registerClients 0xe344 [DATA] add x8, x8, 0x70
+method.client.registerClients 0xe34c [DATA] ldr q1, [x8]
+method.client.registerClients 0xe530 [DATA] add x8, x8, 0x8e
+method.client.registerClients 0xe538 [DATA] ldp q0, q1, [x8]
+method.client.registerClients 0xf04c [DATA] add x8, x8, str.com.sec.android.app.hwmoduletest
+method.client.registerClients 0xf054 [DATA] ldp q0, q1, [x8]
+method.client.registerClients 0xf3d8 [DATA] add x8, x8, str.com.samsung.knox.securefolder
+method.client.registerClients 0xf3ec [DATA] ldr q0, [x8]
+method.client.registerClients 0xecec [DATA] add x9, x9, str.com.sec.imsservice
+method.client.registerClients 0xecf4 [DATA] ldr q0, [x9]
+method.client.registerClients 0xf788 [DATA] add x8, x8, str.com.samsung.android.kgclient
+method.client.registerClients 0xf790 [DATA] ldr q0, [x8]
+method.client.registerClients 0x101b8 [DATA] add x8, x8, str.com.val.hardware
+method.client.registerClients 0x101c0 [DATA] ldr q0, [x8]
+method.client.registerClients 0xe254 [STRING] adr x8, str.system_server
+method.client.registerClients 0xe25c [DATA] ldr x22, [x8]
+
+========== MODE REGISTRATION CALLS ==========
+WARNING: There is no program header.
+WARNING: There is no program header.
+ERROR: Cannot determine entrypoint, using 0x00008000.
+fcn.00011b78 0x11b7c [DATA] ldr x17, method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int
+fcn.00011b78 0x11b84 [CODE] br x17
             ; CODE XREFS from fcn.00011b78 @ 0x11b7c, 0x11b84
             ;-- client::setClientMode(std::__1::basic_string<char, std::__1::char_traits<char>, std::__1::allocator<char> >, int):
 ┌ method.client.setClientMode_std::__1::basic_string_char__std::__1::char_traits_char___std::__1::allocator_char_____int(int64_t arg1, int64_t arg3, int64_t arg2);
@@ -162,131 +658,4 @@ ERROR: Cannot determine entrypoint, using 0x00008000.
 │           0x000106fc      add   sp, sp, 0x40
 │           0x00010700      autiasp
 └           0x00010704      ret
-
-========== PROCESS EXECUTABLE PATH ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x00008000.
-            ; CODE XREFS from fcn.00011ba8 @ 0x11bac, 0x11bb4
-            ;-- client::getProcessPath(char*, unsigned long):
-┌ method.client.getProcessPath_char___unsigned_long(int64_t arg3, int64_t arg2);
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x00011058      paciasp                                    ; RELOC TARGET 64 client::getProcessPath(char*, unsigned long) @ 0x00011058 ; client::getProcessPath(char*, unsigned long)
-│           0x0001105c      sub   sp, sp, data.00000130                ; 0x130
-│           0x00011060      stp   fp, lr, [var_30h]
-│           0x00011064      str   x28, [var_20h]
-│           0x00011068      stp   x20, x19, [var_10h]
-│           0x0001106c      add   fp, sp, data.00000100
-│           0x00011070      movi  v0.2d, 0000000000000000
-│           0x00011074      stp   q0, q0, [sp]
-│           0x00011078      stp   q0, q0, [sp, 0x20]
-│           0x0001107c      stp   q0, q0, [sp, 0x40]
-│           0x00011080      stp   q0, q0, [sp, 0x60]
-│           0x00011084      stp   q0, q0, [sp, 0x80]
-│           0x00011088      stp   q0, q0, [sp, 0xa0]
-│           0x0001108c      stp   q0, q0, [sp, 0xc0]
-│           0x00011090      stp   q0, q0, [sp, 0xe0]
-│       ┌─< 0x00011094      cbz   x1, 0x110b8
-│       │   0x00011098      sub   x8, x2, 0x101                        ; arg3
-│       │   0x0001109c      cmn   x8, 0x101
-│      ┌──< 0x000110a0      b.hi  0x110d4
-│      ││   0x000110a4      adrp  x1, data.00003000                    ; 0x3000
-│      ││   0x000110a8      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│      ││   0x000110ac      adrp  x2, data.00003000                    ; 0x3000
-│      ││   0x000110b0      add   x2, x2, 0x3df                        ; 0x33df ; "Buffer size is invalid\n"
-│     ┌───< 0x000110b4      b     0x110c8
-│     ││└─> 0x000110b8      adrp  x1, data.00003000                    ; 0x3000
-│     ││    0x000110bc      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│     ││    0x000110c0      adrp  x2, data.00003000                    ; 0x3000
-│     ││    0x000110c4      add   x2, x2, 0xd5                         ; 0x30d5 ; "Buffer is invalid\n"
-│     ││    ; CODE XREF from method.client.getProcessPath_char___unsigned_long @ 0x110b4
-│     └───> 0x000110c8      mov   w0, 6
-│      │    0x000110cc      bl    fcn.00011968                         ; fcn.00011968
-│      │┌─< 0x000110d0      b     0x11118
-│      └──> 0x000110d4      mov   x20, x2                              ; arg3
-│       │   0x000110d8      mov   x19, x1                              ; arg2
-│       │   0x000110dc      bl    fcn.00011c08                         ; fcn.00011c08
-│       │   0x000110e0      mov   w4, w0
-│       │   0x000110e4      mov   x0, sp                               ; int64_t arg5
-│       │   0x000110e8      bl    sym.snprintf_char___unsigned_long_pass_dynamic_object_size1__char_const___..._sym.snprintf_char___unsigned_long_pass_dynamic_object_size1__char_const___..._0x11190
-│       │   0x000110ec      mov   x0, sp
-│       │   0x000110f0      mov   w1, wzr
-│       │   0x000110f4      bl    fcn.00011bf0                         ; fcn.00011bf0
-│      ┌──< 0x000110f8      cbz   w0, 0x11134
-│      ││   0x000110fc      adrp  x1, data.00003000                    ; 0x3000
-│      ││   0x00011100      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│      ││   0x00011104      adrp  x2, data.00002000                    ; 0x2000
-│      ││   0x00011108      add   x2, x2, 0x938                        ; 0x2938 ; "Can't access process path : %s"
-│      ││   0x0001110c      mov   x3, sp
-│      ││   0x00011110      mov   w0, 6
-│      ││   0x00011114      bl    fcn.00011968                         ; fcn.00011968
-│      ││   ; CODE XREFS from method.client.getProcessPath_char___unsigned_long @ 0x110d0, 0x1118c
-│     ┌─└─> 0x00011118      mov   w0, 1
-│     ╎│    ; CODE XREF from method.client.getProcessPath_char___unsigned_long @ 0x1115c
-│     ╎│┌─> 0x0001111c      ldp   x20, x19, [var_10h]
-│     ╎│╎   0x00011120      ldr   x28, [var_20h]                       ; data.00000110
-│     ╎│╎                                                              ; [0x110:4]=0x1000 "14EngmodeManager15checkClientNameEPcS0_"
-│     ╎│╎   0x00011124      ldp   fp, lr, [var_30h]
-│     ╎│╎   0x00011128      add   sp, sp, data.00000130
-│     ╎│╎   0x0001112c      autiasp
-│     ╎│╎   0x00011130      ret
-│     ╎└──> 0x00011134      sub   x2, x20, 1
-│     ╎ ╎   0x00011138      mov   x0, sp
-│     ╎ ╎   0x0001113c      mov   x1, x19
-│     ╎ ╎   0x00011140      mov   x3, -1
-│     ╎ ╎   0x00011144      bl    fcn.00011c50                         ; fcn.00011c50
-│     ╎ ╎   0x00011148      cmp   x0, 0
-│     ╎┌──< 0x0001114c      b.le  0x11160
-│     ╎│╎   0x00011150      mov   x8, x0
-│     ╎│╎   0x00011154      mov   w0, wzr
-│     ╎│╎   0x00011158      strb  wzr, [x19, x8]
-│     ╎│└─< 0x0001115c      b     0x1111c
-│     ╎└──> 0x00011160      bl    fcn.00011c38                         ; fcn.00011c38
-│     ╎     0x00011164      ldr   w0, [x0]
-│     ╎     0x00011168      bl    fcn.00011c20                         ; fcn.00011c20
-│     ╎     0x0001116c      mov   x4, x0
-│     ╎     0x00011170      adrp  x1, data.00003000                    ; 0x3000
-│     ╎     0x00011174      add   x1, x1, 0x336                        ; 0x3336 ; "engmode_client_list"
-│     ╎     0x00011178      adrp  x2, data.00003000                    ; 0x3000
-│     ╎     0x0001117c      add   x2, x2, 0x3f7                        ; 0x33f7 ; "Failed to get process path : %s, error: %s"
-│     ╎     0x00011180      mov   x3, sp
-│     ╎     0x00011184      mov   w0, 6
-│     ╎     0x00011188      bl    fcn.00011968                         ; fcn.00011968
-└     └───< 0x0001118c      b     0x11118
-
-========== ALL CLIENT-RELATED STRING LOCATIONS ==========
-WARNING: There is no program header.
-WARNING: There is no program header.
-ERROR: Cannot determine entrypoint, using 0x00008000.
-128 0x0000285d 0x0000285d  24   25 .rodata                   ascii   com.samsung.oobsimulator
-133 0x000028cd 0x000028cd  18   19 .rodata                   ascii   com.android.system
-135 0x000028f0 0x000028f0  31   32 .rodata                   ascii   com.sec.android.sherlocksetting
-136 0x00002910 0x00002910  23   24 .rodata                   ascii   com.samsung.gpuwatchapp
-141 0x00002986 0x00002986  17   18 .rodata                   ascii   com.fdm.soomagent
-142 0x00002998 0x00002998  23   24 .rodata                   ascii   com.samsung.android.rlc
-147 0x00002a03 0x00002a03  17   18 .rodata                   ascii   com.sec.bcservice
-160 0x00002b1c 0x00002b1c  20   21 .rodata                   ascii   com.samsung.knox.kss
-161 0x00002b31 0x00002b31  30   31 .rodata                   ascii   com.samsung.android.cidmanager
-163 0x00002b66 0x00002b66  21   22 .rodata                   ascii   com.longcheer.midtest
-182 0x00002d40 0x00002d40  21   22 .rodata                   ascii   com.sec.keystringmain
-183 0x00002d56 0x00002d56  23   24 .rodata                   ascii   com.sec.keystringscreen
-184 0x00002d6e 0x00002d6e  38   39 .rodata                   ascii   com.sec.enterprise.knox.cloudmdm.smdms
-195 0x00002e7e 0x00002e7e  34   35 .rodata                   ascii   com.sec.android.app.servicemodeapp
-196 0x00002ea1 0x00002ea1  21   22 .rodata                   ascii   com.sec.facatfunction
-197 0x00002eb7 0x00002eb7  31   32 .rodata                   ascii   com.samsung.android.bixby.agent
-204 0x00002f6b 0x00002f6b  26   27 .rodata                   ascii   com.samsung.rcaframebuffer
-205 0x00002f86 0x00002f86  20   21 .rodata                   ascii   com.factory.mmigroup
-211 0x00003025 0x00003025  16   17 .rodata                   ascii   com.sec.veg.wass
-215 0x00003070 0x00003070  29   30 .rodata                   ascii   com.sec.android.app.emservice
-216 0x0000308e 0x0000308e  41   42 .rodata                   ascii   com.samsung.toolkit.ga_settingapplication
-226 0x000031a1 0x000031a1  32   33 .rodata                   ascii   com.sec.android.app.hwmoduletest
-227 0x000031c2 0x000031c2  29   30 .rodata                   ascii   com.samsung.knox.securefolder
-237 0x000032c5 0x000032c5  18   19 .rodata                   ascii   com.sec.imsservice
-249 0x00003433 0x00003433  28   29 .rodata                   ascii   com.samsung.android.kgclient
-253 0x00003485 0x00003485  16   17 .rodata                   ascii   com.val.hardware
-186 0x00002da7 0x00002da7  13   14 .rodata                   ascii   system_server
-11:12:40 oleg@parrot ~ →
+11:14:33 oleg@parrot ~ →
