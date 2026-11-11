@@ -1,626 +1,245 @@
-~ ❯ rizin -q -A -c 'aaa; axt @ 0x17dfdc; axt @ 0x5a6a90; axt @ 0x5a6a10; axt @ 0x5a6ad0; axt @ 0x14d60c; pd 120 @ 0x187cf0; pd 160 @ 0x18962c; pd 160 @ 0x189d8c; pd 180 @ 0x17dfdc; q' "$HOME/a26-analysis/current/raw/sboot.bin" > "$HOME/a26-analysis/current/critical-functions-v2.txt" 2>&1
-~ ❯ cat critical-functions-v2.txt                          
-cat: critical-functions-v2.txt: No such file or directory
-~ ❯ cat "$HOME/a26-analysis/current/critical-functions-v2.txt"
-       ┌──< 0x00187cf0      jnle  0x187d15
-       │╎   0x00187cf2      add   edx, ebp
-       │╎   0x00187cf4      std
-       │└─< 0x00187cf5      jnp   0x187cb3
-       │    0x00187cf7      test  eax, 0xf9000bfc
-       │    0x00187cfc      not   byte [rdi+0x02]
-       │    0x00187cff      test  eax, 0xa9034ff4
-       │    0x00187d04      std
-       │    0x00187d05      add   eax, dword [rax]
-       │    0x00187d07      xchg  ecx, eax
-       │    0x00187d08      inc   dword [rbx]
-       │    0x00187d0a      sub   edx, ecx
-       │┌─< 0x00187d0c      loopne 0x187d31
-       ││   0x00187d0e      add   byte [rcx-0x680030bc], dl
-       ││   0x00187d14      adc   eax, 0xa097ff9a
-        │   0x00187d19      add   byte [rax-0x65ecc9], bl
-        │   0x00187d1f      xchg  edi, eax
-        │   0x00187d20      add   byte [rcx], al
-        │   0x00187d22      nop
-        │   0x00187d23      mov   byte [rax], al
-        │   0x00187d26      adc   byte [rdx+0x02], 0x00
-        │   0x00187d2a      add   byte [rax+rcx*2], dl
-        │   0x00187d2d      add   byte [rax+0x83a152], al
-            0x00187d33      shl   eax, 0x01
-            0x00187d35      add   ebx, dword [rdi]
-            0x00187d37      sub   ch, byte [rax+0x75381e03]
-            0x00187d3d      add   dword [rax], eax
-            0x00187d3f      xchg  esp, eax
-            0x00187d40      invalid
-            0x00187d41      invalid
-            0x00187d42      call  qword [rdi-0x6fffe098]
-            0x00187d48      or    cl, bh
-            0x00187d4a      mov   r9d, 0xf00020f3
-        ┌─< 0x00187d50      loopne 0x187d72
-        │   0x00187d52      add   al, dh
-       ┌──< 0x00187d54      jnb   0x187d58
-       ││   0x00187d56      invalid
-       ││   0x00187d57      xchg  ecx, eax
-       └──> 0x00187d58      add   byte [rbx+rax*1+0x11e6891], ah
-        │   0x00187d5f      cmp   dword [rdx-0x0f], esi
-        │   0x00187d62      call  qword [rdi+0x7100001f]
-        │   0x00187d68      or    byte [rax+0x2a685a9f], ah
-        │   0x00187d6e      add   dword [rcx], edi
-        │   0x00187d70      invalid
-        │   0x00187d71      int1
-        └─> 0x00187d72      call  qword [rdi+0x39012e60]
-            0x00187d78      sar   edi, cl
-            0x00187d7b      xchg  edi, eax
-            0x00187d7c      invalid
-            0x00187d7d      or    al, byte [rcx]
-            0x00187d7f      cmp   esp, edx
-            0x00187d81      enter 0x97ff, 0x60
-            0x00187d85      add   al, byte [rax]
-            0x00187d87      mov   ecx, 0x97ffcf57
-            0x00187d8c      add   al, byte [rax]
-            0x00187d8f      mov   ah, 0x08
-            0x00187d91      sbb   byte [rax-0x07], al
-            0x00187d94      sub   dword [rax], eax
-            0x00187d96      adc   byte [rdx], 0x0a
-            0x00187d99      add   byte [rax+0x20eb12], al
-            0x00187d9f      invalid
-            0x00187da0      invalid
-            0x00187da1      stc
-            0x00187da2      add   esi, ecx
-            0x00187da4      or    al, 0x31
-            0x00187da6      mov   dword [rdx], ebx
-            0x00187da8      invalid
-            0x00187da9      add   dword [rdx], ecx
-        ┌─< 0x00187dab      jmp   0x187e18
-        │   0x00187dad      cmc
-        │   0x00187dae      invalid
-        │   0x00187daf      xchg  ecx, eax
-        │   0x00187db0      mov   byte [rcx], dl
-        │   0x00187db2      lahf
-        │   0x00187db3      pop   rdx
-        │   0x00187db4      push  0x8390001
-        │   0x00187db9      and   al, 0x40
-        │   0x00187dbb      stc
-        │   0x00187dbc      invalid
-        │   0x00187dbd      stc
-        │   0x00187dbe      add   esi, ecx
-        │   0x00187dc0      or    dword [rcx], esi
-        │   0x00187dc2      mov   dword [rdx], ebx
-        │   0x00187dc4      invalid
-        │   0x00187dc5      add   dword [rdx], ecx
-       ┌──< 0x00187dc7      jmp   0x187df1
-       ││   0x00187dc9      adc   dword [rdi+0xd685a], ebx
-       ││   0x00187dcf      cmp   dword [rsi], eax
-       ││   0x00187dd1      add   byte [rax], al
-       ││   0x00187dd3      adc   al, 0x40
-       ││   0x00187dd5      invalid
-       ││   0x00187dd6      add   byte [rax-0x2ffff93f], dl
-       ││   0x00187ddc      add   ah, bh
-       ││   0x00187dde      invalid
-       ││   0x00187ddf      xchg  ecx, eax
-       ││   0x00187de0      and   dword [rbx+rcx*1], ecx
-       ││   0x00187de3      xchg  ecx, eax
-       ││   0x00187de4      add   eax, 0xe097ff13
-       ││   0x00187de9      add   ebx, dword [rdi]
-       ││   0x00187deb      invalid
-       ││   0x00187dec      mov   ss, sp
-       ││   0x00187dee      invalid
-       ││   0x00187def      xchg  edi, eax
-       ││   0x00187df0      call  0x1087e15
-        │   0x00187df5      stc
-        │   0x00187df6      invalid
-        │   0x00187df7      cmp   dword [rax+0xf00007], eax
-        │   0x00187dfd      cmp   rax, 0xffffffffffd39691
-        │   0x00187e03      xchg  edi, eax
-        │   0x00187e04      invalid
-        │   0x00187e05      add   al, 0x00
-        │   0x00187e07      xor   dword [rax], eax
-        │   0x00187e09      add   dword [rax], eax
-        │   0x00187e0b      push  rsp
-        │   0x00187e0c      add   byte [rdi], 0x00
-        │   0x00187e0f      lock  add byte [rbp+rdi*1-0x6f], cl
-        │   0x00187e14      xchg  ecx, eax
-        │   0x00187e15      sar   edi, cl
-        │   0x00187e17      xchg  edi, eax
-        │   ; CODE XREF from fcn.001812e1 @ +0x6aca
-        └─> 0x00187e18      invalid
-       ┌──< 0x0018962c      jnle  0x189651
-       │╎   0x0018962e      add   edx, ebp
-       │╎   0x00189630      std
-       │└─< 0x00189631      jnp   0x1895f0
-       │    0x00189633      test  eax, 0xf9000bf5
-       │    0x00189638      hlt
-       │    0x00189639      add   r13b, byte [r9-0x6efffc03]
-       │    0x00189640      mov   al, byte [0x940000ca528002]          ; [0x940000ca528002:1]=255
-       │╎   0x00189649      add   al, byte [rax]
-       │╎   0x0018964b      xor   al, 0xc0
-       │╎   0x0018964d      add   eax, 0x6e19000
-        ╎   0x00189652      add   al, dl
-        ╎   0x00189654      add   byte [rax+0x24], dh
-        ╎   0x00189657      xchg  ecx, eax
-        ╎   0x00189658      and   dword [rax+rdx*1-0x7fd81d6f], edi
-        ╎   0x0018965f      push  rdx
-        ╎   0x00189660      add   eax, dword [rax]
-        ╎   0x00189662      adc   byte [rdx], 0x13
-        ╎   0x00189665      add   byte [rax-0xf31bee], al
-        ╎   0x0018966b      xchg  edi, eax
-        ╎   0x0018966c      cmp   dword [rcx], eax
-        ╎   0x0018966e      add   byte [rax-0xbd5ecfd], dl
-        ╎   0x00189675      test  eax, 0xf9400bf5
-        ╎   0x0018967c      std
-        └─< 0x0018967d      jnp   0x189642
-            0x0018967f      test  al, 0xff
-            0x00189681      and   eax, dword [rbx]
-            0x00189683      invalid
-            0x00189684      rol   byte [rbx], 0x5f
-            0x00189687      invalid
-            0x00189688      cmc
-            0x00189689      and   byte [rax], al
-            0x0018968b      mov   al, 0xb4
-            0x0018968d      invalid
-            0x0018968e      stc
-            0x00189690      and   byte [rdi], al
-            0x00189692      add   al, dl
-            0x00189694      add   byte [rax+rdi*1-0x4f666f], dl
-            0x0018969b      xchg  edi, eax
-            0x0018969c      add   byte [rsi], al
-            0x0018969e      add   byte [rbx+rsi*8-0x7f55fffd], dh
-            0x001896a5      invalid
-            0x001896a6      add   byte [rax-0xffff8df], dl
-        ╎   0x001896ac      add   byte [rdx+rdi*1-0x6f], ah
-        ╎   0x001896b0      and   dword [rax+0x01], edi
-        ╎   0x001896b3      xchg  ecx, eax
-        ╎   0x001896b4      xchg  esp, eax
-        ╎   0x001896b5      mov   byte [0x4e6897ff0cd09118], al
-        ╎   0x001896be      cmp   byte [r11], al
-        ╎   0x001896c1      add   byte [rdx-0x5fffdcae], al
-        └─< 0x001896c7      jb    0x1896a9
-            0x001896c9      add   edx, dword [rdx+rbp*4]
-            0x001896cc      invalid
-            0x001896cd      mov   es, word [rax+0x38]
-            0x001896d0      insb
-            0x001896d1      mov   dl, 0x5f                             ; '_'
-            0x001896d3      cmp   byte [rbp-0x5e], ch
-            0x001896d6      pop   rdi
-            0x001896d7      cmp   byte [rsi-0x6e], ch
-            0x001896da      pop   rdi
-            0x001896db      cmp   byte [rcx+0x0e], ch
-            0x001896de      cmp   dword [rdx+0x0a], ebp
-            0x001896e2      cmp   dword [rbx+0x06], ebp
-            0x001896e6      cmp   dword [rbp-0x37cce7e3], ecx
-            0x001896ed      sbb   eax, 0x1d2a3318
-            0x001896f2      sbb   byte [rbx], dh
-            0x001896f4      invalid
-            0x001896f5      sbb   eax, 0x3da83318
-            0x001896fa      adc   byte [rbx], dh
-            0x001896fc      cmp   eax, 0xa1023310
-            0x00189702      add   byte [rcx], dl
-            0x00189704      outsd
-            0x00189705      mov   esi, 0x62b497fe
-            0x0018970a      stc
-            0x0018970c      adc   eax, dword [rsi]
-            0x0018970e      add   byte [rax-0x6eed0d8d], dh
-        ┌─< 0x00189714      loopne 0x189719
-        │   0x00189716      adc   ebp, dword [rdx-0x6bcf978]
-            0x0018971c      or    byte [rcx], al
-            0x0018971e      mov   dl, 0x88
-            0x00189721      invalid
-            0x00189722      add   edi, ecx
-            0x00189724      or    eax, 0xe297ff11
-            0x00189729      add   eax, dword [rax]
-            0x0018972b      stosb
-            0x0018972c      and   byte [rdx+0x3e19118], 0x13           ; [0x13:1]=20
-            0x00189733      stosb
-            0x00189734      movsd
-            0x00189735      ud0   edx, dword [rdi+0x34000280]
-            0x0018973c      rol   byte [0x06fa8743], 0x00
-            0x00189743      rol   byte [rax], 0x01
-            0x00189745      adc   byte [rcx+rdx*4], cl
-            0x00189748      and   dword [rax+rdx*1-0x7fd69d6f], edi
-            0x0018974f      push  rdx
-            0x00189750      stosb
-            0x00189751      or    al, 0xff
-            0x00189753      xchg  edi, eax
-            0x00189754      add   ebx, dword [rdi]
-            0x00189757      sub   al, ch
-            0x00189759      invalid
-            0x0018975a      call  qword [rdi]
-            0x0018975c      loopne 0x189764
-            0x0018975e      add   byte [rax-0xffff8df], dl
-            0x00189764      add   byte [rdi+rdx*1-0x6f], cl
-            0x00189768      and   dword [rax+0x01], edi
-            0x0018976b      xchg  ecx, eax
-            0x0018976c      mov   dword [0xe1900006c097ff0c], eax
-            0x00189775      invalid
-            0x00189776      add   al, dl
-            0x00189778      add   byte [rax], bl
-            0x0018977a      or    al, 0x91
-            0x0018977c      and   dword [rax+rdx*1-0x7fd75d6f], edi
-            0x00189783      push  rdx
-            0x00189784      mov   bh, 0xff
-            0x00189786      call  qword [rdi]
-            0x00189788      and   byte [rdi], al
-            0x0018978a      add   al, dl
-            0x0018978c      add   byte [rax+rdi*1-0x4fa46f], dl
-            0x00189793      xchg  edi, eax
-            0x00189794      invalid
-            0x00189795      add   eax, 0x3f3b400
-            0x0018979a      add   byte [rdx+0x529e1288], ch
-            0x001897a0      add   byte [rdi], 0x00
-            0x001897a3      nop
-            0x001897a4      and   dword [rdi], eax
-            0x001897a6      add   byte [rax+0x72a00028], dh
-            0x001897ac      add   byte [rdx+rdi*1-0x6f], ah
-            0x001897b0      and   dword [rsp+rax*1], ebp
-            0x001897b3      xchg  ecx, eax
-            0x001897b4      xchg  esp, eax
-            0x001897b5      add   cl, byte [rax]
-            0x001897b7      mov   edx, dword [rax+0x6897ff0c]
-            0x001897bd      cmp   byte [r11], al
-            0x001897c1      add   byte [rbp+0x1403e052], 0xaa          ; [0xaa:1]=192
-            0x001897c8      invalid
-            0x001897c9      mov   es, word [rax+0x38]
-            0x001897cc      insb
-            0x001897cd      mov   dl, 0x5f                             ; '_'
-            0x001897cf      cmp   byte [rbp-0x5e], ch
-            0x001897d2      pop   rdi
-            0x001897d3      cmp   byte [rsi-0x6e], ch
-            0x001897d6      pop   rdi
-            0x001897d7      cmp   byte [rcx+0x0e], ch
-            0x001897da      cmp   dword [rdx+0x0a], ebp
-            0x001897de      cmp   dword [rbx+0x06], ebp
-            0x001897e2      cmp   dword [rbp-0x37cce7e3], ecx
-            0x001897e9      sbb   eax, 0x1d2a3318
-            0x001897ee      sbb   byte [rbx], dh
-            0x001897f0      invalid
-            0x001897f1      sbb   eax, 0x3da83318
-            0x001897f6      adc   byte [rbx], dh
-            0x001897f8      cmp   eax, 0x49023310
-            0x001897fe      add   byte [rcx], dl
-            0x00189800      xor   byte [rsi+0x62a097fe], bh
-            0x00189806      stc
-            0x00189808      cmc
-            0x00189809      and   byte [rax], al
-            0x0018980b      mov   al, 0xa1
-            0x0018980d      stc
-            0x00189810      or    byte [rbx+rax*2], al
-       ┌──< 0x00189d8c      jnle  0x189db1
-       │╎   0x00189d8e      add   edx, ebp
-       │╎   0x00189d90      std
-       │└─< 0x00189d91      jnp   0x189d50
-       │    0x00189d93      test  eax, 0xf9000bf5
-       │    0x00189d98      hlt
-       │    0x00189d99      add   r13b, byte [r9-0x6efffc03]
-       │    0x00189da0      xor   eax, 0xe897ffce
-       │    0x00189da5      and   byte [rax], al
-       │    0x00189da7      mov   al, 0x00
-       │    0x00189da9      mov   dword [rdx], ecx
-       │    0x00189dab      mov   ecx, 0x97fe02ff
-       │    0x00189db0      invalid
-       └──> 0x00189db1      add   al, 0x00
-        ┌─< 0x00189db3      jno   0x189dd6
-        │   0x00189db5      add   dword [rax], eax
-        │   0x00189db7      push  rsp
-        │   0x00189db8      pop   rsp
-        │   0x00189db9      movsb
-        │   0x00189dba      std
-        │   0x00189dbb      xchg  edi, eax
-        │   0x00189dbc      mov   al, byte [0x1b00005e0340002]         ; [0x1b00005e0340002:1]=255
-        │   0x00189dc5      invalid
-        │   0x00189dc6      add   byte [rax-0x6eea7c00], dh
-       ╎│   0x00189dcc      and   dword [rsp+rsi*1], ebp
-       ╎│   0x00189dcf      xchg  ecx, eax
-       ╎│   0x00189dd0      invalid
-       ╎│   0x00189dd1      adc   byte [r10+0x06], 0x00
-       ╎└─> 0x00189dd6      add   byte [rax], dl
-       ╎    0x00189dd9      invalid
-       ╎    0x00189dda      add   al, dh
-       ╎    0x00189ddc      add   dword [rsi], eax
-       ╎    0x00189dde      add   byte [rax-0x6efe0800], dh
-       ╎    0x00189de4      and   dword [rsp+rsi*1], ebp
-       ╎    0x00189de7      xchg  ecx, eax
-       ╎    0x00189de8      ret   0x8046
-       ╎    0x00189deb      push  rdx
-       ╎┌─< 0x00189dec      jrcxz 0x189df1
-       ╎│   0x00189dee      add   dword [rdx-0x6800f4fe], ebp
-       ╎    0x00189df4      adc   eax, dword [rax]
-       ╎    0x00189df6      adc   byte [rdx], 0xe0
-       ╎    0x00189df9      add   edx, dword [rbx]
-       ╎    0x00189dfb      sub   dh, ah
-       ╎    0x00189dfd      test  eax, 0xf9400bf5
-       ╎    0x00189e04      std
-       └──< 0x00189e05      jnp   0x189dca
-            0x00189e07      test  al, 0xff
-            0x00189e09      and   eax, dword [rbx]
-            0x00189e0b      invalid
-            0x00189e0c      rol   byte [rbx], 0x5f
-            0x00189e0f      invalid
-            0x00189e10      and   byte [rbx], al
-            0x00189e12      adc   byte [rdx-0x2a], 0xfe
-            0x00189e16      call  qword [rdi+0x34000120]
-            0x00189e1c      rol   byte [0x061a2e23], 0x00
-            0x00189e23      mov   al, 0x00
-        ┌─< 0x00189e25      jo    0x189e4b
-        │   0x00189e27      xchg  ecx, eax
-        │   0x00189e28      and   dword [rsp+rsi*1], ebp
-        │   0x00189e2b      xchg  ecx, eax
-        │   0x00189e2c      and   cl, byte [rax-0x80]
-        │   0x00189e2f      push  rdx
-        │   0x00189e30      add   eax, dword [rax]
-        │   0x00189e32      adc   byte [rdx], 0x13
-        │   0x00189e35      add   byte [rax+0x5312], al
-        │   0x00189e3b      adc   al, 0xf5
-        │   0x00189e3d      and   byte [rax], al
-        │   0x00189e3f      mov   al, 0xb4
-        │   0x00189e41      invalid
-        │   0x00189e42      stc
-        │   0x00189e44      and   byte [rdi], al
-        │   0x00189e46      add   al, dl
-        │   0x00189e48      add   byte [rax+rdi*1-0x51536f], dl
-            0x00189e4f      xchg  edi, eax
-            0x00189e50      invalid
-            0x00189e51      add   eax, 0x3f3b400
-            0x00189e56      add   byte [rdx+0x529e1288], ch
-            0x00189e5c      add   byte [rdi], 0x00
-            0x00189e5f      nop
-            0x00189e60      and   dword [rdi], eax
-            0x00189e62      add   byte [rax+0x72a00028], dh
-            0x00189e68      add   byte [rdx+rdi*1-0x6f], ah
-            0x00189e6c      and   dword [rsp+rax*1], ebp
-            0x00189e6f      xchg  ecx, eax
-            0x00189e70      xchg  esp, eax
-            0x00189e71      add   cl, byte [rax]
-            0x00189e73      mov   esp, ecx
-            0x00189e75      or    bh, bh
-            0x00189e77      xchg  edi, eax
-            0x00189e78      push  0x338414e
-            0x00189e7d      add   byte [rbp+0x1403e052], 0xaa          ; [0xaa:1]=192
-            0x00189e84      invalid
-            0x00189e85      mov   es, word [rax+0x38]
-            0x00189e88      insb
-            0x00189e89      mov   dl, 0x5f                             ; '_'
-            0x00189e8b      invalid
-            0x00189e8c      insd
-            0x00189e8d      mov   byte [0xe69385f926e385f], al
-            0x00189e96      cmp   dword [rdx+0x0a], ebp
-            0x00189e9a      cmp   dword [rbx+0x06], ebp
-            0x00189e9e      cmp   dword [rbp-0x37cce7e3], ecx
-            0x00189ea5      sbb   eax, 0x1d2a3318
-            0x00189eaa      sbb   byte [rbx], dh
-            0x00189eac      invalid
-            0x00189ead      sbb   eax, 0x3da83318
-            0x00189eb2      adc   byte [rbx], dh
-            0x00189eb4      cmp   eax, 0x49023310
-            0x00189eba      add   byte [rcx], dl
-            0x00189ebc      cmp   dword [rsi+rdi*8+0x4562a097], 0x20f4f9
-            0x00189ec7      mov   al, 0x81
-            0x00189ec9      stc
-            0x00189ecc      or    byte [rbx+rax*2], al
-            0x00189ecf      stc
-            0x00189ed0      or    byte [rcx], al
-            0x00189ed2      jnp   0x189e86
-            0x00189ed4      or    byte [rbx+rax*1], al
-            0x00189ed7      stc
-            0x00189ed8      cmp   byte [rdi+rdi*8-0x69], 0x60          ; '`'
-            0x00189edd      add   al, byte [rax]
-            0x00189edf      xor   al, 0xf3
-            0x00189ee1      add   eax, dword [rax]
-            0x00189ee3      sub   ah, byte [rax]
-            0x00189ee5      invalid
-            0x00189ee6      add   al, dl
-            0x00189ee8      add   dword [rsi], eax
-            0x00189eea      add   byte [rax-0x6ed68000], dh
-            0x00189ef0      and   dword [rsp+rsi*1], ebp
-            0x00189ef3      xchg  ecx, eax
-            0x00189ef4      ret   0x8049
-            0x00189ef7      push  rdx
-            0x00189ef8      and   al, byte [rax]
-            0x00189efa      add   byte [rax], dl
-            0x00189efd      invalid
-            0x00189efe      add   byte [rax-0x4ffff8df], dl
-            0x00189f04      add   byte [rdi+rdx*1-0x6f], cl
-            0x00189f08      and   dword [rsp+rax*1], ebp
-            0x00189f0b      xchg  ecx, eax
-            0x00189f0c      mov   ebx, 0xc097ff0a
-            0x00189f11      add   eax, 0x6019000
-            0x00189f16      add   byte [rax-0x6edadc00], dh
-            0x00189f1c      and   dword [rsp+rsi*1], ebp
-            0x00189f1f      xchg  ecx, eax
-            0x00189f20      loop  0x189f6a
-            0x00189f22      adc   byte [rdx-0x3d], 0xff
-            0x00189f26      call  qword [rdi]
-            0x00189f28      and   byte [rsi+0x45], 0xf9                ; [0xf9:1]=66
-            0x00189f2c      push  0x97ff39
-            0x00189f31      add   dword [rax], eax
-            0x00189f33      xor   al, 0xf3
-            0x00189f35      add   eax, dword [rax]
-            0x00189f37      sub   ah, byte [rax+0x1d00005]
-            0x00189f3d      invalid
-            0x00189f3e      add   byte [rax-0x6ef49800], dh
-            0x00189f44      and   dword [rsp+rsi*1], ebp
-            0x00189f47      xchg  ecx, eax
-            0x00189f48      invalid
-            0x00189f49      adc   byte [rdx+0x0d], 0x00
-            0x00189f4e      add   byte [rsi*8-0x5f4fffe0], dl
-            0x00189f55      push  0x45                                 ; 'E'
-            0x00189f57      stc
-       ┌──< 0x0017dfdc      jnle  0x17e001
-       │╎   0x0017dfde      add   edx, ebp
-       │╎   0x0017dfe0      std
-       │└─< 0x0017dfe1      jnp   0x17df9f
-       │    0x0017dfe3      test  eax, 0xf9000bfc
-       │    0x0017dfe8      not   byte [rdi+0x02]
-       │    0x0017dfeb      test  eax, 0xa9034ff4
-       │    0x0017dff0      std
-       │    0x0017dff1      add   eax, dword [rax]
-       │    0x0017dff3      xchg  ecx, eax
-       │    0x0017dff4      inc   dword [rbx]
-       │    0x0017dff6      adc   ecx, edx
-       │    0x0017dff8      mov   eax, dword [0xc03400010097fe99]
-       └──> 0x0017e001      add   eax, 0x761d000
-            0x0017e006      add   al, dh
-            0x0017e008      add   byte [rax-0x7fde6eca], al
-            0x0017e00e      sbb   dword [rcx-0x6800c586], edx
-            0x0017e014      adc   eax, dword [rax]
-            0x0017e016      adc   byte [rdx], 0x8f
-            0x0017e019      add   byte [rax], al
-            0x0017e01b      adc   al, 0x88
-            0x0017e01d      invalid
-            0x0017e01e      add   byte [rax-0x46bb22f8], dh
-            0x0017e024      invalid
-            0x0017e025      add   eax, 0x1a17100
-            0x0017e02a      add   byte [rax+0x73], dl
-            0x0017e02e      add   byte [rcx-0x6801622d], dl
-            0x0017e034      test  al, 0x1f
-            0x0017e036      mov   ecx, 0xd0000609
-            0x0017e03c      or    al, byte [rsi]
-            0x0017e03e      add   byte [rax-0x6ecdb6d7], dl
-            0x0017e044      cmc
-            0x0017e046      invalid
-            0x0017e047      xchg  ecx, eax
-            0x0017e048      invalid
-            0x0017e049      add   eax, 0x6e07100
-            0x0017e04e      add   byte [rax-0x6576febf], dl
-            0x0017e054      add   byte [rax], ch
-            0x0017e056      and   edx, dword [rcx+0x14000007]
-            0x0017e05c      and   byte [rdi], al
-            0x0017e05e      add   byte [rax-0xffff89f], dl
-            0x0017e064      call  0x6a606a
-            0x0017e069      push  rax
-            0x0017e06a      invalid
-            0x0017e06b      xchg  ecx, eax
-            0x0017e06c      and   dword [rax+0x1fa89119], eax
-            0x0017e072      add   byte [rcx-0x6800c59f], bh
-            0x0017e078      invalid
-            0x0017e079      add   byte [rax+0x2d5852], al
-            0x0017e07f      xchg  esp, eax
-            0x0017e080      rol   byte [rax], 0x00
-            0x0017e083      xor   al, 0xa8
-            0x0017e085      invalid
-            0x0017e086      mov   ecx, 0x7100051f
-            0x0017e08c      invalid
-            0x0017e08d      add   byte [rax], al
-            0x0017e08f      push  rsp
-            0x0017e090      add   ebx, dword [rdi]
-            0x0017e093      sub   al, byte [rdi]
-            0x0017e095      add   byte [rax], al
-            0x0017e097      adc   al, 0x60
-            0x0017e099      add   byte [rax+0x2d5052], al
-            0x0017e09f      xchg  esp, eax
-            0x0017e0a0      test  al, 0x1f
-            0x0017e0a2      mov   ecx, 0x2a080008
-            0x0017e0a8      mov   byte [rax+rax*1], cl
-            0x0017e0ab      xor   eax, 0x52800033
-            0x0017e0b0      add   byte [rsi], 0x00
-            0x0017e0b3      rol   byte [rax], 0x01
-            0x0017e0b5      hlt
-            0x0017e0b6      xor   al, 0x91
-            0x0017e0b8      adc   esi, ebx
-            0x0017e0ba      call  qword [rdi-0x4bfff3e0]
-            0x0017e0c0      hlt
-            0x0017e0c1      add   eax, dword [rax]
-            0x0017e0c3      stosb
-            0x0017e0c4      mov   al, byte [0x97ffe5e3910063]          ; [0x97ffe5e3910063:1]=255
-            0x0017e0cd      mov   byte [rdx-0x20], dl
-            0x0017e0d1      add   dword [rax+0xd7ab72], esp
-            0x0017e0d7      xchg  esp, eax
-            0x0017e0d8      invalid
-            0x0017e0d9      add   eax, dword [rax]
-            0x0017e0db      xchg  ecx, eax
-            0x0017e0dc      invalid
-            0x0017e0dd      invalid
-            0x0017e0de      add   al, dh
-            0x0017e0e0      mov   al, 0x07
-            0x0017e0e3      xchg  ecx, eax
-            0x0017e0e4      add   byte [rcx], al
-            0x0017e0e6      add   dword [rcx+0x528007e1], edx
-            0x0017e0ec      or    eax, 0x8297ff34
-            0x0017e0f1      cmp   r8b, spl
-            0x0017e0f5      add   eax, dword [rax]
-            0x0017e0f7      xchg  ecx, eax
-            0x0017e0f8      add   ecx, dword [rax-0x717ead80]
-            0x0017e0fe      cmp   byte [rax-0x76c6bff2], cl
-            0x0017e105      or    al, byte [rax+0x39]
-            0x0017e108      mov   al, byte [rsi]
-            0x0017e10a      cmp   dword [rbx-0x73c7a04e], ecx
-            0x0017e111      mov   byte [0x1d09385f928d385f], al
-            0x0017e11a      sbb   byte [rbx], dh
-            0x0017e11c      sbb   eax, 0x1d6c3318
-            0x0017e122      sbb   byte [rbx], dh
-            0x0017e124      mov   byte [0x8233103d2133181d], al
-            0x0017e12d      cmp   eax, 0xec633310
-            0x0017e132      invalid
-            0x0017e133      xchg  edi, eax
-            0x0017e134      add   byte [rcx], al
-            0x0017e136      mov   al, byte [0xffc1105280002152]
-            0x0017e13f      xchg  edi, eax
-            0x0017e140      add   dword [rax], 0x235280                ; [0x235280:4]=0x371801e8
-            0x0017e146      adc   byte [rdx-0x20], 0x03
-            0x0017e14a      invalid
-            0x0017e14b      sub   ah, dl
-            0x0017e14d      add   ebx, dword [rdi]
-            0x0017e14f      stosb
-            0x0017e150      mov   al, byte [0x802a1f03e097ff48]
-            0x0017e159      call  qword [rdi+0x2a0003e1]
-            0x0017e160      loopne 0x17e168
-            0x0017e162      add   byte [rax-0x6edc9800], dl
-            0x0017e168      and   al, 0x3a
-            0x0017e16a      call  qword [rdi+0x2a1303e0]
-            0x0017e170      xchg  ebx, eax
-            0x0017e171      popfq
-            0x0017e172      invalid
-            0x0017e173      xchg  edi, eax
-            0x0017e174      and   byte [rbx], al
-            0x0017e176      add   byte [rax+rax*2], dh
-            0x0017e179      add   byte [rax-0x1031eae], al
-            0x0017e17f      xchg  edi, eax
-            0x0017e180      hlt
-            0x0017e181      add   eax, dword [rax]
-            0x0017e183      sub   al, byte [rbp-0x6a680101]
-            0x0017e189      invalid
-            0x0017e18a      add   al, dh
-            0x0017e18c      mov   ch, 0xc6
-            0x0017e18e      and   eax, 0x3e391
-            0x0017e193      sub   al, byte [rax+0x01]
-            0x0017e196      adc   byte [rdx-0x1e], 0x1f
-            0x0017e19a      mov   al, byte [0x1503e42a1403e152]        ; [0x1503e42a1403e152:1]=255
-            0x0017e1a3      stosb
-            0x0017e1a4      invalid
-            0x0017e1a5      invalid
-            0x0017e1a6      invalid
-            0x0017e1a7      xchg  edi, eax
-            0x0017e1a8      loopne 0x17e1ad
-            0x0017e1aa      adc   eax, 0xff3a13aa
-            0x0017e1af      xchg  edi, eax
-            0x0017e1b0      invalid
-            0x0017e1b1      in    eax, dx
-            0x0017e1b2      std
-            0x0017e1b3      xchg  edi, eax
-            0x0017e1b4      add   byte [rax-0x78], cl
-            0x0017e1b7      push  rdx
-            0x0017e1b8      loopne 0x17e1bb
-            0x0017e1ba      mov   al, byte [0x6619400d77172]           ; [0x6619400d77172:1]=255
-            0x0017e1c3      nop
-            0x0017e1c4      add   al, byte [rsi]
-            0x0017e1c6      add   byte [rax-0x6ed50bdf], dl
-            0x0017e1cc      and   al, 0x10
-            0x0017e1cf      xchg  ecx, eax
-            0x0017e1d0      ror   byte [rcx], 0x80
-            0x0017e1d3      push  rdx
-            0x0017e1d4      sbb   dword [rbp+0x2097ff], edi
-            0x0017e1da      invalid
-            0x0017e1db      push  rdx
-            0x0017e1dc      jnp   0x17e1d3
-            0x0017e1de      call  qword [rdi+0x2a0003f4]
-            0x0017e1e4      add   byte [rax-0x10339ae], al
-            0x0017e1eb      xchg  edi, eax
-            0x0017e1ec      cmc
-            0x0017e1ed      add   eax, dword [rax]
-            0x0017e1ef      sub   ch, byte [rdx-0x01]
-            0x0017e1f2      invalid
-            0x0017e1f3      xchg  edi, eax
-            0x0017e1f4      invalid
-            0x0017e1f5      invalid
-            0x0017e1f6      add   byte [rax-0x6ed6012a], dl
-            0x0017e1fc      jrcxz 0x17e201
-            0x0017e1fe      add   byte [rdx], ch
+~ ❯ echo "=== AARCH64 TEST ==="
+rizin -q -a arm -b 64 -c 'e asm.arch; e asm.bits; pd 24 @ 0x10' \
+"$HOME/a26-analysis/current/raw/sboot.bin"
+
+echo
+echo "=== OEM SYNC FUNCTION ==="
+rizin -q -a arm -b 64 -c 'pd 100 @ 0x17dfdc' \
+"$HOME/a26-analysis/current/raw/sboot.bin"
+
+echo
+echo "=== STATUS TABLE PRODUCER ==="
+rizin -q -a arm -b 64 -c 'pd 100 @ 0x187cf0' \
+"$HOME/a26-analysis/current/raw/sboot.bin"
+=== AARCH64 TEST ===
+arm
+64
+        ┌─< 0x00000010      b     0x20
+        │   0x00000014      udf   0
+        │   0x00000018      invalid
+        │   0x0000001c      udf   0
+        └─> 0x00000020      ldr   x0, 0x148
+            0x00000024      ldr   w1, [x0]
+        ┌─< 0x00000028      cbnz  w1, 0x40
+        │   0x0000002c      mov   x16, 0x1000
+        │   0x00000030      ldr   x17, 0x150
+        │   0x00000034      add   x17, x17, x16
+        │   0x00000038      mov   sp, x17
+        │   0x0000003c      bl    0x158
+        └─> 0x00000040      mov   x20, x0
+            0x00000044      mov   x21, x1
+            0x00000048      mov   x22, x2
+            0x0000004c      mov   x23, x3
+            0x00000050      mov   x0, 0x830
+            0x00000054      movk  x0, 0x30c5, lsl 16
+            0x00000058      msr   sctlr_el3, x0
+            0x0000005c      isb
+            0x00000060      bl    0x1494
+        ┌─< 0x00000064      cbz   x0, 0x6c
+        │   0x00000068      br    x0
+        └─> 0x0000006c      adr   x0, 0xb800
+
+=== OEM SYNC FUNCTION ===
+            0x0017dfdc      pacibsp
+            0x0017dfe0      stp   x29, x30, [sp, -0x40]!
+            0x0017dfe4      str   x28, [sp, 0x10]
+            0x0017dfe8      stp   x22, x21, [sp, 0x20]
+            0x0017dfec      stp   x20, x19, [sp, 0x30]
+            0x0017dff0      mov   x29, sp
+            0x0017dff4      sub   sp, sp, 0x440
+            0x0017dff8      bl    0x12467c
+        ┌─< 0x0017dffc      cbz   w0, 0x17e01c
+        │   0x0017e000      adrp  x0, 0x238000
+        │   0x0017e004      adrp  x1, 0x26d000
+        │   0x0017e008      add   x0, x0, 0xda0
+        │   0x0017e00c      add   x1, x1, 0x660
+        │   0x0017e010      bl    0x14c9f8
+        │   0x0017e014      mov   w19, -1
+       ┌──< 0x0017e018      b     0x17e254
+       │└─> 0x0017e01c      adrp  x8, 0x56f000
+       │    0x0017e020      ldr   w8, [x8, 0x4dc]                      ; [0x4dc:4]=0xb900451f
+       │    0x0017e024      cmp   w8, 1
+       │┌─< 0x0017e028      b.ne  0x17e05c
+       ││   0x0017e02c      add   x0, x29, 0x1c
+       ││   0x0017e030      bl    0x12577c
+       ││   0x0017e034      ldr   w8, [x29, 0x1c]                      ; [0x1c:4]=0
+       ││   0x0017e038      adrp  x9, 0x240000
+       ││   0x0017e03c      adrp  x10, 0x23e000
+       ││   0x0017e040      add   x9, x9, 0xc92
+       ││   0x0017e044      add   x10, x10, 0x7fd
+       ││   0x0017e048      cmp   w8, 1
+       ││   0x0017e04c      adrp  x0, 0x25a000
+       ││   0x0017e050      csel  x1, x10, x9, eq
+       ││   0x0017e054      add   x0, x0, 0x8ca
+      ┌───< 0x0017e058      b     0x17e074
+      ││└─> 0x0017e05c      adrp  x0, 0x262000
+      ││    0x0017e060      adrp  x1, 0x26d000
+      ││    0x0017e064      mov   w8, 0xf
+      ││    0x0017e068      add   x0, x0, 0x794
+      ││    0x0017e06c      add   x1, x1, 0x660
+      ││    0x0017e070      str   w8, [x29, 0x1c]
+      └───> 0x0017e074      bl    0x14c9f8
+       │    0x0017e078      mov   w0, 3
+       │    0x0017e07c      bl    0x1895dc
+       │┌─< 0x0017e080      cbz   w0, 0x17e098
+       ││   0x0017e084      ldr   w8, [x29, 0x1c]                      ; [0x1c:4]=0
+       ││   0x0017e088      cmp   w8, 1
+      ┌───< 0x0017e08c      b.ne  0x17e098
+      │││   0x0017e090      mov   w19, wzr
+     ┌────< 0x0017e094      b     0x17e0b0
+     │└─└─> 0x0017e098      mov   w0, 3
+     │ │    0x0017e09c      bl    0x1895dc
+     │ │    0x0017e0a0      ldr   w8, [x29, 0x1c]                      ; [0x1c:4]=0
+     │ │    0x0017e0a4      orr   w8, w0, w8
+     │ │┌─< 0x0017e0a8      cbnz  w8, 0x17e238
+     │ ││   0x0017e0ac      mov   w19, 1
+     └────> 0x0017e0b0      adrp  x0, 0x250000
+       ││   0x0017e0b4      add   x0, x0, 0xd3d
+       ││   0x0017e0b8      bl    0x1758fc
+      ┌───< 0x0017e0bc      cbz   x0, 0x17e240
+      │││   0x0017e0c0      mov   x20, x0
+      │││   0x0017e0c4      add   x0, x29, 0x18
+      │││   0x0017e0c8      bl    0x177854
+      │││   0x0017e0cc      mov   w0, 0x4240                           ; '@B'
+      │││   0x0017e0d0      movk  w0, 0xf, lsl 16
+      │││   0x0017e0d4      bl    0x1b3f80
+      │││   0x0017e0d8      mov   x8, sp
+      │││   0x0017e0dc      adrp  x2, 0x269000
+      │││   0x0017e0e0      add   x2, x2, 0x1ec
+      │││   0x0017e0e4      add   x0, x8, 0x40
+      │││   0x0017e0e8      mov   w1, 0x3f                             ; '?'
+      │││   0x0017e0ec      bl    0x14b120
+      │││   0x0017e0f0      ldrb  w2, [x20, 0x14]!                     ; [0x14:4]=0
+      │││   0x0017e0f4      mov   x0, sp
+      │││   0x0017e0f8      mov   w3, 0x440
+      │││   0x0017e0fc      ldrb  w1, [x20, 8]!                        ; [0x8:4]=0x68656164
+      │││   0x0017e100      ldrb  w8, [x20, 3]                         ; [0x3:4]=0x48776b00
+      │││   0x0017e104      ldrb  w9, [x20, 2]                         ; [0x2:4]=0x776b0000
+      │││   0x0017e108      ldrb  w10, [x20, 1]                        ; [0x1:4]=0x6b000000
+      │││   0x0017e10c      ldurb w11, [x20, -5]                       ; [0x5:4]=0x64214877
+      │││   0x0017e110      ldurb w12, [x20, -6]                       ; [0x6:4]=0x61642148
+      │││   0x0017e114      ldurb w13, [x20, -7]                       ; [0x7:4]=0x65616421
+      │││   0x0017e118      bfi   w9, w8, 8, 8
+      │││   0x0017e11c      bfi   w1, w10, 8, 8
+      │││   0x0017e120      bfi   w12, w11, 8, 8
+      │││   0x0017e124      bfi   w2, w13, 8, 8
+      │││   0x0017e128      bfi   w1, w9, 0x10, 0x10
+      │││   0x0017e12c      bfi   w2, w12, 0x10, 0x10
+      │││   0x0017e130      bl    0x1392bc
+      │││   0x0017e134      mov   w0, 0x80000
+      │││   0x0017e138      mov   w1, 1
+      │││   0x0017e13c      bl    0x16e57c
+      │││   0x0017e140      mov   w1, 4
+      │││   0x0017e144      mov   w3, 1
+      │││   0x0017e148      mov   w0, wzr
+      │││   0x0017e14c      mov   x2, xzr
+      │││   0x0017e150      bl    0x1503d0
+      │││   0x0017e154      mov   w0, wzr
+      │││   0x0017e158      bl    0x150b58
+      │││   0x0017e15c      mov   w1, w0
+      │││   0x0017e160      adrp  x0, 0x25a000
+      │││   0x0017e164      add   x0, x0, 0x8da
+      │││   0x0017e168      bl    0x14c9f8
+
+=== STATUS TABLE PRODUCER ===
+            0x00187cf0      pacibsp
+            0x00187cf4      stp   x29, x30, [sp, -0x40]!
+            0x00187cf8      str   x28, [sp, 0x10]
+            0x00187cfc      stp   x22, x21, [sp, 0x20]
+            0x00187d00      stp   x20, x19, [sp, 0x30]
+            0x00187d04      mov   x29, sp
+            0x00187d08      sub   sp, sp, 0xac0
+            0x00187d0c      add   x0, sp, 8
+            0x00187d10      bl    0x17ba20
+            0x00187d14      bl    0x16e568
+        ┌─< 0x00187d18      tbnz  w0, 0x13, 0x187d2c
+        │   0x00187d1c      bl    0x16e568
+       ┌──< 0x00187d20      tbz   w0, 0x12, 0x187d40
+       ││   0x00187d24      mov   w8, 4
+      ┌───< 0x00187d28      b     0x187d30
+      ││└─> 0x00187d2c      mov   w8, 2
+      └───> 0x00187d30      sub   x1, x29, 0x20
+       │    0x00187d34      mov   w0, wzr
+       │    0x00187d38      sturb w8, [x29, -0x20]
+       │    0x00187d3c      bl    0x188310
+       └──> 0x00187d40      bl    0x187ac4
+            0x00187d44      adrp  x8, 0x573000
+            0x00187d48      ldr   w8, [x8, 0x5f8]                      ; [0x5f8:4]=0x3828693f
+            0x00187d4c      adrp  x19, 0x5a6000
+            0x00187d50      adrp  x0, 0x5a6000
+            0x00187d54      add   x19, x19, 0x9c0
+            0x00187d58      add   x0, x0, 0xe9
+            0x00187d5c      strb  w8, [x19, 0x47]
+            0x00187d60      bl    0x184328
+            0x00187d64      cmp   w0, 0
+            0x00187d68      csinv w8, w0, wzr, ge
+            0x00187d6c      strb  w8, [x19, 0x4a]
+            0x00187d70      bl    0x1842f4
+            0x00187d74      strb  w0, [x19, 0x4b]
+            0x00187d78      bl    0x17ca10
+            0x00187d7c      strb  w0, [x19, 0x42]
+            0x00187d80      bl    0x17a0d0
+            0x00187d84      str   w0, [x19]
+            0x00187d88      bl    0x17bae4
+        ┌─< 0x00187d8c      cbz   x0, 0x187dd4
+        │   0x00187d90      ldr   x8, [x0, 0x30]                       ; [0x30:4]=0x58000911
+        │   0x00187d94      mov   w9, -2
+        │   0x00187d98      mov   w10, -1
+        │   0x00187d9c      adrp  x11, 0x5a6000
+        │   0x00187da0      cmp   x8, 0xfe
+        │   0x00187da4      csel  w12, w8, w9, lo
+        │   0x00187da8      cmp   x8, x10
+        │   0x00187dac      add   x11, x11, 0x9fd
+        │   0x00187db0      csinv w8, w12, wzr, ne
+        │   0x00187db4      strb  w8, [x11]
+        │   0x00187db8      ldr   x8, [x0, 0x48]                       ; [0x48:4]=0xaa0203f6
+        │   0x00187dbc      cmp   x8, 0xfe
+        │   0x00187dc0      csel  w9, w8, w9, lo
+        │   0x00187dc4      cmp   x8, x10
+        │   0x00187dc8      csinv w8, w9, wzr, ne
+        │   0x00187dcc      strb  w8, [x11, 3]
+       ┌──< 0x00187dd0      b     0x187de8
+       │└─> 0x00187dd4      adrp  x0, 0x24f000
+       │    0x00187dd8      adrp  x1, 0x261000
+       │    0x00187ddc      add   x0, x0, 0x9ff
+       │    0x00187de0      add   x1, x1, 0x2c3
+       │    0x00187de4      bl    0x14c9f8
+       └──> 0x00187de8      mov   w0, wzr
+            0x00187dec      bl    0x17d024
+            0x00187df0      adrp  x8, 0x5a6000
+            0x00187df4      strb  w0, [x8, 0x9fe]
+            0x00187df8      adrp  x0, 0x27a000
+            0x00187dfc      add   x0, x0, 0xf53
+            0x00187e00      bl    0x17cc58
+            0x00187e04      cmn   w0, 1
+            0x00187e08      b.eq  0x187e28
+            0x00187e0c      adrp  x0, 0x27a000
+            0x00187e10      add   x0, x0, 0xf53
+            0x00187e14      bl    0x17cc58
+            0x00187e18      cmp   w0, 0xfe
+            0x00187e1c      b.ls  0x187e30
+            0x00187e20      mov   w0, 0xfe
+            0x00187e24      b     0x187e3c
+            0x00187e28      mov   w0, 0xff
+            0x00187e2c      b     0x187e3c
+            0x00187e30      adrp  x0, 0x27a000
+            0x00187e34      add   x0, x0, 0xf53
+            0x00187e38      bl    0x17cc58
+            0x00187e3c      adrp  x8, 0x5a6000
+            0x00187e40      strb  w0, [x8, 0x9ff]
+            0x00187e44      bl    0x1b43cc
+            0x00187e48      cbz   w0, 0x187e58
+            0x00187e4c      bl    0x1b43cc
+            0x00187e50      cmp   w0, 1
+            0x00187e54      b.ne  0x188088
+            0x00187e58      mov   w8, wzr
+            0x00187e5c      adrp  x9, 0x5a6000
+            0x00187e60      strb  w8, [x9, 0x9db]
+            0x00187e64      bl    0x17b0a0
+            0x00187e68      adrp  x19, 0x5a6000
+            0x00187e6c      add   x19, x19, 0x986
+            0x00187e70      strb  w0, [x19, 0x87]
+            0x00187e74      bl    0x17b1f8
+            0x00187e78      strb  w0, [x19, 0x88]
+            0x00187e7c      bl    0x179f90
 ~ ❯ 
