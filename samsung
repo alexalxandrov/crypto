@@ -1,692 +1,110 @@
 ~/Documents/GitHub/crypto (main) ❯ ASM="$HOME/a26-analysis/current/full-sboot.asm"
 
-for FN in 0017c904 0010c62c 0010c4a4 0010c3fc 001392bc; do
+for FN in 0010c62c 0010c3fc 0010c4a4 0017c904 0017bfac; do
     echo
     echo "========== $FN =========="
-    grep -n -m 1 -B 3 -A 100 "fcn\\.$FN" "$ASM"
+    awk -v fn="$FN" '
+      index($0, "fcn." fn "(") && $0 ~ /^┌/ { show=1 }
+      show { print }
+      show && /^┌ fcn\./ && index($0, "fcn." fn "(")==0 { exit }
+    ' "$ASM"
 done
 
 echo
-echo "========== SMC ID / RELATED REFERENCES =========="
-grep -n -i -E -B 5 -A 8 'ffffff0d|0xfffffff3|smc[[:space:]]+0' "$ASM" | head -250
+echo "========== SMC DISPATCH / LOGGING =========="
+grep -n -E 'call SMC ID|owed to call SMC ID|C2001014|FFFFFF0D' "$ASM" | head -100
 
 echo
-echo "========== CALLERS =========="
-grep -n -E 'bl[[:space:]]+fcn\\.(0017c904|0010c62c|0010c4a4|0010c3fc|001392bc)' "$ASM"
-
-========== 0017c904 ==========
-194544-│    ╎      0x0017c8fc      bl    fcn.0017d5b4
-194545-└    └────< 0x0017c900      b     0x17c750
-194546-            ; CALL XREF from fcn.0017bfac @ 0x17c684
-194547:┌ fcn.0017c904(unsigned long arg1, unsigned long arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-194548-│           ; arg unsigned long arg1 @ x0
-194549-│           ; arg unsigned long arg2 @ x1
-194550-│           ; arg int64_t arg3 @ x2
-194551-│           ; arg int64_t arg4 @ x3
-194552-│           ; arg int64_t arg5 @ x4
-194553-│           ; arg int64_t arg6 @ x5
-194554-│           ; arg int64_t arg7 @ x6
-194555-│           ; arg int64_t arg8 @ x7
-194556-│           ; var int64_t var_10h @ stack - 0x10
-194557-│           0x0017c904      pacibsp
-194558-│           0x0017c908      stp   x29, x30, [var_10h]!
-194559-│           0x0017c90c      mov   x29, sp
-194560-│           0x0017c910      cmp   w0, 9                                ; arg1
-194561-│       ┌─< 0x0017c914      b.eq  0x17c948
-194562-│       │   0x0017c918      cmp   w0, 8
-194563-│      ┌──< 0x0017c91c      b.eq  0x17c938
-194564-│      ││   0x0017c920      cmp   w0, 7
-194565-│     ┌───< 0x0017c924      b.ne  0x17c964
-194566-│     │││   0x0017c928      adrp  x8, 0x5a0000
-194567-│     │││   0x0017c92c      mov   w0, wzr
-194568-│     │││   0x0017c930      str   w1, [x8, 0x618]
-194569-│    ┌────< 0x0017c934      b     0x17c9f4
-194570-│    ││└──> 0x0017c938      adrp  x8, 0x5a0000
-194571-│    ││ │   0x0017c93c      mov   w0, wzr
-194572-│    ││ │   0x0017c940      str   wzr, [x8, aav.0x0000061c]
-194573-│    ││┌──< 0x0017c944      b     0x17c9f4
-194574-│    │││└─> 0x0017c948      cmp   w1, 0x71                             ; 'q' ; arg2
-194575-│    │││┌─< 0x0017c94c      b.lo  0x17c96c
-194576-│    ││││   0x0017c950      adrp  x0, 0x248000
-194577-│    ││││   0x0017c954      add   x0, x0, 0x593                        ; int64_t arg1
-194578-│    ││││   0x0017c958      bl    fcn.0014c9f8
-194579-│    ││││   0x0017c95c      mov   w0, -1
-194580-│   ┌─────< 0x0017c960      b     0x17c9f4
-194581-│   ││└───> 0x0017c964      mov   w0, wzr
-194582-│   ││┌───< 0x0017c968      b     0x17c9f4
-194583-│   ││││└─> 0x0017c96c      cmp   w1, 0x60                             ; arg2
-194584-│   ││││┌─< 0x0017c970      b.ge  0x17c9ac
-194585-│   │││││   0x0017c974      adrp  x8, 0x5a0000
-194586-│   │││││   0x0017c978      cmp   w1, 0x40                             ; arg2
-194587-│   │││││   0x0017c97c      str   wzr, [x8, 0x62c]                     ; arg1
-194588-│  ┌──────< 0x0017c980      b.ge  0x17c9c4
-194589-│  ││││││   0x0017c984      adrp  x8, 0x5a0000
-194590-│  ││││││   0x0017c988      cmp   w1, 0x20                             ; arg2
-194591-│  ││││││   0x0017c98c      str   wzr, [x8, 0x628]                     ; arg1
-194592-│ ┌───────< 0x0017c990      b.ge  0x17ca00
-194593-│ │││││││   0x0017c994      adrp  x8, 0x5a0000
-194594-│ │││││││   0x0017c998      mov   w9, -1
-194595-│ │││││││   0x0017c99c      str   wzr, [x8, 0x624]                     ; arg1
-194596-│ │││││││   0x0017c9a0      lsl   w8, w9, w1                           ; arg2
-194597-│ │││││││   0x0017c9a4      mvn   w8, w8
-194598-│ ────────< 0x0017c9a8      b     0x17c9e8
-194599-│ ││││││└─> 0x0017c9ac      mov   w8, -1
-194600-│ ││││││    0x0017c9b0      lsl   w9, w8, w1                           ; arg2
-194601-│ ││││││    0x0017c9b4      mvn   w9, w9
-194602-│ ││││││    0x0017c9b8      adrp  x10, 0x5a0000
-194603-│ ││││││    0x0017c9bc      str   w9, [x10, 0x62c]
-194604-│ ││││││┌─< 0x0017c9c0      b     0x17c9d0
-194605-│ │└──────> 0x0017c9c4      mov   w8, -1
-194606-│ │ │││││   0x0017c9c8      lsl   w8, w8, w1                           ; arg2
-194607-│ │ │││││   0x0017c9cc      mvn   w8, w8
-194608-│ │ │││││   ; CODE XREF from fcn.0017c904 @ 0x17c9c0
-194609-│ │ ││││└─> 0x0017c9d0      adrp  x9, 0x5a0000
-194610-│ │ ││││    0x0017c9d4      str   w8, [x9, 0x628]
-194611-│ │ ││││    0x0017c9d8      mov   w8, -1
-194612-│ │ ││││    ; CODE XREF from fcn.0017c904 @ 0x17ca0c
-194613-│ │ ││││┌─> 0x0017c9dc      adrp  x9, 0x5a0000
-194614-│ │ ││││╎   0x0017c9e0      str   w8, [x9, 0x624]
-194615-│ │ ││││╎   0x0017c9e4      mov   w8, -1
-194616-│ │ ││││╎   ; CODE XREF from fcn.0017c904 @ 0x17c9a8
-194617-│ ────────> 0x0017c9e8      mov   w0, wzr                              ; arg1
-194618-│ │ ││││╎   0x0017c9ec      adrp  x9, 0x5a0000
-194619-│ │ ││││╎   0x0017c9f0      str   w8, [x9, 0x620]
-194620-│ │ ││││╎   ; CODE XREFS from fcn.0017c904 @ 0x17c934, 0x17c944, 0x17c960, 0x17c968
-194621-│ │ └└└└──> 0x0017c9f4      ldp   x29, x30, [sp], 0x10
-194622-│ │     ╎   0x0017c9f8      autibsp
-194623-│ │     ╎   0x0017c9fc      ret
-194624-│ └───────> 0x0017ca00      mov   w8, -1
-194625-│       ╎   0x0017ca04      lsl   w8, w8, w1                           ; arg2
-194626-│       ╎   0x0017ca08      mvn   w8, w8
-194627-└       └─< 0x0017ca0c      b     0x17c9dc
-194628-            ; CALL XREF from fcn.00179c3c @ 0x179c5c
-194629-            ; CALL XREF from fcn.0017b450 @ 0x17b4b4
-194630-            ; CALL XREF from fcn.0017e384 @ 0x17e3bc
-194631-            ; CALL XREF from fcn.00187cf0 @ 0x187d78
-194632-┌ fcn.0017ca10();
-194633-│           0x0017ca10      pacibsp
-194634-│           0x0017ca14      adrp  x8, 0x5a0000
-194635-│           0x0017ca18      ldr   x8, [x8, 0x4b8]                      ; [0x4b8:4]=0xb900211f
-194636-│           0x0017ca1c      ldr   w0, [x8, 0x50]                       ; aav.0x00000050
-194637-│                                                                      ; [0x50:4]=0xd2810600
-194638-│           0x0017ca20      autibsp
-194639-└           0x0017ca24      ret
-194640-       ╎╎   ; CALL XREF from fcn.00175f44 @ 0x176f70
-194641-       ╎╎   ; CALL XREF from fcn.0017b450 @ 0x17b4d8
-194642-       ╎╎   ; CODE XREF from fcn.0017db48 @ 0x17df10
-194643-       ╎╎   ; CALL XREF from fcn.0017e384 @ 0x17e430
-194644-┌ fcn.0017ca28();
-194645-│      ╎╎   ; var int64_t var_20h @ stack - 0x20
-194646-│      ╎╎   ; var int64_t var_10h @ stack - 0x10
-194647-│      ╎╎   0x0017ca28      pacibsp
+echo "========== SMC INSTRUCTIONS =========="
+grep -n -B 7 -A 10 'smc[[:space:]]+0' "$ASM" | head -300
 
 ========== 0010c62c ==========
-934-│ ╎╎╎╎│││   ; UNKNOWN XREF from syscall.0.2b3f2c @ +0x394
-935-│ ╎╎╎╎│││   ;-- aav.0x00000454:
-936-│ ╎╎╎╎│││   0x00000454      mov   w23, 1
-937:│ ╎╎╎╎│││   ; DATA XREF from fcn.0010c62c @ 0x10c66c
-938-│ ╎╎╎╎│││   ; DATA XREF from fcn.00175358 @ +0x64
-939-│ ╎╎╎╎│││   ; DATA XREF from fcn.001d4218 @ 0x1d4248
-940-│ ╎╎╎╎│││   ; DATA XREF from fcn.001d4300 @ 0x1d4360
-941-│ ╎╎╎╎│││   0x00000458      stp   w10, w9, [var_aav.aav.0x00000118]
-942-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ebdc  DATA 0x0016ec0c  DATA 0x0016eec0
-943-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ef10  DATA 0x0016efe0  DATA 0x0016f140
-944-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016f1a8  DATA 0x0016f21c  DATA 0x0018b0d8
-945-│ ╎╎╎╎│││   ; XREFS: DATA 0x001ae804
-946-│ ╎╎╎╎│││   0x0000045c      ldr   w10, [x8, 0xc8]                      ; aav.0x000000c8
-947-│ ╎╎╎╎│││                                                              ; [0xc8:4]=0xd50344ff
-948-│ ╎╎╎╎│││   ; XREFS(21)
-949-│ ╎╎╎╎│││   ;-- aav.0x00000460:
-950-│ ╎╎╎╎│││   0x00000460      ldr   w9, [x8, 0xcc]                       ; aav.0x000000cc
-951-│ ╎╎╎╎│││                                                              ; [0xcc:4]=0xd2a80000
-952-│ ╎╎╎╎│││   ; XREFS: DATA 0x0008d8cc  DATA 0x0010ff04  DATA 0x00115da8
-953-│ ╎╎╎╎│││   ; XREFS: DATA 0x001481a0  DATA 0x00194894  DATA 0x001949ac
-954-│ ╎╎╎╎│││   ; XREFS: DATA 0x00197168  DATA 0x0028bdb4  DATA 0x0028f39c
-955-│ ╎╎╎╎│││   0x00000464      stp   w10, w9, [var_aav.aav.0x00000118]
-956-│ ╎╎╎╎│││   ; XREFS: DATA 0x0000338c  DATA 0x0002b698  DATA 0x0011f3c8
-957-│ ╎╎╎╎│││   ; XREFS: DATA 0x0019c268  DATA 0x0023390c  UNKNOWN 0x002a6378
-958-│ ╎╎╎╎│││   ; XREFS: DATA 0x002b03b0
-959-│ ╎╎╎╎│││   ;-- aav.0x00000468:
-960-│ ╎╎╎╎│││   0x00000468      ldr   w10, [x8, 0xd0]                      ; aav.0x000000d0
-961-│ ╎╎╎╎│││                                                              ; [0xd0:4]=0xd5380501
-962-│ ╎╎╎╎│││   ; XREFS: UNKNOWN 0x000408bc  DATA 0x000f50a4  DATA 0x000f5324
-963-│ ╎╎╎╎│││   ; XREFS: DATA 0x000f5420  DATA 0x000f5594  DATA 0x000f5798
-964-│ ╎╎╎╎│││   ; XREFS: DATA 0x000f6dd0  DATA 0x000f83d0  DATA 0x0011f3dc
-965-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ecdc  DATA 0x0016f77c  DATA 0x00189a70
-966-│ ╎╎╎╎│││   ; XREFS: DATA 0x002afbac  DATA 0x002b0060
-967-│ ╎╎╎╎│││   ;-- aav.0x0000046c:
-968-│ ╎╎╎╎│││   0x0000046c      ldr   w9, [x8, 0xd4]                       ; aav.0x000000d4
-969-│ ╎╎╎╎│││                                                              ; [0xd4:4]=0xd3441c21 ; "!\U0000001cD\xd3A"
-970-│ ╎╎╎╎│││   ; XREFS: UNKNOWN 0x0007aaa8  UNKNOWN 0x0007ada0  UNKNOWN 0x0007ae08
-971-│ ╎╎╎╎│││   ; XREFS: UNKNOWN 0x0007ae70  UNKNOWN 0x0007aed8  UNKNOWN 0x0007af40
-972-│ ╎╎╎╎│││   ; XREFS: DATA 0x000f55e8  DATA 0x000f5610  DATA 0x000f6d6c
-973-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016eea8  DATA 0x0016eed4  DATA 0x0016eef0
-974-│ ╎╎╎╎│││   ; XREFS: DATA 0x001a21a0  DATA 0x002234fc  DATA 0x00223754
-975-│ ╎╎╎╎│││   ; XREFS: DATA 0x002afbbc  DATA 0x002b0070  DATA 0x004fb58c
-976-│ ╎╎╎╎│││   ;-- aav.0x00000470:
-977-│ ╎╎╎╎│││   0x00000470      stp   w10, w9, [var_aav.aav.0x00000118]
-978-│ ╎╎╎╎│││   ; XREFS: DATA 0x00003740  DATA 0x000f50d8  DATA 0x00104174
-979-│ ╎╎╎╎│││   ; XREFS: DATA 0x00110cc0  DATA 0x0011f600  DATA 0x0016a2c8
-980-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016eeec  DATA 0x002b075c  DATA 0x002b6488
-981-│ ╎╎╎╎│││   0x00000474      ldr   w10, [x8, 0xd8]                      ; aav.0x000000d8
-982-│ ╎╎╎╎│││                                                              ; [0xd8:4]=0xb4000041 ; "A"
-983-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ee9c  DATA 0x0016f73c  DATA 0x001776e8
-984-│ ╎╎╎╎│││   ; XREFS: DATA 0x0018fb1c  DATA 0x001934a8  DATA 0x0019c1f0
-985-│ ╎╎╎╎│││   ; XREFS: DATA 0x0019c7a8  DATA 0x00200558  DATA 0x0023385c
-986-│ ╎╎╎╎│││   ; XREFS: DATA 0x002b0374
-987-│ ╎╎╎╎│││   0x00000478      ldr   w9, [x8, 0xdc]                       ; aav.0x000000dc
-988-│ ╎╎╎╎│││                                                              ; [0xdc:4]=0xb26c0000
-989-│ ╎╎╎╎│││   ; XREFS: DATA 0x00028c2c  DATA 0x0011ff30  DATA 0x0011ff60
-990-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ee6c  DATA 0x0016ef90  DATA 0x0016efd4
-991-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016f088  DATA 0x0016f14c  DATA 0x0016f170
-992-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016f190  DATA 0x00193494  DATA 0x001951f8
-993-│ ╎╎╎╎│││   ; XREFS: DATA 0x00195218  DATA 0x001a83c4  DATA 0x00217028
-994-│ ╎╎╎╎│││   ; XREFS: DATA 0x002afbcc  DATA 0x002b0080  DATA 0x002d3714
-995-│ ╎╎╎╎│││   0x0000047c      stp   w10, w9, [var_aav.aav.0x00000118]
-996-│ ╎╎╎╎│││   ; XREFS(41)
-997-│ ╎╎╎╎│││   ;-- aav.0x00000480:
-998-│ ╎╎╎╎│││   0x00000480      ldr   w10, [x8, 0xe0]                      ; aav.0x000000e0
-999-│ ╎╎╎╎│││                                                              ; [0xe0:4]=0xd51e1140 ; "@\U00000011\U0000001e\xd5"
-1000-│ ╎╎╎╎│││   ; XREFS: DATA 0x0010144c  DATA 0x0011cd44  DATA 0x0011ce0c
-1001-│ ╎╎╎╎│││   ; XREFS: DATA 0x0011ced0  DATA 0x0011d068  DATA 0x001211ac
-1002-│ ╎╎╎╎│││   ; XREFS: DATA 0x001212d0  DATA 0x00132468  DATA 0x0016eda8
-1003-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ef84  DATA 0x00179214  DATA 0x00507b90
-1004-│ ╎╎╎╎│││   0x00000484      ldr   w9, [x8, 0xe4]                       ; [0xe4:4]=0xd5380400
-1005-│ ╎╎╎╎│││   ; XREFS: DATA 0x000f3e74  DATA 0x000f79f0  DATA 0x00121274
-1006-│ ╎╎╎╎│││   ; XREFS: DATA 0x00139798  DATA 0x00139850  DATA 0x00139864
-1007-│ ╎╎╎╎│││   ; XREFS: DATA 0x00160d58  DATA 0x0016edf8  DATA 0x001d4c60
-1008-│ ╎╎╎╎│││   0x00000488      stp   w10, w9, [var_aav.aav.0x00000118]
-1009-│ ╎╎╎╎│││   ; XREFS: DATA 0x000201e4  DATA 0x00020384  DATA 0x00115d1c
-1010-│ ╎╎╎╎│││   ; XREFS: DATA 0x00159838  DATA 0x0016abd0  DATA 0x0016ac98
-1011-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ee60  DATA 0x0016f108  DATA 0x0016f120
-1012-│ ╎╎╎╎│││   ; XREFS: DATA 0x00179590  DATA 0x0018c1cc  DATA 0x00502e34
-1013-│ ╎╎╎╎│││   0x0000048c      ldr   w10, [x8, 0xe8]                      ; aav.0x000000e8
-1014-│ ╎╎╎╎│││                                                              ; [0xe8:4]=0xd370cc00
-1015-│ ╎╎╎╎│││   ; XREFS(31)
-1016-│ ╎╎╎╎│││   ;-- aav.0x00000490:
-1017-│ ╎╎╎╎│││   0x00000490      ldr   w9, [x8, 0xec]                       ; aav.0x000000ec
-1018-│ ╎╎╎╎│││                                                              ; [0xec:4]=0xf100041f
-1019-│ ╎╎╎╎│││   ; XREFS: DATA 0x000f3478  DATA 0x001141a8  DATA 0x001141d8
-1020-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ee1c  DATA 0x0016ee64  DATA 0x0016efc0
-1021-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016f024  DATA 0x0016f09c  DATA 0x0016f0e4
-1022-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016f204  DATA 0x0016f25c  DATA 0x0018eb00
-1023-│ ╎╎╎╎│││   ; XREFS: DATA 0x001a9a44  DATA 0x001d6534  DATA 0x0025dab4
-1024-│ ╎╎╎╎│││   ; XREFS: DATA 0x002d9748
-1025-│ ╎╎╎╎│││   0x00000494      stp   w10, w9, [var_aav.aav.0x00000118]
-1026-│ ╎╎╎╎│││   ; XREFS: DATA 0x000f3e70  DATA 0x0010fc20  DATA 0x001162ec
-1027-│ ╎╎╎╎│││   ; XREFS: DATA 0x0016ed04  DATA 0x001a9a4c  DATA 0x001af1b0
-1028-│ ╎╎╎╎│││   ; XREFS: DATA 0x001e9c80  DATA 0x00233934
-1029-│ ╎╎╎╎│││   0x00000498      str   wzr, [x8]
-1030-│ ╎╎╎╎│││   ; DATA XREF from fcn.00115b44 @ 0x11606c
-1031-│ ╎╎╎╎│││   ; DATA XREF from fcn.0016ecb4 @ 0x16ed08
-1032-│ ╎╎╎╎│││   ; DATA XREF from fcn.001859b8 @ 0x185e34
-1033-│ ╎╎╎╎│││   0x0000049c      str   wzr, [x8, 4]
-1034-│ ╎╎╎╎│││   ; XREFS(21)
-1035-│ ╎╎╎╎│││   ;-- aav.0x000004a0:
-1036-│ ╎╎╎╎│││   0x000004a0      str   wzr, [x8, 8]
-1037-│ ╎╎╎╎│││   ; DATA XREF from fcn.00014808 @ 0x14820
-
-========== 0010c4a4 ==========
-66629-└           0x0010c4a0      ret
-66630-            ; CALL XREF from fcn.0017b4ec @ 0x17b54c
-66631-            ; CALL XREFS from fcn.0017bfac @ 0x17c0a4, 0x17c728
-66632:┌ fcn.0010c4a4(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-66633-│           ; arg int64_t arg1 @ x0
-66634-│           ; arg int64_t arg2 @ x1
-66635-│           ; arg int64_t arg3 @ x2
-66636-│           ; arg int64_t arg4 @ x3
-66637-│           ; arg int64_t arg5 @ x4
-66638-│           ; arg int64_t arg6 @ x5
-66639-│           ; arg int64_t arg7 @ x6
-66640-│           ; arg int64_t arg8 @ x7
-66641-│           ; var int64_t var_40h @ stack - 0x40
-66642-│           ; var int64_t var_30h @ stack - 0x30
-66643-│           ; var int64_t var_20h @ stack - 0x20
-66644-│           ; var int64_t var_10h @ stack - 0x10
-66645-│           0x0010c4a4      pacibsp
-66646-│           0x0010c4a8      stp   x29, x30, [var_40h]!
-66647-│           0x0010c4ac      str   x23, [var_30h]
-66648-│           0x0010c4b0      stp   x22, x21, [var_20h]
-66649-│           0x0010c4b4      stp   x20, x19, [var_10h]
-66650-│           0x0010c4b8      mov   x29, sp
-66651-│           0x0010c4bc      mov   x23, x0                              ; arg1
-66652-│           0x0010c4c0      adrp  x0, 0x24e000
-66653-│           0x0010c4c4      add   x0, x0, 0xbf3                        ; int64_t arg1
-66654-│           0x0010c4c8      bl    fcn.0014c9f8
-66655-│           0x0010c4cc      mov   w0, 0x1014
-66656-│           0x0010c4d0      movk  w0, 0xc200, lsl 16
-66657-│           0x0010c4d4      mov   w1, 0x105
-66658-│           0x0010c4d8      mov   x2, xzr
-66659-│           0x0010c4dc      mov   x3, xzr
-66660-│           0x0010c4e0      smc   0
-66661-│           0x0010c4e4      mov   x20, x2
-66662-│           0x0010c4e8      mov   x19, x0
-66663-│       ┌─< 0x0010c4ec      cbz   x0, 0x10c530
-66664-│       │   0x0010c4f0      mov   w8, -1
-66665-│       │   0x0010c4f4      mov   x22, x1
-66666-│       │   0x0010c4f8      mov   x21, x3
-66667-│       │   0x0010c4fc      cmp   x19, x8
-66668-│      ┌──< 0x0010c500      b.ne  0x10c510
-66669-│      ││   0x0010c504      adrp  x0, 0x245000
-66670-│      ││   0x0010c508      add   x0, x0, aav.0x00000400               ; int64_t arg1
-66671-│      ││   0x0010c50c      bl    fcn.0014c9f8
-66672-│      └──> 0x0010c510      adrp  x0, 0x27c000
-66673-│       │   0x0010c514      add   x0, x0, 0x5b9                        ; int64_t arg1
-66674-│       │   0x0010c518      mov   x1, x19                              ; int64_t arg2
-66675-│       │   0x0010c51c      mov   x2, x22                              ; unsigned long arg3
-66676-│       │   0x0010c520      mov   x3, x20                              ; int64_t arg4
-66677-│       │   0x0010c524      mov   x4, x21                              ; int64_t arg5
-66678-│       │   0x0010c528      bl    fcn.0014c9f8
-66679-│      ┌──< 0x0010c52c      b     0x10c544
-66680-│      │└─> 0x0010c530      adrp  x0, 0x273000
-66681-│      │    0x0010c534      add   x0, x0, 0x3d2                        ; int64_t arg1
-66682-│      │    0x0010c538      mov   x1, x20                              ; int64_t arg2
-66683-│      │    0x0010c53c      str   x20, [x23]
-66684-│      │    0x0010c540      bl    fcn.0014c9f8
-66685-│      │    ; CODE XREF from fcn.0010c4a4 @ 0x10c52c
-66686-│      └──> 0x0010c544      mov   x0, x19
-66687-│           0x0010c548      ldp   x20, x19, [var_10h]
-66688-│           0x0010c54c      ldp   x22, x21, [var_20h]
-66689-│           0x0010c550      ldr   x23, [var_30h]                       ; aav.0x00000010
-66690-│                                                                      ; [0x10:4]=0x14000004
-66691-│           0x0010c554      ldp   x29, x30, [sp], 0x40
-66692-│           0x0010c558      autibsp
-66693-└           0x0010c55c      ret
-66694-            ; XREFS: CALL 0x0017bc3c  CALL 0x0017c854  CALL 0x0017c878
-66695-            ; XREFS: CALL 0x0017c8a4  CALL 0x00183b0c  CALL 0x00184580
-66696-┌ fcn.0010c560(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-66697-│           ; arg int64_t arg1 @ x0
-66698-│           ; arg int64_t arg2 @ x1
-66699-│           ; arg int64_t arg3 @ x2
-66700-│           ; arg int64_t arg4 @ x3
-66701-│           ; arg int64_t arg5 @ x4
-66702-│           ; arg int64_t arg6 @ x5
-66703-│           ; arg int64_t arg7 @ x6
-66704-│           ; arg int64_t arg8 @ x7
-66705-│           ; var int64_t var_30h @ stack - 0x30
-66706-│           ; var int64_t var_20h @ stack - 0x20
-66707-│           ; var int64_t var_10h @ stack - 0x10
-66708-│           0x0010c560      pacibsp
-66709-│           0x0010c564      stp   x29, x30, [var_30h]!
-66710-│           0x0010c568      stp   x22, x21, [var_20h]
-66711-│           0x0010c56c      stp   x20, x19, [var_10h]
-66712-│           0x0010c570      mov   x29, sp
-66713-│           0x0010c574      sub   x8, x0, 5                            ; arg1
-66714-│           0x0010c578      cmp   x8, 0x1b
-66715-│       ┌─< 0x0010c57c      b.lo  0x10c594
-66716-│       │   0x0010c580      adrp  x0, 0x278000
-66717-│       │   0x0010c584      add   x0, x0, 0x14f                        ; int64_t arg1
-66718-│       │   0x0010c588      bl    fcn.0014c9f8
-66719-│       │   0x0010c58c      mov   x19, xzr
-66720-│      ┌──< 0x0010c590      b     0x10c614
-66721-│      │└─> 0x0010c594      mov   x19, x0                              ; arg1
-66722-│      │    0x0010c598      adrp  x0, 0x266000
-66723-│      │    0x0010c59c      add   x0, x0, 0x808                        ; int64_t arg1
-66724-│      │    0x0010c5a0      bl    fcn.0014c9f8
-66725-│      │    0x0010c5a4      mov   w0, 0x1014
-66726-│      │    0x0010c5a8      movk  w0, 0xc200, lsl 16
-66727-│      │    0x0010c5ac      mov   w1, 0xc
-66728-│      │    0x0010c5b0      mov   x2, x19
-66729-│      │    0x0010c5b4      mov   x3, xzr
-66730-│      │    0x0010c5b8      smc   0
-66731-│      │    0x0010c5bc      mov   x19, x0
-66732-│      │┌─< 0x0010c5c0      cbz   x0, 0x10c608
 
 ========== 0010c3fc ==========
-66573-└           0x0010c3f8      ret
-66574-            ; CALL XREF from fcn.0017b4ec @ 0x17b544
-66575-            ; CALL XREF from fcn.0017bfac @ 0x17c71c
-66576:┌ fcn.0010c3fc(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-66577-│           ; arg int64_t arg2 @ x1
-66578-│           ; arg int64_t arg3 @ x2
-66579-│           ; arg int64_t arg4 @ x3
-66580-│           ; arg int64_t arg5 @ x4
-66581-│           ; arg int64_t arg6 @ x5
-66582-│           ; arg int64_t arg7 @ x6
-66583-│           ; arg int64_t arg8 @ x7
-66584-│           ; var int64_t var_30h @ stack - 0x30
-66585-│           ; var int64_t var_20h @ stack - 0x20
-66586-│           ; var int64_t var_10h @ stack - 0x10
-66587-│           0x0010c3fc      pacibsp
-66588-│           0x0010c400      stp   x29, x30, [var_30h]!
-66589-│           0x0010c404      stp   x22, x21, [var_20h]
-66590-│           0x0010c408      stp   x20, x19, [var_10h]
-66591-│           0x0010c40c      mov   x29, sp
-66592-│           0x0010c410      adrp  x0, 0x23a000
-66593-│           0x0010c414      add   x0, x0, 0x1db                        ; int64_t arg1
-66594-│           0x0010c418      bl    fcn.0014c9f8
-66595-│           0x0010c41c      mov   w0, 0x1014
-66596-│           0x0010c420      movk  w0, 0xc200, lsl 16
-66597-│           0x0010c424      mov   w1, 6
-66598-│           0x0010c428      mov   x2, xzr
-66599-│           0x0010c42c      mov   x3, xzr
-66600-│           0x0010c430      smc   0
-66601-│           0x0010c434      mov   x19, x0
-66602-│       ┌─< 0x0010c438      cbz   x0, 0x10c480
-66603-│       │   0x0010c43c      mov   w8, -1
-66604-│       │   0x0010c440      mov   x22, x1
-66605-│       │   0x0010c444      mov   x21, x2
-66606-│       │   0x0010c448      mov   x20, x3
-66607-│       │   0x0010c44c      cmp   x19, x8
-66608-│      ┌──< 0x0010c450      b.ne  0x10c460
-66609-│      ││   0x0010c454      adrp  x0, 0x245000
-66610-│      ││   0x0010c458      add   x0, x0, aav.0x00000400               ; int64_t arg1
-66611-│      ││   0x0010c45c      bl    fcn.0014c9f8
-66612-│      └──> 0x0010c460      adrp  x0, 0x266000
-66613-│       │   0x0010c464      add   x0, x0, 0x7b9                        ; int64_t arg1
-66614-│       │   0x0010c468      mov   x1, x19                              ; int64_t arg2
-66615-│       │   0x0010c46c      mov   x2, x22                              ; unsigned long arg3
-66616-│       │   0x0010c470      mov   x3, x21                              ; int64_t arg4
-66617-│       │   0x0010c474      mov   x4, x20                              ; int64_t arg5
-66618-│       │   0x0010c478      bl    fcn.0014c9f8
-66619-│      ┌──< 0x0010c47c      b     0x10c48c
-66620-│      │└─> 0x0010c480      adrp  x0, 0x27a000
-66621-│      │    0x0010c484      add   x0, x0, 0x25c                        ; int64_t arg1
-66622-│      │    0x0010c488      bl    fcn.0014c9f8
-66623-│      │    ; CODE XREF from fcn.0010c3fc @ 0x10c47c
-66624-│      └──> 0x0010c48c      mov   x0, x19
-66625-│           0x0010c490      ldp   x20, x19, [var_10h]
-66626-│           0x0010c494      ldp   x22, x21, [var_20h]
-66627-│           0x0010c498      ldp   x29, x30, [sp], 0x30
-66628-│           0x0010c49c      autibsp
-66629-└           0x0010c4a0      ret
-66630-            ; CALL XREF from fcn.0017b4ec @ 0x17b54c
-66631-            ; CALL XREFS from fcn.0017bfac @ 0x17c0a4, 0x17c728
-66632-┌ fcn.0010c4a4(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-66633-│           ; arg int64_t arg1 @ x0
-66634-│           ; arg int64_t arg2 @ x1
-66635-│           ; arg int64_t arg3 @ x2
-66636-│           ; arg int64_t arg4 @ x3
-66637-│           ; arg int64_t arg5 @ x4
-66638-│           ; arg int64_t arg6 @ x5
-66639-│           ; arg int64_t arg7 @ x6
-66640-│           ; arg int64_t arg8 @ x7
-66641-│           ; var int64_t var_40h @ stack - 0x40
-66642-│           ; var int64_t var_30h @ stack - 0x30
-66643-│           ; var int64_t var_20h @ stack - 0x20
-66644-│           ; var int64_t var_10h @ stack - 0x10
-66645-│           0x0010c4a4      pacibsp
-66646-│           0x0010c4a8      stp   x29, x30, [var_40h]!
-66647-│           0x0010c4ac      str   x23, [var_30h]
-66648-│           0x0010c4b0      stp   x22, x21, [var_20h]
-66649-│           0x0010c4b4      stp   x20, x19, [var_10h]
-66650-│           0x0010c4b8      mov   x29, sp
-66651-│           0x0010c4bc      mov   x23, x0                              ; arg1
-66652-│           0x0010c4c0      adrp  x0, 0x24e000
-66653-│           0x0010c4c4      add   x0, x0, 0xbf3                        ; int64_t arg1
-66654-│           0x0010c4c8      bl    fcn.0014c9f8
-66655-│           0x0010c4cc      mov   w0, 0x1014
-66656-│           0x0010c4d0      movk  w0, 0xc200, lsl 16
-66657-│           0x0010c4d4      mov   w1, 0x105
-66658-│           0x0010c4d8      mov   x2, xzr
-66659-│           0x0010c4dc      mov   x3, xzr
-66660-│           0x0010c4e0      smc   0
-66661-│           0x0010c4e4      mov   x20, x2
-66662-│           0x0010c4e8      mov   x19, x0
-66663-│       ┌─< 0x0010c4ec      cbz   x0, 0x10c530
-66664-│       │   0x0010c4f0      mov   w8, -1
-66665-│       │   0x0010c4f4      mov   x22, x1
-66666-│       │   0x0010c4f8      mov   x21, x3
-66667-│       │   0x0010c4fc      cmp   x19, x8
-66668-│      ┌──< 0x0010c500      b.ne  0x10c510
-66669-│      ││   0x0010c504      adrp  x0, 0x245000
-66670-│      ││   0x0010c508      add   x0, x0, aav.0x00000400               ; int64_t arg1
-66671-│      ││   0x0010c50c      bl    fcn.0014c9f8
-66672-│      └──> 0x0010c510      adrp  x0, 0x27c000
-66673-│       │   0x0010c514      add   x0, x0, 0x5b9                        ; int64_t arg1
-66674-│       │   0x0010c518      mov   x1, x19                              ; int64_t arg2
-66675-│       │   0x0010c51c      mov   x2, x22                              ; unsigned long arg3
-66676-│       │   0x0010c520      mov   x3, x20                              ; int64_t arg4
 
-========== 001392bc ==========
-118376-└           0x00138f2c      ret
-118377-            ; CALL XREF from fcn.0013902c @ 0x139044
-118378-            ; CALL XREF from fcn.001390c0 @ 0x1390ec
-118379:            ; CALL XREF from fcn.001392bc @ 0x1392e8
-118380-            ; CALL XREF from fcn.001394b8 @ 0x1394e0
-118381-┌ fcn.00138f30(int64_t arg1);
-118382-│           ; arg int64_t arg1 @ x0
-118383-│           ; var int64_t var_30h @ stack - 0x30
-118384-│           ; var int64_t var_20h @ stack - 0x20
-118385-│           ; var int64_t var_10h @ stack - 0x10
-118386-│           0x00138f30      pacibsp
-118387-│           0x00138f34      sub   sp, sp, 0x70
-118388-│           0x00138f38      stp   x29, x30, [var_30h]
-118389-│           0x00138f3c      str   x21, [var_20h]
-118390-│           0x00138f40      stp   x20, x19, [var_10h]
-118391-│           0x00138f44      add   x29, sp, 0x40
-118392-│           0x00138f48      adrp  x21, 0x572000
-118393-│           0x00138f4c      ldr   w8, [x21, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
-118394-│           0x00138f50      mov   w19, w0                              ; arg1
-118395-│           0x00138f54      str   wzr, [sp, 0x38]                      ; arg1
-118396-│           0x00138f58      stp   xzr, xzr, [sp, 0x28]
-118397-│           0x00138f5c      cmp   w8, 2
-118398-│           0x00138f60      stp   xzr, xzr, [sp, 0x18]
-118399-│           0x00138f64      stp   xzr, xzr, [sp, 8]
-118400-│           0x00138f68      str   xzr, [sp]
-118401-│       ┌─< 0x00138f6c      b.eq  0x138f9c
-118402-│       │   0x00138f70      cmp   w8, 1
-118403-│      ┌──< 0x00138f74      b.ne  0x138fec
-118404-│      ││   0x00138f78      adrp  x1, 0x243000
-118405-│      ││   0x00138f7c      add   x1, x1, 0x295                        ; int64_t arg2
-118406-│      ││   0x00138f80      mov   x0, sp                               ; int64_t arg1
-118407-│      ││   0x00138f84      mov   w2, 4
-118408-│      ││   0x00138f88      bl    fcn.0014d60c
-118409-│      ││   0x00138f8c      add   w8, w19, 0x30                        ; aav.0x00000030
-118410-│      ││   0x00138f90      strb  w8, [sp, 4]
-118411-│      ││   0x00138f94      mov   w20, 5
-118412-│     ┌───< 0x00138f98      b     0x138fe0
-118413-│     ││└─> 0x00138f9c      cmp   w19, 3
-118414-│     ││┌─< 0x00138fa0      b.ne  0x138fc0
-118415-│     │││   0x00138fa4      adrp  x1, 0x24e000
-118416-│     │││   0x00138fa8      add   x1, x1, 0xf96                        ; int64_t arg2
-118417-│     │││   0x00138fac      mov   x0, sp                               ; int64_t arg1
-118418-│     │││   0x00138fb0      mov   w2, 7
-118419-│     │││   0x00138fb4      mov   w20, 7
-118420-│     │││   0x00138fb8      bl    fcn.0014d60c
-118421-│    ┌────< 0x00138fbc      b     0x138fe0
-118422-│    │││└─> 0x00138fc0      adrp  x1, 0x23e000
-118423-│    │││    0x00138fc4      add   x1, x1, 0x866                        ; int64_t arg2
-118424-│    │││    0x00138fc8      mov   x0, sp                               ; int64_t arg1
-118425-│    │││    0x00138fcc      mov   w2, 3
-118426-│    │││    0x00138fd0      bl    fcn.0014d60c
-118427-│    │││    0x00138fd4      add   w8, w19, 0x30                        ; aav.0x00000030
-118428-│    │││    0x00138fd8      mov   w20, 4
-118429-│    │││    0x00138fdc      strb  w8, [sp, 3]
-118430-│    │││    ; CODE XREFS from fcn.00138f30 @ 0x138f98, 0x138fbc
-118431-│    └└───> 0x00138fe0      mov   x8, sp
-118432-│      │    0x00138fe4      orr   x8, x8, x20
-118433-│      │    0x00138fe8      strb  wzr, [x8]
-118434-│      └──> 0x00138fec      mov   x0, sp                               ; int64_t arg1
-118435-│           0x00138ff0      bl    fcn.00204950
-118436-│           0x00138ff4      mov   x20, x0
-118437-│       ┌─< 0x00138ff8      cbnz  x0, 0x139010
-118438-│       │   0x00138ffc      ldr   w1, [x21, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
-118439-│       │   0x00139000      adrp  x0, 0x257000
-118440-│       │   0x00139004      add   x0, x0, 0x77d                        ; int64_t arg1
-118441-│       │   0x00139008      mov   w2, w19
-118442-│       │   0x0013900c      bl    fcn.0014c9f8
-118443-│       └─> 0x00139010      mov   x0, x20
-118444-│           0x00139014      ldp   x20, x19, [var_10h]
-118445-│           0x00139018      ldr   x21, [var_20h]                       ; aav.0x00000050
-118446-│                                                                      ; [0x50:4]=0xd2810600
-118447-│           0x0013901c      ldp   x29, x30, [var_30h]
-118448-│           0x00139020      add   sp, sp, 0x70
-118449-│           0x00139024      autibsp
-118450-└           0x00139028      ret
-118451-            ; CALL XREF from fcn.00141ba0 @ 0x141c58
-118452-            ; CALL XREF from fcn.00175f44 @ 0x176154
-118453-            ; CALL XREF from fcn.00177854 @ 0x177974
-118454-┌ fcn.0013902c(int64_t arg1);
-118455-│           ; arg int64_t arg1 @ x0
-118456-│           ; var int64_t var_30h @ stack - 0x30
-118457-│           ; var int64_t var_20h @ stack - 0x20
-118458-│           ; var int64_t var_10h @ stack - 0x10
-118459-│           0x0013902c      pacibsp
-118460-│           0x00139030      stp   x29, x30, [var_30h]!
-118461-│           0x00139034      str   x21, [var_20h]
-118462-│           0x00139038      stp   x20, x19, [var_10h]
-118463-│           0x0013903c      mov   x29, sp
-118464-│           0x00139040      mov   w19, w0                              ; arg1
-118465-│           0x00139044      bl    fcn.00138f30
-118466-│       ┌─< 0x00139048      cbz   x0, 0x139090
-118467-│       │   0x0013904c      adrp  x9, 0x572000
-118468-│       │   0x00139050      ldr   w8, [x0, 0x38]                       ; aav.0x00000038
-118469-│       │                                                              ; [0x38:4]=0x9100023f ; "?\U00000002"
-118470-│       │   0x00139054      ldr   w9, [x9, 0x5e8]                      ; [0x5e8:4]=0xf100c11f
-118471-│       │   0x00139058      mov   x20, x0
-118472-│       │   0x0013905c      adrp  x0, 0x257000
-118473-│       │   0x00139060      lsl   w10, w8, 3
-118474-│       │   0x00139064      cmp   w9, 1
-118475-│       │   0x00139068      csel  w21, w10, w8, eq
-118476-│       │   0x0013906c      adrp  x1, 0x245000
-118477-│       │   0x00139070      add   x0, x0, 0x7ac                        ; int64_t arg1
-118478-│       │   0x00139074      add   x1, x1, 0xa12                        ; int64_t arg2
-118479-│       │   0x00139078      mov   w2, w19
+========== 0010c4a4 ==========
 
-========== SMC ID / RELATED REFERENCES ==========
-2643-│    ╎│╎    ; DATA XREF from aav.0x0003c0f0 @ +0xa64
-2644-│    ╎└───> 0x000011bc      sub   x11, x8, aav.0x00000178
-2645-│    ╎ ╎    ; DATA XREF from fcn.002ded20 @ +0x7f4
-2646-│    ╎ ╎    0x000011c0      ldr   w12, [x11]
-2647-│    ╎ ╎    0x000011c4      cmp   x19, 0
-2648:│    ╎ ╎    0x000011c8      and   w13, w12, 0xfffffff3
-2649-│    ╎ ╎    ; DATA XREF from aav.0x0003c0f0 @ +0x2184
-2650-│    ╎ ╎    0x000011cc      and   w12, w12, 0xfffffff0
-2651-│    ╎ ╎    ; DATA XREF from fcn.000231d8 @ 0x233a4
-2652-│    ╎ ╎    ; DATA XREFS from fcn.0002db80 @ 0x2dcfc, 0x2dd44
-2653-│    ╎ ╎    0x000011d0      orr   w12, w12, 2
-2654-│    ╎ ╎    ; DATA XREF from fcn.000231d8 @ 0x233ac
-2655-│    ╎ ╎    ; DATA XREFS from fcn.0002db80 @ 0x2dd08, 0x2dd50
-2656-│    ╎ ╎    0x000011d4      csel  w12, w13, w12, eq
---
-21726-│           0x00022894      strb  w7, [x3, 0x20]
-21727-│           0x00022898      ldrb  w6, [x6, 0x2b1]                      ; [0x2b1:4]=0x9b9406f
-21728-│           0x0002289c      cmp   w6, 1
-21729-│       ┌─< 0x000228a0      b.ne  0x228b0
-21730-│       │   0x000228a4      ldrb  w6, [x3, 1]                          ; [0x1:4]=0x6b000000
-21731:│       │   0x000228a8      and   w6, w6, 0xfffffff3
-21732-│       │   0x000228ac      strb  w6, [x3, 1]
-21733-│       └─> 0x000228b0      add   x7, x5, aav.0x000006f0
-21734-│           0x000228b4      ldr   w6, [x3, 0x20]                       ; aav.0x00000020
-21735-│                                                                      ; [0x20:4]=0x58000940 ; "@\t"
-21736-│           0x000228b8      ldrb  w7, [x7, 0x2d9]                      ; [0x2d9:4]=0x9b94083
-21737-│           0x000228bc      cmp   w7, 1
-21738-│       ┌─< 0x000228c0      b.ne  0x228cc
-21739-│       │   0x000228c4      bfxil w6, w7, 0, 2
---
-24869-│      │╎                                                              ; [0x4:4]=0x2148776b ; "kwH!daeh"
-24870-│      │╎   0x00025d60      cmp   w3, 1
-24871-│     ┌───< 0x00025d64      b.ne  0x25d7c
-24872-│     ││╎   0x00025d68      bfi   w0, w3, 0x1e, 2
-24873-│     ││╎   0x00025d6c      ldrb  w3, [x1, 1]                          ; [0x1:4]=0x6b000000
-24874:│     ││╎   0x00025d70      and   w3, w3, 0xfffffff3
-24875-│     ││╎   0x00025d74      strb  w3, [x1, 1]
-24876-│    ┌────< 0x00025d78      b     0x25d94
-24877-│    │└───> 0x00025d7c      ldrb  w3, [x1, 1]                          ; [0x1:4]=0x6b000000
-24878-│    │ │╎   0x00025d80      orr   w0, w0, 0xc0000000
-24879-│    │ │╎   0x00025d84      ubfx  x6, x3, 3, 1
-24880-│    │ │╎   0x00025d88      ubfx  x3, x3, 2, 1
-24881-│    │ │╎   0x00025d8c      bfi   w0, w6, 0x1d, 1
-24882-│    │ │╎   0x00025d90      bfi   w0, w3, 0x1c, 1
---
-25452-│           0x00026508      orr   w19, w19, 0x8000000
-25453-│           0x0002650c      movk  w23, 7
-25454-│           0x00026510      ldr   x0, [x20, w21, uxtw 3]
-25455-│           0x00026514      orr   w19, w19, aav.0x00040000             ; "6J@\xf6\ec\xc1\xf2"
-25456-│           ; DATA XREF from aav.0x0004e200 @ +0x1a50
-25457:│           0x00026518      and   w19, w19, 0xfffffff3
-25458-│           0x0002651c      str   w23, [x0, 0x3d0]
-25459-│           0x00026520      str   w19, [x0, 0x3c8]
-25460-│           0x00026524      orr   w19, w19, 2
-25461-│           0x00026528      str   w19, [x0, 0x3c8]
-25462-│           0x0002652c      and   w19, w19, 0xfffffffd
-25463-│           0x00026530      ldr   x0, [x22, 0x168]                     ; [0x168:4]=0x90000015 ; int64_t arg1
-25464-│           0x00026534      blr   x0
-25465-│           0x00026538      ldr   x1, [x20, w21, uxtw 3]
---
-26027-│       ╎   0x00026cc4      str   w1, [x0, 0xa68]
-26028-│       ╎   0x00026cc8      ldr   w1, [x0, aav.0x00000600]             ; [0x600:4]=0xf100811f
-26029-│       ╎   0x00026ccc      and   w1, w1, 0xff9fffff
-26030-│       ╎   0x00026cd0      str   w1, [x0, aav.0x00000600]
-26031-│       ╎   0x00026cd4      ldr   w1, [x0, 0xadc]                      ; [0xadc:4]=0x4e452033 ; "3 ENC] integrity check was failed\n"
-26032:│       ╎   0x00026cd8      and   w1, w1, 0xfffffff3
-26033-│       ╎   0x00026cdc      str   w1, [x0, 0xadc]
-26034-│      ┌──< 0x00026ce0      b.ne  0x26cf4
-26035-│      │╎   0x00026ce4      ldr   w1, [x0, 0xaf4]                      ; [0xaf4:4]=0x66207361 ; "as failed\n"
-26036:│      │╎   0x00026ce8      and   w1, w1, 0xfffffff3
-26037-│      │╎   0x00026cec      str   w1, [x0, 0xaf4]
-26038-│     ┌───< 0x00026cf0      b     0x26d00
-26039-│     │└──> 0x00026cf4      ldr   w1, [x0, 0xaf8]                      ; [0xaf8:4]=0x656c6961 ; "ailed\n"
-26040:│     │ ╎   0x00026cf8      and   w1, w1, 0xfffffff3
-26041-│     │ ╎   0x00026cfc      str   w1, [x0, 0xaf8]
-26042-│     │ ╎   ; CODE XREF from fcn.00026b98 @ 0x26cf0
-26043-│     └───> 0x00026d00      ldr   w1, [x0, aav.0x00000600]             ; [0x600:4]=0xf100811f
-26044-│       ╎   0x00026d04      add   x27, x27, 1
-26045-│       ╎   0x00026d08      and   w1, w1, 0xf9ffffff
-26046-│       ╎   0x00026d0c      str   w1, [x0, aav.0x00000600]
-26047-│       ╎   0x00026d10      ldr   w1, [x0, 0x608]                      ; [0x608:4]=0x910163e9
-26048-│       ╎   0x00026d14      orr   w1, w1, 0x10000000
---
-38459-│      │┌─< 0x000f4f18      tbnz  w0, 0x1f, 0xf4f3c
-38460-│      ││   0x000f4f1c      ldurb w8, [var_10h]
-38461-│      ││   0x000f4f20      mov   w0, 3
-38462-│      ││   0x000f4f24      mov   w1, 0x7a                             ; 'z'
-38463-│      ││   0x000f4f28      mov   w2, 0x77                             ; 'w'
-38464:│      ││   0x000f4f2c      and   w8, w8, 0xfffffff3
-38465-│      ││   0x000f4f30      orr   w3, w8, 4
-38466-│      ││   0x000f4f34      sturb w3, [var_10h]
-38467-│      ││   0x000f4f38      bl    fcn.0011abfc
-38468-│      │└─> 0x000f4f3c      sub   x3, var_10h + 0x1c                   ; int64_t arg4
-38469-│      │    0x000f4f40      mov   w0, 3
-38470-│      │    0x000f4f44      mov   w1, 0x7b                             ; '{'
-38471-│      │    0x000f4f48      mov   w2, 0x2a                             ; '*'
-38472-│      │    0x000f4f4c      sturb wzr, [var_10h + 0x4]
---
-86390-│ ╎╎╎╎│╎╎   0x0011d818      rev   w8, w8
-86391-│ ╎╎╎╎│╎╎   0x0011d81c      lsr   w8, w8, 0x10
-86392-│ ╎╎╎╎│╎╎   0x0011d820      cmp   w9, 2
-86393-│ ╎╎╎╎│╎╎   0x0011d824      str   w8, [x19, 0x94]
-86394-│ ────────< 0x0011d828      b.ne  0x11d7e0
-86395:│ ╎╎╎╎│╎╎   0x0011d82c      and   w8, w8, 0xfffffff3
-86396-│ ╎╎╎╎│╎╎   0x0011d830      str   w8, [x19, 0x94]
-86397-│ ╎╎╎╎│└──< 0x0011d834      b     0x11d7e0
-86398-│ ╎╎╎╎└───> 0x0011d838      mov   x4, sp                               ; int64_t arg5
-86399-│ ╎╎╎╎  ╎   0x0011d83c      mov   w3, 1
-86400-│ ╎╎╎╎  ╎   0x0011d840      mov   x0, x19                              ; int64_t arg1
-86401-│ ╎╎╎╎  ╎   0x0011d844      mov   w1, wzr
-86402-│ ╎╎╎╎  ╎   0x0011d848      mov   w2, wzr
-86403-│ ╎╎╎╎  ╎   0x0011d84c      bl    fcn.0011b6dc
---
-110721-│ ╎╎╎╎│││   0x00132808      str   w8, [x20, 0x28]
-110722-│ ╎╎╎╎└───> 0x0013280c      ldr   w8, [x20, 8]                         ; aav.0x00000008
-110723-│ ╎╎╎╎ ││                                                              ; [0x8:4]=0x68656164 ; "daeh"
-110724-│ ╎╎╎╎ ││   0x00132810      ldrb  w9, [x19, 0x14]                      ; aav.0x00000014
-110725-│ ╎╎╎╎ ││                                                              ; [0x14:4]=0
-110726:│ ╎╎╎╎ ││   0x00132814      and   w8, w8, 0xfffffff3
-110727-│ ╎╎╎╎ ││   0x00132818      cmp   w9, 0
-110728-│ ╎╎╎╎ ││   0x0013281c      mov   w9, 0xc
-110729-│ ╎╎╎╎ ││   0x00132820      csel  w9, w9, wzr, eq
-110730-│ ╎╎╎╎ ││   0x00132824      orr   w8, w9, w8
-110731-│ ╎╎╎╎ ││   0x00132828      str   w8, [x20, 8]
-110732-│ ╎╎╎╎ ││   0x0013282c      ldrb  w8, [x19, 0x5d]                      ; [0x5d:4]=0xdd5033f
-110733-│ ╎╎╎╎┌───< 0x00132830      tbz   w8, 0, 0x132870
-110734-│ ╎╎╎╎│││   0x00132834      ldr   x8, [x19, 0x18]                      ; aav.0x00000018
---
-191054-│ │││││││   0x00179a14      str   w8, [x21]
-191055-│ │││││││   0x00179a18      orr   w8, w9, 0x40
-191056-│ ────────< 0x00179a1c      b     0x179b80
-191057-│ │││││└──> 0x00179a20      adrp  x8, 0x59f000
-191058-│ │││││ │   0x00179a24      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
-191059:│ │││││ │   0x00179a28      and   w8, w8, 0xfffffff3
-191060-│ │││││┌──< 0x00179a2c      b     0x179b80
-191061-│ ────────> 0x00179a30      adrp  x8, 0x59f000
-191062-│ │││││││   0x00179a34      ldr   w9, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
-191063-│ ────────< 0x00179a38      cbnz  w9, 0x179a44
-191064-│ │││││││   0x00179a3c      mov   w9, 1
-191065-│ │││││││   0x00179a40      str   w9, [x8, 0xa30]
-191066-│ ────────> 0x00179a44      adrp  x8, 0x59f000
-191067-│ │││││││   0x00179a48      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+========== 0017c904 ==========
 
-========== CALLERS ==========
+========== 0017bfac ==========
+
+========== SMC DISPATCH / LOGGING ==========
+21928:│       ╎   0x00022d5c      ldr   w6, [x0, 0xa24]                      ; [0xa24:4]=0x73692072 ; "r is not allowed to call SMC ID 0x%x\n"
+21930:│       ╎   0x00022d64      ldr   w4, [x0, 0xa28]                      ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+23331:│       ╎   0x00024960      ldr   w1, [x0, aav.0x00000a20]             ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+25811:│       │   0x000269c0      ldr   w4, [x1, aav.0x00000a20]             ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+25861:│      │    0x00026a7c      ldr   w1, [x0, aav.0x00000a20]             ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+26064:│       ╎   0x00026d50      ldr   w1, [x0, aav.0x00000a20]             ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+26703:│     │╎╎   0x000275ac      ldr   w0, [x19, 0xa24]                     ; [0xa24:4]=0x73692072 ; "r is not allowed to call SMC ID 0x%x\n"
+26706:│     │╎╎   0x000275b8      ldr   w0, [x19, 0xa24]                     ; [0xa24:4]=0x73692072 ; "r is not allowed to call SMC ID 0x%x\n"
+26747:│     │╎╎   0x00027650      ldr   w1, [x0, 0xa24]                      ; [0xa24:4]=0x73692072 ; "r is not allowed to call SMC ID 0x%x\n"
+26750:│     │╎╎   0x0002765c      ldr   w1, [x0, 0xa24]                      ; [0xa24:4]=0x73692072 ; "r is not allowed to call SMC ID 0x%x\n"
+45072:│           0x000fa780      ldr   x0, [x8, aav.0x00000a20]             ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+45100:│      │    0x000fa7bc      ldr   x0, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+45137:│       │   0x000fa800      ldr   x0, [x27, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45165:│     │││   0x000fa864      ldr   x0, [x27, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45199:│ │││││││   0x000fa8dc      ldr   x0, [x27, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45294:│ ────────> 0x000faa40      ldr   x0, [x27, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45309:│ ────────> 0x000faa70      ldr   x0, [x27, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45394:│      │└─> 0x000fab70      ldr   x8, [x24, 0xa30]                     ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+45409:│     │└──> 0x000faba0      ldr   x8, [x24, 0xa30]                     ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+45433:│     │     0x000fabf4      ldr   x0, [x8, 0xa28]                      ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45494:│       │   0x000fac94      ldr   x0, [x26, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45526:│      ││   0x000fad08      ldr   x0, [x26, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+45751:│           0x000fb1ec      ldr   x0, [x21, aav.0x00000a20]            ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+45761:│     │││   0x000fb214      ldr   x0, [x21, aav.0x00000a20]            ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+46416:│     │╎    0x000fbac0      ldr   x19, [x8, 0xa30]                     ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+46533:│       │   0x000fbc48      ldr   x0, [x21, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+46555:│   │││││   0x000fbc90      ldr   x0, [x21, 0xa28]                     ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+46587:│      │    0x000fbcf0      ldr   x19, [x20, aav.0x00000a20]           ; [0xa20:4]=0x656c6c61 ; "aller is not allowed to call SMC ID 0x%x\n"
+46633:│       │   0x000fbd68      ldr   x0, [x8, 0xa28]                      ; [0xa28:4]=0x746f6e20 ; " not allowed to call SMC ID 0x%x\n"
+46752:│           0x000fbf04      ldr   x8, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+47250:│           0x000fc528      ldr   x8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+47288:│           0x000fc5a0      ldr   x8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+47333:│           0x000fc620      ldr   x8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+47429:│           0x000fc754      ldr   x8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+47465:│           0x000fc7bc      ldr   x8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+47508:│           0x000fc844      ldr   x8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+47546:│           0x000fc8b8      ldr   x8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+56434:│      │    0x00103e34      add   x0, x0, aav.0x00000a20               ; "aller is not allowed to call SMC ID 0x%x\n" ; int64_t arg1
+190152:│     │     0x00178e34      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+190399:│           0x001791ac      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+190491:│           0x001792d4      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+190582:│           0x001793f8      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+190673:│           0x00179520      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+190763:│           0x00179648      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+190792:│           0x001796b4      ldr   w8, [x8, 0xa34]                      ; [0xa34:4]=0x206f7420 ; " to call SMC ID 0x%x\n"
+190814:│           0x001796e4      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+191032:│ ││││││    0x001799c0      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191036:│ │││││││   0x001799d0      ldr   w9, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+191041:│ │││││││   0x001799e4      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191058:│ │││││ │   0x00179a24      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191062:│ │││││││   0x00179a34      ldr   w9, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+191067:│ │││││││   0x00179a48      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191084:│ ││││ ││   0x00179a88      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191088:│ │││││││   0x00179a98      ldr   w9, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+191093:│ │││││││   0x00179aac      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191110:│ │││ │││   0x00179aec      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191114:│ │││││││   0x00179afc      ldr   w9, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+191119:│ │││││││   0x00179b10      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191123:│ ││ ││││   0x00179b20      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191127:│ │││││││   0x00179b30      ldr   w9, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+191132:│ │││││││   0x00179b44      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191136:│ │ │││││   0x00179b54      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191140:│ │││││││   0x00179b64      ldr   w9, [x8, 0xa30]                      ; [0xa30:4]=0x6465776f ; "owed to call SMC ID 0x%x\n"
+191145:│ │││││││   0x00179b78      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191495:│   │││╎╎   0x00179fd0      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191538:│ │││ │ ╎   0x0017a070      ldrb  w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191544:│ │││  │╎   0x0017a088      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191579:│           0x0017a0ec      ldrb  w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191589:│           0x0017a108      ldr   w0, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191661:│     ╎╎│   0x0017a1f4      ldr   w21, [x20, 0xa38]                    ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191668:│    │╎╎│   0x0017a210      ldr   w5, [x20, 0xa38]                     ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+191973:│           0x0017a670      ldr   w8, [x8, 0xa38]                      ; [0xa38:4]=0x6c6c6163 ; "call SMC ID 0x%x\n"
+193485:│       │   0x0017ba38      ldr   w8, [x8, 0xa2c]                      ; [0xa2c:4]=0x6c6c6120 ; " allowed to call SMC ID 0x%x\n"
+379905:│       ╎   0x00222584      mov   w20, aav.0x00000a20                  ; "aller is not allowed to call SMC ID 0x%x\n"
+380087:│       ╎   0x0022284c      mov   w21, aav.0x00000a20                  ; "aller is not allowed to call SMC ID 0x%x\n"
+410363:│           0x002e092c      ldrh  w0, [x28, 0xa34]                     ; [0xa34:4]=0x206f7420 ; " to call SMC ID 0x%x\n"
+
+========== SMC INSTRUCTIONS ==========
 ~/Documents/GitHub/crypto (main) ❯ 
