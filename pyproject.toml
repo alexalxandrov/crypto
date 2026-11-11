@@ -1,0 +1,19 @@
+[project]
+name = "bugbounty-utils"
+version = "0.1.0"
+description = "Utility for fetching bug bounty data and exposing a simple API"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+
+[project.dependencies]
+fastapi = "*"
+uvicorn = "*"
+requests = "*"
+
+[project.scripts]
+bugbounty-api = "bugbounty_utils.app:app"
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
