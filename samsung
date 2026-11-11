@@ -1,143 +1,626 @@
-~ ❯ rizin -q -A \
--c 'axt @ 0x17dfdc; axt @ 0x5a6a90; axt @ 0x5a6a10; axt @ 0x5a6ad0; axt @ 0x14d60c; pdf @ 0x187cf0; pdf @ 0x18962c; pdf @ 0x189d8c; pdf @ 0x17dfdc; izz~unlock; izz~custtoken; izz~STEADY; izz~RPMB; izz~OEM; q' \
-"$HOME/a26-analysis/current/raw/sboot.bin" \
-> "$HOME/a26-analysis/current/critical-functions.txt" 2>&1
-~ ❯ wc -l "$HOME/a26-analysis/current/critical-functions.txt"
-     133 /Users/oleg/a26-analysis/current/critical-functions.txt
-~ ❯ wc -l "$HOME/a26-analysis/current/critical-functions.txt"
-     133 /Users/oleg/a26-analysis/current/critical-functions.txt
-~ ❯ cat "$HOME/a26-analysis/current/critical-functions.txt"
-ERROR: Cannot find function at 0x00187cf0
-ERROR: Cannot find function at 0x0018962c
-ERROR: Cannot find function at 0x00189d8c
-ERROR: Cannot find function at 0x0017dfdc
-0x0023a28d 0x0023a28d   31   32         ascii   Ignore DEBUG_UNLOCK_SJTAG area\n
-0x0023a7b3 0x0023a7b3   30   31         ascii   UFS desc lock/unlock fail: %d\n
-0x0023ea25 0x0023ea25    8    9         ascii   unlocked
-0x00240c92 0x00240c92    6    7         ascii   Unlock
-0x002478b3 0x002478b3   30   31         ascii   exynos_read_is_device_unlocked
-0x0024edc1 0x0024edc1   51   52         ascii   %s: using unlock keys which was downloaded by odin\n
-0x00255547 0x00255547   38   39         ascii   %s : dont clear s2d (by sjtag unlock)\n
-0x0025c3fb 0x0025c3fb   50   51         ascii   assert fail: ops->read_is_device_unlocked != NULL\n
-0x0025d1da 0x0025d1da   46   47         ascii   [V3_SMP][%s(%d)]: unable to unlock the buffer\n
-0x0026245d 0x0026245d    8    9         ascii   OSUNLOCK
-0x002633db 0x002633db   25   26         ascii   [BLDP] unlock_count = %d\n
-0x0026529e 0x0026529e   13   14         ascii   PO_OEM_UNLOCK
-0x00266b54 0x00266b54    8    9         ascii   Unlocked
-0x00267c35 0x00267c35   46   47         ascii   [CD_SMP][%s(%d)]: unable to unlock the buffer\n
-0x002691ec 0x002691ec   63   64         ascii   recovery\n--wipe_data\n--reason=bootloader_unlock\n--locale=en_US\n
-0x0026a977 0x0026a977   22   23         ascii   Fail to unlock (0x%x)\n
-0x0026b4ca 0x0026b4ca   18   19         ascii   get_oem_unlock_val
-0x0026f533 0x0026f533   28   29         ascii   %s: there is no unlock keys\n
-0x00273ee0 0x00273ee0   20   21         ascii   Secure jtag: unlock\n
-0x00275d4a 0x00275d4a   25   26         ascii   Succeed to unlock (0x%x)\n
-0x0027640a 0x0027640a   69   70         ascii   : Digest does not exist, device unlocked so not initializing digest.\n
-0x0027a7d5 0x0027a7d5   29   30         ascii   ufs unlock isn't supported!!\n
-0x0027afa9 0x0027afa9   17   18         ascii   unlock_counter_rw
-0x002ae505 0x002ae505   41   42         ascii   CSMC: bldp_secure_info.unlock_count (%d)\n
-0x002ca94c 0x002ca94c   17   18         ascii   device_unlock.jpg
-0x0026d660 0x0026d660   24   25         ascii   sync_lockstate_custtoken
-0x00248380 0x00248380   35   36         ascii   [FMM] There is no STEADY Partition\n
-0x0024f6b5 0x0024f6b5   33   34         ascii   [FMM] 'FMM' Lock state by STEADY\n
-0x0025625d 0x0025625d   29   30         ascii   STEADY partition read failed\n
-0x002655d3 0x002655d3   23   24         ascii   %s : can't find STEADY\n
-0x0026fe25 0x0026fe25    6    7         ascii   STEADY
-0x002745dc 0x002745dc   34   35         ascii   %s : STEADY partition read failed\n
-0x0023860f 0x0023860f   14   15         ascii   set_RPMB_param
-0x0023864b 0x0023864b   33   34         ascii   RPMB: get hmac value: fail: 0x%X\n
-0x00238683 0x00238683   67   68         ascii   RPMB: %s: Advanced Write Counter read request fail !!! (cnt = %zu)\n
-0x002386c7 0x002386c7   43   44         ascii   RPMB: %s: advanced RPMB write block failed\n
-0x00238d3f 0x00238d3f   39   40         ascii   %s: failed to get lock value from RPMB\n
-0x00238da0 0x00238da0   29   30         ascii   %s : Not able to access RPMB\n
-0x0023a52c 0x0023a52c   45   46         ascii   RPMB: Magic Block Write: fail [%d try]: 0x%X\n
-0x0023a55a 0x0023a55a   34   35         ascii   RPMB: fail to set RPMB SIZE: 0x%X\n
-0x0023a57d 0x0023a57d   20   21         ascii   RPMB : %s (%d) fail\n
-0x0023a5a2 0x0023a5a2   35   36         ascii   RPMB : Header block write error!!!\n
-0x0023c757 0x0023c757   29   30         ascii   RPMB Header block read error\n
-0x0023ce4c 0x0023ce4c   32   33         ascii   [I]%s:%d RPMB isn't provisioned\n
-0x0023e6c7 0x0023e6c7   37   38         ascii   [CM] RPMB: failed to block key: 0x%X\n
-0x00240a40 0x00240a40   23   24         ascii   RPMB: %s: Failed: 0x%X\n
-0x00240a74 0x00240a74   23   24         ascii   RPMB : table init fail\n
-0x00240a8c 0x00240a8c   20   21         ascii   RPMB: RI blk rd err\n
-0x002413e4 0x002413e4   31   32         ascii   [FMM] 'FMM' Lock state by RPMB\n
-0x00243071 0x00243071   34   35         ascii   RPMB: fail to get RPMB UFS params\n
-0x00243094 0x00243094   45   46         ascii   RPMB : Magic Block Read: fail [%d try]: 0x%X\n
-0x002430c2 0x002430c2   23   24         ascii   RPMB: set RI #%zd fail\n
-0x002430da 0x002430da   33   34         ascii   RPMB: Perst data blk update fail\n
-0x00243113 0x00243113   16   17         ascii   RPMB: %s rd err\n
-0x0024572c 0x0024572c   42   43         ascii   RPMB: failed to set provision state: 0x%X\n
-0x00245757 0x00245757   37   38         ascii   RPMB: Comparing Magic Block: fail!!!\n
-0x0024577d 0x0024577d   37   38         ascii   RPMB : Perst Data Block init fail!!!\n
-0x00247aad 0x00247aad   60   61         ascii   RPMB: authenticated data read response fail !!! (cnt = %zu)\n
-0x00247aea 0x00247aea   28   29         ascii   RPMB : Perst data load fail\n
-0x00247b1c 0x00247b1c   28   29         ascii   RPMB: table not initialized\n
-0x00249eae 0x00249eae   43   44         ascii   RPMB: %s: Not supported(use default): 0x%X\n
-0x00249eff 0x00249eff   38   39         ascii   RPMB: %s: Write counter read fail !!!\n
-0x00249f26 0x00249f26   60   61         ascii   RPMB: authenticated data write request fail !!! (cnt = %zu)\n
-0x0024abff 0x0024abff   30   31         ascii   [HDM] RPMB read FAIL ret = %d\n
-0x0024c243 0x0024c243   23   24         ascii   get_bRPMB_ReadWriteSize
-0x0024c25b 0x0024c25b   35   36         ascii   RPMB : Rollback Index init fail!!!\n
-0x0024efaf 0x0024efaf   62   63         ascii   %s: normal rpmb (SpecVersion: 0x%x, bAdvancedRPMBSupport: %u)\n
-0x00250f50 0x00250f50   19   20         ascii   recog_UFS_RPMB_size
-0x00250f7e 0x00250f7e   27   28         ascii   RPMB: Read result fail !!!\n
-0x00250f9a 0x00250f9a   25   26         ascii   RPMB: %s: malloc failure\n
-0x00253676 0x00253676   44   45         ascii   [CM] RPMB: error in CryptoManager F/W: 0x%X\n
-0x00253f88 0x00253f88   35   36         ascii   [AID] Set RPMB Default info to 512\n
-0x00254220 0x00254220   35   36         ascii   [HDM] Set RPMB Default info to 512\n
-0x002556eb 0x002556eb   38   39         ascii   [CM] RPMB: failed to block hmac: 0x%X\n
-0x00255712 0x00255712   41   42         ascii   RPMB: failed to get partition info: 0x%X\n
-0x0025573c 0x0025573c   38   39         ascii   RPMB: ERR: key programming fail: 0x%x\n
-0x00255763 0x00255763   29   30         ascii   RPMB: key already programmed\n
-0x0025759c 0x0025759c   48   49         ascii   RPMB: authenticated data write request fail !!!\n
-0x00259ea1 0x00259ea1   20   21         ascii   recog_UFS_RPMB_param
-0x00259eb6 0x00259eb6   16   17         ascii   force_RPMB_write
-0x00259ec7 0x00259ec7   49   50         ascii   RPMB: fail to sync with LDFW, unable to use RPMB\n
-0x00259ef9 0x00259ef9   36   37         ascii   RPMB: rpmb key programming fail: %X\n
-0x00259f38 0x00259f38   22   23         ascii   RPMB: %s(%d) fail !!!\n
-0x00259f4f 0x00259f4f   18   19         ascii   RPMB: %s #%d fail\n
-0x0025a067 0x0025a067   13   14         ascii   \tRPMB memory\n
-0x0025a8ca 0x0025a8ca   15   16         ascii   OEM %s in RPMB\n
-0x0025c03b 0x0025c03b   70   71         ascii   RPMB: get partition param from ldfw: Not Supported(use default): 0x%X\n
-0x0025c082 0x0025c082   27   28         ascii   RPMB : RI check magic fail\n
-0x0025defc 0x0025defc   46   47         ascii   RPMB: %s: Write counter read request fail !!!\n
-0x0025df3f 0x0025df3f   39   40         ascii   [CM] RPMB: key derived as all zero key\n
-0x0025df67 0x0025df67   40   41         ascii   RPMB: fail to set UFS RPMB params: 0x%X\n
-0x00260696 0x00260696   13   14         ascii   set_RPMB_size
-0x002606a4 0x002606a4   15   16         ascii   print_RPMB_mode
-0x002606b4 0x002606b4   40   41         ascii   \nUFS: normal RPMB Selected for LK SCSI\n\n
-0x002611df 0x002611df   39   40         ascii   [HDM] Unsupported raw RPMB version: %d\n
-0x00262794 0x00262794   33   34         ascii   %s : RPMB is not initialized yet\n
-0x00262938 0x00262938   35   36         ascii   RPMB: Request read result fail !!!\n
-0x0026295c 0x0026295c   37   38         ascii   RPMB: %s: RPMB EHS data result: 0x%x\n
-0x00262982 0x00262982   53   54         ascii   RPMB: %s fail, due to rpmb operation flag disable!!!\n
-0x00264afc 0x00264afc   61   62         ascii   RPMB: Read write counter fail but key may already programmed\n
-0x00264b5e 0x00264b5e   38   39         ascii   RPMB : fail to read write counter !!!\n
-0x002669da 0x002669da   42   43         ascii   [CM] RPMB: exceed maximum SMC retry count\n
-0x002687e0 0x002687e0   47   48         ascii   RPMB: %s: SMC Not supported(use default): 0x%X\n
-0x0026ab6e 0x0026ab6e   28   29         ascii   RPMB: fail to get RPMB SIZE\n
-0x0026abaa 0x0026abaa   48   49         ascii   RPMB: LDFW does not support Advanced RPMB: 0x%X\n
-0x0026abdb 0x0026abdb   50   51         ascii   RPMB: get partition param from ldfw: failed: 0x%X\n
-0x0026ac0e 0x0026ac0e   17   18         ascii   RPMB: %s success\n
-0x0026ac20 0x0026ac20   24   25         ascii   RPMB: fail to get NONCE\n
-0x0026d745 0x0026d745   57   58         ascii   [HDM] %s: Successfully loaded and verified raw RPMB data\n
-0x0026fe01 0x0026fe01   35   36         ascii   [FMM] Set RPMB Default info to 512\n
-0x002714ec 0x002714ec   28   29         ascii   RPMB: key blocking: success\n
-0x0027166c 0x0027166c   28   29         ascii   RPMB: %s: RPMB result: 0x%x\n
-0x00273635 0x00273635   31   32         ascii   RPMB: key blocking: fail: 0x%X\n
-0x00273931 0x00273931   29   30         ascii   RPMB: %s fail (result: 0x%x)\n
-0x0027479f 0x0027479f   35   36         ascii   [HDM] Invalid raw RPMB magic: 0x%x\n
-0x00275dac 0x00275dac   32   33         ascii   RPMB: hmac blocking: fail: 0x%X\n
-0x00275dcd 0x00275dcd   29   30         ascii   RPMB: hmac blocking: success\n
-0x00275ff7 0x00275ff7   56   57         ascii   RPMB: %s fail, due to Maximum number of blocks exceeded\n
-0x00276030 0x00276030   47   48         ascii   RPMB: authenticated data read request fail !!!\n
-0x0027609a 0x0027609a   26   27         ascii   RPMB : RI table load fail\n
-0x00278415 0x00278415   32   33         ascii   %s: bRPMB_ReadWriteSize is zero\n
-0x00278436 0x00278436   38   39         ascii   RPMB: fail to get bRPMB_ReadWriteSize\n
-0x0027845d 0x0027845d   35   36         ascii   RPMB: %s writecounter expired = %d\n
-0x0027a669 0x0027a669   54   55         ascii   RPMB: Does not support Advanced RPMB, use Normal RPMB\n
-0x0027a6a0 0x0027a6a0   42   43         ascii   RPMB: %s: advanced RPMB read block failed\n
-0x0027c91d 0x0027c91d   48   49         ascii   RPMB: authenticated data read response fail !!!\n
-0x0024a98d 0x0024a98d   28   29         ascii   DN_FAIL_BLOCK_CUSTOM_BIN_OEM
-0x0025a8ca 0x0025a8ca   15   16         ascii   OEM %s in RPMB\n
-0x0026529e 0x0026529e   13   14         ascii   PO_OEM_UNLOCK
+~ ❯ rizin -q -A -c 'aaa; axt @ 0x17dfdc; axt @ 0x5a6a90; axt @ 0x5a6a10; axt @ 0x5a6ad0; axt @ 0x14d60c; pd 120 @ 0x187cf0; pd 160 @ 0x18962c; pd 160 @ 0x189d8c; pd 180 @ 0x17dfdc; q' "$HOME/a26-analysis/current/raw/sboot.bin" > "$HOME/a26-analysis/current/critical-functions-v2.txt" 2>&1
+~ ❯ cat critical-functions-v2.txt                          
+cat: critical-functions-v2.txt: No such file or directory
+~ ❯ cat "$HOME/a26-analysis/current/critical-functions-v2.txt"
+       ┌──< 0x00187cf0      jnle  0x187d15
+       │╎   0x00187cf2      add   edx, ebp
+       │╎   0x00187cf4      std
+       │└─< 0x00187cf5      jnp   0x187cb3
+       │    0x00187cf7      test  eax, 0xf9000bfc
+       │    0x00187cfc      not   byte [rdi+0x02]
+       │    0x00187cff      test  eax, 0xa9034ff4
+       │    0x00187d04      std
+       │    0x00187d05      add   eax, dword [rax]
+       │    0x00187d07      xchg  ecx, eax
+       │    0x00187d08      inc   dword [rbx]
+       │    0x00187d0a      sub   edx, ecx
+       │┌─< 0x00187d0c      loopne 0x187d31
+       ││   0x00187d0e      add   byte [rcx-0x680030bc], dl
+       ││   0x00187d14      adc   eax, 0xa097ff9a
+        │   0x00187d19      add   byte [rax-0x65ecc9], bl
+        │   0x00187d1f      xchg  edi, eax
+        │   0x00187d20      add   byte [rcx], al
+        │   0x00187d22      nop
+        │   0x00187d23      mov   byte [rax], al
+        │   0x00187d26      adc   byte [rdx+0x02], 0x00
+        │   0x00187d2a      add   byte [rax+rcx*2], dl
+        │   0x00187d2d      add   byte [rax+0x83a152], al
+            0x00187d33      shl   eax, 0x01
+            0x00187d35      add   ebx, dword [rdi]
+            0x00187d37      sub   ch, byte [rax+0x75381e03]
+            0x00187d3d      add   dword [rax], eax
+            0x00187d3f      xchg  esp, eax
+            0x00187d40      invalid
+            0x00187d41      invalid
+            0x00187d42      call  qword [rdi-0x6fffe098]
+            0x00187d48      or    cl, bh
+            0x00187d4a      mov   r9d, 0xf00020f3
+        ┌─< 0x00187d50      loopne 0x187d72
+        │   0x00187d52      add   al, dh
+       ┌──< 0x00187d54      jnb   0x187d58
+       ││   0x00187d56      invalid
+       ││   0x00187d57      xchg  ecx, eax
+       └──> 0x00187d58      add   byte [rbx+rax*1+0x11e6891], ah
+        │   0x00187d5f      cmp   dword [rdx-0x0f], esi
+        │   0x00187d62      call  qword [rdi+0x7100001f]
+        │   0x00187d68      or    byte [rax+0x2a685a9f], ah
+        │   0x00187d6e      add   dword [rcx], edi
+        │   0x00187d70      invalid
+        │   0x00187d71      int1
+        └─> 0x00187d72      call  qword [rdi+0x39012e60]
+            0x00187d78      sar   edi, cl
+            0x00187d7b      xchg  edi, eax
+            0x00187d7c      invalid
+            0x00187d7d      or    al, byte [rcx]
+            0x00187d7f      cmp   esp, edx
+            0x00187d81      enter 0x97ff, 0x60
+            0x00187d85      add   al, byte [rax]
+            0x00187d87      mov   ecx, 0x97ffcf57
+            0x00187d8c      add   al, byte [rax]
+            0x00187d8f      mov   ah, 0x08
+            0x00187d91      sbb   byte [rax-0x07], al
+            0x00187d94      sub   dword [rax], eax
+            0x00187d96      adc   byte [rdx], 0x0a
+            0x00187d99      add   byte [rax+0x20eb12], al
+            0x00187d9f      invalid
+            0x00187da0      invalid
+            0x00187da1      stc
+            0x00187da2      add   esi, ecx
+            0x00187da4      or    al, 0x31
+            0x00187da6      mov   dword [rdx], ebx
+            0x00187da8      invalid
+            0x00187da9      add   dword [rdx], ecx
+        ┌─< 0x00187dab      jmp   0x187e18
+        │   0x00187dad      cmc
+        │   0x00187dae      invalid
+        │   0x00187daf      xchg  ecx, eax
+        │   0x00187db0      mov   byte [rcx], dl
+        │   0x00187db2      lahf
+        │   0x00187db3      pop   rdx
+        │   0x00187db4      push  0x8390001
+        │   0x00187db9      and   al, 0x40
+        │   0x00187dbb      stc
+        │   0x00187dbc      invalid
+        │   0x00187dbd      stc
+        │   0x00187dbe      add   esi, ecx
+        │   0x00187dc0      or    dword [rcx], esi
+        │   0x00187dc2      mov   dword [rdx], ebx
+        │   0x00187dc4      invalid
+        │   0x00187dc5      add   dword [rdx], ecx
+       ┌──< 0x00187dc7      jmp   0x187df1
+       ││   0x00187dc9      adc   dword [rdi+0xd685a], ebx
+       ││   0x00187dcf      cmp   dword [rsi], eax
+       ││   0x00187dd1      add   byte [rax], al
+       ││   0x00187dd3      adc   al, 0x40
+       ││   0x00187dd5      invalid
+       ││   0x00187dd6      add   byte [rax-0x2ffff93f], dl
+       ││   0x00187ddc      add   ah, bh
+       ││   0x00187dde      invalid
+       ││   0x00187ddf      xchg  ecx, eax
+       ││   0x00187de0      and   dword [rbx+rcx*1], ecx
+       ││   0x00187de3      xchg  ecx, eax
+       ││   0x00187de4      add   eax, 0xe097ff13
+       ││   0x00187de9      add   ebx, dword [rdi]
+       ││   0x00187deb      invalid
+       ││   0x00187dec      mov   ss, sp
+       ││   0x00187dee      invalid
+       ││   0x00187def      xchg  edi, eax
+       ││   0x00187df0      call  0x1087e15
+        │   0x00187df5      stc
+        │   0x00187df6      invalid
+        │   0x00187df7      cmp   dword [rax+0xf00007], eax
+        │   0x00187dfd      cmp   rax, 0xffffffffffd39691
+        │   0x00187e03      xchg  edi, eax
+        │   0x00187e04      invalid
+        │   0x00187e05      add   al, 0x00
+        │   0x00187e07      xor   dword [rax], eax
+        │   0x00187e09      add   dword [rax], eax
+        │   0x00187e0b      push  rsp
+        │   0x00187e0c      add   byte [rdi], 0x00
+        │   0x00187e0f      lock  add byte [rbp+rdi*1-0x6f], cl
+        │   0x00187e14      xchg  ecx, eax
+        │   0x00187e15      sar   edi, cl
+        │   0x00187e17      xchg  edi, eax
+        │   ; CODE XREF from fcn.001812e1 @ +0x6aca
+        └─> 0x00187e18      invalid
+       ┌──< 0x0018962c      jnle  0x189651
+       │╎   0x0018962e      add   edx, ebp
+       │╎   0x00189630      std
+       │└─< 0x00189631      jnp   0x1895f0
+       │    0x00189633      test  eax, 0xf9000bf5
+       │    0x00189638      hlt
+       │    0x00189639      add   r13b, byte [r9-0x6efffc03]
+       │    0x00189640      mov   al, byte [0x940000ca528002]          ; [0x940000ca528002:1]=255
+       │╎   0x00189649      add   al, byte [rax]
+       │╎   0x0018964b      xor   al, 0xc0
+       │╎   0x0018964d      add   eax, 0x6e19000
+        ╎   0x00189652      add   al, dl
+        ╎   0x00189654      add   byte [rax+0x24], dh
+        ╎   0x00189657      xchg  ecx, eax
+        ╎   0x00189658      and   dword [rax+rdx*1-0x7fd81d6f], edi
+        ╎   0x0018965f      push  rdx
+        ╎   0x00189660      add   eax, dword [rax]
+        ╎   0x00189662      adc   byte [rdx], 0x13
+        ╎   0x00189665      add   byte [rax-0xf31bee], al
+        ╎   0x0018966b      xchg  edi, eax
+        ╎   0x0018966c      cmp   dword [rcx], eax
+        ╎   0x0018966e      add   byte [rax-0xbd5ecfd], dl
+        ╎   0x00189675      test  eax, 0xf9400bf5
+        ╎   0x0018967c      std
+        └─< 0x0018967d      jnp   0x189642
+            0x0018967f      test  al, 0xff
+            0x00189681      and   eax, dword [rbx]
+            0x00189683      invalid
+            0x00189684      rol   byte [rbx], 0x5f
+            0x00189687      invalid
+            0x00189688      cmc
+            0x00189689      and   byte [rax], al
+            0x0018968b      mov   al, 0xb4
+            0x0018968d      invalid
+            0x0018968e      stc
+            0x00189690      and   byte [rdi], al
+            0x00189692      add   al, dl
+            0x00189694      add   byte [rax+rdi*1-0x4f666f], dl
+            0x0018969b      xchg  edi, eax
+            0x0018969c      add   byte [rsi], al
+            0x0018969e      add   byte [rbx+rsi*8-0x7f55fffd], dh
+            0x001896a5      invalid
+            0x001896a6      add   byte [rax-0xffff8df], dl
+        ╎   0x001896ac      add   byte [rdx+rdi*1-0x6f], ah
+        ╎   0x001896b0      and   dword [rax+0x01], edi
+        ╎   0x001896b3      xchg  ecx, eax
+        ╎   0x001896b4      xchg  esp, eax
+        ╎   0x001896b5      mov   byte [0x4e6897ff0cd09118], al
+        ╎   0x001896be      cmp   byte [r11], al
+        ╎   0x001896c1      add   byte [rdx-0x5fffdcae], al
+        └─< 0x001896c7      jb    0x1896a9
+            0x001896c9      add   edx, dword [rdx+rbp*4]
+            0x001896cc      invalid
+            0x001896cd      mov   es, word [rax+0x38]
+            0x001896d0      insb
+            0x001896d1      mov   dl, 0x5f                             ; '_'
+            0x001896d3      cmp   byte [rbp-0x5e], ch
+            0x001896d6      pop   rdi
+            0x001896d7      cmp   byte [rsi-0x6e], ch
+            0x001896da      pop   rdi
+            0x001896db      cmp   byte [rcx+0x0e], ch
+            0x001896de      cmp   dword [rdx+0x0a], ebp
+            0x001896e2      cmp   dword [rbx+0x06], ebp
+            0x001896e6      cmp   dword [rbp-0x37cce7e3], ecx
+            0x001896ed      sbb   eax, 0x1d2a3318
+            0x001896f2      sbb   byte [rbx], dh
+            0x001896f4      invalid
+            0x001896f5      sbb   eax, 0x3da83318
+            0x001896fa      adc   byte [rbx], dh
+            0x001896fc      cmp   eax, 0xa1023310
+            0x00189702      add   byte [rcx], dl
+            0x00189704      outsd
+            0x00189705      mov   esi, 0x62b497fe
+            0x0018970a      stc
+            0x0018970c      adc   eax, dword [rsi]
+            0x0018970e      add   byte [rax-0x6eed0d8d], dh
+        ┌─< 0x00189714      loopne 0x189719
+        │   0x00189716      adc   ebp, dword [rdx-0x6bcf978]
+            0x0018971c      or    byte [rcx], al
+            0x0018971e      mov   dl, 0x88
+            0x00189721      invalid
+            0x00189722      add   edi, ecx
+            0x00189724      or    eax, 0xe297ff11
+            0x00189729      add   eax, dword [rax]
+            0x0018972b      stosb
+            0x0018972c      and   byte [rdx+0x3e19118], 0x13           ; [0x13:1]=20
+            0x00189733      stosb
+            0x00189734      movsd
+            0x00189735      ud0   edx, dword [rdi+0x34000280]
+            0x0018973c      rol   byte [0x06fa8743], 0x00
+            0x00189743      rol   byte [rax], 0x01
+            0x00189745      adc   byte [rcx+rdx*4], cl
+            0x00189748      and   dword [rax+rdx*1-0x7fd69d6f], edi
+            0x0018974f      push  rdx
+            0x00189750      stosb
+            0x00189751      or    al, 0xff
+            0x00189753      xchg  edi, eax
+            0x00189754      add   ebx, dword [rdi]
+            0x00189757      sub   al, ch
+            0x00189759      invalid
+            0x0018975a      call  qword [rdi]
+            0x0018975c      loopne 0x189764
+            0x0018975e      add   byte [rax-0xffff8df], dl
+            0x00189764      add   byte [rdi+rdx*1-0x6f], cl
+            0x00189768      and   dword [rax+0x01], edi
+            0x0018976b      xchg  ecx, eax
+            0x0018976c      mov   dword [0xe1900006c097ff0c], eax
+            0x00189775      invalid
+            0x00189776      add   al, dl
+            0x00189778      add   byte [rax], bl
+            0x0018977a      or    al, 0x91
+            0x0018977c      and   dword [rax+rdx*1-0x7fd75d6f], edi
+            0x00189783      push  rdx
+            0x00189784      mov   bh, 0xff
+            0x00189786      call  qword [rdi]
+            0x00189788      and   byte [rdi], al
+            0x0018978a      add   al, dl
+            0x0018978c      add   byte [rax+rdi*1-0x4fa46f], dl
+            0x00189793      xchg  edi, eax
+            0x00189794      invalid
+            0x00189795      add   eax, 0x3f3b400
+            0x0018979a      add   byte [rdx+0x529e1288], ch
+            0x001897a0      add   byte [rdi], 0x00
+            0x001897a3      nop
+            0x001897a4      and   dword [rdi], eax
+            0x001897a6      add   byte [rax+0x72a00028], dh
+            0x001897ac      add   byte [rdx+rdi*1-0x6f], ah
+            0x001897b0      and   dword [rsp+rax*1], ebp
+            0x001897b3      xchg  ecx, eax
+            0x001897b4      xchg  esp, eax
+            0x001897b5      add   cl, byte [rax]
+            0x001897b7      mov   edx, dword [rax+0x6897ff0c]
+            0x001897bd      cmp   byte [r11], al
+            0x001897c1      add   byte [rbp+0x1403e052], 0xaa          ; [0xaa:1]=192
+            0x001897c8      invalid
+            0x001897c9      mov   es, word [rax+0x38]
+            0x001897cc      insb
+            0x001897cd      mov   dl, 0x5f                             ; '_'
+            0x001897cf      cmp   byte [rbp-0x5e], ch
+            0x001897d2      pop   rdi
+            0x001897d3      cmp   byte [rsi-0x6e], ch
+            0x001897d6      pop   rdi
+            0x001897d7      cmp   byte [rcx+0x0e], ch
+            0x001897da      cmp   dword [rdx+0x0a], ebp
+            0x001897de      cmp   dword [rbx+0x06], ebp
+            0x001897e2      cmp   dword [rbp-0x37cce7e3], ecx
+            0x001897e9      sbb   eax, 0x1d2a3318
+            0x001897ee      sbb   byte [rbx], dh
+            0x001897f0      invalid
+            0x001897f1      sbb   eax, 0x3da83318
+            0x001897f6      adc   byte [rbx], dh
+            0x001897f8      cmp   eax, 0x49023310
+            0x001897fe      add   byte [rcx], dl
+            0x00189800      xor   byte [rsi+0x62a097fe], bh
+            0x00189806      stc
+            0x00189808      cmc
+            0x00189809      and   byte [rax], al
+            0x0018980b      mov   al, 0xa1
+            0x0018980d      stc
+            0x00189810      or    byte [rbx+rax*2], al
+       ┌──< 0x00189d8c      jnle  0x189db1
+       │╎   0x00189d8e      add   edx, ebp
+       │╎   0x00189d90      std
+       │└─< 0x00189d91      jnp   0x189d50
+       │    0x00189d93      test  eax, 0xf9000bf5
+       │    0x00189d98      hlt
+       │    0x00189d99      add   r13b, byte [r9-0x6efffc03]
+       │    0x00189da0      xor   eax, 0xe897ffce
+       │    0x00189da5      and   byte [rax], al
+       │    0x00189da7      mov   al, 0x00
+       │    0x00189da9      mov   dword [rdx], ecx
+       │    0x00189dab      mov   ecx, 0x97fe02ff
+       │    0x00189db0      invalid
+       └──> 0x00189db1      add   al, 0x00
+        ┌─< 0x00189db3      jno   0x189dd6
+        │   0x00189db5      add   dword [rax], eax
+        │   0x00189db7      push  rsp
+        │   0x00189db8      pop   rsp
+        │   0x00189db9      movsb
+        │   0x00189dba      std
+        │   0x00189dbb      xchg  edi, eax
+        │   0x00189dbc      mov   al, byte [0x1b00005e0340002]         ; [0x1b00005e0340002:1]=255
+        │   0x00189dc5      invalid
+        │   0x00189dc6      add   byte [rax-0x6eea7c00], dh
+       ╎│   0x00189dcc      and   dword [rsp+rsi*1], ebp
+       ╎│   0x00189dcf      xchg  ecx, eax
+       ╎│   0x00189dd0      invalid
+       ╎│   0x00189dd1      adc   byte [r10+0x06], 0x00
+       ╎└─> 0x00189dd6      add   byte [rax], dl
+       ╎    0x00189dd9      invalid
+       ╎    0x00189dda      add   al, dh
+       ╎    0x00189ddc      add   dword [rsi], eax
+       ╎    0x00189dde      add   byte [rax-0x6efe0800], dh
+       ╎    0x00189de4      and   dword [rsp+rsi*1], ebp
+       ╎    0x00189de7      xchg  ecx, eax
+       ╎    0x00189de8      ret   0x8046
+       ╎    0x00189deb      push  rdx
+       ╎┌─< 0x00189dec      jrcxz 0x189df1
+       ╎│   0x00189dee      add   dword [rdx-0x6800f4fe], ebp
+       ╎    0x00189df4      adc   eax, dword [rax]
+       ╎    0x00189df6      adc   byte [rdx], 0xe0
+       ╎    0x00189df9      add   edx, dword [rbx]
+       ╎    0x00189dfb      sub   dh, ah
+       ╎    0x00189dfd      test  eax, 0xf9400bf5
+       ╎    0x00189e04      std
+       └──< 0x00189e05      jnp   0x189dca
+            0x00189e07      test  al, 0xff
+            0x00189e09      and   eax, dword [rbx]
+            0x00189e0b      invalid
+            0x00189e0c      rol   byte [rbx], 0x5f
+            0x00189e0f      invalid
+            0x00189e10      and   byte [rbx], al
+            0x00189e12      adc   byte [rdx-0x2a], 0xfe
+            0x00189e16      call  qword [rdi+0x34000120]
+            0x00189e1c      rol   byte [0x061a2e23], 0x00
+            0x00189e23      mov   al, 0x00
+        ┌─< 0x00189e25      jo    0x189e4b
+        │   0x00189e27      xchg  ecx, eax
+        │   0x00189e28      and   dword [rsp+rsi*1], ebp
+        │   0x00189e2b      xchg  ecx, eax
+        │   0x00189e2c      and   cl, byte [rax-0x80]
+        │   0x00189e2f      push  rdx
+        │   0x00189e30      add   eax, dword [rax]
+        │   0x00189e32      adc   byte [rdx], 0x13
+        │   0x00189e35      add   byte [rax+0x5312], al
+        │   0x00189e3b      adc   al, 0xf5
+        │   0x00189e3d      and   byte [rax], al
+        │   0x00189e3f      mov   al, 0xb4
+        │   0x00189e41      invalid
+        │   0x00189e42      stc
+        │   0x00189e44      and   byte [rdi], al
+        │   0x00189e46      add   al, dl
+        │   0x00189e48      add   byte [rax+rdi*1-0x51536f], dl
+            0x00189e4f      xchg  edi, eax
+            0x00189e50      invalid
+            0x00189e51      add   eax, 0x3f3b400
+            0x00189e56      add   byte [rdx+0x529e1288], ch
+            0x00189e5c      add   byte [rdi], 0x00
+            0x00189e5f      nop
+            0x00189e60      and   dword [rdi], eax
+            0x00189e62      add   byte [rax+0x72a00028], dh
+            0x00189e68      add   byte [rdx+rdi*1-0x6f], ah
+            0x00189e6c      and   dword [rsp+rax*1], ebp
+            0x00189e6f      xchg  ecx, eax
+            0x00189e70      xchg  esp, eax
+            0x00189e71      add   cl, byte [rax]
+            0x00189e73      mov   esp, ecx
+            0x00189e75      or    bh, bh
+            0x00189e77      xchg  edi, eax
+            0x00189e78      push  0x338414e
+            0x00189e7d      add   byte [rbp+0x1403e052], 0xaa          ; [0xaa:1]=192
+            0x00189e84      invalid
+            0x00189e85      mov   es, word [rax+0x38]
+            0x00189e88      insb
+            0x00189e89      mov   dl, 0x5f                             ; '_'
+            0x00189e8b      invalid
+            0x00189e8c      insd
+            0x00189e8d      mov   byte [0xe69385f926e385f], al
+            0x00189e96      cmp   dword [rdx+0x0a], ebp
+            0x00189e9a      cmp   dword [rbx+0x06], ebp
+            0x00189e9e      cmp   dword [rbp-0x37cce7e3], ecx
+            0x00189ea5      sbb   eax, 0x1d2a3318
+            0x00189eaa      sbb   byte [rbx], dh
+            0x00189eac      invalid
+            0x00189ead      sbb   eax, 0x3da83318
+            0x00189eb2      adc   byte [rbx], dh
+            0x00189eb4      cmp   eax, 0x49023310
+            0x00189eba      add   byte [rcx], dl
+            0x00189ebc      cmp   dword [rsi+rdi*8+0x4562a097], 0x20f4f9
+            0x00189ec7      mov   al, 0x81
+            0x00189ec9      stc
+            0x00189ecc      or    byte [rbx+rax*2], al
+            0x00189ecf      stc
+            0x00189ed0      or    byte [rcx], al
+            0x00189ed2      jnp   0x189e86
+            0x00189ed4      or    byte [rbx+rax*1], al
+            0x00189ed7      stc
+            0x00189ed8      cmp   byte [rdi+rdi*8-0x69], 0x60          ; '`'
+            0x00189edd      add   al, byte [rax]
+            0x00189edf      xor   al, 0xf3
+            0x00189ee1      add   eax, dword [rax]
+            0x00189ee3      sub   ah, byte [rax]
+            0x00189ee5      invalid
+            0x00189ee6      add   al, dl
+            0x00189ee8      add   dword [rsi], eax
+            0x00189eea      add   byte [rax-0x6ed68000], dh
+            0x00189ef0      and   dword [rsp+rsi*1], ebp
+            0x00189ef3      xchg  ecx, eax
+            0x00189ef4      ret   0x8049
+            0x00189ef7      push  rdx
+            0x00189ef8      and   al, byte [rax]
+            0x00189efa      add   byte [rax], dl
+            0x00189efd      invalid
+            0x00189efe      add   byte [rax-0x4ffff8df], dl
+            0x00189f04      add   byte [rdi+rdx*1-0x6f], cl
+            0x00189f08      and   dword [rsp+rax*1], ebp
+            0x00189f0b      xchg  ecx, eax
+            0x00189f0c      mov   ebx, 0xc097ff0a
+            0x00189f11      add   eax, 0x6019000
+            0x00189f16      add   byte [rax-0x6edadc00], dh
+            0x00189f1c      and   dword [rsp+rsi*1], ebp
+            0x00189f1f      xchg  ecx, eax
+            0x00189f20      loop  0x189f6a
+            0x00189f22      adc   byte [rdx-0x3d], 0xff
+            0x00189f26      call  qword [rdi]
+            0x00189f28      and   byte [rsi+0x45], 0xf9                ; [0xf9:1]=66
+            0x00189f2c      push  0x97ff39
+            0x00189f31      add   dword [rax], eax
+            0x00189f33      xor   al, 0xf3
+            0x00189f35      add   eax, dword [rax]
+            0x00189f37      sub   ah, byte [rax+0x1d00005]
+            0x00189f3d      invalid
+            0x00189f3e      add   byte [rax-0x6ef49800], dh
+            0x00189f44      and   dword [rsp+rsi*1], ebp
+            0x00189f47      xchg  ecx, eax
+            0x00189f48      invalid
+            0x00189f49      adc   byte [rdx+0x0d], 0x00
+            0x00189f4e      add   byte [rsi*8-0x5f4fffe0], dl
+            0x00189f55      push  0x45                                 ; 'E'
+            0x00189f57      stc
+       ┌──< 0x0017dfdc      jnle  0x17e001
+       │╎   0x0017dfde      add   edx, ebp
+       │╎   0x0017dfe0      std
+       │└─< 0x0017dfe1      jnp   0x17df9f
+       │    0x0017dfe3      test  eax, 0xf9000bfc
+       │    0x0017dfe8      not   byte [rdi+0x02]
+       │    0x0017dfeb      test  eax, 0xa9034ff4
+       │    0x0017dff0      std
+       │    0x0017dff1      add   eax, dword [rax]
+       │    0x0017dff3      xchg  ecx, eax
+       │    0x0017dff4      inc   dword [rbx]
+       │    0x0017dff6      adc   ecx, edx
+       │    0x0017dff8      mov   eax, dword [0xc03400010097fe99]
+       └──> 0x0017e001      add   eax, 0x761d000
+            0x0017e006      add   al, dh
+            0x0017e008      add   byte [rax-0x7fde6eca], al
+            0x0017e00e      sbb   dword [rcx-0x6800c586], edx
+            0x0017e014      adc   eax, dword [rax]
+            0x0017e016      adc   byte [rdx], 0x8f
+            0x0017e019      add   byte [rax], al
+            0x0017e01b      adc   al, 0x88
+            0x0017e01d      invalid
+            0x0017e01e      add   byte [rax-0x46bb22f8], dh
+            0x0017e024      invalid
+            0x0017e025      add   eax, 0x1a17100
+            0x0017e02a      add   byte [rax+0x73], dl
+            0x0017e02e      add   byte [rcx-0x6801622d], dl
+            0x0017e034      test  al, 0x1f
+            0x0017e036      mov   ecx, 0xd0000609
+            0x0017e03c      or    al, byte [rsi]
+            0x0017e03e      add   byte [rax-0x6ecdb6d7], dl
+            0x0017e044      cmc
+            0x0017e046      invalid
+            0x0017e047      xchg  ecx, eax
+            0x0017e048      invalid
+            0x0017e049      add   eax, 0x6e07100
+            0x0017e04e      add   byte [rax-0x6576febf], dl
+            0x0017e054      add   byte [rax], ch
+            0x0017e056      and   edx, dword [rcx+0x14000007]
+            0x0017e05c      and   byte [rdi], al
+            0x0017e05e      add   byte [rax-0xffff89f], dl
+            0x0017e064      call  0x6a606a
+            0x0017e069      push  rax
+            0x0017e06a      invalid
+            0x0017e06b      xchg  ecx, eax
+            0x0017e06c      and   dword [rax+0x1fa89119], eax
+            0x0017e072      add   byte [rcx-0x6800c59f], bh
+            0x0017e078      invalid
+            0x0017e079      add   byte [rax+0x2d5852], al
+            0x0017e07f      xchg  esp, eax
+            0x0017e080      rol   byte [rax], 0x00
+            0x0017e083      xor   al, 0xa8
+            0x0017e085      invalid
+            0x0017e086      mov   ecx, 0x7100051f
+            0x0017e08c      invalid
+            0x0017e08d      add   byte [rax], al
+            0x0017e08f      push  rsp
+            0x0017e090      add   ebx, dword [rdi]
+            0x0017e093      sub   al, byte [rdi]
+            0x0017e095      add   byte [rax], al
+            0x0017e097      adc   al, 0x60
+            0x0017e099      add   byte [rax+0x2d5052], al
+            0x0017e09f      xchg  esp, eax
+            0x0017e0a0      test  al, 0x1f
+            0x0017e0a2      mov   ecx, 0x2a080008
+            0x0017e0a8      mov   byte [rax+rax*1], cl
+            0x0017e0ab      xor   eax, 0x52800033
+            0x0017e0b0      add   byte [rsi], 0x00
+            0x0017e0b3      rol   byte [rax], 0x01
+            0x0017e0b5      hlt
+            0x0017e0b6      xor   al, 0x91
+            0x0017e0b8      adc   esi, ebx
+            0x0017e0ba      call  qword [rdi-0x4bfff3e0]
+            0x0017e0c0      hlt
+            0x0017e0c1      add   eax, dword [rax]
+            0x0017e0c3      stosb
+            0x0017e0c4      mov   al, byte [0x97ffe5e3910063]          ; [0x97ffe5e3910063:1]=255
+            0x0017e0cd      mov   byte [rdx-0x20], dl
+            0x0017e0d1      add   dword [rax+0xd7ab72], esp
+            0x0017e0d7      xchg  esp, eax
+            0x0017e0d8      invalid
+            0x0017e0d9      add   eax, dword [rax]
+            0x0017e0db      xchg  ecx, eax
+            0x0017e0dc      invalid
+            0x0017e0dd      invalid
+            0x0017e0de      add   al, dh
+            0x0017e0e0      mov   al, 0x07
+            0x0017e0e3      xchg  ecx, eax
+            0x0017e0e4      add   byte [rcx], al
+            0x0017e0e6      add   dword [rcx+0x528007e1], edx
+            0x0017e0ec      or    eax, 0x8297ff34
+            0x0017e0f1      cmp   r8b, spl
+            0x0017e0f5      add   eax, dword [rax]
+            0x0017e0f7      xchg  ecx, eax
+            0x0017e0f8      add   ecx, dword [rax-0x717ead80]
+            0x0017e0fe      cmp   byte [rax-0x76c6bff2], cl
+            0x0017e105      or    al, byte [rax+0x39]
+            0x0017e108      mov   al, byte [rsi]
+            0x0017e10a      cmp   dword [rbx-0x73c7a04e], ecx
+            0x0017e111      mov   byte [0x1d09385f928d385f], al
+            0x0017e11a      sbb   byte [rbx], dh
+            0x0017e11c      sbb   eax, 0x1d6c3318
+            0x0017e122      sbb   byte [rbx], dh
+            0x0017e124      mov   byte [0x8233103d2133181d], al
+            0x0017e12d      cmp   eax, 0xec633310
+            0x0017e132      invalid
+            0x0017e133      xchg  edi, eax
+            0x0017e134      add   byte [rcx], al
+            0x0017e136      mov   al, byte [0xffc1105280002152]
+            0x0017e13f      xchg  edi, eax
+            0x0017e140      add   dword [rax], 0x235280                ; [0x235280:4]=0x371801e8
+            0x0017e146      adc   byte [rdx-0x20], 0x03
+            0x0017e14a      invalid
+            0x0017e14b      sub   ah, dl
+            0x0017e14d      add   ebx, dword [rdi]
+            0x0017e14f      stosb
+            0x0017e150      mov   al, byte [0x802a1f03e097ff48]
+            0x0017e159      call  qword [rdi+0x2a0003e1]
+            0x0017e160      loopne 0x17e168
+            0x0017e162      add   byte [rax-0x6edc9800], dl
+            0x0017e168      and   al, 0x3a
+            0x0017e16a      call  qword [rdi+0x2a1303e0]
+            0x0017e170      xchg  ebx, eax
+            0x0017e171      popfq
+            0x0017e172      invalid
+            0x0017e173      xchg  edi, eax
+            0x0017e174      and   byte [rbx], al
+            0x0017e176      add   byte [rax+rax*2], dh
+            0x0017e179      add   byte [rax-0x1031eae], al
+            0x0017e17f      xchg  edi, eax
+            0x0017e180      hlt
+            0x0017e181      add   eax, dword [rax]
+            0x0017e183      sub   al, byte [rbp-0x6a680101]
+            0x0017e189      invalid
+            0x0017e18a      add   al, dh
+            0x0017e18c      mov   ch, 0xc6
+            0x0017e18e      and   eax, 0x3e391
+            0x0017e193      sub   al, byte [rax+0x01]
+            0x0017e196      adc   byte [rdx-0x1e], 0x1f
+            0x0017e19a      mov   al, byte [0x1503e42a1403e152]        ; [0x1503e42a1403e152:1]=255
+            0x0017e1a3      stosb
+            0x0017e1a4      invalid
+            0x0017e1a5      invalid
+            0x0017e1a6      invalid
+            0x0017e1a7      xchg  edi, eax
+            0x0017e1a8      loopne 0x17e1ad
+            0x0017e1aa      adc   eax, 0xff3a13aa
+            0x0017e1af      xchg  edi, eax
+            0x0017e1b0      invalid
+            0x0017e1b1      in    eax, dx
+            0x0017e1b2      std
+            0x0017e1b3      xchg  edi, eax
+            0x0017e1b4      add   byte [rax-0x78], cl
+            0x0017e1b7      push  rdx
+            0x0017e1b8      loopne 0x17e1bb
+            0x0017e1ba      mov   al, byte [0x6619400d77172]           ; [0x6619400d77172:1]=255
+            0x0017e1c3      nop
+            0x0017e1c4      add   al, byte [rsi]
+            0x0017e1c6      add   byte [rax-0x6ed50bdf], dl
+            0x0017e1cc      and   al, 0x10
+            0x0017e1cf      xchg  ecx, eax
+            0x0017e1d0      ror   byte [rcx], 0x80
+            0x0017e1d3      push  rdx
+            0x0017e1d4      sbb   dword [rbp+0x2097ff], edi
+            0x0017e1da      invalid
+            0x0017e1db      push  rdx
+            0x0017e1dc      jnp   0x17e1d3
+            0x0017e1de      call  qword [rdi+0x2a0003f4]
+            0x0017e1e4      add   byte [rax-0x10339ae], al
+            0x0017e1eb      xchg  edi, eax
+            0x0017e1ec      cmc
+            0x0017e1ed      add   eax, dword [rax]
+            0x0017e1ef      sub   ch, byte [rdx-0x01]
+            0x0017e1f2      invalid
+            0x0017e1f3      xchg  edi, eax
+            0x0017e1f4      invalid
+            0x0017e1f5      invalid
+            0x0017e1f6      add   byte [rax-0x6ed6012a], dl
+            0x0017e1fc      jrcxz 0x17e201
+            0x0017e1fe      add   byte [rdx], ch
 ~ ❯ 
