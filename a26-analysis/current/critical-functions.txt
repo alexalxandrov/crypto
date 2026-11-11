@@ -1,0 +1,133 @@
+[2KERROR: Cannot find function at 0x00187cf0
+ERROR: Cannot find function at 0x0018962c
+ERROR: Cannot find function at 0x00189d8c
+ERROR: Cannot find function at 0x0017dfdc
+0x0023a28d 0x0023a28d   31   32         ascii   Ignore DEBUG_UNLOCK_SJTAG area\n
+0x0023a7b3 0x0023a7b3   30   31         ascii   UFS desc lock/unlock fail: %d\n
+0x0023ea25 0x0023ea25    8    9         ascii   unlocked
+0x00240c92 0x00240c92    6    7         ascii   Unlock
+0x002478b3 0x002478b3   30   31         ascii   exynos_read_is_device_unlocked
+0x0024edc1 0x0024edc1   51   52         ascii   %s: using unlock keys which was downloaded by odin\n
+0x00255547 0x00255547   38   39         ascii   %s : dont clear s2d (by sjtag unlock)\n
+0x0025c3fb 0x0025c3fb   50   51         ascii   assert fail: ops->read_is_device_unlocked != NULL\n
+0x0025d1da 0x0025d1da   46   47         ascii   [V3_SMP][%s(%d)]: unable to unlock the buffer\n
+0x0026245d 0x0026245d    8    9         ascii   OSUNLOCK
+0x002633db 0x002633db   25   26         ascii   [BLDP] unlock_count = %d\n
+0x0026529e 0x0026529e   13   14         ascii   PO_OEM_UNLOCK
+0x00266b54 0x00266b54    8    9         ascii   Unlocked
+0x00267c35 0x00267c35   46   47         ascii   [CD_SMP][%s(%d)]: unable to unlock the buffer\n
+0x002691ec 0x002691ec   63   64         ascii   recovery\n--wipe_data\n--reason=bootloader_unlock\n--locale=en_US\n
+0x0026a977 0x0026a977   22   23         ascii   Fail to unlock (0x%x)\n
+0x0026b4ca 0x0026b4ca   18   19         ascii   get_oem_unlock_val
+0x0026f533 0x0026f533   28   29         ascii   %s: there is no unlock keys\n
+0x00273ee0 0x00273ee0   20   21         ascii   Secure jtag: unlock\n
+0x00275d4a 0x00275d4a   25   26         ascii   Succeed to unlock (0x%x)\n
+0x0027640a 0x0027640a   69   70         ascii   : Digest does not exist, device unlocked so not initializing digest.\n
+0x0027a7d5 0x0027a7d5   29   30         ascii   ufs unlock isn't supported!!\n
+0x0027afa9 0x0027afa9   17   18         ascii   unlock_counter_rw
+0x002ae505 0x002ae505   41   42         ascii   CSMC: bldp_secure_info.unlock_count (%d)\n
+0x002ca94c 0x002ca94c   17   18         ascii   device_unlock.jpg
+0x0026d660 0x0026d660   24   25         ascii   sync_lockstate_custtoken
+0x00248380 0x00248380   35   36         ascii   [FMM] There is no STEADY Partition\n
+0x0024f6b5 0x0024f6b5   33   34         ascii   [FMM] 'FMM' Lock state by STEADY\n
+0x0025625d 0x0025625d   29   30         ascii   STEADY partition read failed\n
+0x002655d3 0x002655d3   23   24         ascii   %s : can't find STEADY\n
+0x0026fe25 0x0026fe25    6    7         ascii   STEADY
+0x002745dc 0x002745dc   34   35         ascii   %s : STEADY partition read failed\n
+0x0023860f 0x0023860f   14   15         ascii   set_RPMB_param
+0x0023864b 0x0023864b   33   34         ascii   RPMB: get hmac value: fail: 0x%X\n
+0x00238683 0x00238683   67   68         ascii   RPMB: %s: Advanced Write Counter read request fail !!! (cnt = %zu)\n
+0x002386c7 0x002386c7   43   44         ascii   RPMB: %s: advanced RPMB write block failed\n
+0x00238d3f 0x00238d3f   39   40         ascii   %s: failed to get lock value from RPMB\n
+0x00238da0 0x00238da0   29   30         ascii   %s : Not able to access RPMB\n
+0x0023a52c 0x0023a52c   45   46         ascii   RPMB: Magic Block Write: fail [%d try]: 0x%X\n
+0x0023a55a 0x0023a55a   34   35         ascii   RPMB: fail to set RPMB SIZE: 0x%X\n
+0x0023a57d 0x0023a57d   20   21         ascii   RPMB : %s (%d) fail\n
+0x0023a5a2 0x0023a5a2   35   36         ascii   RPMB : Header block write error!!!\n
+0x0023c757 0x0023c757   29   30         ascii   RPMB Header block read error\n
+0x0023ce4c 0x0023ce4c   32   33         ascii   [I]%s:%d RPMB isn't provisioned\n
+0x0023e6c7 0x0023e6c7   37   38         ascii   [CM] RPMB: failed to block key: 0x%X\n
+0x00240a40 0x00240a40   23   24         ascii   RPMB: %s: Failed: 0x%X\n
+0x00240a74 0x00240a74   23   24         ascii   RPMB : table init fail\n
+0x00240a8c 0x00240a8c   20   21         ascii   RPMB: RI blk rd err\n
+0x002413e4 0x002413e4   31   32         ascii   [FMM] 'FMM' Lock state by RPMB\n
+0x00243071 0x00243071   34   35         ascii   RPMB: fail to get RPMB UFS params\n
+0x00243094 0x00243094   45   46         ascii   RPMB : Magic Block Read: fail [%d try]: 0x%X\n
+0x002430c2 0x002430c2   23   24         ascii   RPMB: set RI #%zd fail\n
+0x002430da 0x002430da   33   34         ascii   RPMB: Perst data blk update fail\n
+0x00243113 0x00243113   16   17         ascii   RPMB: %s rd err\n
+0x0024572c 0x0024572c   42   43         ascii   RPMB: failed to set provision state: 0x%X\n
+0x00245757 0x00245757   37   38         ascii   RPMB: Comparing Magic Block: fail!!!\n
+0x0024577d 0x0024577d   37   38         ascii   RPMB : Perst Data Block init fail!!!\n
+0x00247aad 0x00247aad   60   61         ascii   RPMB: authenticated data read response fail !!! (cnt = %zu)\n
+0x00247aea 0x00247aea   28   29         ascii   RPMB : Perst data load fail\n
+0x00247b1c 0x00247b1c   28   29         ascii   RPMB: table not initialized\n
+0x00249eae 0x00249eae   43   44         ascii   RPMB: %s: Not supported(use default): 0x%X\n
+0x00249eff 0x00249eff   38   39         ascii   RPMB: %s: Write counter read fail !!!\n
+0x00249f26 0x00249f26   60   61         ascii   RPMB: authenticated data write request fail !!! (cnt = %zu)\n
+0x0024abff 0x0024abff   30   31         ascii   [HDM] RPMB read FAIL ret = %d\n
+0x0024c243 0x0024c243   23   24         ascii   get_bRPMB_ReadWriteSize
+0x0024c25b 0x0024c25b   35   36         ascii   RPMB : Rollback Index init fail!!!\n
+0x0024efaf 0x0024efaf   62   63         ascii   %s: normal rpmb (SpecVersion: 0x%x, bAdvancedRPMBSupport: %u)\n
+0x00250f50 0x00250f50   19   20         ascii   recog_UFS_RPMB_size
+0x00250f7e 0x00250f7e   27   28         ascii   RPMB: Read result fail !!!\n
+0x00250f9a 0x00250f9a   25   26         ascii   RPMB: %s: malloc failure\n
+0x00253676 0x00253676   44   45         ascii   [CM] RPMB: error in CryptoManager F/W: 0x%X\n
+0x00253f88 0x00253f88   35   36         ascii   [AID] Set RPMB Default info to 512\n
+0x00254220 0x00254220   35   36         ascii   [HDM] Set RPMB Default info to 512\n
+0x002556eb 0x002556eb   38   39         ascii   [CM] RPMB: failed to block hmac: 0x%X\n
+0x00255712 0x00255712   41   42         ascii   RPMB: failed to get partition info: 0x%X\n
+0x0025573c 0x0025573c   38   39         ascii   RPMB: ERR: key programming fail: 0x%x\n
+0x00255763 0x00255763   29   30         ascii   RPMB: key already programmed\n
+0x0025759c 0x0025759c   48   49         ascii   RPMB: authenticated data write request fail !!!\n
+0x00259ea1 0x00259ea1   20   21         ascii   recog_UFS_RPMB_param
+0x00259eb6 0x00259eb6   16   17         ascii   force_RPMB_write
+0x00259ec7 0x00259ec7   49   50         ascii   RPMB: fail to sync with LDFW, unable to use RPMB\n
+0x00259ef9 0x00259ef9   36   37         ascii   RPMB: rpmb key programming fail: %X\n
+0x00259f38 0x00259f38   22   23         ascii   RPMB: %s(%d) fail !!!\n
+0x00259f4f 0x00259f4f   18   19         ascii   RPMB: %s #%d fail\n
+0x0025a067 0x0025a067   13   14         ascii   \tRPMB memory\n
+0x0025a8ca 0x0025a8ca   15   16         ascii   OEM %s in RPMB\n
+0x0025c03b 0x0025c03b   70   71         ascii   RPMB: get partition param from ldfw: Not Supported(use default): 0x%X\n
+0x0025c082 0x0025c082   27   28         ascii   RPMB : RI check magic fail\n
+0x0025defc 0x0025defc   46   47         ascii   RPMB: %s: Write counter read request fail !!!\n
+0x0025df3f 0x0025df3f   39   40         ascii   [CM] RPMB: key derived as all zero key\n
+0x0025df67 0x0025df67   40   41         ascii   RPMB: fail to set UFS RPMB params: 0x%X\n
+0x00260696 0x00260696   13   14         ascii   set_RPMB_size
+0x002606a4 0x002606a4   15   16         ascii   print_RPMB_mode
+0x002606b4 0x002606b4   40   41         ascii   \nUFS: normal RPMB Selected for LK SCSI\n\n
+0x002611df 0x002611df   39   40         ascii   [HDM] Unsupported raw RPMB version: %d\n
+0x00262794 0x00262794   33   34         ascii   %s : RPMB is not initialized yet\n
+0x00262938 0x00262938   35   36         ascii   RPMB: Request read result fail !!!\n
+0x0026295c 0x0026295c   37   38         ascii   RPMB: %s: RPMB EHS data result: 0x%x\n
+0x00262982 0x00262982   53   54         ascii   RPMB: %s fail, due to rpmb operation flag disable!!!\n
+0x00264afc 0x00264afc   61   62         ascii   RPMB: Read write counter fail but key may already programmed\n
+0x00264b5e 0x00264b5e   38   39         ascii   RPMB : fail to read write counter !!!\n
+0x002669da 0x002669da   42   43         ascii   [CM] RPMB: exceed maximum SMC retry count\n
+0x002687e0 0x002687e0   47   48         ascii   RPMB: %s: SMC Not supported(use default): 0x%X\n
+0x0026ab6e 0x0026ab6e   28   29         ascii   RPMB: fail to get RPMB SIZE\n
+0x0026abaa 0x0026abaa   48   49         ascii   RPMB: LDFW does not support Advanced RPMB: 0x%X\n
+0x0026abdb 0x0026abdb   50   51         ascii   RPMB: get partition param from ldfw: failed: 0x%X\n
+0x0026ac0e 0x0026ac0e   17   18         ascii   RPMB: %s success\n
+0x0026ac20 0x0026ac20   24   25         ascii   RPMB: fail to get NONCE\n
+0x0026d745 0x0026d745   57   58         ascii   [HDM] %s: Successfully loaded and verified raw RPMB data\n
+0x0026fe01 0x0026fe01   35   36         ascii   [FMM] Set RPMB Default info to 512\n
+0x002714ec 0x002714ec   28   29         ascii   RPMB: key blocking: success\n
+0x0027166c 0x0027166c   28   29         ascii   RPMB: %s: RPMB result: 0x%x\n
+0x00273635 0x00273635   31   32         ascii   RPMB: key blocking: fail: 0x%X\n
+0x00273931 0x00273931   29   30         ascii   RPMB: %s fail (result: 0x%x)\n
+0x0027479f 0x0027479f   35   36         ascii   [HDM] Invalid raw RPMB magic: 0x%x\n
+0x00275dac 0x00275dac   32   33         ascii   RPMB: hmac blocking: fail: 0x%X\n
+0x00275dcd 0x00275dcd   29   30         ascii   RPMB: hmac blocking: success\n
+0x00275ff7 0x00275ff7   56   57         ascii   RPMB: %s fail, due to Maximum number of blocks exceeded\n
+0x00276030 0x00276030   47   48         ascii   RPMB: authenticated data read request fail !!!\n
+0x0027609a 0x0027609a   26   27         ascii   RPMB : RI table load fail\n
+0x00278415 0x00278415   32   33         ascii   %s: bRPMB_ReadWriteSize is zero\n
+0x00278436 0x00278436   38   39         ascii   RPMB: fail to get bRPMB_ReadWriteSize\n
+0x0027845d 0x0027845d   35   36         ascii   RPMB: %s writecounter expired = %d\n
+0x0027a669 0x0027a669   54   55         ascii   RPMB: Does not support Advanced RPMB, use Normal RPMB\n
+0x0027a6a0 0x0027a6a0   42   43         ascii   RPMB: %s: advanced RPMB read block failed\n
+0x0027c91d 0x0027c91d   48   49         ascii   RPMB: authenticated data read response fail !!!\n
+0x0024a98d 0x0024a98d   28   29         ascii   DN_FAIL_BLOCK_CUSTOM_BIN_OEM
+0x0025a8ca 0x0025a8ca   15   16         ascii   OEM %s in RPMB\n
+0x0026529e 0x0026529e   13   14         ascii   PO_OEM_UNLOCK
