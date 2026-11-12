@@ -783,3 +783,170 @@ https://github.com/alexalxandrov/crypto
 Не нужно заново открывать вопрос «есть ли в Samsung Engineering Mode какие-то unlock-функции»: в репозитории уже есть substantial A26-specific traces и firmware artifacts. Но нельзя перескакивать от строк/имен функций к утверждению, что найден анлок.
 
 Правильный ближайший шаг — **воспроизвести адреса, полностью разобрать `0x1690d8`, установить семантику поля `+0x608`, затем связать это с конкретным A26 EngMode/TEE request/install path и RPMB state**. Параллельно нужно закрыть вопрос о реальной выдаче подписанного ESS authorization. До выполнения этих пунктов состояние проекта — «исследование продолжается, working unlock не найден».
+
+---
+
+# Дополнение от 12 ноября 2026 г. — фактическое состояние телефона и проверка Download Mode
+
+> Это дополнение фиксирует новые сведения, полученные непосредственно от владельца устройства 12.11.2026. Оно имеет приоритет над более ранними строками этого досье, где регион, CSC, состояние OEM Unlock и Download Mode были обозначены как неизвестные. Старые наблюдения не удаляются, поскольку они нужны для истории исследования.
+
+## A. Идентификация конкретного аппарата
+
+| Поле | Подтверждённое значение |
+|---|---|
+| Коммерческое название | Samsung Galaxy A26 5G |
+| Полная маркировка модели со слов владельца | `SM-A266B/DS` |
+| Модель для firmware/bootloader | `SM-A266B` |
+| AP | `A266BXXUCDZJ6` |
+| CP | `A266BXXUCDZJ6` |
+| CSC package | `A266BOXMCDZJ6` |
+| Sales code / Carrier ID в Download Mode | `CAU` |
+| CSC family | `OXM` (из `A266BOXMCDZJ6`; активный sales code наблюдался как CAU) |
+| Android | Android 17 |
+| One UI | One UI 9 |
+| Bootloader binary / RP SWREV | `S:12` (экран Download Mode) |
+| KernelSU | Установлен; root shell сообщает SELinux context `u:r:ksu:s0` |
+| Текущий SBoot для анализа | `A266BXXUCDZJ6`; ранее сопоставлен с исследованным current SBoot blob |
+| DID / IMEI / серийный номер | Не включать в публичный handoff и не запрашивать повторно |
+
+Официальная страница Samsung, найденная 12.11.2026, указывает для Galaxy A26 5G (SM-A266B) build `A266BXXUCDZJ6`, Android 17 и One UI 9; на этой странице дата выпуска указана как 03.11.2026, security patch — 05.10.2026:
+<https://doc.samsungmobile.com/SM-A266B/033186250417/eng.html>
+
+Примечание к дате: в более раннем разделе этого файла была записана дата 27.10.2026 со ссылкой на другую страницу Samsung. Не считать эти даты взаимозаменяемыми без проверки региональной страницы обновлений; для установленной сборки главным идентификатором остаётся точный build string `A266BXXUCDZJ6`.
+
+## B. Android OEMLockService и свойства системы — фактические результаты
+
+Команды выполнялись владельцем в Termux с root через KernelSU.
+
+Проверка root и свойств:
+```sh
+su -c 'id; echo "other.locked=$(getprop ro.boot.other.locked)"; echo "unlock_supported=$(getprop ro.oem_unlock_supported)"; echo "unlock_allowed=$(settings get global oem_unlock_allowed)"; command -v resetprop'
+```
+
+Результат:
+```text
+uid=0(root) gid=0(root) context=u:r:ksu:s0
+other.locked=1
+unlock_supported=1
+unlock_allowed=null
+/data/adb/ksu/bin/resetprop
+```
+
+Временная runtime-подмена свойства была выполнена:
+```sh
+su -c 'resetprop -n ro.boot.other.locked 0'
+su -c 'getprop ro.boot.other.locked'
+```
+После команды значение читалось как `0`. После перезапуска Settings пункт **OEM Unlocking** появился; владелец включил его. Это изменение Android property/UI не является само по себе изменением состояния SBoot.
+
+Системные значения, снятые после этого:
+```text
+sys.oem_unlock_allowed=
+ro.frp.pst=/dev/block/persistent
+knox.kg.state=Completed
+ro.boot.kg=0x4
+ro.boot.vbmeta.device_state=locked
+ro.boot.verifiedbootstate=green
+```
+
+Вызовы OEMLockService выполнялись в shell SELinux context:
+```sh
+su -c 'runcon u:r:shell:s0 sh -c "
+echo === CARRIER_ALLOWED ===
+service call oem_lock 3
+echo === USER_ALLOWED ===
+service call oem_lock 5
+echo === OEM_UNLOCK_ALLOWED ===
+service call oem_lock 6
+echo === DEVICE_UNLOCKED ===
+service call oem_lock 7
+"'
+```
+
+Результат:
+```text
+CARRIER_ALLOWED: Parcel( 00000000 00000001)
+USER_ALLOWED: Parcel( 00000000 00000001)
+OEM_UNLOCK_ALLOWED: Parcel( 00000000 00000001)
+DEVICE_UNLOCKED: Parcel( 00000000 00000000)
+```
+
+Интерпретация строго ограниченная:
+- `isOemUnlockAllowedByCarrier = true`;
+- `isOemUnlockAllowedByUser = true`;
+- `isOemUnlockAllowed = true`;
+- `isDeviceOemUnlocked = false`.
+
+Это реальные ответы Android OEMLockService на момент проверки. Они **не доказывают**, что Samsung SBoot примет команду/запрос разблокировки или что состояние bootloader уже изменилось.
+
+## C. Вход в Download Mode и D2 на One UI 9
+
+### C.1. Первоначальное поведение
+
+На обычной попытке входа в Download Mode с аппаратными клавишами владелец получал экран/сообщение `Reboot device D2` сразу после подключения USB и включения с зажатыми клавишами. Это происходило до появления обычного предупреждения Custom OS. Обычная комбинация в текущей прошивке таким образом не приводила к стандартному экрану подтверждения.
+
+### C.2. Успешный вход через Maintenance Mode
+
+12.11.2026 владелец выполнил путь через Maintenance Mode:
+1. Загрузил Android.
+2. Включил Maintenance Mode и дождался полной загрузки среды обслуживания.
+3. Полностью выключил устройство.
+4. Подключил USB к компьютеру с зажатыми Volume Up + Volume Down.
+5. Появился экран предупреждения **Custom OS**.
+6. После нажатия Volume Up устройство сразу перешло в обычный Download Mode; удерживание или отпускание Volume Up не меняло результат.
+
+**Результат:** D2 удалось обойти для цели входа в Download Mode. Это не является обходом OEM bootloader lock и не доказывает возможность разблокировки.
+
+Сообщения сообщества Samsung и независимые инструкции описывают аналогичный Maintenance Mode → выключение → USB + обе клавиши → Custom OS → Volume Up путь на One UI 8.5/9. Это внешнее подтверждение общего механизма, но не официальная гарантия для конкретного CSC/сборки:
+- Samsung Members discussion: <https://r2.community.samsung.com/t5/Galaxy-A/Download-Mode/td-p/22321447>
+- Technastic, updated 03.11.2026: <https://technastic.com/fix-samsung-d2-error-enter-download-mode-one-ui-8-5/>
+- Samsung Maintenance Mode documentation: <https://www.samsung.com/uk/support/mobile-devices/what-is-maintenance-mode-and-how-to-use-it-on-your-galaxy-phone-or-tablet/>
+
+## D. Наблюдения на экране Download Mode
+
+Владелец сообщил, что на текущем экране отображаются обычные информационные строки Download Mode, включая сведения о binary, secure download, sales/carrier code, warranty и rollback revision. При этом три строки **не отображаются**:
+
+- `OEM LOCK` — отсутствует;
+- `FRP LOCK` — отсутствует;
+- `DEVICE STATE` — отсутствует.
+
+Дополнительные поля, сообщённые при предыдущем осмотре экрана:
+- `SECURE DOWNLOAD: Enabled`;
+- `SALES CODE: CAU`;
+- `CARRIER ID: CAU`;
+- `WARRANTY VOID: 0`;
+- `RP SWREV: S:12`;
+- `HDM STATUS: none`;
+- `KG STATE: Completed` / ранее описывался как `0`;
+- `CURRENT BINARY` — ранее сообщалось как Samsung Official; повторно сверить точную строку, если потребуется.
+
+В более раннем осмотре владелец отдельно сообщал `FRP LOCK: OFF`; в последнем осмотре строка FRP LOCK уже не присутствует. Не смешивать эти два наблюдения: исторически было сообщено FRP OFF, в текущем интерфейсе строка отсутствует.
+
+**Не делать вывод**, что отсутствие строк `OEM LOCK`, `FRP LOCK` и `DEVICE STATE` означает разрешённую или запрещённую разблокировку. В исследованных One UI 8.5 и One UI 9 SBoot string scans старые строки отображения OEM LOCK отсутствовали, хотя `get_oem_unlock_val` и `PO_OEM_UNLOCK` оставались. Следовательно, отсутствие UI-строки не равно отсутствию внутренней логики.
+
+## E. Текущий статус исследования
+
+| Проверка | Состояние |
+|---|---|
+| Доступ к обычному Download Mode | **ДОСТУПЕН**, через Maintenance Mode |
+| D2 при обычном входе | Наблюдался |
+| OEM Unlocking в Developer Options | Появился после временной подмены `ro.boot.other.locked`; владелец включил |
+| OEMLockService carrier allowed | true |
+| OEMLockService user allowed | true |
+| OEMLockService overall allowed | true |
+| OEMLockService device unlocked | false |
+| Download Mode OEM LOCK row | Отсутствует |
+| Download Mode FRP LOCK row | Отсутствует в последнем осмотре; ранее сообщалось OFF |
+| Download Mode DEVICE STATE row | Отсутствует |
+| Bootloader unlocked | **НЕТ подтверждения; Android OEMLockService сообщает false** |
+| Фактическая штатная команда/подтверждение unlock | Пока не достигнуто |
+| Flash / downgrade / RPMB writes | Не выполнялись в рамках этого обновления |
+
+### Следующие read-only шаги
+
+1. Сохранить фотографию/полную перепись Download Mode без DID, IMEI и серийного номера.
+2. Если доступны ADB/USB debugging, отдельно снять read-only свойства и состояние служб; не менять boot properties и не писать в persistent storage.
+3. Исследовать, какой именно код SBoot использует для решения о разрешении unlock на сборке `A266BXXUCDZJ6`, учитывая расхождение между Android OEMLockService allowed=true и bootloader unlocked=false.
+4. Не считать простое нажатие Volume Up на Custom OS экранe разблокировкой: на этом аппарате оно только переводит в Download Mode.
+5. Не выполнять downgrade ниже `RP SWREV S:12`, не писать в RPMB/STEADY и не прошивать экспериментальные образы.
+
