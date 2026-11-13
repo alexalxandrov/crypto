@@ -151,7 +151,7 @@ The ESS analysis, handoff, README, and SVG were updated to use this corrected gr
 ### 8.7 Next highest-value targets
 
 1. Identify the data table/object at `aav.0x000493e0 + 0x2380` and why it references `fcn.00115610`.
-2. Decode status IDs 7 and 6 and the strings at `0x26f47b` / `0x259c35` passed by `fcn.0017df80`.
-3. Trace `fcn.0014b120` and its storage/status destination at `0x5a0000 + 0x64c`.
+2. Decode the numeric cmd0 values `0x26f47b` / `0x259c35` passed to `fcn.0014b120`, and determine the destination buffer's consumers.
+3. Trace consumers of the diagnostic buffer at `0x5a0000 + 0x64c` and determine why the wrapper formats those cmd0 values.
 4. Resolve the key and semantics of `fcn.0017b7c8`'s counter/object operation.
 5. Continue the EngMode HAL → TEEGRIS → signed-token validation/install path. Keep all device operations read-only.
