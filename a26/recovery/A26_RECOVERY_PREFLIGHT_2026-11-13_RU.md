@@ -83,7 +83,7 @@ https://github.com/TeamWin/android_device_samsung_a26x/tree/android-12.1
 
 Наличие первого не доказывает второго.
 
-## 6. Следующий безопасный preflight
+## 7. Следующий безопасный preflight
 
 До любых write-команд:
 1. Получить raw `.img` либо извлечь его из `.img.tar`.
