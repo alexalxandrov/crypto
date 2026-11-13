@@ -216,3 +216,52 @@ No flashing, downgrade, token installation, or RPMB/STEADY write is to be attemp
 4. Отсутствующие тела fcn.00153180 и fcn.00153998 остаются приоритетным пробелом. Их вызовы fcn.0017dfdc подтверждены, но полный контекст получения и передачи данных пока не извлечён.
 
 **Итог:** гипотеза «региональный CSC даст другой разблокируемый SBoot» получила отрицательную оценку. Продолжать следует анализ пути Odin/customer-token и точной семантики защищённого lock-state, не перепрошивая телефон.
+
+
+## 8. Runtime correlation: complete ODIN MODE screen (13.11.2026)
+
+The device owner supplied a **complete transcription** of the current ODIN MODE screen. The owner explicitly confirmed that this is the entire screen and that **there are no additional fields or lines**. The full verbatim record is maintained in:
+
+`a26/A26_DOWNLOAD_MODE_2026-11-13_RU.md`
+
+Observed values:
+
+| Field | Value |
+|---|---|
+| Mode | `ODIN MODE` |
+| DLD SPEED | `FAST` |
+| CURRENT BINARY | `SAMSUNG OFFICIAL` |
+| KG STATE | `COMPLETED (0)` |
+| DID | `300277f5b7040811` |
+| SECURE DLD | `ENABLED` |
+| SALES CODE / CID / AID | `CAU/CAU` |
+| WARRANTY VOID | `0` |
+| RP SWREV | `B:12 K:12 (12 12 12 12 12) S:12` |
+| HDM STATUS | `NONE` |
+| CARRIER ID | `CAU` |
+| HW REV | `5` |
+| DDR SIZE | `8G` |
+| BUILD VERSION | `A266BXXUCDZJ6` |
+| EVT | `0.1` |
+| CHIP ID | `00000277f5b70408` |
+| LOT ID | `NWBUW` |
+| CHIP ID SJTAG | Same as CHIP ID: `00000277f5b70408` |
+
+The following lines are **not present** on that complete screen:
+
+- `OEM LOCK`
+- `FRP LOCK`
+- `DEVICE STATE`
+
+There are no other screen fields beyond the table above. Do not convert absent lines into OFF/UNLOCKED values, and do not ask the owner to provide additional Download Mode fields.
+
+### 8.1. Evidence interpretation
+
+1. `KG STATE: COMPLETED (0)` is the literal Download Mode observation. It is not, by itself, an OEM-unlock permission result or proof of an unlocked bootloader.
+2. `WARRANTY VOID: 0` is the observed Warranty Void value. It is distinct from Knox version 3.14 and Knox API level 41.
+3. `CURRENT BINARY: SAMSUNG OFFICIAL` and `SECURE DLD: ENABLED` describe the displayed binary/download state; neither proves that the OEM unlock transition is permitted.
+4. The `RP SWREV` tuple records revision 12 for the displayed B/K/S components. It is not a downgrade compatibility guarantee.
+5. The absence of `OEM LOCK`, `FRP LOCK`, and `DEVICE STATE` is a UI observation only. It does not independently establish either locked or unlocked state.
+6. Earlier Android OEMLockService results remain a separate observation: carrier/user/overall allowed were true, while `isDeviceOemUnlocked` was false. Do not collapse the Android service response, KG state, and missing Download Mode labels into one Boolean.
+
+**Device evidence intake status: COMPLETE for Software information and the full ODIN MODE screen.** The remaining work is static/dynamic evidence correlation using the already collected values, not requesting another screen from the owner.
