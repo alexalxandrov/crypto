@@ -1046,6 +1046,6 @@ DEVICE_UNLOCKED: Parcel( 00000000 00000000)
 
 **Новая семантика setter:** `fcn.001257bc` сохраняет нормализованный вход 0/1 без инверсии. `fcn.0017dfdc` допускает только согласованные пары `mode_bit_3 == cached_state`, после чего передаёт setter-у `1 - mode_bit_3`. Это устанавливает программную полярность значения на границе setter, но не раскрывает, какое значение Samsung считает locked/unlocked.
 
-**В wrapper `fcn.0017df80`:** до sync и при bit 3 = 0 после sync вызывается `fcn.0014b120` — форматирующий helper с шаблоном `cmd0 is not correct 0x%x`. Ему передаются destination `0x5a0000+0x64c`, capacity 7 и числовые cmd0 values `0x26f47b` / `0x259c35`. Это не подтверждённые status IDs или string pointers; смысл значений пока неизвестен.
+**В wrapper `fcn.0017df80`:** до sync и при bit 3 = 0 после sync вызывается `fcn.0014b120` — форматирующий helper с шаблоном `cmd0 is not correct 0x%x`. Ему передаются destination `0x5a0000+0x64c`, capacity 7 и operands `0x26f47b` / `0x259c35`. `fcn.0014b248` читает x2 byte-by-byte и обрабатывает `%`, поэтому operands выглядят как указатели на строковые/format-like данные; сами байты и смысл ещё не декодированы. Это не status IDs.
 
 **Статус:** extraction `fcn.00153180` / `fcn.00153998` завершён; их прежняя классификация как direct callers отменена. Следующая задача — установить смысл table entry `aav.0x493e0 + 0x2380`, cmd0 values `0x26f47b` / `0x259c35` и потребителей диагностического буфера, а затем продолжить от этого callback к vendor service / TEEGRIS.
