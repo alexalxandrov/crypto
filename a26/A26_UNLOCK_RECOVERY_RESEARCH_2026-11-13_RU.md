@@ -556,3 +556,93 @@ su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_header_4k.bin 
 ```
 
 Не выполнять полный dump и не использовать block device как `of=`. По первым 4 KiB проверим сигнатуру/структуру до решения о дальнейшей read-only выборке.
+## 19. SCSI backend selection и семантика полей PIT STEADY record
+
+Новая проверка `fcn.00138ddc`, `fcn.00114100`, `fcn.00138f30` и `fcn.001390c0` уточнила реальный storage access path.
+
+### 19.1 Storage mode устанавливается до PIT parsing
+
+В `fcn.00114100` прямо перед инициализацией следующего этапа выполняется:
+
+```asm
+0x00114140  mov w0, 1
+0x00114144  bl  fcn.00138ddc
+0x00114148  bl  fcn.001421d8
+0x0011414c  bl  fcn.00175b28
+```
+
+`fcn.00138ddc` на `0x00138de8..0x00138dec` записывает `w0` в global `0x572000+0x5e8`. Поэтому на этой `fcn.00114100` init path значение storage-mode становится `1` до вызова PIT loader `fcn.00175b28`. Функция дополнительно проверяет/инициализирует storage environment через `fcn.0012b810`, `fcn.0012c4dc`, `fcn.00126898`, `fcn.0012bbe0` и связанные helpers; mode store не следует путать с гарантией, что каждый последующий media operation успешно завершится.
+
+### 19.2 Mode 1 означает SCSI resource object namespace
+
+`fcn.00138f30(index)` читает global `0x572000+0x5e8`:
+- при `mode == 1` строит имя `scsi` + ASCII digit `index` и передаёт его в `fcn.00204950`;
+- при `mode == 2` использует другой namespace: `mmc` + digit, а для `index == 3` специальный key `mmcrpmb`;
+- при других значениях mode не строит эти имена и возвращает null/неуспех.
+
+Это не только гипотеза по строкам: инструкция в mode-1 branch использует static string pointer `0x243295`, raw ASCII которой — `scsi`; ветка mode 2 использует `0x23e866` (`mmc`) и `0x24ef96` (`mmcrpmb`). `fcn.00204950` ищет соответствующий объект по имени во внутреннем resource/driver object list, сравнивая имя по `[node+0x18]`, и увеличивает refcount `[node+0x10]`.
+
+### 19.3 `fcn.001390c0` dispatches an operation to selected SCSI object
+
+Входные аргументы `fcn.001390c0(arg1, arg2, arg3, arg4)` используются следующим образом:
+
+- `arg1` — destination buffer;
+- `arg2` — selector index, который передаётся в `fcn.00138f30` и тем самым выбирает `scsiN` при storage mode 1;
+- `arg3` — 32-bit offset-like value;
+- `arg4` — transfer length.
+
+Далее `fcn.001390c0` получает object pointer, читает function pointer `[object+0xa8]` и вызывает его с аргументами `(object, destination_buffer, arg3, arg4)`. После вызова освобождает reference через `fcn.002049dc`. Следовательно, это вызов storage backend object's read-like method, а не `memcpy`/обычный RAM parser. Точное имя метода и единицы измерения `arg3` зависят от реализации объекта SCSI, которую пока не декодировали.
+
+### 19.4 Как PIT fields STEADY record поступают в backend
+
+В `fcn.00189d8c` из PIT record собираются два little-endian 32-bit поля:
+
+- поле `record+0x14..+0x17`;
+- поле `record+0x1c..+0x1f`.
+
+В первом этапе загрузки вызов `fcn.001390c0` получает `arg2 = field(record+0x1c)`, `arg3 = field(record+0x14) + 0x12`, `arg4 = 0x2c00`.
+
+Во втором parser/verification stage (`fcn.0018962c`) используется тот же selector field `record+0x1c`, `arg3 = field(record+0x14) + 0x28`, `arg4 = 0x11000`.
+
+Поскольку storage mode был установлен в 1 перед PIT parsing, эти вызовы проходят через `scsiN` object namespace. Таким образом, PIT record несёт как минимум: (1) selector SCSI object/index, (2) offset-like numeric field, (3) длину операции, заданную вызывающим кодом.
+
+### 19.5 Что это значит для `/dev/block/sda3`
+
+Теперь цепочка сильнее, чем простое совпадение имени:
+
+```text
+fcn.00114100: set storage mode = 1
+       ↓
+fcn.00138f30: resolve scsiN object
+       ↓
+fcn.00175b28: request PIT resource
+       ↓
+PIT record key = STEADY
+       ↓
+fcn.00189d8c / fcn.0018962c
+       ↓
+fcn.001390c0: object+0xa8(buffer, offset, length)
+       ↓
+SCSI backend operation
+```
+
+На телефоне соответствующий Android-visible partition name `steady` указывает на `/dev/block/sda3`, 4 MiB, kernel RO=1. UFS device на Android экспонируется через `sda`-style SCSI block namespace, что согласуется с SBoot `scsiN` path. Однако это пока **не доказывает**, что PIT selector конкретно равен тому `scsiN`, за которым скрывается `sda`, или что offset field равен `/sys/class/block/sda3/start`. Нельзя пока назвать конкретный LBA.
+
+### 19.6 Следующий точечный probe — только sysfs geometry
+
+Чтобы сравнить PIT offset field с реальным UFS partition start без чтения payload, получить:
+
+```sh
+su -c '
+echo "=== SCSI DISK GEOMETRY ==="
+cat /sys/class/block/sda/size
+cat /sys/class/block/sda/queue/logical_block_size
+cat /sys/class/block/sda/queue/physical_block_size
+echo "=== STEADY PARTITION GEOMETRY ==="
+cat /sys/class/block/sda3/start
+cat /sys/class/block/sda3/size
+cat /sys/class/block/sda3/uevent
+'
+```
+
+Это metadata-only чтение sysfs. Не читать и не писать block payload. Если `start` будет получен, можно сопоставить его с PIT offset field только после установления единиц измерения SCSI backend.
