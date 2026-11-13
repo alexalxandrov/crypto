@@ -961,3 +961,24 @@ DEVICE_UNLOCKED: Parcel( 00000000 00000000)
 4. Не считать простое нажатие Volume Up на Custom OS экранe разблокировкой: на этом аппарате оно только переводит в Download Mode.
 5. Не выполнять downgrade ниже `RP SWREV S:12`, не писать в RPMB/STEADY и не прошивать экспериментальные образы.
 
+
+
+## 9. Фактический профиль установленного устройства (13.11.2026)
+
+Получены данные из **Settings → About phone → Software information**. Полная таблица сохранена отдельно: `a26/A26_DEVICE_STATE_2026-11-13_RU.md`.
+
+Ключевые значения владельца:
+
+- One UI 9.0 / Android 17.
+- Baseband: `A266BXXUCDZJ6`.
+- Build number: `CP2A.260605.016.A266BXXUCDZJ6`.
+- Service provider: `SAOMC_SM-A266B_OXM_CAU_17_0007`.
+- CSC line: `CAU/CAU,CAU/CAU`.
+- SELinux: Enforcing.
+- Knox: 3.14, Knox API level 41.
+
+**Корреляция:** установленная build/baseband string совпадает с J6 build, для которого в `a26-analysis/current/` хранится BL/SBoot-анализ. Значит, текущая исследовательская база выбрана правильно. Побайтная сверка с разделом BL конкретного телефона не проводилась.
+
+**Не путать:** Knox version/API level не равны Knox Warranty Bit; SELinux Enforcing не сообщает OEM lock state. Версия Google Play system update не определяет SBoot.
+
+**Следующий этап — только чтение Download Mode fields**, если владелец согласится. Не нажимать и не удерживать комбинации, переводящие аппарат в Device Unlock Mode; не подтверждать unlock, wipe, flashing или factory reset.
