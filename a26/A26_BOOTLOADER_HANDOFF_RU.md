@@ -1213,3 +1213,14 @@ Raw J6 disassembly теперь подтверждает, что `fcn.00175b28` 
 Physical device evidence: `PARTNAME=steady`, by-name `steady -> /dev/block/sda3`, size 4 MiB, kernel RO=1, not mounted, no holders, no `blkid` signature. Exact string correspondence PIT `STEADY` ↔ Android `steady` is strong; exact UFS LBA/length mapping remains unproven. Do not claim direct SBoot read of `/dev/block/sda3`.
 
 Full analysis and safe 4 KiB header-only read command are in `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`, section 18.
+## 19. Подтверждён SCSI backend selector для PIT-driven STEADY path
+
+`fcn.00114100` на раннем init path исполняет `mov w0,1; bl fcn.00138ddc` до `fcn.00175b28` (PIT loader). `fcn.00138ddc` напрямую пишет этот аргумент в global `0x572000+0x5e8`. Дополнительные storage init/health checks выполняются затем внутри setter.
+
+`fcn.00138f30(index)` читает этот global: mode 1 формирует имя `scsiN` (raw prefix at `0x243295`); mode 2 формирует `mmcN`, а для index 3 использует `mmcrpmb`. `fcn.00204950` разрешает такое имя по внутреннему object list.
+
+`fcn.001390c0(dest, selector, offset, length)` выбирает object через `fcn.00138f30(selector)`, вызывает его method pointer `[object+0xa8]` с `dest`, `offset`, `length`, затем releases object. Это storage backend dispatch, не memcpy.
+
+PIT `STEADY` record fields: dword at `+0x1c` становится SCSI object selector; dword at `+0x14` (плюс `0x12` в `fcn.00189d8c`, плюс `0x28` в `fcn.0018962c`) становится offset-like argument; length — `0x2c00` / `0x11000`. Единицы offset и реализация SCSI method `[object+0xa8]` пока не установлены.
+
+Это связывает PIT `STEADY` record с SBoot SCSI object layer, а device `steady -> sda3` даёт согласующееся on-device имя и SCSI-style Linux block node. Конкретный selector `scsiN` и равенство PIT offset с `/sys/class/block/sda3/start` ещё не доказаны. Следующий безопасный шаг — sysfs geometry (`sda3/start`, `sda3/size`, `sda/queue/logical_block_size`), без чтения или записи payload.
