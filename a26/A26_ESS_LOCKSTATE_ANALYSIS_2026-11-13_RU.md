@@ -369,7 +369,7 @@ Full semantic reconstruction of `fcn.0017eb34` and resolution of `0x265467` are 
 
 Внутри fcn.0017dfdc после lock-state/bit-3 reconciliation и успешного MISC record lookup:
 1. fcn.00177854 подготавливает связанный object/context.
-2. fcn.001b3f80 вызывается с 0xF4240 (1 000 000 µs).
+2. fcn.001b3f80 вызывается с аргументом 0xF4240 (1 000 000 decimal); единицы и точная семантика helper пока не установлены.
 3. fcn.0014b120 формирует в stack buffer команду из string pointer 0x2691ec.
 4. В текущем J6 string scan 0x2691ec — recovery\n--wipe_data\n--reason=bootloader_unlock\n--locale=en_US\n.
 5. Полученный buffer передаётся в fcn.001392bc; далее вызываются fcn.0016e57c, fcn.001503d0, fcn.00150b58 и fcn.001257bc(w19).
