@@ -260,3 +260,60 @@ early init → STEADY record → metadata parse → SecureBoot signature checks 
 - fcn.001257bc обновляет cache 0x56f000+0x8f0 и вызывает generic storage/backend wrapper fcn.00123f14 при ready guard. Сообщение "OEM %s in RPMB" — диагностическая строка; без полного подтверждения нижнего backend call-chain её недостаточно, чтобы утверждать, что конкретная операция напрямую пишет RPMB.
 
 **Практический вывод:** запись в recovery через dd и изменение Android property не решают текущую проблему. Следующий важный объект анализа — происхождение и provisioning записи STEADY / содержимого bitmap до передачи в этот ранний SBoot parser, а также точная семантика bit 3. До этого нет обоснованного безопасного способа менять соответствующий lock policy.
+
+## 11. Новая корреляция: SBoot lock-state path строит recovery wipe-команду
+
+Проверен полный ARM64-блок fcn.0017dfdc и call-chain extract oem-lockstate-callchain.asm. Это уточняет назначение функции и устраняет старую ошибку в caller map.
+
+### 11.1 Фактическая последовательность вызовов
+
+Подтверждённая цепочка:
+
+fcn.00115610 @ 0x00115628
+  → fcn.0017df80
+    → fcn.0017dfdc
+
+Функция fcn.00115610 сначала запускает OEM/Customer-token lock-state synchronizer через fcn.0017df80. Позднее она выбирает один из response-processing handlers: fcn.00153180 или fcn.00153998. Эти handlers — соседние последующие ветви, а не прямые callers fcn.0017dfdc. Поэтому прежняя интерпретация callsite 0x1534e8 / 0x153d00 как прямых вызовов synchronizer неверна.
+
+### 11.2 Recovery command внутри synchronizer
+
+После precheck, сравнения bit 3 с cached OEM lock state и успешного поиска записи MISC (fcn.001758fc, pointer 0x250000+0xd3d), fcn.0017dfdc:
+
+- читает/подготавливает связанный объект через fcn.00177854;
+- выполняет задержку 1 000 000 микросекунд (значение передаётся в fcn.001b3f80);
+- формирует строку через fcn.0014b120 с format/source pointer 0x2691ec;
+- строка по 0x2691ec в текущем J6 string scan декодируется как:
+  "recovery\n--wipe_data\n--reason=bootloader_unlock\n--locale=en_US\n";
+- передаёт получившийся буфер далее в fcn.001392bc;
+- затем вызывает fcn.0016e57c, fcn.001503d0, fcn.00150b58 и state setter fcn.001257bc(w19).
+
+fcn.0014b120 в проверенном call-chain extract использует fcn.0014b248 для форматирования строки в caller-provided buffer; это helper уровня vsnprintf/formatting, а не сам механизм reboot или запись в раздел. Само наличие recovery command в этой функции доказывает, что SBoot содержит wipe-flow с reason bootloader_unlock, но не доказывает, что он запускается именно нажатием пользователем кнопки unlock в текущем меню.
+
+### 11.3 Что это значит для практического unlock
+
+Это самая конкретная до сих пор найденная привязка OEM lock-state synchronizer к штатному unlock wipe-пути:
+
+- SBoot уже знает точный recovery reason bootloader_unlock;
+- этот путь встроен в раннюю синхронизацию state, которая вызывается до выбора последующих response handlers;
+- для прохода до этой команды функция требует согласованности bit 3 и cached lock state, успешно находит MISC record, после чего выполняет несколько дополнительных обработок;
+- bit 3 сам по себе не является доказанным пользовательским разрешением; его содержимое поступает из проверенного STEADY-policy bitmap (раздел 10).
+
+Не установлено: какой внешний event/state приводит к прохождению этого branch; роль и формат всех аргументов fcn.001392bc / fcn.0016e57c / fcn.001503d0 / fcn.00150b58; что именно передаётся в recovery subsystem; как нижний storage backend fcn.00123f14 отображает setter request в persistent storage. Поэтому это не готовая команда unlock и не подтверждённый bypass.
+
+### 11.4 Read-only проверка наличия STEADY block node на самом A26
+
+Текстовые ресурсы текущего SBoot содержат сообщения STEADY partition read failed, [FMM] There is no STEADY Partition и [FMM] Lock state by STEADY. Чтобы сопоставить это с реальной разметкой конкретного SM-A266B, достаточно прочитать имена block symlinks:
+
+```sh
+su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpmb|keystore"'
+```
+
+Это только list/read operation. Не открывать найденные узлы на запись и не выполнять dd без отдельного плана read-only acquisition. Если будет найден steady / STEADY, следующим шагом станет только чтение размера, major/minor, symlink target и read-only hash — без записи и без изменения state.
+
+### 11.5 Итог
+
+Путь теперь лучше описывать так:
+
+early policy load (STEADY) → SecureBoot signature verification → 32-byte bitmap → bit 3 / cached OEM-state consistency → MISC record lookup → recovery wipe command construction (bootloader_unlock) → additional opaque state/storage helpers → cached/persistent lock-state setter.
+
+Это подтверждает наличие штатного Samsung unlock-related wipe logic внутри SBoot. Оно не подтверждает, что нынешняя прошивка предлагает пользователю этот путь, и не даёт основания записывать TWRP, менять STEADY/RPMB или патчить SBoot.
