@@ -317,3 +317,16 @@ su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpm
 early policy load (STEADY) → SecureBoot signature verification → 32-byte bitmap → bit 3 / cached OEM-state consistency → MISC record lookup → recovery wipe command construction (bootloader_unlock) → additional opaque state/storage helpers → cached/persistent lock-state setter.
 
 Это подтверждает наличие штатного Samsung unlock-related wipe logic внутри SBoot. Оно не подтверждает, что нынешняя прошивка предлагает пользователю этот путь, и не даёт основания записывать TWRP, менять STEADY/RPMB или патчить SBoot.
+
+## 12. Уточнение нижнего backend helper fcn.00123f14
+
+Дополнительное чтение полного тела fcn.00123f14 из global-functions.asm показывает, что прежнее описание этой функции как простого RPMB/storage writer было преждевременным.
+
+- Она сначала вызывает fcn.00123590 и выбирает ветви в зависимости от возвращаемых capability/status flags.
+- На ветках обработки диапазона вычисляет число блоков, выделяет буфер через fcn.0014237c и передаёт данные в fcn.00124e0c.
+- Другая ветвь использует глобальный флаг 0x56f000+0x4e0 и структуры/команды, содержащие строки и diagnostic labels `setct_CertResTBE` и `[ICM] USB Loading Done`.
+- В теле встречаются транспортные/пакетные helpers fcn.00122e14, fcn.001224ec, fcn.0014d60c и fcn.0014d5c8; функция также возвращает статусы и освобождает временный объект.
+
+Эти признаки указывают на многоцелевой I/O/command transport path с USB/ICM-related ветками. Они **не** доказывают, что вызов из fcn.001257bc напрямую записывает RPMB или какой именно persistent field он меняет. Для этого нужно восстановить происхождение значения backend ID из 0x56f000+0x4d8, ветку fcn.00123590 и semantics/dispatch fcn.00124e0c.
+
+Уточнённая формулировка: fcn.001257bc обновляет локальный cache, а при guard 0x56f000+0x4e8 вызывает fcn.00123f14 с backend ID, operation=1 и подготовленным object. Нижний transport/backend и destination этой операции пока не доказаны. Строка OEM %s in RPMB — диагностическая корреляция, а не достаточное доказательство конечного носителя.
