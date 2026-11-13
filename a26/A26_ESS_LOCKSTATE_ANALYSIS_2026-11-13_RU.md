@@ -314,16 +314,16 @@ Therefore, on the accepted paths, the requested new stored value is `1 - m`. Thi
 
 The full disassembly establishes:
 
-`fcn.00115610 @ 0x115628 → fcn.0017df80 → fcn.0017dfdc`
+`fcn.00115610 @ 0x00115628 → fcn.0017df80 @ 0x0017dfa4 → fcn.0017dfdc`
 
 Inside `fcn.0017df80`:
 
-1. It first calls `fcn.0014b120` with status ID 7, a destination at `0x5a0000 + 0x64c`, and a string pointer at `0x26f000 + 0x47b`.
+1. It calls `fcn.0014b120` with destination buffer `0x5a0000 + 0x64c`, capacity 7, and variadic value `0x26f47b`.
 2. It then calls `fcn.0017dfdc`.
 3. It reads bit 3 again.
-4. If bit 3 is clear, it calls `fcn.0014b120` with status ID 6 and string pointer at `0x259000 + 0xc35`.
+4. If bit 3 is clear, it calls `fcn.0014b120` again with the same destination/capacity and variadic value `0x259c35`.
 
-The meanings of those two string pointers/status IDs are not yet decoded. This wrapper is the actual direct parent of the synchronizer, replacing the erroneous former attribution to `fcn.00153180` and `fcn.00153998`.
+The earlier interpretation of these as status IDs 7/6 and string pointers was incorrect. The body of `fcn.0014b120` shows that it uses the fixed format string `" cmd0 is not correct 0x%x\\n"` and delegates formatting to `fcn.0014b248`; x1 is a destination capacity and x2 is the first variadic value. Thus `0x26f47b` and `0x259c35` are values passed to a diagnostic formatter as `cmd0`, not confirmed string pointers or status IDs. Their semantic identity remains unresolved.
 
 ### 9.4 Counter helper reclassification
 
