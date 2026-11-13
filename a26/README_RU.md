@@ -20,7 +20,8 @@ This official release record does not by itself prove which build, baseband, or 
 |---|---|
 | [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) | Main handoff dossier; chronology, artifacts, caveats, current intake requirements |
 | [A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md](A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md) | A26-specific ESS, mode-bit, lock-state and RPMB analysis |
-| [A26_DEVICE_STATE_2026-11-13_RU.md](A26_DEVICE_STATE_2026-11-13_RU.md) | Owner-provided Software information profile and matching with the J6 firmware artifacts |
+| [A26_DEVICE_STATE_2026-11-13_RU.md](A26_DEVICE_STATE_2026-11-13_RU.md) | Software information profile plus current device/Download Mode summary |
+| [A26_DOWNLOAD_MODE_2026-11-13_RU.md](A26_DOWNLOAD_MODE_2026-11-13_RU.md) | Complete ODIN MODE screen transcription; explicitly records that no other lines or fields are present |
 | [A26_RESEARCH_UPDATE_2026-11-13_RU.md](A26_RESEARCH_UPDATE_2026-11-13_RU.md) | Correction to earlier SBoot extraction claims and current static-analysis results |
 | [A26_ESS_LOCKSTATE_FLOW_RU.svg](A26_ESS_LOCKSTATE_FLOW_RU.svg) | Diagram: observed A26 paths vs unresolved ESS/token links |
 | `em.img` | **Empty (0 bytes)** as of this snapshot; not a usable firmware or Engineering Mode artifact |
@@ -41,8 +42,8 @@ Do not rely on older handoff passages that say this function body is unavailable
 
 ## Outstanding evidence / next steps
 
-1. **Device Software information screenshot:** One UI version, Android version, build number, baseband version, and Service provider software version (CSC). Mask phone number, IMEI, serial number, and account identifiers if any appear.
-2. **Download Mode state:** not requested yet. First verify the Software information page; then decide whether a non-destructive read-only capture is warranted. Do not confirm unlock, flash, or wipe actions.
+1. **Device software profile: COMPLETE.** Software information has been recorded in `A26_DEVICE_STATE_2026-11-13_RU.md`.
+2. **Download Mode screen: COMPLETE.** The full ODIN MODE transcription is in `A26_DOWNLOAD_MODE_2026-11-13_RU.md`. The owner explicitly confirmed that this is the entire screen and that no additional fields/rows exist. `OEM LOCK`, `FRP LOCK`, and `DEVICE STATE` rows are absent. Do not ask for this screen again.
 3. **SBoot semantic gaps:** complete parent-level control flow for `fcn.00153180` and `fcn.00153998`; decode the two unresolved log-string arguments; establish the polarity and meaning of the boolean passed to `fcn.001257bc`; resolve the key/counter used by `fcn.0017b7c8`.
 4. **EngMode service boundary:** validate the A26 ELF/VA mapping and trace the vendor service/TLC path without assuming that client-side `makeTokenReq` is a token issuer.
 5. **Device correlation:** compare source-backed static findings with read-only device state. Do not write RPMB/STEADY, patch SBoot, inject a token, or attempt downgrade.
