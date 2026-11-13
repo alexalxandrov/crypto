@@ -69,7 +69,7 @@
   <text x="97" y="609" class="tag" fill="#1d4ed8">OBSERVED</text>
   <text x="85" y="650" class="nodeTitle">SBoot mode bitmap</text>
   <text x="85" y="685" class="body">fcn.001895dc(3) читает bit 3</text>
-  <text x="85" y="714" class="body">Бит используется функцией синхронизации</text>
+  <text x="85" y="714" class="body">Bit 3 используется синхронизатором</text>
   <text x="85" y="743" class="body">A26 enum label для bit 3 не доказан</text>
   <text x="85" y="775" class="small">Mode 3 — гипотеза по другому Samsung, не вывод A26.</text>
 
@@ -79,8 +79,8 @@
   <text x="615" y="650" class="nodeTitle">SBoot lock-state sync</text>
   <text x="615" y="685" class="body">fcn.0017dfdc</text>
   <text x="615" y="714" class="body">log: sync_lockstate_custtoken</text>
-  <text x="615" y="743" class="body">Сверяет bit 3 и cached state</text>
-  <text x="615" y="775" class="small">Boolean polarity / caller semantics не установлены.</text>
+  <text x="615" y="743" class="body">Caller: 00115610 → 0017df80 → 0017dfdc</text>
+  <text x="615" y="775" class="small">Принимает только bit3 == cached; setter получает 1 - bit3.</text>
 
   <rect x="1120" y="570" width="420" height="225" class="card"/>
   <rect x="1142" y="590" width="120" height="26" rx="13" class="observedTag"/>
@@ -89,7 +89,13 @@
   <text x="1145" y="685" class="body">fcn.001257bc(boolean-like value)</text>
   <text x="1145" y="714" class="body">log: rpmb_set_lock_state</text>
   <text x="1145" y="743" class="body">Вызывает storage helper fcn.00123f14</text>
-  <text x="1145" y="775" class="small">Направление 0/1 и конкретное поле не расшифрованы.</text>
+  <text x="1145" y="775" class="small">Сохраняет 0/1 как передано; locked/unlocked polarity неизвестна.</text>
+
+  <rect x="60" y="865" width="420" height="125" class="card"/>
+  <rect x="82" y="883" width="120" height="26" rx="13" class="observedTag"/>
+  <text x="97" y="902" class="tag" fill="#1d4ed8">OBSERVED</text>
+  <text x="85" y="942" class="nodeTitle">Response handlers</text>
+  <text x="85" y="972" class="small">00153180 / 00153998: downstream dispatch, не sync callers.</text>
 
   <rect x="590" y="865" width="420" height="125" class="card"/>
   <rect x="612" y="883" width="120" height="26" rx="13" class="observedTag"/>
