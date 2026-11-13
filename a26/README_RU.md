@@ -20,7 +20,7 @@ This official release record does not by itself prove which build, baseband, or 
 |---|---|
 | [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) | Main handoff dossier; chronology, artifacts, caveats, current intake requirements |
 | [A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md](A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md) | A26-specific ESS, mode-bit, lock-state and RPMB analysis; corrected caller map and setter polarity |
-| [A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md](A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md) | Exact bit-3/current-state truth table, inverse setter mapping, `get_oem_unlock_val` MISC reader and caller xrefs |
+| [A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md](A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md) | Exact bit-3/current-state truth table, inverse setter mapping, `get_oem_unlock_val` error-path label, opaque object pointer and caller xrefs |
 | [A26_DEVICE_STATE_2026-11-13_RU.md](A26_DEVICE_STATE_2026-11-13_RU.md) | Software information profile plus current device/Download Mode summary |
 | [A26_DOWNLOAD_MODE_2026-11-13_RU.md](A26_DOWNLOAD_MODE_2026-11-13_RU.md) | Complete ODIN MODE screen transcription; explicitly records that no other lines or fields are present |
 | [A26_RESEARCH_UPDATE_2026-11-13_RU.md](A26_RESEARCH_UPDATE_2026-11-13_RU.md) | Correction to earlier SBoot extraction claims and current static-analysis results |
