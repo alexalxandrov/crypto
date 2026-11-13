@@ -7,7 +7,7 @@
 > - Сообщения о снятии пользовательского OEM Unlock UI в One UI 8 относятся к наблюдениям на отдельных устройствах и не являются самостоятельным доказательством политики для SM-A266B. Для этого аппарата решающими остаются фактические сведения о CSC/прошивке и безопасные read-only наблюдения.
 > - **Устаревшая формулировка:** пробел в извлечении тела `0x001690d8` закрыт. См. `a26-analysis/current/extracted/fcn.001690d8.asm`, `fcn.001690d8-callers.asm` и `a26/A26_RESEARCH_UPDATE_2026-11-13_RU.md`. Функцию следует рассматривать как generic structured-object helper, а не как прямой unlock primitive.
 > - Добавлена схема `A26_ESS_LOCKSTATE_FLOW_RU.svg`. Сплошные связи на ней соответствуют наблюдаемым A26 call/IPC/storage paths; пунктирные — ещё не доказанным звеньям получения/установки Samsung-signed ESS token.
-> - **Следующий безопасный шаг по устройству:** получить страницу *Software information* целиком. Нужны One UI version, Android version, Build number, Baseband version и Service provider software version (CSC). Пока не входить в Download Mode и не подтверждать никаких экранов разблокировки.
+> - **Software information и полный ODIN MODE screen уже получены 13.11.2026 и сохранены** в `A26_DEVICE_STATE_2026-11-13_RU.md` и `A26_DOWNLOAD_MODE_2026-11-13_RU.md`. Повторно запрашивать эти экраны или «оставшиеся строки» запрещено: владелец подтвердил, что перепись ODIN MODE полная и иных полей там нет.
 >
 > ---
 
@@ -46,16 +46,18 @@
 | One UI | One UI 9 — подтверждено официальной страницей Samsung |
 | Дата выпуска сборки | 27 октября 2026 г. — Samsung |
 | Уровень патча безопасности | 5 октября 2026 г. — Samsung |
-| Bootloader binary / SW REV | В предыдущем исследовании обозначен как `C` (часто интерпретируется как 12), но фактическое состояние Download Mode конкретного телефона ещё нужно зафиксировать |
-| Регион/CSC/оператор | Не установлены в доступном контексте; критично запросить при продолжении |
-| OEM unlock в Developer Options | Текущий статус не зафиксирован |
-| KG/RMM/FRP/OEM Lock в Download Mode | Точные статусы не зафиксированы |
-| Knox Warranty Bit | Точное состояние телефона не зафиксировано |
+| Bootloader binary / RP SWREV | `B:12 K:12 (12 12 12 12 12) S:12` — полный экран ODIN MODE от 13.11.2026 |
+| Регион/CSC/оператор | `SAOMC_SM-A266B_OXM_CAU_17_0007`; `CAU/CAU,CAU/CAU`; Sales code/CID/AID `CAU/CAU`; Carrier ID `CAU` |
+| OEM unlock в Developer Options | Ранее видимый переключатель появился после `resetprop`; UI не доказывает SBoot unlock permission |
+| KG state в ODIN MODE | `COMPLETED (0)` — точная экранная строка |
+| OEM LOCK / FRP LOCK / DEVICE STATE | Все три строки отсутствуют на полном экране; других строк/полей нет |
+| Warranty Void | `0` — точное значение ODIN MODE |
+| Current Binary / Secure DLD | `SAMSUNG OFFICIAL` / `ENABLED` |
 
 Официальная страница Samsung для этой модели и сборки:  
 <https://doc.samsungmobile.com/SM-A266B/033225250421/eng.html>
 
-В тексте Samsung указано: **Galaxy A26 5G (SM-A266B)**, build `A266BXXUCDZJ6`, `C(Android 17)`, дата выпуска `2026-10-27`, patch `2026-10-05`, One UI 9. Это подтверждает модель и версию ПО, но **не подтверждает наличие либо отсутствие возможности OEM unlock**.
+В тексте Samsung указано: **Galaxy A26 5G (SM-A266B)**, build `A266BXXUCDZJ6`, Android 17, One UI 9, дата выпуска `2026-11-03`, patch `2026-10-05`. Это подтверждает модель и версию ПО, но **не подтверждает наличие либо отсутствие возможности OEM unlock**.
 
 ### 1.1. Версии для сравнительного анализа в репозитории
 
@@ -982,3 +984,48 @@ DEVICE_UNLOCKED: Parcel( 00000000 00000000)
 **Не путать:** Knox version/API level не равны Knox Warranty Bit; SELinux Enforcing не сообщает OEM lock state. Версия Google Play system update не определяет SBoot.
 
 **Следующий этап — только чтение Download Mode fields**, если владелец согласится. Не нажимать и не удерживать комбинации, переводящие аппарат в Device Unlock Mode; не подтверждать unlock, wipe, flashing или factory reset.
+
+
+## 10. ПОЛНЫЙ ЭКРАН ODIN MODE — 13.11.2026 (приоритетная запись)
+
+Владелец передал полную перепись экрана ODIN MODE. **Это все строки и поля экрана. Других данных на нём нет.** Не запрашивать фото повторно, не просить «ещё строки» и не дополнять предполагаемыми полями.
+
+| Поле | Значение |
+|---|---|
+| Mode | `ODIN MODE` |
+| DLD SPEED | `FAST` |
+| CURRENT BINARY | `SAMSUNG OFFICIAL` |
+| KG STATE | `COMPLETED (0)` |
+| DID | `300277f5b7040811` |
+| SECURE DLD | `ENABLED` |
+| SALES CODE / CID / AID | `CAU/CAU` |
+| WARRANTY VOID | `0` |
+| RP SWREV | `B:12 K:12 (12 12 12 12 12) S:12` |
+| HDM STATUS | `NONE` |
+| CARRIER ID | `CAU` |
+| HW REV | `5` |
+| DDR SIZE | `8G` |
+| BUILD VERSION | `A266BXXUCDZJ6` |
+| EVT | `0.1` |
+| CHIP ID | `00000277f5b70408` |
+| LOT ID | `NWBUW` |
+| CHIP ID SJTAG | Совпадает с CHIP ID: `00000277f5b70408` |
+
+### 10.1. Чего на полном экране нет
+
+- `OEM LOCK` — строки нет.
+- `FRP LOCK` — строки нет.
+- `DEVICE STATE` — строки нет.
+- **Любых других строк и полей, кроме таблицы выше, нет.**
+
+Отсутствие этих строк не равно значению OFF или UNLOCKED. Ранее зафиксированное историческое сообщение о `FRP LOCK: OFF` не является содержимым этого последнего полного экрана; не объединять эти два наблюдения.
+
+### 10.2. Точные границы интерпретации
+
+- `KG STATE: COMPLETED (0)` — наблюдаемая экранная строка. Не переименовывать в OEM unlock state и не отождествлять автоматически с Android property.
+- `WARRANTY VOID: 0` — значение Warranty Void; Knox version 3.14 и Knox API 41 являются отдельными версиями платформы/API.
+- `RP SWREV` подтверждает перечисленные ревизии 12; не предпринимать downgrade.
+- `CURRENT BINARY: SAMSUNG OFFICIAL` и `SECURE DLD: ENABLED` не подтверждают unlock permission.
+- DID и Chip ID записаны как аппаратные идентификаторы со слов владельца; не путать их с IMEI или серийным номером.
+
+**Статус сбора ODIN MODE: COMPLETE.** Далее следует работать с этим зафиксированным набором данных и существующими файлами анализа, не возвращаясь к запросу экрана.
