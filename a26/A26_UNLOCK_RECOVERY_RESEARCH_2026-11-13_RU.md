@@ -646,3 +646,52 @@ cat /sys/class/block/sda3/uevent
 ```
 
 Это metadata-only чтение sysfs. Не читать и не писать block payload. Если `start` будет получен, можно сопоставить его с PIT offset field только после установления единиц измерения SCSI backend.
+## 20. Live SCSI/UFS geometry: physical start of STEADY (2026-11-13)
+
+User supplied an additional metadata-only probe:
+
+```text
+sda size                         499785728
+sda logical_block_size           4096
+sda physical_block_size          4096
+sda3 start                       73728
+sda3 size                        8192
+sda3 PARTNAME                    steady
+```
+
+Linux sysfs block `size` and partition `start` values are expressed in 512-byte sectors (the block layer's 512-byte sector coordinate), even when the device reports a 4096-byte logical/physical block size. Derived geometry:
+
+| Quantity | Calculation | Result |
+|---|---|---:|
+| Whole disk byte capacity | `499785728 × 512` | `255890292736` bytes |
+| Whole disk capacity | bytes / 2^30 | `238.31640625 GiB` |
+| Whole disk 4-KiB LBA count | `499785728 / 8` | `62473216` |
+| STEADY byte start | `73728 × 512` | `37748736` bytes = `36 MiB` |
+| STEADY start as 4-KiB LBAs | `73728 / 8` | `9216` = `0x2400` |
+| STEADY byte length | `8192 × 512` | `4194304` bytes = `4 MiB` |
+| STEADY length as 4-KiB LBAs | `8192 / 8` | `1024` = `0x400` |
+| Exclusive end byte offset | `(73728 + 8192) × 512` | `41943040` bytes = `40 MiB` |
+
+Thus the Android-visible STEADY partition spans byte interval `[0x02400000, 0x02800000)` on `/dev/block/sda`, equivalent to 4-KiB LBA interval `[0x2400, 0x2800)`, assuming the normal Linux 512-byte sysfs sector convention. This is a device geometry statement, not a claim about SBoot's offset units.
+
+### Comparison with PIT record fields
+
+The PIT-derived `STEADY` record's dword at `+0x14` is passed to the SCSI object method as an offset-like argument after constants `+0x12` and `+0x28`; the dword at `+0x1c` selects the `scsiN` resource object. Current disassembly does not yet establish whether the offset-like argument is expressed in 512-byte sectors, 4-KiB LBAs, bytes, or a command-specific unit.
+
+A direct numeric comparison to `sda3/start=73728` or 4-KiB LBA `9216` is therefore premature until the concrete `scsiN` object's method at `[object+0xa8]` is identified. If that method confirms 4-KiB LBA units, `0x2400` is the expected start; if it confirms Linux-style 512-byte sectors, expected start is `0x12000`; if byte addressing, expected start is `0x02400000`.
+
+### Current evidence boundary
+
+- Confirmed by live sysfs: 4-KiB logical and physical blocks, `sda3` start 36 MiB, size 4 MiB, PARTNAME `steady`.
+- Confirmed in J6 SBoot: `STEADY` PIT entry is passed through a SCSI object method with selector and offset-like fields.
+- Not yet confirmed: the actual `scsiN` selector value, the method's address unit, and equality between PIT-derived address and `0x2400`/`0x12000`/`0x02400000`.
+
+### Safest next acquisition
+
+Continue with the previously proposed header-only read (one 4-KiB block) from the kernel-RO partition into userdata, never to another block device:
+
+```sh
+su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_header_4k.bin bs=4096 count=1 status=none && ls -lh /sdcard/Download/steady_header_4k.bin && sha256sum /sdcard/Download/steady_header_4k.bin'
+```
+
+This allows static identification of any header/container signature without broad acquisition. The source partition remains read-only.
