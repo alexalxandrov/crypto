@@ -1224,3 +1224,12 @@ Full analysis and safe 4 KiB header-only read command are in `A26_UNLOCK_RECOVER
 PIT `STEADY` record fields: dword at `+0x1c` становится SCSI object selector; dword at `+0x14` (плюс `0x12` в `fcn.00189d8c`, плюс `0x28` в `fcn.0018962c`) становится offset-like argument; length — `0x2c00` / `0x11000`. Единицы offset и реализация SCSI method `[object+0xa8]` пока не установлены.
 
 Это связывает PIT `STEADY` record с SBoot SCSI object layer, а device `steady -> sda3` даёт согласующееся on-device имя и SCSI-style Linux block node. Конкретный selector `scsiN` и равенство PIT offset с `/sys/class/block/sda3/start` ещё не доказаны. Следующий безопасный шаг — sysfs geometry (`sda3/start`, `sda3/size`, `sda/queue/logical_block_size`), без чтения или записи payload.
+## 20. Live UFS/SCSI geometry for `steady`
+
+Metadata-only probe: `sda` reports size `499785728` sysfs sectors, logical and physical block size `4096`; `sda3` reports `start=73728`, `size=8192`, `PARTNAME=steady`.
+
+With Linux sysfs block values in 512-byte sector units: whole `sda` = `255890292736` bytes (`238.31640625 GiB`); `sda3` begins at byte `37748736` (`36 MiB`) and spans `4194304` bytes (`4 MiB`), ending at byte offset `41943040` (`40 MiB`, exclusive). In 4-KiB blocks, partition start = `9216` (`0x2400`), length = `1024` (`0x400`), interval `[0x2400,0x2800)`.
+
+The PIT `STEADY` record's `+0x14` field reaches the SCSI object method as offset-like input after `+0x12` / `+0x28`; `+0x1c` selects `scsiN`. Its units and exact `scsiN` selector have not been identified. Therefore do not yet equate the PIT offset with 512-byte sector `0x12000`, 4-KiB LBA `0x2400`, or byte offset `0x02400000`. The SCSI object's method `[object+0xa8]` is the next reverse-engineering target.
+
+Safe acquisition remains header-only 4 KiB to `/sdcard/Download`, with the block node only as `if=`.
