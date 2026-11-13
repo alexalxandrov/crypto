@@ -21,10 +21,12 @@ The SBoot function begins at VA `0x0017dfdc`. Its call graph and visible operati
 1. Calls `fcn.0012467c` as an initial precheck. A non-zero result logs an error with the string `sync_lockstate_custtoken` (`0x26d660`) and returns failure.
 2. Reads a global control at `0x56f000 + 0x4dc`. If enabled, calls `fcn.0012577c` to retrieve a state value from `0x56f000 + 0x8f0`; otherwise records an error state.
 3. Calls `fcn.001895dc(3)`. This helper reads bit 3 from the bitmap based at `0x5a6000 + 0xa90`.
-4. Checks the relationship between that bit and the retrieved state. The visible branches are not a simple unconditional setter:
-   - bit 3 set and retrieved value equal to 1: proceeds through a no-op/success branch;
-   - bit 3 clear and retrieved value equal to 0: sets local argument `w19 = 1` and proceeds to the storage operation;
-   - other combinations: fail closed and return an error.
+4. Checks the relationship between that bit and the retrieved state. Exact branch reconstruction from the complete `current.txt` extraction:
+   - bit 3 set and retrieved value equal to 1: sets local argument `w19 = 0`, then calls setter `fcn.001257bc`;
+   - bit 3 clear and retrieved value equal to 0: sets local argument `w19 = 1`, then calls the setter;
+   - mismatched combinations: fail closed and return `-1`.
+
+   Therefore the setter receives `!bit3` when the precondition `retrieved_state == bit3` holds. Earlier wording that called the bit-3-set path a “no-op” was incorrect. The meaning of the bit and the user-facing polarity of stored 0/1 remain unproven.
 5. Looks up an object using the key at `0x250000 + 0xd3d`, which is the SBoot string `MISC`.
 6. Builds data and invokes helpers including `fcn.001392bc`, `fcn.0016e57c`, `fcn.001503d0`, and `fcn.00150b58`.
 7. Calls `fcn.001257bc(w19)` at `0x0017e170`.
@@ -49,6 +51,10 @@ The value's polarity remains unknown in this analysis: do not yet equate numeric
 The function takes a boolean-like integer, normalizes it with `cset w19, ne`, allocates/initializes a 0x100-byte request object, copies a 12-byte global structure, and updates the cached value at `0x56f000 + 0x8f0`.
 
 When an additional global guard at `0x56f000 + 0x4e8` is enabled, it invokes `fcn.00123f14` with a storage identifier read from `0x56f000 + 0x4d8`. It references the string `rpmb_set_lock_state` at `0x25c09e`. This establishes a state-setting/storage path, but the lower storage helper's complete semantics and the persisted field's polarity still require analysis.
+
+**Guard distinction clarified from the complete getter/setter bodies:** `fcn.0012577c` also gates its read on `0x56f000 + 0x4e8`; if the guard is not 1, it returns `0x40300` without writing the output pointer. The caller `fcn.0017dfdc` checks a separate flag at `+0x4dc` before calling the getter, but does not visibly branch on the getter return before loading the output slot. The relationship between these guards and initialization of the output slot must be traced. A cache update and a successful guarded storage operation are separate facts.
+
+The exact branch truth table and assembly excerpt are recorded in `A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md`.
 
 ### 1.5 Precheck `fcn.0012467c)
 
