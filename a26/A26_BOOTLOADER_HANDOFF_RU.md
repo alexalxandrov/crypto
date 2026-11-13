@@ -1092,7 +1092,7 @@ DEVICE_UNLOCKED: Parcel( 00000000 00000000)
 Этот раздел дополняет прежние разделы 10–12 и имеет приоритет при продолжении анализа.
 
 ### 13.1 Подписанная политика ранней загрузки
-- Текущий J6 string scan (`a26-analysis/unlock-investigation/token-path.txt`, раздел `current`) содержит строки `STEADY partition read failed`, `[FMM] There is no STEADY Partition`, `[FMM] Lock state by STEADY`, `%s : can't find STEADY`, а также имя `STEADY` по VA `0x26fe25`. Это подтверждает, что текущий SBoot содержит отдельную STEADY-partition path; наличие фактического block symlink на телефоне ещё не проверено.
+- Текущий J6 string scan (`a26-analysis/unlock-investigation/token-path.txt`, раздел `current`) содержит строки `STEADY partition read failed`, `[FMM] There is no STEADY Partition`, `[FMM] Lock state by STEADY`, `%s : can't find STEADY`, а также имя `STEADY` по VA `0x26fe25`. Фактический by-name mapping на телефоне теперь подтверждён: `/dev/block/by-name/steady -> /dev/block/sda3` (см. раздел 14).
 - Ранняя цепочка: `fcn.00114100 @ 0x1142ac → fcn.00189d8c → STEADY record parse → fcn.001690d8 → fcn.001584cc → fcn.00169738 → fcn.00188738 / fcn.0018962c`.
 - `fcn.001584cc` содержит SecureBoot diagnostic `Check digital signature fail. (Booting stop: ...)` и подпись/сертификатные проверки при подходящих version/flag conditions. После успешной обработки 32-byte bitmap публикуется в `0x5a6000+0xa90`; `fcn.001895dc(3)` читает bit 3.
 - Точное user-facing имя bit 3 всё ещё не доказано для A26. Не переносить enum Mode 3 / MODE_CUST_KERNEL с другого Samsung устройства как факт.
@@ -1123,3 +1123,34 @@ su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpm
 Наличие штатного Samsung unlock-related recovery wipe path доказано статически, но текущий SM-A266B на J6 по факту не показывает Device Unlock Mode, Android `allowed=true` не является SBoot grant, а `KG STATE: COMPLETED (0)` не доказывает unlock. Ветка `dd TWRP` не работает как bypass при `locked` AVB/SBoot; официальные старые a26x TWRP builds не проверены на Android 17/BIT12. Не прошивать image или blank vbmeta.
 
 Отдельные свежие отчёты и текущая decision matrix находятся в `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md` и `A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md`.
+## 14. On-device подтверждение раздела STEADY (13.11.2026)
+
+Владелец проверил `/dev/block/by-name` из KernelSU root. Получено:
+
+- `steady -> /dev/block/sda3` — **подтверждено в фактической разметке A266BXXUCDZJ6**.
+- `misc -> /dev/block/sda23`.
+- `persistent -> /dev/block/sda22`.
+- `metadata -> /dev/block/sda28`.
+- `recovery -> /dev/block/sda18`; размер recovery через `blockdev --getsize64` равен 100663296 bytes.
+- `ro.boot.boot_devices=13500000.ufs`; slot suffix пустой.
+- `/sdcard/Download` не содержит найденных имён `*twrp*` / `*recovery*`.
+
+Это подтверждает физическую by-name mapping для STEADY, но пока не раскрывает размер, структуру, содержимое или mount status раздела.
+
+Следующий зонд — строго read-only:
+
+```sh
+su -c '
+readlink -f /dev/block/by-name/steady
+blockdev --getsize64 /dev/block/by-name/steady
+blockdev --getro /dev/block/by-name/steady
+cat /sys/class/block/sda3/size
+cat /sys/class/block/sda3/ro
+cat /sys/class/block/sda3/uevent
+grep -w sda3 /proc/mounts || true
+ls -la /sys/class/block/sda3/holders 2>/dev/null || true
+blkid -p /dev/block/by-name/steady 2>/dev/null || true
+'
+```
+
+Нулевой read-only flag не означает, что запись допустима. Не выполнять `dd` write, не менять раздел и не выгружать весь его контент до отдельного анализа формата.
