@@ -58,14 +58,28 @@ The precheck uses `fcn.00123590`, storage/command helpers `fcn.00122e14` and `fc
 
 This 66-instruction helper is called from the synchronizer after the setter path with argument 1. It updates a counter/global at `0x59f000 + 0xc7c` and performs a keyed-object operation through `fcn.001758fc` / `fcn.001392bc`. The exact key at `0x24854a` and the counter's semantics have not been decoded. Do not name it an unlock counter based solely on nearby context.
 
-### 1.7 Missing callers
+### 1.7 Corrected caller map — important xref correction (2026-11-13)
 
-The disassembly lists two direct callers of `fcn.0017dfdc`:
+The previous report misattributed the xref lines following `fcn.0017dfdc`. The call sites `0x1534e8` and `0x153d00` are **not** calls to `fcn.0017dfdc`; both call `fcn.0017e274`. The following call sites `0x15360c` and `0x15422c` call `fcn.0017e384`.
 
-- `fcn.00153180` at call site `0x001534e8`;
-- `fcn.00153998` at call site `0x00153d00`.
+The actual direct caller of `fcn.0017dfdc` found in the full SBoot parts is:
 
-The current extracted text corpus contains these call-site annotations, but not complete bodies for both callers. Additional nearby functions `fcn.0017e274` and `fcn.0017e384` are also called from these two parent functions, suggesting related token/state processing. Their bodies are in `a26-analysis/current/deep-analysis-v3.txt`, but the complete parent-level control flow remains missing. This is the highest-priority SBoot extraction gap.
+- `fcn.0017df80` at `0x0017dfa4`.
+
+The wrapper `fcn.0017df80` is itself called by `fcn.00115610` at `0x00115628`. The latter has a data xref from `aav.0x000493e0 + 0x2380`; the data structure/table semantics are not yet identified.
+
+The full bodies of `fcn.00115610`, `fcn.00153180`, `fcn.00153998`, and `fcn.0017df80` have now been extracted to:
+
+`a26-analysis/current/extracted/oem-lockstate-callchain.asm`
+
+Interpretation of the order in `fcn.00115610`:
+
+1. It begins by calling `fcn.0017df80`, which calls `fcn.0017dfdc` (the customer-token lock-state synchronizer).
+2. It then performs additional status/object handling.
+3. Later it calls `fcn.001530ec()` to select a response-processing path: return value 2 dispatches to `fcn.00153180(6, ...)`; return value 4 dispatches to `fcn.00153998(6, ...)`.
+4. Those two handlers parse/process their respective response structures and call `fcn.0017e274` and `fcn.0017e384`; they are downstream sibling handlers, not direct callers of the synchronizer.
+
+This establishes a real A26 execution sequence around the synchronizer, but it does **not** yet prove that either response handler creates, signs, installs, or authorizes an ESS token. The table entry at `aav.0x493e0 + 0x2380` and the data structures passed into the handlers still need semantic identification.
 
 ## 2. A26 OEM-related SBoot strings and the Odin lead
 
@@ -161,12 +175,12 @@ No flashing, downgrade, token installation, or RPMB/STEADY write is to be attemp
 
 ### Next static-analysis priorities
 
-1. Extract full bodies of `fcn.00153180` and `fcn.00153998`, including call sites `0x1534e8` and `0x153d00`.
-2. Resolve the strings at `0x23e7fd` and `0x240c92`; determine the polarity of the boolean passed to `fcn.001257bc`.
-3. Resolve the object key at `0x24854a` used by `fcn.0017b7c8`, and all readers/writers of `0x59f000 + 0xc7c`.
-4. Validate the ELF/program-header/base-address mapping for `a26-analysis/1.txt` and inspect the A26 service/TLC binaries at source level.
-5. Trace the A26 service-side implementation from Binder transaction 11 into TEEGRIS; separate request serialization, server issuance, signature validation, token installation, mode bitmap persistence, and the later SBoot lock-state sync.
-6. Obtain a complete xref/call path for the Odin key strings before considering that lead further.
+1. **DONE — extract and classify** `fcn.00153180` and `fcn.00153998`. They are response handlers selected by `fcn.00115610`, not direct callers of `fcn.0017dfdc`.
+2. Trace the data xref/table entry `aav.0x000493e0 + 0x2380` that references `fcn.00115610`; identify the producer and exact callback/dispatch semantics.
+3. Decode the strings referenced by `fcn.0017df80` (`0x26f47b`, `0x259c35`) and determine the meaning of status IDs 7 and 6 passed to `fcn.0014b120`.
+4. Resolve the object key at `0x24854a` used by `fcn.0017b7c8`, and all readers/writers of `0x59f000 + 0xc7c`; its current code increments a gated counter, but the counter's business meaning is not proven.
+5. Validate the ELF/program-header/base-address mapping for `a26-analysis/1.txt` and inspect the A26 service/TLC binaries at source level.
+6. Trace the A26 service-side implementation from Binder transaction 11 into TEEGRIS; separate request serialization, server issuance, signature validation, token installation, mode bitmap persistence, and the later SBoot lock-state sync.
 7. Correlate only with read-only device observations. Do not write to RPMB/STEADY, patch SBoot, inject tokens, or downgrade.
 
 **Current answer to “can we unlock it right now?”: no safe, reproducible unlock method is established.** The code shows an authorization mechanism whose critical trust material/issuance step has not been satisfied.
@@ -265,3 +279,59 @@ There are no other screen fields beyond the table above. Do not convert absent l
 6. Earlier Android OEMLockService results remain a separate observation: carrier/user/overall allowed were true, while `isDeviceOemUnlocked` was false. Do not collapse the Android service response, KG state, and missing Download Mode labels into one Boolean.
 
 **Device evidence intake status: COMPLETE for Software information and the full ODIN MODE screen.** The remaining work is static/dynamic evidence correlation using the already collected values, not requesting another screen from the owner.
+
+
+## 9. Lock-state setter polarity and real synchronizer call path — new finding (2026-11-13)
+
+### 9.1 Exact setter semantics at the API boundary
+
+The complete body of `fcn.001257bc` shows:
+
+- It normalizes its input with `cset w19, ne`; the persisted value is therefore exactly `0` when the argument is zero and `1` for any non-zero argument.
+- It writes that normalized value to `0x56f000 + 0x8f0`.
+- It also writes the same value to offset `+0xfc` in the allocated 0x100-byte request/object.
+- When guard `0x56f000 + 0x4e8` is enabled, it calls `fcn.00123f14` with storage selector `0x56f000 + 0x4d8`, operation argument 1, and the prepared object.
+- The function returns zero on the successful path; a missing allocation returns the encoded error `0x00050b04`.
+
+This proves the setter's numeric polarity at the software boundary: it persists the boolean supplied by its caller. It does **not** identify whether numeric 1 means locked or unlocked in Samsung's internal policy.
+
+### 9.2 Synchronizer truth table
+
+In `fcn.0017dfdc`, the mode bitmap reader `fcn.001895dc(3)` returns bit 3. Let `m` be that bit and `s` be the cached state returned by `fcn.0012577c).
+
+The visible branches accept only matching pairs and pass the inverse value to the setter:
+
+| Mode bit 3 (`m`) | Cached state (`s`) | Result |
+|---:|---:|---|
+| 0 | 0 | Calls setter with 1 |
+| 1 | 1 | Calls setter with 0 |
+| 0 | 1 | Rejects / returns failure |
+| 1 | 0 | Rejects / returns failure |
+
+Therefore, on the accepted paths, the requested new stored value is `1 - m`. This is a direct code-level relationship. Do **not** translate it into “Mode 3 unlocks” or “1 means unlocked”: the internal lock-state polarity and the semantic label of bit 3 remain unproven.
+
+### 9.3 Actual parent wrapper and surrounding execution sequence
+
+The full disassembly establishes:
+
+`fcn.00115610 @ 0x115628 → fcn.0017df80 → fcn.0017dfdc`
+
+Inside `fcn.0017df80`:
+
+1. It first calls `fcn.0014b120` with status ID 7, a destination at `0x5a0000 + 0x64c`, and a string pointer at `0x26f000 + 0x47b`.
+2. It then calls `fcn.0017dfdc`.
+3. It reads bit 3 again.
+4. If bit 3 is clear, it calls `fcn.0014b120` with status ID 6 and string pointer at `0x259000 + 0xc35`.
+
+The meanings of those two string pointers/status IDs are not yet decoded. This wrapper is the actual direct parent of the synchronizer, replacing the erroneous former attribution to `fcn.00153180` and `fcn.00153998`.
+
+### 9.4 Counter helper reclassification
+
+The full body of `fcn.0017b7c8` shows that, for a positive input and unless the counter already equals `-1`, it increments `0x59f000 + 0xc7c`, performs a keyed-object/logging operation, and returns the resulting counter. The synchronizer calls it with argument 1 after its setter/error handling join point. This is a gated counter associated with the synchronizer path; its precise business meaning is still unknown and it must not be called an unlock counter without resolving the object key and other writers.
+
+### 9.5 What this changes
+
+- The former claim that `fcn.00153180` / `fcn.00153998` directly call `sync_lockstate_custtoken` is withdrawn.
+- They are downstream response handlers selected by `fcn.00115610` according to `fcn.001530ec()` return values 2 or 4.
+- The actual synchronizer call is now traced through `fcn.0017df80`.
+- The exact 0/1 relationship between mode bit 3 and the value written to the cached/protected state is known; the user-facing lock/unlock meaning remains unresolved.
