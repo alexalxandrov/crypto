@@ -1185,3 +1185,18 @@ Raw J6 SBoot ARM64 disassembly уточнил начало `fcn.00189d8c`:
 - STEADY path всё ещё проводит собственную отдельную signature validation через `fcn.001584cc`; не смешивать CertResTBE status с cryptographic verification конкретной STEADY record.
 
 Отчёт с полной разборкой: `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`, section 15.
+## 17. STEADY live metadata + registry indirection (13.11.2026)
+
+Live KernelSU metadata probe confirms `/dev/block/by-name/steady -> /dev/block/sda3`, size `4,194,304` bytes (4 MiB), sysfs sector count `8192`, and kernel read-only flag `1` in both `blockdev --getro` and `/sys/class/block/sda3/ro`. Partition metadata: `DEVTYPE=partition`, `PARTN=3`, `PARTNAME=steady`. No `/proc/mounts` match or sysfs holders; `blkid -p` emitted no recognized filesystem signature.
+
+This is a raw/non-recognized-filesystem candidate, not proof of an empty partition.
+
+### SBoot code-side detail
+
+- `fcn.001758fc` searches a RAM record table at `0x59d000+0xa50`, count at `0x59d000+0xa14`, stride `0x84`; it compares a 32-byte name/key using `fcn.0014dbd8`.
+- `fcn.00175b28` obtains a 0x2000-byte object through `fcn.0014237c(0x2000)`, validates magic `0x12349876`, processes its record count and copies 0x84-byte entries into RAM catalog rooted at `0x59d000+0xa10`.
+- `fcn.0014237c` is an internal object/resource-list accessor, then tail-calls `fcn.00206b84`. That final provider implementation remains to be recovered.
+
+Therefore `STEADY` string lookup is an in-memory registry operation, not direct I/O to a by-name Linux block path. The link from the 4 MiB `sda3` partition to the 0x2000-byte registry source is **not yet proven**.
+
+No bytes from STEADY have been dumped so far. Suggested next step is a one-block 4 KiB read into a file on `/sdcard/Download` (never as output to a block node), followed by static inspection before any wider acquisition.
