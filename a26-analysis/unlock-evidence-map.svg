@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1120" viewBox="0 0 1600 1120" role="img" aria-labelledby="title desc">
+  <title id="title">Samsung Galaxy A26 SBoot unlock research evidence map</title>
+  <desc id="desc">Evidence map showing confirmed SBoot strings, function triage, unresolved cross references, and priority gaps. Static analysis only; bootloader unlock is not proven.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#111c2e"/>
+    </linearGradient>
+    <linearGradient id="header" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#16263a"/>
+      <stop offset="1" stop-color="#1d2d43"/>
+    </linearGradient>
+    <style>
+      .sans{font-family:Inter,Segoe UI,Arial,sans-serif}
+      .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+      .title{font-size:31px;font-weight:700;fill:#f1f5f9}
+      .sub{font-size:15px;fill:#b8c5d6}
+      .panel{fill:#121e30;stroke:#31435a;stroke-width:1.5}
+      .panelHead{font-size:19px;font-weight:700;fill:#e6edf6}
+      .body{font-size:15px;fill:#d2dce8}
+      .small{font-size:13px;fill:#9fb0c4}
+      .monoText{font-size:14px;fill:#d8e4f0}
+      .green{fill:#9be2bf}
+      .amber{fill:#f3cc81}
+      .red{fill:#f2a0a0}
+      .blue{fill:#9ecbff}
+      .line{stroke:#6f839b;stroke-width:2;fill:none}
+      .dash{stroke:#c49a56;stroke-width:2;stroke-dasharray:7 6;fill:none}
+      .tag{font-size:11px;font-weight:700;letter-spacing:.7px}
+    </style>
+  </defs>
+  <rect width="1600" height="1120" fill="url(#bg)"/>
+  <rect x="40" y="32" width="1520" height="102" rx="18" fill="url(#header)" stroke="#34475f"/>
+  <text x="76" y="77" class="sans title">A26 / SBoot — карта доказательств</text>
+  <text x="78" y="108" class="sans sub">SM-A266B · A266BXXUCDZJ6 · статический проход 12.11.2026</text>
+  <rect x="1190" y="58" width="325" height="42" rx="21" fill="#3b2d1c" stroke="#94713b"/>
+  <text x="1352" y="84" text-anchor="middle" class="sans tag amber">STATIC ONLY · UNLOCK NOT PROVEN</text>
+
+  <rect x="40" y="166" width="470" height="382" rx="16" class="panel"/>
+  <text x="68" y="205" class="sans panelHead">1. Строки в актуальном SBoot</text>
+  <text x="68" y="232" class="sans small">CONFIRMED-A26 · current/string-scan.txt</text>
+  <g class="mono monoText">
+    <text x="68" y="274">PO_OEM_UNLOCK</text><text x="460" y="274" text-anchor="end" class="green">0x26529e</text>
+    <text x="68" y="311">get_oem_unlock_val</text><text x="460" y="311" text-anchor="end" class="green">0x26b4ca</text>
+    <text x="68" y="348">there is no unlock keys</text><text x="460" y="348" text-anchor="end" class="green">0x26f533</text>
+    <text x="68" y="385">Succeed to unlock (0x%x)</text><text x="460" y="385" text-anchor="end" class="green">0x275d4a</text>
+    <text x="68" y="422">Fail to unlock (0x%x)</text><text x="460" y="422" text-anchor="end" class="green">0x26a977</text>
+    <text x="68" y="459">unlock keys downloaded by Odin</text><text x="460" y="459" text-anchor="end" class="green">0x24edc1</text>
+  </g>
+  <line x1="68" y1="480" x2="482" y2="480" stroke="#31435a"/>
+  <text x="68" y="509" class="sans small">Строка ≠ call-site ≠ достижимая ветка ≠ рабочий unlock.</text>
+  <text x="68" y="530" class="sans small">Нужны xrefs и guarded conditions для каждой строки.</text>
+
+  <rect x="535" y="166" width="515" height="580" rx="16" class="panel"/>
+  <text x="563" y="205" class="sans panelHead">2. Проверенные кандидаты</text>
+  <text x="563" y="232" class="sans small">Рабочие классификации по сохранённым ARM64-фрагментам</text>
+  <rect x="563" y="254" width="459" height="92" rx="10" fill="#192b40" stroke="#50779e"/>
+  <text x="583" y="281" class="mono monoText blue">0x0016d2b4</text>
+  <text x="583" y="307" class="sans body">DRAM hardware-encryption init context</text>
+  <text x="583" y="330" class="sans small">Есть строка “DRAM enc h/w initializing success”</text>
+  <rect x="563" y="363" width="459" height="92" rx="10" fill="#192b40" stroke="#50779e"/>
+  <text x="583" y="390" class="mono monoText blue">0x001758fc</text>
+  <text x="583" y="416" class="sans body">Table record lookup helper</text>
+  <text x="583" y="439" class="sans small">Сопоставляет ключ 0x20; stride записи 0x84</text>
+  <rect x="563" y="472" width="459" height="92" rx="10" fill="#192b40" stroke="#50779e"/>
+  <text x="583" y="499" class="mono monoText blue">0x0012467c</text>
+  <text x="583" y="525" class="sans body">RPMB / persistent-storage precheck candidate</text>
+  <text x="583" y="548" class="sans small">Ветви чтения через 0x122e14 и 0x1224ec</text>
+  <rect x="563" y="581" width="459" height="92" rx="10" fill="#302817" stroke="#9a793e"/>
+  <text x="583" y="608" class="mono monoText amber">0x00189c00</text>
+  <text x="583" y="634" class="sans body">Record/structure processing — partial</text>
+  <text x="583" y="657" class="sans small">Индекс 110 строк; полный листинг и xrefs отсутствуют</text>
+  <rect x="563" y="690" width="459" height="36" rx="8" fill="#202a38" stroke="#53657a"/>
+  <text x="792" y="714" text-anchor="middle" class="mono small">0x00169738 — generic structure processing, not unlock proven</text>
+
+  <rect x="1075" y="166" width="485" height="580" rx="16" class="panel"/>
+  <text x="1103" y="205" class="sans panelHead">3. Центральная неопределённость</text>
+  <rect x="1103" y="242" width="429" height="126" rx="12" fill="#302817" stroke="#b38942" stroke-width="1.5"/>
+  <text x="1127" y="278" class="mono" font-size="25" fill="#f3cc81">0x001690d8</text>
+  <text x="1127" y="308" class="sans body">Function index: 444 lines</text>
+  <text x="1127" y="335" class="sans small">Full body is not yet present as a verified standalone listing</text>
+  <path d="M1317 369 V405" class="dash"/>
+  <path d="M1317 405 l-7 -10 M1317 405 l7 -10" class="dash"/>
+  <text x="1332" y="394" class="sans small amber">unresolved semantics</text>
+  <rect x="1103" y="414" width="429" height="104" rx="12" fill="#172c29" stroke="#43876e"/>
+  <text x="1127" y="445" class="mono monoText green">Caller 0x0016d2b4 @ 0x16d324</text>
+  <text x="1127" y="472" class="sans body">DRAM init path; object field +0x20 OR 0x400</text>
+  <text x="1127" y="497" class="sans small">Proves the routine is called outside a known OEM path</text>
+  <rect x="1103" y="534" width="429" height="104" rx="12" fill="#172c29" stroke="#43876e"/>
+  <text x="1127" y="565" class="mono monoText green">Caller 0x00189d8c @ 0x189ed8</text>
+  <text x="1127" y="592" class="sans body">Field +0x608 OR 0x20 before the call</text>
+  <text x="1127" y="617" class="sans small">State/table context; exact meaning of field is unknown</text>
+  <rect x="1103" y="654" width="429" height="72" rx="10" fill="#3a2026" stroke="#a45562"/>
+  <text x="1127" y="682" class="sans body red">Do not name this “OEM unlock setter” yet.</text>
+  <text x="1127" y="706" class="sans small">Different callers / objects require complete call-graph analysis.</text>
+
+  <rect x="40" y="578" width="470" height="168" rx="16" class="panel"/>
+  <text x="68" y="617" class="sans panelHead">4. OEM / RPMB chain still unresolved</text>
+  <text x="68" y="651" class="mono monoText">PO_OEM_UNLOCK → get_oem_unlock_val</text>
+  <text x="68" y="681" class="mono monoText">→ rpmb_set_lock_state → persistent state</text>
+  <path d="M68 698 H475" class="dash"/>
+  <text x="68" y="725" class="sans small amber">Все переходы между этими элементами требуют code xrefs.</text>
+
+  <rect x="40" y="775" width="1520" height="294" rx="16" fill="#111b2a" stroke="#34475f" stroke-width="1.5"/>
+  <text x="70" y="817" class="sans panelHead">Что ещё нужно получить</text>
+  <g class="sans body">
+    <text x="70" y="858"><tspan class="amber" font-weight="700">P0</tspan><tspan dx="14">Корректная AArch64-конфигурация, base address и mapping file offset / RVA / VA.</tspan></text>
+    <text x="70" y="898"><tspan class="amber" font-weight="700">P0</tspan><tspan dx="14">Полный body 0x001690d8 + все callers/callees и смысл полей объектов.</tspan></text>
+    <text x="70" y="938"><tspan class="blue" font-weight="700">P1</tspan><tspan dx="14">Xrefs от OEM/RPMB строк к реальным инструкциям и условиям выполнения.</tspan></text>
+    <text x="70" y="978"><tspan class="blue" font-weight="700">P1</tspan><tspan dx="14">Полный 0x00189c00 и структура данных, которую он собирает/проверяет.</tspan></text>
+    <text x="70" y="1018"><tspan class="blue" font-weight="700">P2</tspan><tspan dx="14">A26-specific ESS issuance, подписанный ответ, проверка и commit state.</tspan></text>
+  </g>
+  <rect x="1190" y="826" width="322" height="183" rx="12" fill="#1c2939" stroke="#435b75"/>
+  <text x="1214" y="860" class="sans tag blue">QUALITY BLOCKER</text>
+  <text x="1214" y="896" class="sans body">critical-functions-v2.txt</text>
+  <text x="1214" y="924" class="sans small">Содержит x86-подобные</text>
+  <text x="1214" y="947" class="sans small">инструкции; не использовать</text>
+  <text x="1214" y="970" class="sans small">как ARM64 evidence до</text>
+  <text x="1214" y="993" class="sans small">воспроизведения pipeline.</text>
+  <text x="800" y="1098" text-anchor="middle" class="sans small">Статическая карта доказательств · строки и helper-функции не являются подтверждением разблокировки</text>
+</svg>

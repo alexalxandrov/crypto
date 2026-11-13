@@ -1,826 +1,2244 @@
-~/Documents/GitHub/crypto (main) ❯ grep -n -m 10 -E 'fcn\.000f2f28|fcn\.00114100|fcn\.0017bae4|000f2f28|00114100|0017bae4' \
-  "$HOME/a26-analysis/current/full-sboot.asm"
-4859:│   │││││   ; DATA XREF from fcn.00114100 @ 0x1142e0
-35832:│       │   0x000f2b08      bl    fcn.000f2f28
-36195:┌ fcn.000f2f28();
-36198:│           0x000f2f28      pacibsp
-36219:│     ││    ; CODE XREF from fcn.000f2f28 @ 0xf2f68
-36227:│      ││   ; CODE XREF from fcn.000f2f28 @ 0xf2f50
-36243:│    ││     ; CODE XREF from fcn.000f2f28 @ 0xf2fac
-36260:│   │ ││    ; CODE XREFS from fcn.000f2f28 @ 0xf2ffc, 0xf3004
-36263:│      │    ; CODE XREF from fcn.000f2f28 @ 0xf2fe4
-37920:│           0x000f47fc      bl    fcn.00114100
-~/Documents/GitHub/crypto (main) ❯ python3 - <<'PY'
-from pathlib import Path
-import re
+~/Documents/GitHub/crypto (main) ❯ ASM="$HOME/a26-analysis/current/full-sboot.asm"
 
-p = Path.home() / "a26-analysis/current/full-sboot.asm"
-s = p.read_text(errors="replace")
+echo "===== SMC CALL + FUNCTION START ====="
+grep -n -B 180 -A 55 '0x0017c198' "$ASM"
 
-targets = ["000f2f28", "00114100", "0017bae4"]
+echo "===== 17BFAC REFERENCES ====="
+grep -n -B 15 -A 25 '17bfac' "$ASM"
 
-for target in targets:
-    matches = list(re.finditer(
-        rf"(?im)^.*(?:fcn\.)?{target}.*$",
-        s
-    ))
-    print(f"\n===== {target}: {len(matches)} matches =====")
-    for m in matches[:5]:
-        start = max(0, m.start() - 300)
-        end = min(len(s), m.end() + 12000)
-        print(s[start:end])
-PY
-
-===== 000f2f28: 45 matches =====
-156;0m001205fc
-│       ┌─< 0x000f2b04      cbnz  w0, 0xf2b18
-│       │   0x000f2b08      bl    fcn.000f2f28
-│      ┌──< 0x000f2b0c      cbnz  w0, 0xf2b18
-│      ││   0x000f2b10      mov   w0, 1
-│      ││   0x000f2b14      bl    fcn.00209ea0
-│      └└─> 0x000f2b18      bl    fcn.0011f3e8
-│           0x000f2b1c      ldp   x29, x30, [sp], 0x10
-│           0x000f2b20      autibsp
-└       ┌─< 0x000f2b24      b     fcn.0011f4dc
-            ; CALL XREF from fcn.000f47c4 @ 0xf4810
-┌ fcn.000f2b28(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg4 @ x3
-│           ; arg int64_t arg5 @ x4
-│           ; arg int64_t arg6 @ x5
-│           ; arg int64_t arg7 @ x6
-│           ; arg int64_t arg8 @ x7
-│           0x000f2b28      pacibsp
-│           0x000f2b2c      autibsp
-└       ┌─< 0x000f2b30      b     fcn.000f3430
-            ; XREFS: CALL 0x000f2e6c  CALL 0x000f2eb0  CALL 0x000f2f54
-            ; XREFS: CALL 0x000f3050  CALL 0x000f3118  CALL 0x000f31e0
-┌ fcn.000f2b34();
-│           0x000f2b34      pacibsp
-│           0x000f2b38      mov   w8, aav.0x00000810                   ; "used chip.\r\n"
-│           0x000f2b3c      movk  w8, 0x1186, lsl 16
-│           0x000f2b40      ldr   w8, [x8]
-│           0x000f2b44      autibsp
-│           0x000f2b48      ubfx  w0, w8, 3, 1
-└           0x000f2b4c      ret
-            ; CALL XREF from fcn.000f33c4 @ 0xf33e8
-┌ fcn.000f2b50(int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           0x000f2b50      pacibsp
-│           0x000f2b54      mov   w8, aav.0x00000810                   ; "used chip.\r\n"
-│           0x000f2b58      movk  w8, 0x1186, lsl 16
-│           0x000f2b5c      ldr   w9, [x8]
-│           0x000f2b60      bfi   w9, w0, 4, 1                         ; arg1
-│           0x000f2b64      str   w9, [x8]
-│           0x000f2b68      autibsp
-└           0x000f2b6c      ret
-            ; XREFS: CALL 0x000f993c  CALL 0x000f9ac8  CALL 0x00104bc4
-            ; XREFS: CALL 0x00104d4c  CALL 0x00104d7c  CALL 0x00104d94
-            ; XREFS: CALL 0x001092fc  CALL 0x00109e88  CALL 0x0010a208
-            ; XREFS: CALL 0x00116e50  CALL 0x001170dc  CALL 0x001171c4
-            ; XREFS: CALL 0x00117280  CALL 0x00117608  CALL 0x00118200
-            ; XREFS: CALL 0x0011821c  CALL 0x0011b438  CALL 0x001221c4
-            ; XREFS: CALL 0x00122484  CALL 0x0022e59c
-┌ fcn.000f2b70();
-│           0x000f2b70      pacibsp
-│           0x000f2b74      mov   w8, aav.0x00000810                   ; "used chip.\r\n"
-│           0x000f2b78      movk  w8, 0x1186, lsl 16
-│           0x000f2b7c      ldr   w8, [x8]
-│           0x000f2b80      mov   w9, 1
-│           0x000f2b84      autibsp
-│           0x000f2b88      bic   w0, w9, w8, lsr 4
-└           0x000f2b8c      ret
-            ; CODE XREF from fcn.001b3fc4 @ 0x1b3fd0
-┌ fcn.000f2b90(int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           0x000f2b90      pacibsp
-│           0x000f2b94      mov   w8, aav.0x00000810                   ; "used chip.\r\n"
-│           0x000f2b98      movk  w8, 0x1186, lsl 16
-│           0x000f2b9c      ldr   w9, [x8]
-│           0x000f2ba0      bfi   w9, w0, 6, 1                         ; arg1
-│           0x000f2ba4      str   w9, [x8]
-│           0x000f2ba8      autibsp
-└           0x000f2bac      ret
-            ; CODE XREF from fcn.000f327c @ 0xf3284
-            ; CALL XREF from fcn.00117d00 @ 0x118218
-            ; CODE XREF from fcn.001b3fb8 @ 0x1b3fc0
-┌ 
-│      │    0x000f2f04      autibsp
-└      │    0x000f2f08      ret
-            ; XREFS(37)
-┌ fcn.000f2f28();
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x000f2f28      pacibsp
-│           0x000f2f2c      stp   x29, x30, [var_20h]!
-│           0x000f2f30      str   x19, [var_10h]
-│           0x000f2f34      mov   x29, sp
-│           0x000f2f38      adrp  x19, 0x53a000
-│           0x000f2f3c      ldrb  w8, [x19]
-│           0x000f2f40      cmp   w8, 1
-│       ┌─< 0x000f2f44      b.ne  0xf2f54
-│       │   0x000f2f48      adrp  x8, 0x53a000
-│       │   0x000f2f4c      ldr   w1, [x8, 4]                          ; str.kwH_daeh
-│       │                                                              ; [0x4:4]=0x2148776b ; "kwH!daeh"
-│      ┌──< 0x000f2f50      b     0xf2f94
-│      │└─> 0x000f2f54      bl    fcn.000f2b34
-│      │    0x000f2f58      cmp   w0, 1
-│      │┌─< 0x000f2f5c      b.ne  0xf2f6c
-│      ││   0x000f2f60      bl    fcn.0010a0e8
-│      ││   0x000f2f64      mov   w1, w0
-│     ┌───< 0x000f2f68      b     0xf2f78
-│     ││└─> 0x000f2f6c      mov   w8, 0x64
-│     ││    0x000f2f70      movk  w8, 0x202, lsl 16
-│     ││    0x000f2f74      ldr   w1, [x8]
-│     ││    ; CODE XREF from fcn.000f2f28 @ 0xf2f68
-│     └───> 0x000f2f78      lsr   w9, w1, 0x18
-│      │    0x000f2f7c      adrp  x8, 0x53a000
-│      │    0x000f2f80      cmp   w9, 0xcb
-│      │    0x000f2f84      str   w1, [x8, 4]
-│      │┌─< 0x000f2f88      b.ne  0xf2fb0
-│      ││   0x000f2f8c      mov   w8, 1
-│      ││   0x000f2f90      strb  w8, [x19]
-│      ││   ; CODE XREF from fcn.000f2f28 @ 0xf2f50
-│      └──> 0x000f2f94      and   w8, w1, 0xf
-│       │   0x000f2f98      cmp   w8, 1
-│      ┌──< 0x000f2f9c      b.eq  0xf2fcc
-│      ││   0x000f2fa0      cmp   w8, 2
-│     ┌───< 0x000f2fa4      b.ne  0xf3000
-│     │││   0x000f2fa8      mov   w9, 8
-│    ┌────< 0x000f2fac      b     0xf2fd0
-│    │││└─> 0x000f2fb0      adrp  x0, 0x249000
-│    │││    0x000f2fb4      add   x0, x0, 0x5dc                        ; int64_t arg1
-│    │││    0x000f2fb8      bl    fcn.0014c9f8
-│    │││    0x000f2fbc      adrp  x0, 0x255000
-│    │││    0x000f2fc0      add   x0, x0, 0xec                         ; int64_t arg1
-│    │││    0x000f2fc4      bl    fcn.0014c9f8
-│    │││@─> 0x000f2fc8      b     0xf2fc8
-│    │
-();
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x000f2f28      pacibsp
-│           0x000f2f2c      stp   x29, x30, [var_20h]!
-│           0x000f2f30      str   x19, [var_10h]
-│           0x000f2f34      mov   x29, sp
-│           0x000f2f38      adrp  x19, 0x53a000
-│           0x000f2f3c      ldrb  w8, [x19]
-│           0x000f2f40      cmp   w8, 1
-│       ┌─< 0x000f2f44      b.ne  0xf2f54
-│       │   0x000f2f48      adrp  x8, 0x53a000
-│       │   0x000f2f4c      ldr   w1, [x8, 4]                          ; str.kwH_daeh
-│       │                                                              ; [0x4:4]=0x2148776b ; "kwH!daeh"
-│      ┌──< 0x000f2f50      b     0xf2f94
-│      │└─> 0x000f2f54      bl    fcn.000f2b34
-│      │    0x000f2f58      cmp   w0, 1
-│      │┌─< 0x000f2f5c      b.ne  0xf2f6c
-│      ││   0x000f2f60      bl    fcn.0010a0e8
-│      ││   0x000f2f64      mov   w1, w0
-│     ┌───< 0x000f2f68      b     0xf2f78
-│     ││└─> 0x000f2f6c      mov   w8, 0x64
-│     ││    0x000f2f70      movk  w8, 0x202, lsl 16
-│     ││    0x000f2f74      ldr   w1, [x8]
-│     ││    ; CODE XREF from fcn.000f2f28 @ 0xf2f68
-│     └───> 0x000f2f78      lsr   w9, w1, 0x18
-│      │    0x000f2f7c      adrp  x8, 0x53a000
-│      │    0x000f2f80      cmp   w9, 0xcb
-│      │    0x000f2f84      str   w1, [x8, 4]
-│      │┌─< 0x000f2f88      b.ne  0xf2fb0
-│      ││   0x000f2f8c      mov   w8, 1
-│      ││   0x000f2f90      strb  w8, [x19]
-│      ││   ; CODE XREF from fcn.000f2f28 @ 0xf2f50
-│      └──> 0x000f2f94      and   w8, w1, 0xf
-│       │   0x000f2f98      cmp   w8, 1
-│      ┌──< 0x000f2f9c      b.eq  0xf2fcc
-│      ││   0x000f2fa0      cmp   w8, 2
-│     ┌───< 0x000f2fa4      b.ne  0xf3000
-│     │││   0x000f2fa8      mov   w9, 8
-│    ┌────< 0x000f2fac      b     0xf2fd0
-│    │││└─> 0x000f2fb0      adrp  x0, 0x249000
-│    │││    0x000f2fb4      add   x0, x0, 0x5dc                        ; int64_t arg1
-│    │││    0x000f2fb8      bl    fcn.0014c9f8
-│    │││    0x000f2fbc      adrp  x0, 0x255000
-│    │││    0x000f2fc0      add   x0, x0, 0xec                         ; int64_t arg1
-│    │││    0x000f2fc4      bl    fcn.0014c9f8
-│    │││@─> 0x000f2fc8      b     0xf2fc8
-│    ││└──> 0x000f2fcc      mov   w9, 4
-│    ││     ; CODE XREF 
-2;193;156;0m16
-│     ││    0x000f2f74      ldr   w1, [x8]
-│     ││    ; CODE XREF from fcn.000f2f28 @ 0xf2f68
-│     └───> 0x000f2f78      lsr   w9, w1, 0x18
-│      │    0x000f2f7c      adrp  x8, 0x53a000
-│      │    0x000f2f80      cmp   w9, 0xcb
-│      │    0x000f2f84      str   w1, [x8, 4]
-│      │┌─< 0x000f2f88      b.ne  0xf2fb0
-│      ││   0x000f2f8c      mov   w8, 1
-│      ││   0x000f2f90      strb  w8, [x19]
-│      ││   ; CODE XREF from fcn.000f2f28 @ 0xf2f50
-│      └──> 0x000f2f94      and   w8, w1, 0xf
-│       │   0x000f2f98      cmp   w8, 1
-│      ┌──< 0x000f2f9c      b.eq  0xf2fcc
-│      ││   0x000f2fa0      cmp   w8, 2
-│     ┌───< 0x000f2fa4      b.ne  0xf3000
-│     │││   0x000f2fa8      mov   w9, 8
-│    ┌────< 0x000f2fac      b     0xf2fd0
-│    │││└─> 0x000f2fb0      adrp  x0, 0x249000
-│    │││    0x000f2fb4      add   x0, x0, 0x5dc                        ; int64_t arg1
-│    │││    0x000f2fb8      bl    fcn.0014c9f8
-│    │││    0x000f2fbc      adrp  x0, 0x255000
-│    │││    0x000f2fc0      add   x0, x0, 0xec                         ; int64_t arg1
-│    │││    0x000f2fc4      bl    fcn.0014c9f8
-│    │││@─> 0x000f2fc8      b     0xf2fc8
-│    ││└──> 0x000f2fcc      mov   w9, 4
-│    ││     ; CODE XREF from fcn.000f2f28 @ 0xf2fac
-│    └────> 0x000f2fd0      lsr   w9, w1, w9
-│     │     0x000f2fd4      and   w9, w9, 0xf
-│     │     0x000f2fd8      cmp   w9, 4
-│     │ ┌─< 0x000f2fdc      b.ne  0xf2fe8
-│     │ │   0x000f2fe0      mov   w0, 1
-│     │┌──< 0x000f2fe4      b     0xf3014
-│     ││└─> 0x000f2fe8      cmp   w8, 2
-│     ││┌─< 0x000f2fec      b.eq  0xf3008
-│     │││   0x000f2ff0      cmp   w8, 1
-│    ┌────< 0x000f2ff4      b.ne  0xf3000
-│    ││││   0x000f2ff8      ubfx  w8, w1, 4, 4
-│   ┌─────< 0x000f2ffc      b     0xf300c
-│   │││││   ; STRING XREF from fcn.000f3ab0 @ 0xf3af0
-│   │└└───> 0x000f3000      mov   w8, wzr
-│   │ ┌───< 0x000f3004      b     0xf300c
-│   │ ││└─> 0x000f3008      ubfx  w8, w1, 8, 4
-│   │ ││    ; CODE XREFS from fcn.000f2f28 @ 0xf2ffc, 0xf3004
-│   └─└───> 0x000f300c      cmp   w8, 0xb
-│      
-1
-│      ││   0x000f2f90      strb  w8, [x19]
-│      ││   ; CODE XREF from fcn.000f2f28 @ 0xf2f50
-│      └──> 0x000f2f94      and   w8, w1, 0xf
-│       │   0x000f2f98      cmp   w8, 1
-│      ┌──< 0x000f2f9c      b.eq  0xf2fcc
-│      ││   0x000f2fa0      cmp   w8, 2
-│     ┌───< 0x000f2fa4      b.ne  0xf3000
-│     │││   0x000f2fa8      mov   w9, 8
-│    ┌────< 0x000f2fac      b     0xf2fd0
-│    │││└─> 0x000f2fb0      adrp  x0, 0x249000
-│    │││    0x000f2fb4      add   x0, x0, 0x5dc                        ; int64_t arg1
-│    │││    0x000f2fb8      bl    fcn.0014c9f8
-│    │││    0x000f2fbc      adrp  x0, 0x255000
-│    │││    0x000f2fc0      add   x0, x0, 0xec                         ; int64_t arg1
-│    │││    0x000f2fc4      bl    fcn.0014c9f8
-│    │││@─> 0x000f2fc8      b     0xf2fc8
-│    ││└──> 0x000f2fcc      mov   w9, 4
-│    ││     ; CODE XREF from fcn.000f2f28 @ 0xf2fac
-│    └────> 0x000f2fd0      lsr   w9, w1, w9
-│     │     0x000f2fd4      and   w9, w9, 0xf
-│     │     0x000f2fd8      cmp   w9, 4
-│     │ ┌─< 0x000f2fdc      b.ne  0xf2fe8
-│     │ │   0x000f2fe0      mov   w0, 1
-│     │┌──< 0x000f2fe4      b     0xf3014
-│     ││└─> 0x000f2fe8      cmp   w8, 2
-│     ││┌─< 0x000f2fec      b.eq  0xf3008
-│     │││   0x000f2ff0      cmp   w8, 1
-│    ┌────< 0x000f2ff4      b.ne  0xf3000
-│    ││││   0x000f2ff8      ubfx  w8, w1, 4, 4
-│   ┌─────< 0x000f2ffc      b     0xf300c
-│   │││││   ; STRING XREF from fcn.000f3ab0 @ 0xf3af0
-│   │└└───> 0x000f3000      mov   w8, wzr
-│   │ ┌───< 0x000f3004      b     0xf300c
-│   │ ││└─> 0x000f3008      ubfx  w8, w1, 8, 4
-│   │ ││    ; CODE XREFS from fcn.000f2f28 @ 0xf2ffc, 0xf3004
-│   └─└───> 0x000f300c      cmp   w8, 0xb
-│      │    0x000f3010      cset  w0, eq
-│      │    ; CODE XREF from fcn.000f2f28 @ 0xf2fe4
-│      └──> 0x000f3014      ldr   x19, [var_10h]                       ; aav.0x00000010
-│                                                                      ; [0x10:4]=0x14000004
-│           0x000f3018      ldp   x29, x30, [sp], 0x20
-│           0x000f301c      autibsp
-└           0x000f3020      ret
-            ; CALL XREF from fcn.0010a334 @ 0x10a3d8
-┌ fcn.000f3024();
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x000f3024      pacibsp
-│           
-
-0114100: 74 matches =====
-;204;204;204m, [x8]
-│   │││││   ; DATA XREF from fcn.00114028 @ 0x11402c
-│   │││││   ; DATA XREF from fcn.00114100 @ 0x1142e0
-│   │││││   ; DATA XREF from str.6cccc @ +0x2e3f
-│   │││││   ; DATA XREF from str.Tyy.3____s__tt @ +0x7c
-│   │││││   0x00003f80      str   wzr, [x8, 4]
-│   │││││   0x00003f84      ldr   w12, [x20, 0xcc]                     ; aav.0x000000cc
-│   │││││                                                              ; [0xcc:4]=0xd2a80000
-│   │││││   0x00003f88      str   w12, [x8, 0x10]
-│   │││││   0x00003f8c      ldr   w12, [x20, 0xc8]                     ; aav.0x000000c8
-│   │││││                                                              ; [0xc8:4]=0xd50344ff
-│   │││││   ; DATA XREF from fcn.0016660c @ 0x166884
-│   │││││   ; DATA XREF from fcn.001690d8 @ 0x169670
-│  ┌──────< 0x00003f90      b     0x4074
-│  │││└───> 0x00003f94      add   w21, w21, 1
-│  │││┌───< 0x00003f98      b     0x42ec
-│ ┌──└────> 0x00003f9c      cbz   w22, 0x4208
-│ │││ │││   0x00003fa0      adrp  x12, aav.0x00005000
-│ │││ │││   0x00003fa4      add   x12, x12, 0x2d4
-│ │││ │││   0x00003fa8      ldr   w11, [x12, x11, lsl 2]
-│ │││ │││   0x00003fac      cmp   w11, w22
-│ │││ │││   ; XREFS: DATA 0x0015d214  DATA 0x001607a4  DATA 0x00161220
-│ │││ │││   ; XREFS: DATA 0x00161254  DATA 0x00161500  DATA 0x00161644
-│ │││ │││   ; XREFS: DATA 0x001616cc  DATA 0x001619f0  DATA 0x00169690
-│ │││ │││   ; XREFS: DATA 0x001699d8  DATA 0x0016bdc8  DATA 0x0016be58
-│ │││┌────< 0x00003fb0      b.ls  0x403c
-│ │││││││   0x00003fb4      add   w21, w21, 2
-│ │││││││   ; DATA XREFS from fcn.001602c0 @ 0x1606a8, 0x160718
-│ │││││││   ; DATA XREF from fcn.00160c24 @ 0x161280
-│ │││││││   ; DATA XREF from fcn.001613f4 @ 0x16165c
-│ ────────< 0x00003fb8      b     0x42ec
-│ ││└─────> 0x00003fbc      adrp  x12, aav.0x00005000
-│ ││ ││││   ; DATA XREF from fcn.004f3470 @ +0x1ec
-│ ││ ││││   ; DATA XREF from fcn.00505380 @ +0x91c
-│ ││ ││││   0x00003fc0      add   x12, x12, 0x2e0
-│ ││ ││││   0x00003fc4      ldr   w22, [x12, x11, lsl 2]
-│ ││ ││││   ; DATA XREF from fcn.001613f4 @ 0x1614d4
-│ ││ ││││   0x00003fc8      add   x12, x20, 8                          ; "daeh"
-│ ││ ││││   0x00003fcc      sub   w11, w22
-w19, 0x8ffff
-│           0x000f47f8      bl    fcn.000f4548
-│           0x000f47fc      bl    fcn.00114100
-│           0x000f4800      orr   w2, w19, aav.0x00010000
-│           0x000f4804      mov   w0, 1
-│           0x000f4808      mov   w1, 0x90000
-│           0x000f480c      bl    fcn.000f4548
-│           0x000f4810      bl    fcn.000f2b28
-│           0x000f4814      orr   w2, w19, aav.0x00020000
-│           0x000f4818      mov   w0, 1
-│           0x000f481c      mov   w1, 0xa0000
-│           0x000f4820      bl    fcn.000f4548
-│           0x000f4824      bl    fcn.000f484c
-│           0x000f4828      mov   w0, 1
-│           0x000f482c      mov   w1, 0xb0000
-│           0x000f4830      mov   w2, -1
-│           0x000f4834      bl    fcn.000f4548
-│           0x000f4838      ldr   x19, [var_10h]                       ; aav.0x00000010
-│                                                                      ; [0x10:4]=0x14000004
-│           0x000f483c      mov   w0, wzr
-│           0x000f4840      ldp   x29, x30, [sp], 0x20
-│           0x000f4844      autibsp
-└           0x000f4848      ret
-            ; CALL XREF from fcn.000f47c4 @ 0xf4824
-┌ fcn.000f484c(int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg4 @ x3
-│           ; arg int64_t arg5 @ x4
-│           ; arg int64_t arg6 @ x5
-│           ; arg int64_t arg7 @ x6
-│           ; arg int64_t arg8 @ x7
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x000f484c      pacibsp
-│           0x000f4850      stp   x29, x30, [var_40h]!
-│           0x000f4854      str   x23, [var_30h]
-│           0x000f4858      stp   x22, x21, [var_20h]
-│           0x000f485c      stp   x20, x19, [var_10h]
-│           0x000f4860      mov   x29, sp
-│           0x000f4864      adrp  x23, 0x329000
-│           0x000f4868      adrp  x8, 0x329000
-│           0x000f486c      ldr   x23, [x23, 0x2f8]                    ; [0x2f8:4]=0xb94093e9
-│           0x000f4870      ldr   x8, [x8, aav.0x00000300]             ; [0x300:4]=0xb94097e9
-│           0x000f4874      cmp   x8, x23
-│       ┌─< 0x000f4878      b.eq  0xf48b4
-│       │   0x000f487c      adrp  x20, 0x329000
-│       │   0x000f4880      ldr   x20, [x20, aav.0x00000300]           ; [0x300:4]=0xb94097e9
-│       │   0x000f4884      mov   x19, x20
-│      ┌──< 0x000f4888      b     0xf4898
-│      ││   ; CODE XREF from fcn.000f484c @ 0xf48a8
-│    ┌┌───> 0x000f488c      add   x19, x19, 0x28
-│    ╎╎││   0x000f4890      cmp   x19, x23
-│   ┌─────< 0x000f4894      b.eq  0xf48ac
-│   │╎╎││   ; CODE XREF from fcn.000f484c @ 0xf4888
-│   │╎╎└──> 0x000f4898      ldr   x8, [x19, 8]                     
-;204m, x0, 0x2a8
-│           0x000f896c      autibsp
-└           0x000f8970      ret
-            ; CALL XREF from fcn.00114100 @ 0x1142dc
-            ; CALL XREF from fcn.001911d0 @ 0x1911f8
-┌ fcn.000f8974();
-│           0x000f8974      pacibsp
-│           0x000f8978      adrp  x8, 0x53c000
-│           0x000f897c      ldr   x0, [x8, 0x9a0]                      ; [0x9a0:4]=0x64363025 ; "%06d] "
-│       ┌─< 0x000f8980      cbz   x0, 0xf89a4
-│       │   0x000f8984      ldr   x8, [x0, 8]                          ; aav.0x00000008
-│       │                                                              ; [0x8:4]=0x68656164 ; "daeh"
-│      ┌──< 0x000f8988      cbz   x8, 0xf89a4
-│      ││   0x000f898c      ldr   x8, [x8, 8]                          ; aav.0x00000008
-│      ││                                                              ; [0x8:4]=0x68656164 ; "daeh"
-│     ┌───< 0x000f8990      cbz   x8, 0xf89a4
-│     │││   0x000f8994      ldr   x1, [x8, 0x38]                       ; aav.0x00000038
-│     │││                                                              ; [0x38:4]=0x9100023f ; "?\U00000002"
-│    ┌────< 0x000f8998      cbz   x1, 0xf89b0
-│    ││││   0x000f899c      autibsp
-│    ││││   0x000f89a0      br    x1
-│    │└└└─> 0x000f89a4      mov   w0, -0x26
-│    │      0x000f89a8      autibsp
-│    │      0x000f89ac      ret
-│    └────> 0x000f89b0      mov   w0, wzr
-│           0x000f89b4      autibsp
-└           0x000f89b8      ret
-            ; CALL XREF from fcn.001153b8 @ 0x1153c8
-┌ fcn.000f89bc(int64_t arg1);
-│           ; arg int64_t arg1 @ x0
-│           0x000f89bc      pacibsp
-│           0x000f89c0      adrp  x8, 0x53c000
-│           0x000f89c4      add   x8, x8, 0x9a0
-│           0x000f89c8      str   x0, [x8, w1, sxtw 3]                 ; arg1
-│           0x000f89cc      autibsp
-└           0x000f89d0      ret
-┌ fcn.000f89d4(unsigned long arg1);
-│           ; arg unsigned long arg1 @ x0
-│           0x000f89d4      pacibsp
-│           0x000f89d8      mov   w8, 0x714
-│           0x000f89dc      movk  w8, 0x1186, lsl 16
-│           0x000f89e0      ldr   w9, [x8]
-│           0x000f89e4      cmp   w0, 0                                ; arg1
-│           0x000f89e8      cset  w10, ne
-│           0x000f89ec      and   w9, w9, 0xfffffffe
-│           0x000f89f0      orr   w9, w9, w10
-│           0x000f89f4      str   w9, [x8]
-│           0x000f89f8      autibsp
-└           0x000f89fc      ret
-┌ fcn.000f8a00();
-│           0x000f8a00      pacibsp
-│           0x000f8a04      adrp  x8, 0x53c000
-│           0x000f8a08      add   x8, x8, 0x9a0
-│           0x000f8a0c      ldr   x0, [x8, w0, sxtw 3]
-│       ┌─< 0x000f8a10      cbz   x0, 0xf8a34
-│       │   0x000f8a14      ldr   x8, [x0, 8]                          ; aav.0x00000008
-│       │                                                              ; [0x8:4]=0x68656164 ; "daeh"
-│      ┌──< 0x000f8a18      cbz   x8, 0xf8a34
-│      ││   0x000f8a1c      ldr   x8, [x8, 
-, [sp], 0x20
-│           0x000f9664      autibsp
-└           0x000f9668      ret
-            ; CALL XREF from fcn.00114100 @ 0x1142f4
-            ; CALL XREF from fcn.0018b83c @ 0x18b928
-            ; CALL XREF from fcn.001911d0 @ 0x19120c
-┌ fcn.000f966c();
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x000f966c      pacibsp
-│           0x000f9670      stp   x29, x30, [var_40h]!
-│           0x000f9674      str   x23, [var_30h]
-│           0x000f9678      stp   x22, x21, [var_20h]
-│           0x000f967c      stp   x20, x19, [var_10h]
-│           0x000f9680      mov   x29, sp
-│           0x000f9684      mov   w0, 2
-│           0x000f9688      bl    fcn.00175434
-│           0x000f968c      adrp  x8, 0x2b9000
-│           0x000f9690      str   w0, [x8, 0x2f0]
-│           0x000f9694      mov   w0, 3
-│           0x000f9698      bl    fcn.00175434
-│           0x000f969c      adrp  x21, 0x2b9000
-│           0x000f96a0      str   w0, [x21, 0x2f4]
-│           0x000f96a4      mov   w0, 4
-│           0x000f96a8      bl    fcn.00175434
-│           0x000f96ac      adrp  x8, 0x2b9000
-│           0x000f96b0      str   w0, [x8, 0x2f8]
-│           0x000f96b4      mov   w0, wzr
-│           0x000f96b8      bl    fcn.000fb324
-│       ┌─< 0x000f96bc      tbnz  w0, 0x1f, 0xf98ac
-│       │   0x000f96c0      mov   w0, 1
-│       │   0x000f96c4      mov   w1, 0xf0
-│       │   0x000f96c8      bl    fcn.0014240c
-│      ┌──< 0x000f96cc      cbz   x0, 0xf98cc
-│      ││   0x000f96d0      mov   x19, x0
-│      ││   0x000f96d4      mov   w0, 1
-│      ││   0x000f96d8      mov   w1, 0x3c
-│      ││   0x000f96dc      bl    fcn.0014240c
-│      ││   0x000f96e0      str   x0, [x19, 8]
-│     ┌───< 0x000f96e4      cbz   x0, 0xf98c4
-│     │││   0x000f96e8      adrp  x23, 0x53c000
-│     │││   0x000f96ec      ldrb  w8, [x23, 0x9c0]                     ; [0x9c0:4]=0x63697672 ; "rvice descriptor %p\n"
-│     │││   0x000f96f0      adrp  x22, 0x53c000
-│    ┌────< 0x000f96f4      tbnz  w8, 0, 0xf98ec
-│    ││││   0x000f96f8      mov   w0, wzr
-│    ││││   0x000f96fc      bl    fcn.000fb1ac
-│    ││││   0x000f9700      ldr   w9, [x0, 0x88]                       ; aav.0x00000088
-│    ││││                                                              ; [0x88:4]=0xd51e1000
-│    ││││   0x000f9704      ldr   w10, [x0, 0xdc]                      ; aav.0x000000dc
-│    ││││                                                              ; [0xdc:4]=0xb26c0000
-│    ││
-0xa64:4]=0x65732065 ; "e service %s\n"
-│           0x00104e00      autibsp
-└           0x00104e04      ret
-            ; CALL XREF from fcn.00114100 @ 0x11445c
-            ; CALL XREF from fcn.001147a8 @ 0x1147c4
-            ; CALL XREF from fcn.00114a28 @ 0x114a6c
-┌ fcn.00104e08();
-│           ; var int64_t var_50h @ stack - 0x50
-│           ; var int64_t var_40h @ stack - 0x40
-│           ; var int64_t var_30h @ stack - 0x30
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x00104e08      pacibsp
-│           0x00104e0c      sub   sp, sp, 0x50
-│           0x00104e10      stp   x29, x30, [var_40h]
-│           0x00104e14      str   x23, [var_30h]
-│           0x00104e18      stp   x22, x21, [var_20h]
-│           0x00104e1c      stp   x20, x19, [var_10h]
-│           0x00104e20      add   x29, sp, 0x10
-│           0x00104e24      adrp  x0, 0x245000
-│           0x00104e28      add   x0, x0, 0x2b7                        ; int64_t arg1
-│           0x00104e2c      bl    fcn.00117008
-│           0x00104e30      mov   x19, x0
-│           0x00104e34      adrp  x0, 0x279000
-│           0x00104e38      adrp  x1, 0x278000
-│           0x00104e3c      add   x0, x0, 0xe99                        ; int64_t arg1
-│           0x00104e40      add   x1, x1, 0x20                         ; int64_t arg2
-│           0x00104e44      bl    fcn.0014c9f8
-│           0x00104e48      bl    fcn.00192678
-│       ┌─< 0x00104e4c      cbnz  w0, 0x104e58
-│       │   0x00104e50      bl    fcn.001925f8
-│      ┌──< 0x00104e54      cbz   w0, 0x104fcc
-│      │└─> 0x00104e58      mov   w20, aav.0x00000140
-│      │    0x00104e5c      mov   x0, sp                               ; int64_t arg1
-│      │    0x00104e60      mov   w2, 0x10
-│      │    0x00104e64      mov   w1, wzr
-│      │    0x00104e68      movk  w20, 0x118d, lsl 16
-│      │    0x00104e6c      mov   w21, -0xf620000
-│      │    0x00104e70      bl    fcn.0014d8fc
-│      │    0x00104e74      ldr   w8, [sp]
-│      │    0x00104e78      mov   w10, 0x8080
-│      │    0x00104e7c      movk  w10, aav.0x00000520, lsl 16
-│      │    0x00104e80      mov   w9, aav.0x00600000
-│      │    0x00104e84      and   w8, w8, w21
-│      │    0x00104e88      orr   w8, w8, w10
-│      │    0x00104e8c      sub   x22, x20, 0x124
-│      │    0x00104e90      str   x9, [var_50h + 0x8]
-│      │    0x00104e94      stp   w8, w19, [sp]
-│      │    0x00104e98      str   w8, [x20]
-│      │    0x00104e9c      mov   w8, 1
-│      │    0x00104ea0      str   w19, [x20, 4]
-│      │    0x00104ea4      str   w9, [x20, 8]
-│      │    0x00104ea8      mov   w9, -0xbb8
-│      │    0x00104eac      
-
-017bae4: 38 matches =====
-204;204;204m, 0x547
-│      ┌──< 0x00114a48      b     0x114aa0
-│      │└─> 0x00114a4c      bl    fcn.0017bae4
-│      │    0x00114a50      ldr   w8, [x0, 0x68]                       ; aav.0x00000068
-│      │                                                               ; [0x68:4]=0xd61f0000
-│      │┌─< 0x00114a54      cbz   w8, 0x114a8c
-│      ││   0x00114a58      mov   w0, 0x23                             ; '#'
-│      ││   0x00114a5c      mov   w1, 1
-│      ││   0x00114a60      bl    fcn.0018a2ac
-│     ┌───< 0x00114a64      cbz   w0, 0x114a98
-│     │││   0x00114a68      mov   w19, w0
-│     │││   0x00114a6c      bl    fcn.00104e08
-│     │││   0x00114a70      adrp  x0, 0x25d000
-│     │││   0x00114a74      adrp  x1, 0x259000
-│     │││   0x00114a78      add   x0, x0, 0xd6e                        ; int64_t arg1
-│     │││   0x00114a7c      add   x1, x1, 0xc6a                        ; int64_t arg2
-│     │││   0x00114a80      mov   w2, w19
-│     │││   0x00114a84      bl    fcn.0014c9f8
-│    ┌────< 0x00114a88      b     0x114aac
-│    │││└─> 0x00114a8c      adrp  x0, 0x255000
-│    │││    0x00114a90      add   x0, x0, 0x56e
-│    │││┌─< 0x00114a94      b     0x114aa0
-│    │└───> 0x00114a98      adrp  x0, 0x240000
-│    │ ││   0x00114a9c      add   x0, x0, 0x8a9
-│    │ ││   ; CODE XREFS from fcn.00114a28 @ 0x114a48, 0x114a94
-│    │ └└─> 0x00114aa0      adrp  x1, 0x259000
-│    │      0x00114aa4      add   x1, x1, 0xc6a                        ; int64_t arg2
-│    │      0x00114aa8      bl    fcn.0014c9f8
-│    │      ; CODE XREF from fcn.00114a28 @ 0x114a88
-│    └────> 0x00114aac      bl    fcn.0017bae4
-│           0x00114ab0      ldr   w8, [x0, 0x68]                       ; aav.0x00000068
-│                                                                      ; [0x68:4]=0xd61f0000
-│           0x00114ab4      adrp  x19, 0x5a6000
-│           0x00114ab8      add   x19, x19, 0xcc8
-│       ┌─< 0x00114abc      cbz   w8, 0x114af4
-│       │   0x00114ac0      mov   w0, 0x34
-│       │   0x00114ac4      mov   w1, wzr
-│       │   0x00114ac8      bl    fcn.0018a2ac
-│       │   0x00114acc      adrp  x8, 0x7ca000
-│       │   0x00114ad0      adrp  x9, 0x259000
-│       │   0x00114ad4      adrp  x10, 0x255000
-│       │   0x00114ad8      add   x8, x8, 0x4e4
-│       │   0x00114adc      cmp   w0, 0
-│       │   0x00114ae0      add   x9, x9, 0xc78
-│       │   0x00114ae4      add   x10, x10, 0x58e
-│       │   0x00114ae8      csel  x19, x19, x8, eq
-│       │   0x00114aec      csel  
-0x00114aa8      bl    fcn.0014c9f8
-│    │      ; CODE XREF from fcn.00114a28 @ 0x114a88
-│    └────> 0x00114aac      bl    fcn.0017bae4
-│           0x00114ab0      ldr   w8, [x0, 0x68]                       ; aav.0x00000068
-│                                                                      ; [0x68:4]=0xd61f0000
-│           0x00114ab4      adrp  x19, 0x5a6000
-│           0x00114ab8      add   x19, x19, 0xcc8
-│       ┌─< 0x00114abc      cbz   w8, 0x114af4
-│       │   0x00114ac0      mov   w0, 0x34
-│       │   0x00114ac4      mov   w1, wzr
-│       │   0x00114ac8      bl    fcn.0018a2ac
-│       │   0x00114acc      adrp  x8, 0x7ca000
-│       │   0x00114ad0      adrp  x9, 0x259000
-│       │   0x00114ad4      adrp  x10, 0x255000
-│       │   0x00114ad8      add   x8, x8, 0x4e4
-│       │   0x00114adc      cmp   w0, 0
-│       │   0x00114ae0      add   x9, x9, 0xc78
-│       │   0x00114ae4      add   x10, x10, 0x58e
-│       │   0x00114ae8      csel  x19, x19, x8, eq
-│       │   0x00114aec      csel  x0, x10, x9, eq
-│      ┌──< 0x00114af0      b     0x114afc
-│      │└─> 0x00114af4      adrp  x0, 0x24e000
-│      │    0x00114af8      add   x0, x0, 0xda8
-│      │    ; CODE XREF from fcn.00114a28 @ 0x114af0
-│      └──> 0x00114afc      adrp  x1, str.setct_CertResTBE             ; 0x26a000
-│           0x00114b00      mov   w8, 1
-│           0x00114b04      add   x1, x1, 0x968                        ; int64_t arg4
-│           0x00114b08      str   w8, [x19]
-│           0x00114b0c      bl    fcn.0014c9f8
-│           0x00114b10      bl    fcn.001a6184
-│           0x00114b14      adrp  x0, 0x264000
-│           0x00114b18      adrp  x1, 0x275000
-│           0x00114b1c      add   x0, x0, 0x9fb                        ; int64_t arg1
-│           0x00114b20      add   x1, x1, 0xd3b                        ; int64_t arg2
-│           0x00114b24      bl    fcn.0014c9f8
-│           0x00114b28      mov   w0, 1
-│           0x00114b2c      mov   w1, 4
-│           0x00114b30      bl    fcn.00120880
-│           0x00114b34      mov   w1, 4
-│           0x00114b38      mov   w0, wzr
-│           0x00114b3c      bl    fcn.001208b4
-│           0x00114b40      ldr   x19, [var_10h]                       ; aav.0x00000010
-│                                                                      ; [0x10:4]=0x14000004
-│           0x00114b44      ldp   x29, x30, [sp], 0x20
-│           0x00114b48      autibsp
-└       ┌─< 0x00114b4c      b     fcn.0011fac4
-            ; CALL XREF from fcn.00114054 @ 0x11407c
-┌ fcn.00114b50();
-│           0x00114b50      pacibsp
-│           0x00114b54      mov   w8, aav.0x00000100
-│           0x00114b58      movk  w8, 0x1189, lsl 16
-│           0x00114b5c      mov   w9, 1
-│           0x00114b60      str   w9, [x8]
-│           0x00114b64      autibsp
-└           0x00114b68      ret
-            ; CALL XREF from fcn.0010
-           ; arg2
-│           0x00158340      mov   w19, w0                              ; arg1
-│           0x00158344      bl    fcn.0017bae4
-│           0x00158348      mov   x21, x0
-│           0x0015834c      bl    fcn.0016e548
-│       ┌─< 0x00158350      cbz   x21, 0x15837c
-│       │   0x00158354      ldr   w4, [x21, 0x68]                      ; aav.0x00000068
-│       │                                                              ; [0x68:4]=0xd61f0000
-│       │   0x00158358      ldr   w5, [x21, 0x70]                      ; aav.0x00000070
-│       │                                                              ; [0x70:4]=0xd51ec000
-│       │   0x0015835c      adrp  x1, 0x278000
-│       │   0x00158360      mov   x3, x0                               ; int64_t arg4
-│       │   0x00158364      add   x1, x1, 0x93b                        ; int64_t arg2
-│       │   0x00158368      mov   x0, x20                              ; int64_t arg1
-│       │   0x0015836c      mov   w2, w19
-│       │   0x00158370      bl    fcn.0014aff0
-│       │   0x00158374      mov   w0, wzr
-│      ┌──< 0x00158378      b     0x158380
-│      │└─> 0x0015837c      mov   w0, -1
-│      │    ; CODE XREF from fcn.00158328 @ 0x158378
-│      └──> 0x00158380      ldp   x20, x19, [var_10h]
-│           0x00158384      ldr   x21, [var_20h]                       ; aav.0x00000010
-│                                                                      ; [0x10:4]=0x14000004
-│           0x00158388      ldp   x29, x30, [sp], 0x30
-│           0x0015838c      autibsp
-└           0x00158390      ret
-            ; CALL XREF from fcn.0015dccc @ 0x15de98
-┌ fcn.00158394(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg6, int64_t arg7, int64_t arg8);
-│           ; arg int64_t arg1 @ x0
-│           ; arg int64_t arg2 @ x1
-│           ; arg int64_t arg3 @ x2
-│           ; arg int64_t arg6 @ x5
-│           ; arg int64_t arg7 @ x6
-│           ; arg int64_t arg8 @ x7
-│           ; var int64_t var_20h @ stack - 0x20
-│           ; var int64_t var_10h @ stack - 0x10
-│           0x00158394      pacibsp
-│           0x00158398      sub   sp, sp, 0x40
-│           0x0015839c      stp   x29, x30, [var_20h]
-│           0x001583a0      stp   x20, x19, [var_10h]
-│           0x001583a4      add   x29, sp, 0x20
-│           0x001583a8      stp   xzr, xzr, [sp, 0x10]
-│           0x001583ac      stp   xzr, xzr, [sp]
-│       ┌─< 0x001583b0      cbz   x0, 0x158414
-│       │   0x001583b4      mov   x19, x2                              ; arg3
-│       │   0x001583b8      mov   w1, w1                               ; arg2
-│       │   0x001583bc      mov   x3, sp                               ; int64_t arg4
-│       │   0x001583c0      mov   w2, 1
-│       │   0x001583c4      bl    fcn.001b45d8
-│      ┌──< 0x001583c8      cbz   w0, 0x158440
-│      ││   0x001583cc      mov   w3, w0
-│      ││   0x001583d0      adrp  x0, 0x23e000
-│      ││   0x001583d4      adrp  x1, 0x241000
-│      ││   0x001583d8      add   x0, x0, 0xb8e                        ; int64_t arg1
-
-0x60                   ; int64_t arg2
-│           0x0016fab0      bl    fcn.0017184c
-│           0x0016fab4      bl    fcn.0017bae4
-│           0x0016fab8      ldr   w8, [x0, 0x18]                       ; aav.0x00000018
-│                                                                      ; [0x18:4]=0x7600000
-│       ┌─< 0x0016fabc      cbz   w8, 0x16faf8
-│       │   0x0016fac0      bl    fcn.0017bae4
-│       │   0x0016fac4      ldr   x1, [x0, 0x50]                       ; aav.0x00000050
-│       │                                                              ; [0x50:4]=0xd2810600 ; int64_t arg2
-│       │   0x0016fac8      adrp  x0, 0x246000
-│       │   0x0016facc      add   x0, x0, 0x117                        ; int64_t arg1
-│       │   0x0016fad0      bl    fcn.0017184c
-│       │   0x0016fad4      bl    fcn.0017bae4
-│       │   0x0016fad8      ldr   x8, [x0, 0x50]                       ; aav.0x00000050
-│       │                                                              ; [0x50:4]=0xd2810600
-│      ┌──< 0x0016fadc      cbz   x8, 0x16fb04
-│      ││   0x0016fae0      bl    fcn.0017a0d0
-│      ││   0x0016fae4      mov   w1, w0
-│      ││   0x0016fae8      adrp  x0, 0x268000
-│      ││   0x0016faec      add   x0, x0, 0xfa8                        ; int64_t arg1
-│      ││   0x0016faf0      bl    fcn.0017184c
-│     ┌───< 0x0016faf4      b     0x16fb04
-│     ││└─> 0x0016faf8      adrp  x0, 0x278000
-│     ││    0x0016fafc      add   x0, x0, 0xc43                        ; int64_t arg1
-│     ││    0x0016fb00      bl    fcn.0017184c
-│     ││    ; CODE XREF from fcn.0016f3e0 @ 0x16faf4
-│     └└──> 0x0016fb04      bl    fcn.0017bae4
-│           0x0016fb08      ldr   x8, [x0, 0x48]                       ; aav.0x00000048
-│                                                                      ; [0x48:4]=0xaa0203f6
-│       ┌─< 0x0016fb0c      cbz   x8, 0x16fb20
-│       │   0x0016fb10      adrp  x0, 0x271000
-│       │   0x0016fb14      add   x0, x0, 0xdd7                        ; int64_t arg1
-│       │   0x0016fb18      bl    fcn.0017184c
-│      ┌──< 0x0016fb1c      b     0x16fb34
-│      │└─> 0x0016fb20      bl    fcn.0017bae4
-│      │    0x0016fb24      ldr   x1, [x0, 0x30]                       ; aav.0x00000030
-│      │                                                               ; [0x30:4]=0x58000911 ; int64_t arg2
-│      │    0x0016fb28      adrp  x0, 0x25e000
-│      │    0x0016fb2c      add   x0, x0, 0x960                        ; int64_t arg1
-│      │    0x0016fb30      bl    fcn.0017184c
-│      │    ; CODE XREF from fcn.0016f3e0 @ 0x16fb1c
-│      └──> 0x0016fb34      bl    fcn.00179e58
-│           0x0016fb38      mov   x22, x0
-│           0x0016fb3c      bl    fcn.0017bae4
-│           0x0016fb40      ldr   x8, [x0, 0x50]                       ; aav.0x00000050
-│                                                                      ; [0x50:4]=0xd2810600
-│       ┌─< 0x0016fb44      cbz   x8, 0x16fb58
-│       │   0x0016fb48      adrp  x0, 0x278000
-│       │   0x0016fb4c      add
-:4]=0x7600000
-│       ┌─< 0x0016fabc      cbz   w8, 0x16faf8
-│       │   0x0016fac0      bl    fcn.0017bae4
-│       │   0x0016fac4      ldr   x1, [x0, 0x50]                       ; aav.0x00000050
-│       │                                                              ; [0x50:4]=0xd2810600 ; int64_t arg2
-│       │   0x0016fac8      adrp  x0, 0x246000
-│       │   0x0016facc      add   x0, x0, 0x117                        ; int64_t arg1
-│       │   0x0016fad0      bl    fcn.0017184c
-│       │   0x0016fad4      bl    fcn.0017bae4
-│       │   0x0016fad8      ldr   x8, [x0, 0x50]                       ; aav.0x00000050
-│       │                                                              ; [0x50:4]=0xd2810600
-│      ┌──< 0x0016fadc      cbz   x8, 0x16fb04
-│      ││   0x0016fae0      bl    fcn.0017a0d0
-│      ││   0x0016fae4      mov   w1, w0
-│      ││   0x0016fae8      adrp  x0, 0x268000
-│      ││   0x0016faec      add   x0, x0, 0xfa8                        ; int64_t arg1
-│      ││   0x0016faf0      bl    fcn.0017184c
-│     ┌───< 0x0016faf4      b     0x16fb04
-│     ││└─> 0x0016faf8      adrp  x0, 0x278000
-│     ││    0x0016fafc      add   x0, x0, 0xc43                        ; int64_t arg1
-│     ││    0x0016fb00      bl    fcn.0017184c
-│     ││    ; CODE XREF from fcn.0016f3e0 @ 0x16faf4
-│     └└──> 0x0016fb04      bl    fcn.0017bae4
-│           0x0016fb08      ldr   x8, [x0, 0x48]                       ; aav.0x00000048
-│                                                                      ; [0x48:4]=0xaa0203f6
-│       ┌─< 0x0016fb0c      cbz   x8, 0x16fb20
-│       │   0x0016fb10      adrp  x0, 0x271000
-│       │   0x0016fb14      add   x0, x0, 0xdd7                        ; int64_t arg1
-│       │   0x0016fb18      bl    fcn.0017184c
-│      ┌──< 0x0016fb1c      b     0x16fb34
-│      │└─> 0x0016fb20      bl    fcn.0017bae4
-│      │    0x0016fb24      ldr   x1, [x0, 0x30]                       ; aav.0x00000030
-│      │                                                               ; [0x30:4]=0x58000911 ; int64_t arg2
-│      │    0x0016fb28      adrp  x0, 0x25e000
-│      │    0x0016fb2c      add   x0, x0, 0x960                        ; int64_t arg1
-│      │    0x0016fb30      bl    fcn.0017184c
-│      │    ; CODE XREF from fcn.0016f3e0 @ 0x16fb1c
-│      └──> 0x0016fb34      bl    fcn.00179e58
-│           0x0016fb38      mov   x22, x0
-│           0x0016fb3c      bl    fcn.0017bae4
-│           0x0016fb40      ldr   x8, [x0, 0x50]                       ; aav.0x00000050
-│                                                                      ; [0x50:4]=0xd2810600
-│       ┌─< 0x0016fb44      cbz   x8, 0x16fb58
-│       │   0x0016fb48      adrp  x0, 0x278000
-│       │   0x0016fb4c      add   x1, x22, 0x10                        ; int64_t arg2
-│       │   0x0016fb50      add   x0, x0, 0xc5e                        ; int64_t arg1
-│       │   0x0016fb54      bl    fcn.0017184c
-│       └─> 0x0016fb58      bl    fcn.
+echo "===== FUNCTION 1796D0 ====="
+grep -n -A 100 'fcn.001796d0(' "$ASM"
+===== SMC CALL + FUNCTION START =====
+193848-│ ╎╎╎╎  │   0x0017bef4      adrp  x1, 0x246000
+193849-│ ╎╎╎╎  │   0x0017bef8      add   x0, x0, 0x9ea                        ; int64_t arg1
+193850-│ ╎╎╎╎  │   0x0017befc      add   x1, x1, 0x2cd                        ; int64_t arg2
+193851-│ ╎╎╎╎  │   0x0017bf00      mov   x2, x20                              ; unsigned long arg3
+193852-│ ╎╎╎╎  │   0x0017bf04      bl    fcn.0014c9f8
+193853-│ └───────< 0x0017bf08      b     0x17be5c
+193854-│  ╎╎╎  └─> 0x0017bf0c      adrp  x8, 0x5a0000
+193855-│  ╎╎╎      0x0017bf10      ldr   x8, [x8, 0x4b8]                      ; [0x4b8:4]=0xb900211f
+193856-│  ╎╎╎      0x0017bf14      ldp   x9, x8, [x8, 0x40]
+193857-│  ╎╎╎  ┌─< 0x0017bf18      cbz   x9, 0x17bf24
+193858-│  ╎╎╎ ┌──< 0x0017bf1c      cbnz  x8, 0x17bf28
+193859-│  └──────< 0x0017bf20      b     0x17be5c
+193860-│   ╎╎┌─└─> 0x0017bf24      cbz   x8, 0x17bf80
+193861-│   ╎╎│└──> 0x0017bf28      mov   x0, sp                               ; int64_t arg1
+193862-│   ╎╎│     0x0017bf2c      mov   w2, aav.0x00000400
+193863-│   ╎╎│     0x0017bf30      mov   w1, wzr
+193864-│   ╎╎│     0x0017bf34      bl    fcn.0014d8fc
+193865-│   ╎╎│     0x0017bf38      ldrb  w2, [x19, 0x14]!                     ; aav.0x00000014
+193866-│   ╎╎│                                                                ; [0x14:4]=0
+193867-│   ╎╎│     0x0017bf3c      mov   x0, sp                               ; int64_t arg1
+193868-│   ╎╎│     0x0017bf40      mov   w3, aav.0x00000400
+193869-│   ╎╎│     0x0017bf44      ldrb  w1, [x19, 8]!                        ; aav.0x00000008
+193870-│   ╎╎│                                                                ; [0x8:4]=0x68656164 ; "daeh"
+193871-│   ╎╎│     0x0017bf48      ldrb  w8, [x19, 3]                         ; [0x3:4]=0x48776b00
+193872-│   ╎╎│     0x0017bf4c      ldrb  w9, [x19, 2]                         ; [0x2:4]=0x776b0000
+193873-│   ╎╎│     0x0017bf50      ldrb  w10, [x19, 1]                        ; [0x1:4]=0x6b000000
+193874-│   ╎╎│     0x0017bf54      ldurb w11, [x19, -5]                       ; [0x5:4]=0x64214877
+193875-│   ╎╎│     0x0017bf58      ldurb w12, [x19, -6]                       ; [0x6:4]=0x61642148
+193876-│   ╎╎│     0x0017bf5c      ldurb w13, [x19, -7]                       ; [0x7:4]=0x65616421
+193877-│   ╎╎│     0x0017bf60      bfi   w9, w8, 8, 8
+193878-│   ╎╎│     0x0017bf64      bfi   w1, w10, 8, 8
+193879-│   ╎╎│     0x0017bf68      bfi   w12, w11, 8, 8
+193880-│   ╎╎│     0x0017bf6c      bfi   w2, w13, 8, 8
+193881-│   ╎╎│     0x0017bf70      bfi   w1, w9, 0x10, 0x10
+193882-│   ╎╎│     0x0017bf74      bfi   w2, w12, 0x10, 0x10
+193883-│   ╎╎│     0x0017bf78      bl    fcn.001392bc
+193884-│   └─────< 0x0017bf7c      b     0x17be5c
+193885-│    ╎└───> 0x0017bf80      adrp  x0, 0x251000
+193886-│    ╎      0x0017bf84      adrp  x1, 0x246000
+193887-│    ╎      0x0017bf88      add   x0, x0, 0x8f0                        ; int64_t arg1
+193888-│    ╎      0x0017bf8c      add   x1, x1, 0x2cd                        ; int64_t arg2
+193889-│    ╎      0x0017bf90      bl    fcn.0014c9f8
+193890-└    └────< 0x0017bf94      b     0x17be5c
+193891-            ; CALL XREF from fcn.00114100 @ 0x114290
+193892-┌ fcn.0017bf98();
+193893-│           0x0017bf98      pacibsp
+193894-│           0x0017bf9c      stp   x29, x30, [sp, -0x40]!
+193895-│           0x0017bfa0      str   x28, [sp, 0x10]
+193896-│           0x0017bfa4      stp   x22, x21, [sp, 0x20]
+193897-└           0x0017bfa8      stp   x20, x19, [sp, 0x30]
+193898-            ; CALL XREF from fcn.00060124 @ +0x7e8
+193899-┌ fcn.0017bfac(int64_t arg_10h, int64_t arg_20h, int64_t arg_30h);
+193900-│           ; var int64_t var_14h @ stack - 0x14
+193901-│           ; var int64_t var_4h @ stack - 0x4
+193902-│           ; arg int64_t arg_10h @ stack + 0x10
+193903-│           ; arg int64_t arg_20h @ stack + 0x20
+193904-│           ; arg int64_t arg_30h @ stack + 0x30
+193905-│           0x0017bfac      mov   x29, sp
+193906-│           0x0017bfb0      sub   sp, sp, 4, lsl 12
+193907-│           0x0017bfb4      bl    fcn.000f2f28
+193908-│       ┌─< 0x0017bfb8      cbnz  w0, 0x17bfd0
+193909-│       │   0x0017bfbc      mov   x1, xzr
+193910-│       │   0x0017bfc0      bl    fcn.00154504
+193911-│       │   0x0017bfc4      mov   w0, wzr
+193912-│       │   0x0017bfc8      mov   x1, xzr
+193913-│       │   0x0017bfcc      bl    fcn.0015457c
+193914-│       └─> 0x0017bfd0      adrp  x0, 0x5a0000
+193915-│           0x0017bfd4      adrp  x21, 0x5a0000
+193916-│           0x0017bfd8      add   x0, x0, aav.0x000004c0               ; int64_t arg1
+193917-│           0x0017bfdc      mov   w2, aav.0x00000108
+193918-│           0x0017bfe0      mov   w1, wzr
+193919-│           0x0017bfe4      str   x0, [x21, 0x4b8]
+193920-│           0x0017bfe8      bl    fcn.0014d8fc
+193921-│           0x0017bfec      adrp  x0, 0x5a0000
+193922-│           0x0017bff0      adrp  x20, 0x5a0000
+193923-│           0x0017bff4      add   x0, x0, 0x5c8                        ; int64_t arg1
+193924-│           0x0017bff8      mov   w2, 0x20
+193925-│           0x0017bffc      mov   w1, wzr
+193926-│           0x0017c000      str   x0, [x20, 0x5e8]
+193927-│           0x0017c004      bl    fcn.0014d8fc
+193928-│           0x0017c008      ldr   x0, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f ; int64_t arg1
+193929-│           0x0017c00c      adrp  x8, 0x5a0000
+193930-│           0x0017c010      adrp  x1, str.Page_Domain_Fault__used_only_for_faults_reported_in_the_PAR_EL1 ; 0x238000
+193931-│           0x0017c014      add   x8, x8, 0x5f4
+193932-│           0x0017c018      add   x1, x1, 0x433                        ; int64_t arg2
+193933-│           0x0017c01c      mov   w2, 0x10
+193934-│           0x0017c020      stp   wzr, wzr, [x8]
+193935-│           0x0017c024      stp   wzr, wzr, [x8, 8]
+193936-│           0x0017c028      stp   wzr, wzr, [x8, 0x10]
+193937-│           0x0017c02c      stp   wzr, wzr, [x8, 0x18]
+193938-│           0x0017c030      stp   wzr, wzr, [x8, 0x20]
+193939-│           0x0017c034      stp   wzr, wzr, [x8, 0x28]
+193940-│           0x0017c038      stp   wzr, wzr, [x8, 0x30]
+193941-│           0x0017c03c      stp   wzr, wzr, [x8, 0x38]
+193942-│           0x0017c040      stp   wzr, wzr, [x8, 0x40]
+193943-│           0x0017c044      bl    fcn.0014db78
+193944-│           0x0017c048      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193945-│           0x0017c04c      add   x0, x8, 0x10                         ; aav.0x00000010 ; int64_t arg1
+193946-│           0x0017c050      bl    fcn.0010c91c
+193947-│           0x0017c054      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193948-│           0x0017c058      add   x0, x8, 0x18                         ; aav.0x00000018 ; int64_t arg1
+193949-│           0x0017c05c      bl    fcn.0010b7b8
+193950-│           0x0017c060      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193951-│           0x0017c064      add   x0, x8, 0x30                         ; aav.0x00000030 ; int64_t arg1
+193952-│           0x0017c068      bl    fcn.0010bbcc
+193953-│           0x0017c06c      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193954-│           0x0017c070      add   x0, x8, 0x98                         ; aav.0x00000098 ; int64_t arg1
+193955-│           0x0017c074      bl    fcn.0010bef0
+193956-│           0x0017c078      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193957-│           0x0017c07c      add   x0, x8, 0x40                         ; aav.0x00000040 ; int64_t arg1
+193958-│           0x0017c080      bl    fcn.0010ca9c
+193959-│           0x0017c084      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193960-│           0x0017c088      add   x0, x8, 0x48                         ; aav.0x00000048 ; int64_t arg1
+193961-│           0x0017c08c      bl    fcn.0010cb58
+193962-│           0x0017c090      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193963-│           0x0017c094      add   x0, x8, 0x50                         ; aav.0x00000050 ; int64_t arg1
+193964-│           0x0017c098      bl    fcn.0010ccbc
+193965-│           0x0017c09c      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193966-│           0x0017c0a0      add   x0, x8, 0x58                         ; aav.0x00000058 ; int64_t arg1
+193967-│           0x0017c0a4      bl    fcn.0010c4a4
+193968-│           0x0017c0a8      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193969-│           0x0017c0ac      add   x0, x8, 0x88                         ; aav.0x00000088 ; int64_t arg1
+193970-│           0x0017c0b0      bl    fcn.0010c7b4
+193971-│           0x0017c0b4      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193972-│           0x0017c0b8      add   x0, x8, 0x80                         ; aav.0x00000080 ; int64_t arg1
+193973-│           0x0017c0bc      bl    fcn.0010b91c
+193974-│           0x0017c0c0      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193975-│           0x0017c0c4      add   x0, x8, 0xc0                         ; aav.0x000000c0 ; int64_t arg1
+193976-│           0x0017c0c8      bl    fcn.0010bc88
+193977-│           0x0017c0cc      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193978-│           0x0017c0d0      add   x0, x8, 0xc8                         ; aav.0x000000c8 ; int64_t arg1
+193979-│           0x0017c0d4      bl    fcn.0010cf84
+193980-│           0x0017c0d8      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193981-│           0x0017c0dc      add   x0, x8, 0xd0                         ; aav.0x000000d0 ; int64_t arg1
+193982-│           0x0017c0e0      bl    fcn.0010ce20
+193983-│           0x0017c0e4      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193984-│           0x0017c0e8      mov   w0, 6
+193985-│           0x0017c0ec      add   x1, x8, 0xd8                         ; "A" ; int64_t arg2
+193986-│           0x0017c0f0      bl    fcn.0010c62c
+193987-│           0x0017c0f4      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193988-│           0x0017c0f8      mov   w0, 7
+193989-│           0x0017c0fc      add   x1, x8, 0x68                         ; aav.0x00000068 ; int64_t arg2
+193990-│           0x0017c100      bl    fcn.0010c62c
+193991-│           0x0017c104      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193992-│           0x0017c108      mov   w0, 8
+193993-│           0x0017c10c      add   x1, x8, 0x70                         ; aav.0x00000070 ; int64_t arg2
+193994-│           0x0017c110      bl    fcn.0010c62c
+193995-│           0x0017c114      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+193996-│           0x0017c118      mov   w0, 9
+193997-│           0x0017c11c      add   x1, x8, 0xf8                         ; aav.0x000000f8 ; int64_t arg2
+193998-│           0x0017c120      bl    fcn.0010c62c
+193999-│           0x0017c124      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194000-│           0x0017c128      mov   w0, 0xd
+194001-│           0x0017c12c      add   x1, x8, 0xa0                         ; aav.0x000000a0 ; int64_t arg2
+194002-│           0x0017c130      bl    fcn.0010c62c
+194003-│           0x0017c134      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194004-│           0x0017c138      mov   w0, 0xe
+194005-│           0x0017c13c      add   x1, x8, 0xa8                         ; aav.0x000000a8 ; int64_t arg2
+194006-│           0x0017c140      bl    fcn.0010c62c
+194007-│           0x0017c144      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194008-│           0x0017c148      mov   w0, 0xf
+194009-│           0x0017c14c      add   x1, x8, 0xb0                         ; "!\xach\xd3A" ; int64_t arg2
+194010-│           0x0017c150      bl    fcn.0010c62c
+194011-│           0x0017c154      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194012-│           0x0017c158      mov   w0, 0x10
+194013-│           0x0017c15c      add   x1, x8, 0xb8                         ; aav.0x000000b8 ; int64_t arg2
+194014-│           0x0017c160      bl    fcn.0010c62c
+194015-│           0x0017c164      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194016-│           0x0017c168      mov   w0, 0x11
+194017-│           0x0017c16c      add   x1, x8, aav.0x00000100               ; "@" ; int64_t arg2
+194018-│           0x0017c170      bl    fcn.0010c62c
+194019-│           0x0017c174      adrp  x0, 0x248000
+194020-│           0x0017c178      add   x0, x0, 0x54e                        ; int64_t arg1
+194021-│           0x0017c17c      mov   w1, wzr
+194022-│           0x0017c180      bl    fcn.0014c9f8
+194023-│           0x0017c184      mov   w0, -0xf3
+194024-│           0x0017c188      mov   x1, xzr
+194025-│           0x0017c18c      mov   x2, xzr
+194026-│           0x0017c190      mov   x3, xzr
+194027-│           0x0017c194      stp   x29, x30, [var_14h]!
+194028:│           0x0017c198      smc   0
+194029-│           0x0017c19c      ldp   x29, x30, [sp], 0x10
+194030-│           0x0017c1a0      mov   x19, x0
+194031-│           0x0017c1a4      cmn   w19, 2
+194032-│       ┌─< 0x0017c1a8      b.ne  0x17c1c4
+194033-│       │   0x0017c1ac      adrp  x0, 0x27a000
+194034-│       │   0x0017c1b0      add   x0, x0, 0xfc7                        ; int64_t arg1
+194035-│       │   0x0017c1b4      mov   w1, -2
+194036-│       │   0x0017c1b8      bl    fcn.0014c9f8
+194037-│       │   0x0017c1bc      mov   x8, xzr
+194038-│      ┌──< 0x0017c1c0      b     0x17c1d8
+194039-│      │└─> 0x0017c1c4      adrp  x0, 0x265000
+194040-│      │    0x0017c1c8      mov   w1, w19
+194041-│      │    0x0017c1cc      add   x0, x0, aav.0x00000480               ; "\n\xe1@\xb9\t\xe5@\xb9\xea'\U00000005)\n\xe9@\xb9\t\xed@\xb9\xea'\U00000006)\U0000001f\U00000001" ; int64_t arg1
+194042-│      │    0x0017c1d0      bl    fcn.0014c9f8
+194043-│      │    0x0017c1d4      sxtw  x8, w19
+194044-│      │    ; CODE XREF from fcn.0017bfac @ 0x17c1c0
+194045-│      └──> 0x0017c1d8      ldr   x9, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+194046-│           0x0017c1dc      adrp  x0, 0x248000
+194047-│           0x0017c1e0      add   x0, x0, 0x54e                        ; int64_t arg1
+194048-│           0x0017c1e4      mov   w1, 1
+194049-│           0x0017c1e8      str   x8, [x9]
+194050-│           0x0017c1ec      bl    fcn.0014c9f8
+194051-│           0x0017c1f0      mov   w0, -0xf3
+194052-│           0x0017c1f4      mov   x1, xzr
+194053-│           0x0017c1f8      mov   w2, 1
+194054-│           0x0017c1fc      mov   x3, xzr
+194055-│           0x0017c200      stp   x29, x30, [var_14h]!
+194056-│           0x0017c204      smc   0
+194057-│           0x0017c208      ldp   x29, x30, [sp], 0x10
+194058-│           0x0017c20c      mov   x19, x0
+194059-│           0x0017c210      cmn   w19, 2
+194060-│       ┌─< 0x0017c214      b.ne  0x17c230
+194061-│       │   0x0017c218      adrp  x0, 0x27a000
+194062-│       │   0x0017c21c      add   x0, x0, 0xfc7                        ; int64_t arg1
+194063-│       │   0x0017c220      mov   w1, -2
+194064-│       │   0x0017c224      bl    fcn.0014c9f8
+194065-│       │   0x0017c228      mov   x8, xzr
+194066-│      ┌──< 0x0017c22c      b     0x17c244
+194067-│      │└─> 0x0017c230      adrp  x0, 0x265000
+194068-│      │    0x0017c234      mov   w1, w19
+194069-│      │    0x0017c238      add   x0, x0, aav.0x00000480               ; "\n\xe1@\xb9\t\xe5@\xb9\xea'\U00000005)\n\xe9@\xb9\t\xed@\xb9\xea'\U00000006)\U0000001f\U00000001" ; int64_t arg1
+194070-│      │    0x0017c23c      bl    fcn.0014c9f8
+194071-│      │    0x0017c240      sxtw  x8, w19
+194072-│      │    ; CODE XREF from fcn.0017bfac @ 0x17c22c
+194073-│      └──> 0x0017c244      ldr   x9, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+194074-│           0x0017c248      adrp  x0, 0x248000
+194075-│           0x0017c24c      add   x0, x0, 0x54e                        ; int64_t arg1
+194076-│           0x0017c250      mov   w1, 2
+194077-│           0x0017c254      str   x8, [x9, 8]
+194078-│           0x0017c258      bl    fcn.0014c9f8
+194079-│           0x0017c25c      mov   w0, -0xf3
+194080-│           0x0017c260      mov   x1, xzr
+194081-│           0x0017c264      mov   w2, 2
+194082-│           0x0017c268      mov   x3, xzr
+194083-│           0x0017c26c      stp   x29, x30, [var_14h]!
+===== 17BFAC REFERENCES =====
+64518-│ │││││││   0x0010a984      bl    fcn.0014c9f8
+64519-│ │││││││   ; CODE XREF from fcn.0010a810 @ 0x10a8f4
+64520-│ └└──────> 0x0010a988      adrp  x8, 0x540000
+64521-│   │││││   0x0010a98c      mov   w9, 1
+64522-│   │││││   0x0010a990      strb  w9, [x8, aav.0x00000420]
+64523-│   │││││   ; XREFS: CODE 0x0010a854  CODE 0x0010a878  CODE 0x0010a91c
+64524-│   │││││   ; XREFS: CODE 0x0010a930  CODE 0x0010a944  CODE 0x0010a958
+64525-│ ──└└└└└─> 0x0010a994      mov   w0, w19
+64526-│           0x0010a998      ldr   x19, [var_10h]                       ; aav.0x00000010
+64527-│                                                                      ; [0x10:4]=0x14000004
+64528-│           0x0010a99c      ldp   x29, x30, [sp], 0x20
+64529-│           0x0010a9a0      autibsp
+64530-└           0x0010a9a4      ret
+64531-            ; CALL XREF from fcn.00114100 @ 0x114474
+64532-            ; CALL XREF from fcn.0017baf8 @ 0x17bb08
+64533:            ; CALL XREF from fcn.0017bfac @ 0x17c424
+64534-            ; CALL XREF from fcn.00189d8c @ 0x189dac
+64535-┌ fcn.0010a9a8();
+64536-│           0x0010a9a8      pacibsp
+64537-│           0x0010a9ac      adrp  x8, 0x540000
+64538-│           0x0010a9b0      ldrb  w0, [x8, 0x41c]                      ; [0x41c:4]=0x37300129
+64539-│           0x0010a9b4      autibsp
+64540-└           0x0010a9b8      ret
+64541-            ; CALL XREF from fcn.00114100 @ 0x11446c
+64542-┌ fcn.0010a9bc();
+64543-│           0x0010a9bc      pacibsp
+64544-│           0x0010a9c0      adrp  x8, 0x540000
+64545-│           0x0010a9c4      ldrb  w0, [x8, aav.0x00000420]             ; [0x420:4]=0xb9403be9
+64546-│           0x0010a9c8      autibsp
+64547-└           0x0010a9cc      ret
+64548-            ; CALL XREF from fcn.00112644 @ 0x11273c
+64549-┌ fcn.0010a9d0(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+64550-│           ; arg int64_t arg1 @ x0
+64551-│           ; arg int64_t arg2 @ x1
+64552-│           ; arg int64_t arg3 @ x2
+64553-│           ; arg int64_t arg4 @ x3
+64554-│           ; arg int64_t arg5 @ x4
+64555-│           ; arg int64_t arg6 @ x5
+64556-│           ; arg int64_t arg7 @ x6
+64557-│           ; arg int64_t arg8 @ x7
+64558-│           ; var int64_t var_30h @ stack - 0x30
+--
+65269-│       │   0x0010b288      mov   x2, x22                              ; unsigned long arg3
+65270-│       │   0x0010b28c      mov   x3, x21                              ; int64_t arg4
+65271-│       │   0x0010b290      mov   x4, x20                              ; int64_t arg5
+65272-│       │   0x0010b294      bl    fcn.0014c9f8
+65273-│      ┌──< 0x0010b298      b     0x10b2a8
+65274-│      │└─> 0x0010b29c      adrp  x0, str.setct_CertResTBE             ; 0x26a000
+65275-│      │    0x0010b2a0      add   x0, x0, 0x795                        ; int64_t arg1
+65276-│      │    0x0010b2a4      bl    fcn.0014c9f8
+65277-│      │    ; CODE XREF from fcn.0010b218 @ 0x10b298
+65278-│      └──> 0x0010b2a8      mov   x0, x19
+65279-│           0x0010b2ac      ldp   x20, x19, [var_10h]
+65280-│           0x0010b2b0      ldp   x22, x21, [var_20h]
+65281-│           0x0010b2b4      ldp   x29, x30, [sp], 0x30
+65282-│           0x0010b2b8      autibsp
+65283-└           0x0010b2bc      ret
+65284:            ; CALL XREF from fcn.0017bfac @ 0x17c528
+65285-┌ fcn.0010b2c0(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8, int64_t arg_10h, int64_t arg_20h);
+65286-│           ; arg int64_t arg2 @ x1
+65287-│           ; arg int64_t arg3 @ x2
+65288-│           ; arg int64_t arg4 @ x3
+65289-│           ; arg int64_t arg5 @ x4
+65290-│           ; arg int64_t arg6 @ x5
+65291-│           ; arg int64_t arg7 @ x6
+65292-│           ; arg int64_t arg8 @ x7
+65293-│           ; arg int64_t arg_10h @ stack + 0x10
+65294-│           ; arg int64_t arg_20h @ stack + 0x20
+65295-│           0x0010b2c0      pacibsp
+65296-│           0x0010b2c4      stp   x29, x30, [sp, -0x30]!
+65297-│           0x0010b2c8      sub   x9, arg_20h + 0x80
+65298-│           0x0010b2cc      stp   x22, x21, [sp, 0x10]
+65299-│           0x0010b2d0      stp   x20, x19, [sp, 0x20]
+65300-│           0x0010b2d4      mov   x29, sp
+65301-│           0x0010b2d8      and   sp, x9, 0xffffffffffffffc0
+65302-│       ┌─< 0x0010b2dc      cbz   x0, 0x10b45c
+65303-│       │   0x0010b2e0      cmp   w1, 0x20
+65304-│      ┌──< 0x0010b2e4      b.ne  0x10b470
+65305-│      ││   0x0010b2e8      mov   x19, x0
+65306-│      ││   0x0010b2ec      adrp  x0, 0x26f000
+65307-│      ││   0x0010b2f0      mov   w20, 0x8320
+65308-│      ││   0x0010b2f4      add   x0, x0, 0x23d                        ; int64_t arg1
+65309-│      ││   0x0010b2f8      movk  w20, 0xedb8, lsl 16
+--
+65407-│    ││ │   0x0010b480      movk  w8, 8, lsl 16
+65408-│    ││ │   0x0010b484      orr   x19, x8, 1
+65409-│    ││┌──< 0x0010b488      b     0x10b498
+65410-│    │└───> 0x0010b48c      adrp  x0, 0x27a000
+65411-│    │ ││   0x0010b490      add   x0, x0, 0x20b
+65412-│    │ ││   ; CODE XREF from fcn.0010b2c0 @ 0x10b46c
+65413-│    │ │└─> 0x0010b494      bl    fcn.0014c9f8
+65414-│    │ │    ; CODE XREFS from fcn.0010b2c0 @ 0x10b458, 0x10b488
+65415-│    └─└──> 0x0010b498      mov   x0, x19
+65416-│           0x0010b49c      mov   sp, x29
+65417-│           0x0010b4a0      ldp   x20, x19, [arg_20h]
+65418-│           0x0010b4a4      ldp   x22, x21, [arg_10h]
+65419-│           0x0010b4a8      ldp   x29, x30, [sp], 0x30
+65420-│           0x0010b4ac      autibsp
+65421-└           0x0010b4b0      ret
+65422:            ; CALL XREF from fcn.0017bfac @ 0x17c500
+65423-┌ fcn.0010b4b4(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8, int64_t arg_10h, int64_t arg_20h);
+65424-│           ; arg int64_t arg2 @ x1
+65425-│           ; arg int64_t arg3 @ x2
+65426-│           ; arg int64_t arg4 @ x3
+65427-│           ; arg int64_t arg5 @ x4
+65428-│           ; arg int64_t arg6 @ x5
+65429-│           ; arg int64_t arg7 @ x6
+65430-│           ; arg int64_t arg8 @ x7
+65431-│           ; arg int64_t arg_10h @ stack + 0x10
+65432-│           ; arg int64_t arg_20h @ stack + 0x20
+65433-│           0x0010b4b4      pacibsp
+65434-│           0x0010b4b8      stp   x29, x30, [sp, -0x30]!
+65435-│           0x0010b4bc      sub   x9, arg_20h + 0x80
+65436-│           0x0010b4c0      stp   x22, x21, [sp, 0x10]
+65437-│           0x0010b4c4      stp   x20, x19, [sp, 0x20]
+65438-│           0x0010b4c8      mov   x29, sp
+65439-│           0x0010b4cc      and   sp, x9, 0xffffffffffffffc0
+65440-│       ┌─< 0x0010b4d0      cbz   x0, 0x10b650
+65441-│       │   0x0010b4d4      cmp   w1, 0x20
+65442-│      ┌──< 0x0010b4d8      b.ne  0x10b668
+65443-│      ││   0x0010b4dc      mov   x19, x0
+65444-│      ││   0x0010b4e0      adrp  x0, 0x275000
+65445-│      ││   0x0010b4e4      mov   w20, 0x8320
+65446-│      ││   0x0010b4e8      add   x0, x0, 0xba7                        ; int64_t arg1
+65447-│      ││   0x0010b4ec      movk  w20, 0xedb8, lsl 16
+--
+65571-│  ││┌────< 0x0010b6d8      b     0x10b6f4
+65572-│  │││└───> 0x0010b6dc      adrp  x0, 0x264000
+65573-│  │││ ││   0x0010b6e0      add   x0, x0, 0x7c5                        ; int64_t arg1
+65574-│  │││ ││   0x0010b6e4      bl    fcn.0014c9f8
+65575-│  │││ ││   0x0010b6e8      mov   w8, 0x213
+65576-│  │││ ││   0x0010b6ec      movk  w8, 3, lsl 16
+65577-│  │││ ││   0x0010b6f0      add   x19, x8, 1
+65578-│  │││ ││   ; CODE XREFS from fcn.0010b4b4 @ 0x10b64c, 0x10b664, 0x10b680, 0x10b6c8, 0x10b6d8
+65579-│  └└└─└└─> 0x0010b6f4      mov   x0, x19
+65580-│           0x0010b6f8      mov   sp, x29
+65581-│           0x0010b6fc      ldp   x20, x19, [arg_20h]
+65582-│           0x0010b700      ldp   x22, x21, [arg_10h]
+65583-│           0x0010b704      ldp   x29, x30, [sp], 0x30
+65584-│           0x0010b708      autibsp
+65585-└           0x0010b70c      ret
+65586:            ; CALL XREF from fcn.0017bfac @ 0x17c540
+65587-┌ fcn.0010b710(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+65588-│           ; arg int64_t arg2 @ x1
+65589-│           ; arg int64_t arg3 @ x2
+65590-│           ; arg int64_t arg4 @ x3
+65591-│           ; arg int64_t arg5 @ x4
+65592-│           ; arg int64_t arg6 @ x5
+65593-│           ; arg int64_t arg7 @ x6
+65594-│           ; arg int64_t arg8 @ x7
+65595-│           ; var int64_t var_30h @ stack - 0x30
+65596-│           ; var int64_t var_20h @ stack - 0x20
+65597-│           ; var int64_t var_10h @ stack - 0x10
+65598-│           0x0010b710      pacibsp
+65599-│           0x0010b714      stp   x29, x30, [var_30h]!
+65600-│           0x0010b718      stp   x22, x21, [var_20h]
+65601-│           0x0010b71c      stp   x20, x19, [var_10h]
+65602-│           0x0010b720      mov   x29, sp
+65603-│           0x0010b724      adrp  x0, 0x25d000
+65604-│           0x0010b728      add   x0, x0, 0xc37                        ; int64_t arg1
+65605-│           0x0010b72c      bl    fcn.0014c9f8
+65606-│           0x0010b730      mov   w0, 0x1014
+65607-│           0x0010b734      movk  w0, 0xc200, lsl 16
+65608-│           0x0010b738      mov   w1, 2
+65609-│           0x0010b73c      mov   x2, xzr
+65610-│           0x0010b740      mov   x3, xzr
+65611-│           0x0010b744      smc   0
+--
+65626-│       │   0x0010b780      mov   x2, x22                              ; unsigned long arg3
+65627-│       │   0x0010b784      mov   x3, x21                              ; int64_t arg4
+65628-│       │   0x0010b788      mov   x4, x20                              ; int64_t arg5
+65629-│       │   0x0010b78c      bl    fcn.0014c9f8
+65630-│      ┌──< 0x0010b790      b     0x10b7a0
+65631-│      │└─> 0x0010b794      adrp  x0, 0x242000
+65632-│      │    0x0010b798      add   x0, x0, 0xd10                        ; int64_t arg1
+65633-│      │    0x0010b79c      bl    fcn.0014c9f8
+65634-│      │    ; CODE XREF from fcn.0010b710 @ 0x10b790
+65635-│      └──> 0x0010b7a0      mov   x0, x19
+65636-│           0x0010b7a4      ldp   x20, x19, [var_10h]
+65637-│           0x0010b7a8      ldp   x22, x21, [var_20h]
+65638-│           0x0010b7ac      ldp   x29, x30, [sp], 0x30
+65639-│           0x0010b7b0      autibsp
+65640-└           0x0010b7b4      ret
+65641:            ; CALL XREFS from fcn.0017bfac @ 0x17c05c, 0x17c54c
+65642-┌ fcn.0010b7b8(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+65643-│           ; arg int64_t arg1 @ x0
+65644-│           ; arg int64_t arg2 @ x1
+65645-│           ; arg int64_t arg3 @ x2
+65646-│           ; arg int64_t arg4 @ x3
+65647-│           ; arg int64_t arg5 @ x4
+65648-│           ; arg int64_t arg6 @ x5
+65649-│           ; arg int64_t arg7 @ x6
+65650-│           ; arg int64_t arg8 @ x7
+65651-│           ; var int64_t var_40h @ stack - 0x40
+65652-│           ; var int64_t var_30h @ stack - 0x30
+65653-│           ; var int64_t var_20h @ stack - 0x20
+65654-│           ; var int64_t var_10h @ stack - 0x10
+65655-│           0x0010b7b8      pacibsp
+65656-│           0x0010b7bc      stp   x29, x30, [var_40h]!
+65657-│           0x0010b7c0      str   x23, [var_30h]
+65658-│           0x0010b7c4      stp   x22, x21, [var_20h]
+65659-│           0x0010b7c8      stp   x20, x19, [var_10h]
+65660-│           0x0010b7cc      mov   x29, sp
+65661-│           0x0010b7d0      mov   x23, x0                              ; arg1
+65662-│           0x0010b7d4      adrp  x0, 0x250000
+65663-│           0x0010b7d8      add   x0, x0, 0xc2b                        ; int64_t arg1
+65664-│           0x0010b7dc      bl    fcn.0014c9f8
+65665-│           0x0010b7e0      mov   w0, 0x1014
+65666-│           0x0010b7e4      movk  w0, 0xc200, lsl 16
+--
+65689-│      ┌──< 0x0010b840      b     0x10b858
+65690-│      │└─> 0x0010b844      adrp  x0, str.setct_CertResTBE             ; 0x26a000
+65691-│      │    0x0010b848      add   x0, x0, 0x7b8                        ; int64_t arg1
+65692-│      │    0x0010b84c      mov   x1, x20                              ; int64_t arg2
+65693-│      │    0x0010b850      str   x20, [x23]
+65694-│      │    0x0010b854      bl    fcn.0014c9f8
+65695-│      │    ; CODE XREF from fcn.0010b7b8 @ 0x10b840
+65696-│      └──> 0x0010b858      mov   x0, x19
+65697-│           0x0010b85c      ldp   x20, x19, [var_10h]
+65698-│           0x0010b860      ldp   x22, x21, [var_20h]
+65699-│           0x0010b864      ldr   x23, [var_30h]                       ; aav.0x00000010
+65700-│                                                                      ; [0x10:4]=0x14000004
+65701-│           0x0010b868      ldp   x29, x30, [sp], 0x40
+65702-│           0x0010b86c      autibsp
+65703-└           0x0010b870      ret
+65704:            ; CALL XREF from fcn.0017bfac @ 0x17c4cc
+65705-┌ fcn.0010b874(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+65706-│           ; arg int64_t arg2 @ x1
+65707-│           ; arg int64_t arg3 @ x2
+65708-│           ; arg int64_t arg4 @ x3
+65709-│           ; arg int64_t arg5 @ x4
+65710-│           ; arg int64_t arg6 @ x5
+65711-│           ; arg int64_t arg7 @ x6
+65712-│           ; arg int64_t arg8 @ x7
+65713-│           ; var int64_t var_30h @ stack - 0x30
+65714-│           ; var int64_t var_20h @ stack - 0x20
+65715-│           ; var int64_t var_10h @ stack - 0x10
+65716-│           0x0010b874      pacibsp
+65717-│           0x0010b878      stp   x29, x30, [var_30h]!
+65718-│           0x0010b87c      stp   x22, x21, [var_20h]
+65719-│           0x0010b880      stp   x20, x19, [var_10h]
+65720-│           0x0010b884      mov   x29, sp
+65721-│           0x0010b888      adrp  x0, str.Page_Domain_Fault__used_only_for_faults_reported_in_the_PAR_EL1 ; 0x238000
+65722-│           0x0010b88c      add   x0, x0, 0x282                        ; int64_t arg1
+65723-│           0x0010b890      bl    fcn.0014c9f8
+65724-│           0x0010b894      mov   w0, 0x1014
+65725-│           0x0010b898      movk  w0, 0xc200, lsl 16
+65726-│           0x0010b89c      mov   w1, 0x14
+65727-│           0x0010b8a0      mov   x2, xzr
+65728-│           0x0010b8a4      mov   x3, xzr
+65729-│           0x0010b8a8      smc   0
+--
+65744-│       │   0x0010b8e4      mov   x2, x22                              ; unsigned long arg3
+65745-│       │   0x0010b8e8      mov   x3, x21                              ; int64_t arg4
+65746-│       │   0x0010b8ec      mov   x4, x20                              ; int64_t arg5
+65747-│       │   0x0010b8f0      bl    fcn.0014c9f8
+65748-│      ┌──< 0x0010b8f4      b     0x10b904
+65749-│      │└─> 0x0010b8f8      adrp  x0, 0x24b000
+65750-│      │    0x0010b8fc      add   x0, x0, 0xeca                        ; int64_t arg1
+65751-│      │    0x0010b900      bl    fcn.0014c9f8
+65752-│      │    ; CODE XREF from fcn.0010b874 @ 0x10b8f4
+65753-│      └──> 0x0010b904      mov   x0, x19
+65754-│           0x0010b908      ldp   x20, x19, [var_10h]
+65755-│           0x0010b90c      ldp   x22, x21, [var_20h]
+65756-│           0x0010b910      ldp   x29, x30, [sp], 0x30
+65757-│           0x0010b914      autibsp
+65758-└           0x0010b918      ret
+65759:            ; CALL XREFS from fcn.0017bfac @ 0x17c0bc, 0x17c4d8
+65760-┌ fcn.0010b91c(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+65761-│           ; arg int64_t arg1 @ x0
+65762-│           ; arg int64_t arg2 @ x1
+65763-│           ; arg int64_t arg3 @ x2
+65764-│           ; arg int64_t arg4 @ x3
+65765-│           ; arg int64_t arg5 @ x4
+65766-│           ; arg int64_t arg6 @ x5
+65767-│           ; arg int64_t arg7 @ x6
+65768-│           ; arg int64_t arg8 @ x7
+65769-│           ; var int64_t var_40h @ stack - 0x40
+65770-│           ; var int64_t var_30h @ stack - 0x30
+65771-│           ; var int64_t var_20h @ stack - 0x20
+65772-│           ; var int64_t var_10h @ stack - 0x10
+65773-│           0x0010b91c      pacibsp
+65774-│           0x0010b920      stp   x29, x30, [var_40h]!
+65775-│           0x0010b924      str   x23, [var_30h]
+65776-│           0x0010b928      stp   x22, x21, [var_20h]
+65777-│           0x0010b92c      stp   x20, x19, [var_10h]
+65778-│           0x0010b930      mov   x29, sp
+65779-│           0x0010b934      mov   x23, x0                              ; arg1
+65780-│           0x0010b938      adrp  x0, 0x255000
+65781-│           0x0010b93c      add   x0, x0, 0x437                        ; int64_t arg1
+65782-│           0x0010b940      bl    fcn.0014c9f8
+65783-│           0x0010b944      mov   w0, 0x1014
+65784-│           0x0010b948      movk  w0, 0xc200, lsl 16
+--
+65807-│      ┌──< 0x0010b9a4      b     0x10b9bc
+65808-│      │└─> 0x0010b9a8      adrp  x0, 0x249000
+65809-│      │    0x0010b9ac      add   x0, x0, 0xa64                        ; int64_t arg1
+65810-│      │    0x0010b9b0      mov   x1, x20                              ; int64_t arg2
+65811-│      │    0x0010b9b4      str   x20, [x23]
+65812-│      │    0x0010b9b8      bl    fcn.0014c9f8
+65813-│      │    ; CODE XREF from fcn.0010b91c @ 0x10b9a4
+65814-│      └──> 0x0010b9bc      mov   x0, x19
+65815-│           0x0010b9c0      ldp   x20, x19, [var_10h]
+65816-│           0x0010b9c4      ldp   x22, x21, [var_20h]
+65817-│           0x0010b9c8      ldr   x23, [var_30h]                       ; aav.0x00000010
+65818-│                                                                      ; [0x10:4]=0x14000004
+65819-│           0x0010b9cc      ldp   x29, x30, [sp], 0x40
+65820-│           0x0010b9d0      autibsp
+65821-└           0x0010b9d4      ret
+65822:            ; CALL XREF from fcn.0017bfac @ 0x17c6d4
+65823-┌ fcn.0010b9d8(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8, int64_t arg_10h, int64_t arg_20h);
+65824-│           ; arg int64_t arg2 @ x1
+65825-│           ; arg int64_t arg3 @ x2
+65826-│           ; arg int64_t arg4 @ x3
+65827-│           ; arg int64_t arg5 @ x4
+65828-│           ; arg int64_t arg6 @ x5
+65829-│           ; arg int64_t arg7 @ x6
+65830-│           ; arg int64_t arg8 @ x7
+65831-│           ; arg int64_t arg_10h @ stack + 0x10
+65832-│           ; arg int64_t arg_20h @ stack + 0x20
+65833-│           0x0010b9d8      pacibsp
+65834-│           0x0010b9dc      stp   x29, x30, [sp, -0x30]!
+65835-│           0x0010b9e0      sub   x9, arg_20h + 0x80
+65836-│           0x0010b9e4      stp   x22, x21, [sp, 0x10]
+65837-│           0x0010b9e8      stp   x20, x19, [sp, 0x20]
+65838-│           0x0010b9ec      mov   x29, sp
+65839-│           0x0010b9f0      and   sp, x9, 0xffffffffffffffc0
+65840-│       ┌─< 0x0010b9f4      cbz   x0, 0x10bb74
+65841-│       │   0x0010b9f8      cmp   w1, 0x10
+65842-│      ┌──< 0x0010b9fc      b.ne  0x10bb88
+65843-│      ││   0x0010ba00      mov   x19, x0
+65844-│      ││   0x0010ba04      adrp  x0, 0x23a000
+65845-│      ││   0x0010ba08      mov   w20, 0x8320
+65846-│      ││   0x0010ba0c      add   x0, x0, aav.0x00000144               ; int64_t arg1
+65847-│      ││   0x0010ba10      movk  w20, 0xedb8, lsl 16
+--
+65945-│    ││ │   0x0010bb98      movk  w8, 8, lsl 16
+65946-│    ││ │   0x0010bb9c      orr   x19, x8, 2
+65947-│    ││┌──< 0x0010bba0      b     0x10bbb0
+65948-│    │└───> 0x0010bba4      adrp  x0, str.Page_Domain_Fault__used_only_for_faults_reported_in_the_PAR_EL1 ; 0x238000
+65949-│    │ ││   0x0010bba8      add   x0, x0, 0x2f7
+65950-│    │ ││   ; CODE XREF from fcn.0010b9d8 @ 0x10bb84
+65951-│    │ │└─> 0x0010bbac      bl    fcn.0014c9f8
+65952-│    │ │    ; CODE XREFS from fcn.0010b9d8 @ 0x10bb70, 0x10bba0
+65953-│    └─└──> 0x0010bbb0      mov   x0, x19
+65954-│           0x0010bbb4      mov   sp, x29
+65955-│           0x0010bbb8      ldp   x20, x19, [arg_20h]
+65956-│           0x0010bbbc      ldp   x22, x21, [arg_10h]
+65957-│           0x0010bbc0      ldp   x29, x30, [sp], 0x30
+65958-│           0x0010bbc4      autibsp
+65959-└           0x0010bbc8      ret
+65960:            ; CALL XREFS from fcn.0017bfac @ 0x17c068, 0x17c6e4
+65961-┌ fcn.0010bbcc(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+65962-│           ; arg int64_t arg1 @ x0
+65963-│           ; arg int64_t arg2 @ x1
+65964-│           ; arg int64_t arg3 @ x2
+65965-│           ; arg int64_t arg4 @ x3
+65966-│           ; arg int64_t arg5 @ x4
+65967-│           ; arg int64_t arg6 @ x5
+65968-│           ; arg int64_t arg7 @ x6
+65969-│           ; arg int64_t arg8 @ x7
+65970-│           ; var int64_t var_40h @ stack - 0x40
+65971-│           ; var int64_t var_30h @ stack - 0x30
+65972-│           ; var int64_t var_20h @ stack - 0x20
+65973-│           ; var int64_t var_10h @ stack - 0x10
+65974-│           0x0010bbcc      pacibsp
+65975-│           0x0010bbd0      stp   x29, x30, [var_40h]!
+65976-│           0x0010bbd4      str   x23, [var_30h]
+65977-│           0x0010bbd8      stp   x22, x21, [var_20h]
+65978-│           0x0010bbdc      stp   x20, x19, [var_10h]
+65979-│           0x0010bbe0      mov   x29, sp
+65980-│           0x0010bbe4      mov   x23, x0                              ; arg1
+65981-│           0x0010bbe8      adrp  x0, 0x24b000
+65982-│           0x0010bbec      add   x0, x0, 0xef0                        ; int64_t arg1
+65983-│           0x0010bbf0      bl    fcn.0014c9f8
+65984-│           0x0010bbf4      mov   w0, 0x1014
+65985-│           0x0010bbf8      movk  w0, 0xc200, lsl 16
+--
+66008-│      ┌──< 0x0010bc54      b     0x10bc6c
+66009-│      │└─> 0x0010bc58      adrp  x0, 0x23a000
+66010-│      │    0x0010bc5c      add   x0, x0, 0x168                        ; int64_t arg1
+66011-│      │    0x0010bc60      mov   x1, x20                              ; int64_t arg2
+66012-│      │    0x0010bc64      str   x20, [x23]
+66013-│      │    0x0010bc68      bl    fcn.0014c9f8
+66014-│      │    ; CODE XREF from fcn.0010bbcc @ 0x10bc54
+66015-│      └──> 0x0010bc6c      mov   x0, x19
+66016-│           0x0010bc70      ldp   x20, x19, [var_10h]
+66017-│           0x0010bc74      ldp   x22, x21, [var_20h]
+66018-│           0x0010bc78      ldr   x23, [var_30h]                       ; aav.0x00000010
+66019-│                                                                      ; [0x10:4]=0x14000004
+66020-│           0x0010bc7c      ldp   x29, x30, [sp], 0x40
+66021-│           0x0010bc80      autibsp
+66022-└           0x0010bc84      ret
+66023:            ; CALL XREFS from fcn.0017bfac @ 0x17c0c8, 0x17c678
+66024-┌ fcn.0010bc88(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66025-│           ; arg int64_t arg1 @ x0
+66026-│           ; arg int64_t arg2 @ x1
+66027-│           ; arg int64_t arg3 @ x2
+66028-│           ; arg int64_t arg4 @ x3
+66029-│           ; arg int64_t arg5 @ x4
+66030-│           ; arg int64_t arg6 @ x5
+66031-│           ; arg int64_t arg7 @ x6
+66032-│           ; arg int64_t arg8 @ x7
+66033-│           ; var int64_t var_40h @ stack - 0x40
+66034-│           ; var int64_t var_30h @ stack - 0x30
+66035-│           ; var int64_t var_20h @ stack - 0x20
+66036-│           ; var int64_t var_10h @ stack - 0x10
+66037-│           0x0010bc88      pacibsp
+66038-│           0x0010bc8c      stp   x29, x30, [var_40h]!
+66039-│           0x0010bc90      str   x23, [var_30h]
+66040-│           0x0010bc94      stp   x22, x21, [var_20h]
+66041-│           0x0010bc98      stp   x20, x19, [var_10h]
+66042-│           0x0010bc9c      mov   x29, sp
+66043-│           0x0010bca0      mov   x23, x0                              ; arg1
+66044-│           0x0010bca4      adrp  x0, 0x250000
+66045-│           0x0010bca8      add   x0, x0, 0xc53                        ; int64_t arg1
+66046-│           0x0010bcac      bl    fcn.0014c9f8
+66047-│           0x0010bcb0      mov   w0, 0x1014
+66048-│           0x0010bcb4      movk  w0, 0xc200, lsl 16
+--
+66071-│      ┌──< 0x0010bd10      b     0x10bd28
+66072-│      │└─> 0x0010bd14      adrp  x0, 0x23a000
+66073-│      │    0x0010bd18      add   x0, x0, 0x191                        ; int64_t arg1
+66074-│      │    0x0010bd1c      mov   x1, x20                              ; int64_t arg2
+66075-│      │    0x0010bd20      str   x20, [x23]
+66076-│      │    0x0010bd24      bl    fcn.0014c9f8
+66077-│      │    ; CODE XREF from fcn.0010bc88 @ 0x10bd10
+66078-│      └──> 0x0010bd28      mov   x0, x19
+66079-│           0x0010bd2c      ldp   x20, x19, [var_10h]
+66080-│           0x0010bd30      ldp   x22, x21, [var_20h]
+66081-│           0x0010bd34      ldr   x23, [var_30h]                       ; aav.0x00000010
+66082-│                                                                      ; [0x10:4]=0x14000004
+66083-│           0x0010bd38      ldp   x29, x30, [sp], 0x40
+66084-│           0x0010bd3c      autibsp
+66085-└           0x0010bd40      ret
+66086:            ; CALL XREF from fcn.0017bfac @ 0x17c66c
+66087-┌ fcn.0010bd44(unsigned long arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66088-│           ; arg unsigned long arg1 @ x0
+66089-│           ; arg int64_t arg2 @ x1
+66090-│           ; arg int64_t arg3 @ x2
+66091-│           ; arg int64_t arg4 @ x3
+66092-│           ; arg int64_t arg5 @ x4
+66093-│           ; arg int64_t arg6 @ x5
+66094-│           ; arg int64_t arg7 @ x6
+66095-│           ; arg int64_t arg8 @ x7
+66096-│           ; var int64_t var_40h @ stack - 0x40
+66097-│           ; var int64_t var_30h @ stack - 0x30
+66098-│           ; var int64_t var_20h @ stack - 0x20
+66099-│           ; var int64_t var_10h @ stack - 0x10
+66100-│           0x0010bd44      pacibsp
+66101-│           0x0010bd48      stp   x29, x30, [var_40h]!
+66102-│           0x0010bd4c      stp   x24, x23, [var_30h]
+66103-│           0x0010bd50      stp   x22, x21, [var_20h]
+66104-│           0x0010bd54      stp   x20, x19, [var_10h]
+66105-│           0x0010bd58      mov   x29, sp
+66106-│       ┌─< 0x0010bd5c      cbz   x0, 0x10beac
+66107-│       │   0x0010bd60      mov   x19, x0                              ; arg1
+66108-│       │   0x0010bd64      cmp   x0, 0x21                             ; '!' ; arg1
+66109-│      ┌──< 0x0010bd68      b.lo  0x10bd88
+66110-│      ││   0x0010bd6c      adrp  x0, 0x240000
+66111-│      ││   0x0010bd70      mov   w20, 0x5010
+--
+66194-│      │╎   0x0010beb4      ldp   x20, x19, [var_10h]
+66195-│      │╎   0x0010beb8      ldp   x22, x21, [var_20h]
+66196-│      │╎   0x0010bebc      ldp   x24, x23, [var_30h]
+66197-│      │╎   0x0010bec0      ldp   x29, x30, [sp], 0x40
+66198-│      │╎   0x0010bec4      autibsp
+66199-│      │╎   0x0010bec8      ret
+66200-│      └──> 0x0010becc      adrp  x0, 0x27a000
+66201-│       ╎   0x0010bed0      add   x0, x0, 0x236                        ; int64_t arg1
+66202-│       ╎   0x0010bed4      bl    fcn.0014c9f8
+66203-│       ╎   0x0010bed8      adrp  x0, 0x257000
+66204-│       ╎   0x0010bedc      add   x0, x0, 0x3b0                        ; int64_t arg1
+66205-│       ╎   0x0010bee0      mov   x1, x21                              ; int64_t arg2
+66206-│       ╎   0x0010bee4      mov   x2, x19                              ; unsigned long arg3
+66207-│       ╎   0x0010bee8      bl    fcn.0014c9f8
+66208-└       └─< 0x0010beec      b     0x10beb0
+66209:            ; CALL XREF from fcn.0017bfac @ 0x17c074
+66210-┌ fcn.0010bef0(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66211-│           ; arg int64_t arg1 @ x0
+66212-│           ; arg int64_t arg2 @ x1
+66213-│           ; arg int64_t arg3 @ x2
+66214-│           ; arg int64_t arg4 @ x3
+66215-│           ; arg int64_t arg5 @ x4
+66216-│           ; arg int64_t arg6 @ x5
+66217-│           ; arg int64_t arg7 @ x6
+66218-│           ; arg int64_t arg8 @ x7
+66219-│           ; var int64_t var_40h @ stack - 0x40
+66220-│           ; var int64_t var_30h @ stack - 0x30
+66221-│           ; var int64_t var_20h @ stack - 0x20
+66222-│           ; var int64_t var_10h @ stack - 0x10
+66223-│           0x0010bef0      pacibsp
+66224-│           0x0010bef4      stp   x29, x30, [var_40h]!
+66225-│           0x0010bef8      str   x23, [var_30h]
+66226-│           0x0010befc      stp   x22, x21, [var_20h]
+66227-│           0x0010bf00      stp   x20, x19, [var_10h]
+66228-│           0x0010bf04      mov   x29, sp
+66229-│           0x0010bf08      mov   x23, x0                              ; arg1
+66230-│           0x0010bf0c      adrp  x0, 0x23e000
+66231-│           0x0010bf10      add   x0, x0, 0x31e                        ; int64_t arg1
+66232-│           0x0010bf14      bl    fcn.0014c9f8
+66233-│           0x0010bf18      mov   w0, 0x1014
+66234-│           0x0010bf1c      movk  w0, 0xc200, lsl 16
+--
+66257-│      ┌──< 0x0010bf78      b     0x10bf90
+66258-│      │└─> 0x0010bf7c      adrp  x0, 0x23c000
+66259-│      │    0x0010bf80      add   x0, x0, 0x357                        ; int64_t arg1
+66260-│      │    0x0010bf84      mov   x1, x20                              ; int64_t arg2
+66261-│      │    0x0010bf88      str   x20, [x23]
+66262-│      │    0x0010bf8c      bl    fcn.0014c9f8
+66263-│      │    ; CODE XREF from fcn.0010bef0 @ 0x10bf78
+66264-│      └──> 0x0010bf90      mov   x0, x19
+66265-│           0x0010bf94      ldp   x20, x19, [var_10h]
+66266-│           0x0010bf98      ldp   x22, x21, [var_20h]
+66267-│           0x0010bf9c      ldr   x23, [var_30h]                       ; aav.0x00000010
+66268-│                                                                      ; [0x10:4]=0x14000004
+66269-│           0x0010bfa0      ldp   x29, x30, [sp], 0x40
+66270-│           0x0010bfa4      autibsp
+66271-└           0x0010bfa8      ret
+66272:            ; CALL XREF from fcn.0017bfac @ 0x17c48c
+66273-┌ fcn.0010bfac(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8, int64_t arg_10h, int64_t arg_20h);
+66274-│           ; arg int64_t arg2 @ x1
+66275-│           ; arg int64_t arg3 @ x2
+66276-│           ; arg int64_t arg4 @ x3
+66277-│           ; arg int64_t arg5 @ x4
+66278-│           ; arg int64_t arg6 @ x5
+66279-│           ; arg int64_t arg7 @ x6
+66280-│           ; arg int64_t arg8 @ x7
+66281-│           ; arg int64_t arg_10h @ stack + 0x10
+66282-│           ; arg int64_t arg_20h @ stack + 0x20
+66283-│           0x0010bfac      pacibsp
+66284-│           0x0010bfb0      stp   x29, x30, [sp, -0x30]!
+66285-│           0x0010bfb4      sub   x9, arg_20h + 0x80
+66286-│           0x0010bfb8      stp   x22, x21, [sp, 0x10]
+66287-│           0x0010bfbc      stp   x20, x19, [sp, 0x20]
+66288-│           0x0010bfc0      mov   x29, sp
+66289-│           0x0010bfc4      and   sp, x9, 0xffffffffffffffc0
+66290-│       ┌─< 0x0010bfc8      cbz   x0, 0x10c148
+66291-│       │   0x0010bfcc      cmp   w1, 0x40
+66292-│      ┌──< 0x0010bfd0      b.ne  0x10c15c
+66293-│      ││   0x0010bfd4      mov   x19, x0
+66294-│      ││   0x0010bfd8      adrp  x0, 0x259000
+66295-│      ││   0x0010bfdc      mov   w20, 0x8320
+66296-│      ││   0x0010bfe0      add   x0, x0, 0xace                        ; int64_t arg1
+66297-│      ││   0x0010bfe4      movk  w20, 0xedb8, lsl 16
+--
+66396-│    ││ │   0x0010c16c      movk  w8, 8, lsl 16
+66397-│    ││ │   0x0010c170      orr   x19, x8, 1
+66398-│    ││┌──< 0x0010c174      b     0x10c184
+66399-│    │└───> 0x0010c178      adrp  x0, str.setct_CertResTBE             ; 0x26a000
+66400-│    │ ││   0x0010c17c      add   x0, x0, 0x859
+66401-│    │ ││   ; CODE XREF from fcn.0010bfac @ 0x10c158
+66402-│    │ │└─> 0x0010c180      bl    fcn.0014c9f8
+66403-│    │ │    ; CODE XREFS from fcn.0010bfac @ 0x10c144, 0x10c174
+66404-│    └─└──> 0x0010c184      mov   x0, x19
+66405-│           0x0010c188      mov   sp, x29
+66406-│           0x0010c18c      ldp   x20, x19, [arg_20h]
+66407-│           0x0010c190      ldp   x22, x21, [arg_10h]
+66408-│           0x0010c194      ldp   x29, x30, [sp], 0x30
+66409-│           0x0010c198      autibsp
+66410-└           0x0010c19c      ret
+66411:            ; CALL XREF from fcn.0017bfac @ 0x17c470
+66412-┌ fcn.0010c1a0(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8, int64_t arg_10h, int64_t arg_20h);
+66413-│           ; arg int64_t arg2 @ x1
+66414-│           ; arg int64_t arg3 @ x2
+66415-│           ; arg int64_t arg4 @ x3
+66416-│           ; arg int64_t arg5 @ x4
+66417-│           ; arg int64_t arg6 @ x5
+66418-│           ; arg int64_t arg7 @ x6
+66419-│           ; arg int64_t arg8 @ x7
+66420-│           ; arg int64_t arg_10h @ stack + 0x10
+66421-│           ; arg int64_t arg_20h @ stack + 0x20
+66422-│           0x0010c1a0      pacibsp
+66423-│           0x0010c1a4      stp   x29, x30, [sp, -0x30]!
+66424-│           0x0010c1a8      sub   x9, arg_20h + 0x80
+66425-│           0x0010c1ac      stp   x22, x21, [sp, 0x10]
+66426-│           0x0010c1b0      stp   x20, x19, [sp, 0x20]
+66427-│           0x0010c1b4      mov   x29, sp
+66428-│           0x0010c1b8      and   sp, x9, 0xffffffffffffffc0
+66429-│       ┌─< 0x0010c1bc      cbz   x0, 0x10c33c
+66430-│       │   0x0010c1c0      cmp   w1, 0x40
+66431-│      ┌──< 0x0010c1c4      b.ne  0x10c354
+66432-│      ││   0x0010c1c8      mov   x19, x0
+66433-│      ││   0x0010c1cc      adrp  x0, 0x268000
+66434-│      ││   0x0010c1d0      mov   w20, 0x8320
+66435-│      ││   0x0010c1d4      add   x0, x0, 0x51f                        ; int64_t arg1
+66436-│      ││   0x0010c1d8      movk  w20, 0xedb8, lsl 16
+--
+66560-│  │││└───> 0x0010c3c8      adrp  x0, 0x26f000
+66561-│  │││ ││   0x0010c3cc      add   x0, x0, 0x266                        ; int64_t arg1
+66562-│  │││ ││   0x0010c3d0      bl    fcn.0014c9f8
+66563-│  │││ ││   0x0010c3d4      mov   w8, 0x213
+66564-│  │││ ││   0x0010c3d8      movk  w8, 3, lsl 16
+66565-│  │││ ││   0x0010c3dc      add   x19, x8, 1
+66566-│  │││ ││   ; CODE XREFS from fcn.0010c1a0 @ 0x10c338, 0x10c350, 0x10c36c, 0x10c3b4, 0x10c3c4
+66567-│  └└└─└└─> 0x0010c3e0      mov   x0, x19
+66568-│           0x0010c3e4      mov   sp, x29
+66569-│           0x0010c3e8      ldp   x20, x19, [arg_20h]
+66570-│           0x0010c3ec      ldp   x22, x21, [arg_10h]
+66571-│           0x0010c3f0      ldp   x29, x30, [sp], 0x30
+66572-│           0x0010c3f4      autibsp
+66573-└           0x0010c3f8      ret
+66574-            ; CALL XREF from fcn.0017b4ec @ 0x17b544
+66575:            ; CALL XREF from fcn.0017bfac @ 0x17c71c
+66576-┌ fcn.0010c3fc(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66577-│           ; arg int64_t arg2 @ x1
+66578-│           ; arg int64_t arg3 @ x2
+66579-│           ; arg int64_t arg4 @ x3
+66580-│           ; arg int64_t arg5 @ x4
+66581-│           ; arg int64_t arg6 @ x5
+66582-│           ; arg int64_t arg7 @ x6
+66583-│           ; arg int64_t arg8 @ x7
+66584-│           ; var int64_t var_30h @ stack - 0x30
+66585-│           ; var int64_t var_20h @ stack - 0x20
+66586-│           ; var int64_t var_10h @ stack - 0x10
+66587-│           0x0010c3fc      pacibsp
+66588-│           0x0010c400      stp   x29, x30, [var_30h]!
+66589-│           0x0010c404      stp   x22, x21, [var_20h]
+66590-│           0x0010c408      stp   x20, x19, [var_10h]
+66591-│           0x0010c40c      mov   x29, sp
+66592-│           0x0010c410      adrp  x0, 0x23a000
+66593-│           0x0010c414      add   x0, x0, 0x1db                        ; int64_t arg1
+66594-│           0x0010c418      bl    fcn.0014c9f8
+66595-│           0x0010c41c      mov   w0, 0x1014
+66596-│           0x0010c420      movk  w0, 0xc200, lsl 16
+66597-│           0x0010c424      mov   w1, 6
+66598-│           0x0010c428      mov   x2, xzr
+66599-│           0x0010c42c      mov   x3, xzr
+66600-│           0x0010c430      smc   0
+--
+66616-│       │   0x0010c470      mov   x3, x21                              ; int64_t arg4
+66617-│       │   0x0010c474      mov   x4, x20                              ; int64_t arg5
+66618-│       │   0x0010c478      bl    fcn.0014c9f8
+66619-│      ┌──< 0x0010c47c      b     0x10c48c
+66620-│      │└─> 0x0010c480      adrp  x0, 0x27a000
+66621-│      │    0x0010c484      add   x0, x0, 0x25c                        ; int64_t arg1
+66622-│      │    0x0010c488      bl    fcn.0014c9f8
+66623-│      │    ; CODE XREF from fcn.0010c3fc @ 0x10c47c
+66624-│      └──> 0x0010c48c      mov   x0, x19
+66625-│           0x0010c490      ldp   x20, x19, [var_10h]
+66626-│           0x0010c494      ldp   x22, x21, [var_20h]
+66627-│           0x0010c498      ldp   x29, x30, [sp], 0x30
+66628-│           0x0010c49c      autibsp
+66629-└           0x0010c4a0      ret
+66630-            ; CALL XREF from fcn.0017b4ec @ 0x17b54c
+66631:            ; CALL XREFS from fcn.0017bfac @ 0x17c0a4, 0x17c728
+66632-┌ fcn.0010c4a4(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66633-│           ; arg int64_t arg1 @ x0
+66634-│           ; arg int64_t arg2 @ x1
+66635-│           ; arg int64_t arg3 @ x2
+66636-│           ; arg int64_t arg4 @ x3
+66637-│           ; arg int64_t arg5 @ x4
+66638-│           ; arg int64_t arg6 @ x5
+66639-│           ; arg int64_t arg7 @ x6
+66640-│           ; arg int64_t arg8 @ x7
+66641-│           ; var int64_t var_40h @ stack - 0x40
+66642-│           ; var int64_t var_30h @ stack - 0x30
+66643-│           ; var int64_t var_20h @ stack - 0x20
+66644-│           ; var int64_t var_10h @ stack - 0x10
+66645-│           0x0010c4a4      pacibsp
+66646-│           0x0010c4a8      stp   x29, x30, [var_40h]!
+66647-│           0x0010c4ac      str   x23, [var_30h]
+66648-│           0x0010c4b0      stp   x22, x21, [var_20h]
+66649-│           0x0010c4b4      stp   x20, x19, [var_10h]
+66650-│           0x0010c4b8      mov   x29, sp
+66651-│           0x0010c4bc      mov   x23, x0                              ; arg1
+66652-│           0x0010c4c0      adrp  x0, 0x24e000
+66653-│           0x0010c4c4      add   x0, x0, 0xbf3                        ; int64_t arg1
+66654-│           0x0010c4c8      bl    fcn.0014c9f8
+66655-│           0x0010c4cc      mov   w0, 0x1014
+66656-│           0x0010c4d0      movk  w0, 0xc200, lsl 16
+--
+66821-│     ┌───< 0x0010c6d8      b     0x10c6f0
+66822-│     ││└─> 0x0010c6dc      adrp  x0, 0x260000
+66823-│     ││    0x0010c6e0      add   x0, x0, 0x33c                        ; int64_t arg1
+66824-│     ││    0x0010c6e4      mov   x1, x20                              ; int64_t arg2
+66825-│     ││    0x0010c6e8      str   x20, [x23]
+66826-│     ││    0x0010c6ec      bl    fcn.0014c9f8
+66827-│     ││    ; CODE XREFS from fcn.0010c62c @ 0x10c660, 0x10c6d8
+66828-│     └└──> 0x0010c6f0      mov   x0, x19
+66829-│           0x0010c6f4      ldp   x20, x19, [var_10h]
+66830-│           0x0010c6f8      ldp   x22, x21, [var_20h]
+66831-│           0x0010c6fc      ldr   x23, [var_30h]                       ; aav.0x00000010
+66832-│                                                                      ; [0x10:4]=0x14000004
+66833-│           0x0010c700      ldp   x29, x30, [sp], 0x40
+66834-│           0x0010c704      autibsp
+66835-└           0x0010c708      ret
+66836:            ; CALL XREF from fcn.0017bfac @ 0x17c49c
+66837-┌ fcn.0010c70c(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66838-│           ; arg int64_t arg2 @ x1
+66839-│           ; arg int64_t arg3 @ x2
+66840-│           ; arg int64_t arg4 @ x3
+66841-│           ; arg int64_t arg5 @ x4
+66842-│           ; arg int64_t arg6 @ x5
+66843-│           ; arg int64_t arg7 @ x6
+66844-│           ; arg int64_t arg8 @ x7
+66845-│           ; var int64_t var_30h @ stack - 0x30
+66846-│           ; var int64_t var_20h @ stack - 0x20
+66847-│           ; var int64_t var_10h @ stack - 0x10
+66848-│           0x0010c70c      pacibsp
+66849-│           0x0010c710      stp   x29, x30, [var_30h]!
+66850-│           0x0010c714      stp   x22, x21, [var_20h]
+66851-│           0x0010c718      stp   x20, x19, [var_10h]
+66852-│           0x0010c71c      mov   x29, sp
+66853-│           0x0010c720      adrp  x0, 0x245000
+66854-│           0x0010c724      add   x0, x0, 0x3bd                        ; int64_t arg1
+66855-│           0x0010c728      bl    fcn.0014c9f8
+66856-│           0x0010c72c      mov   w0, 0x1014
+66857-│           0x0010c730      movk  w0, 0xc200, lsl 16
+66858-│           0x0010c734      mov   w1, 0x15
+66859-│           0x0010c738      mov   x2, xzr
+66860-│           0x0010c73c      mov   x3, xzr
+66861-│           0x0010c740      smc   0
+--
+66876-│       │   0x0010c77c      mov   x2, x22                              ; unsigned long arg3
+66877-│       │   0x0010c780      mov   x3, x21                              ; int64_t arg4
+66878-│       │   0x0010c784      mov   x4, x20                              ; int64_t arg5
+66879-│       │   0x0010c788      bl    fcn.0014c9f8
+66880-│      ┌──< 0x0010c78c      b     0x10c79c
+66881-│      │└─> 0x0010c790      adrp  x0, 0x27c000
+66882-│      │    0x0010c794      add   x0, x0, 0x605                        ; int64_t arg1
+66883-│      │    0x0010c798      bl    fcn.0014c9f8
+66884-│      │    ; CODE XREF from fcn.0010c70c @ 0x10c78c
+66885-│      └──> 0x0010c79c      mov   x0, x19
+66886-│           0x0010c7a0      ldp   x20, x19, [var_10h]
+66887-│           0x0010c7a4      ldp   x22, x21, [var_20h]
+66888-│           0x0010c7a8      ldp   x29, x30, [sp], 0x30
+66889-│           0x0010c7ac      autibsp
+66890-└           0x0010c7b0      ret
+66891:            ; CALL XREFS from fcn.0017bfac @ 0x17c0b0, 0x17c4a8
+66892-┌ fcn.0010c7b4(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66893-│           ; arg int64_t arg1 @ x0
+66894-│           ; arg int64_t arg2 @ x1
+66895-│           ; arg int64_t arg3 @ x2
+66896-│           ; arg int64_t arg4 @ x3
+66897-│           ; arg int64_t arg5 @ x4
+66898-│           ; arg int64_t arg6 @ x5
+66899-│           ; arg int64_t arg7 @ x6
+66900-│           ; arg int64_t arg8 @ x7
+66901-│           ; var int64_t var_40h @ stack - 0x40
+66902-│           ; var int64_t var_30h @ stack - 0x30
+66903-│           ; var int64_t var_20h @ stack - 0x20
+66904-│           ; var int64_t var_10h @ stack - 0x10
+66905-│           0x0010c7b4      pacibsp
+66906-│           0x0010c7b8      stp   x29, x30, [var_40h]!
+66907-│           0x0010c7bc      str   x23, [var_30h]
+66908-│           0x0010c7c0      stp   x22, x21, [var_20h]
+66909-│           0x0010c7c4      stp   x20, x19, [var_10h]
+66910-│           0x0010c7c8      mov   x29, sp
+66911-│           0x0010c7cc      mov   x23, x0                              ; arg1
+66912-│           0x0010c7d0      adrp  x0, 0x24e000
+66913-│           0x0010c7d4      add   x0, x0, 0xc35                        ; int64_t arg1
+66914-│           0x0010c7d8      bl    fcn.0014c9f8
+66915-│           0x0010c7dc      mov   w0, 0x1014
+66916-│           0x0010c7e0      movk  w0, 0xc200, lsl 16
+--
+66939-│      ┌──< 0x0010c83c      b     0x10c854
+66940-│      │└─> 0x0010c840      adrp  x0, 0x278000
+66941-│      │    0x0010c844      add   x0, x0, 0x17b                        ; int64_t arg1
+66942-│      │    0x0010c848      mov   x1, x20                              ; int64_t arg2
+66943-│      │    0x0010c84c      str   x20, [x23]
+66944-│      │    0x0010c850      bl    fcn.0014c9f8
+66945-│      │    ; CODE XREF from fcn.0010c7b4 @ 0x10c83c
+66946-│      └──> 0x0010c854      mov   x0, x19
+66947-│           0x0010c858      ldp   x20, x19, [var_10h]
+66948-│           0x0010c85c      ldp   x22, x21, [var_20h]
+66949-│           0x0010c860      ldr   x23, [var_30h]                       ; aav.0x00000010
+66950-│                                                                      ; [0x10:4]=0x14000004
+66951-│           0x0010c864      ldp   x29, x30, [sp], 0x40
+66952-│           0x0010c868      autibsp
+66953-└           0x0010c86c      ret
+66954:            ; CALL XREF from fcn.0017bfac @ 0x17c588
+66955-┌ fcn.0010c870(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+66956-│           ; arg int64_t arg1 @ x0
+66957-│           ; arg int64_t arg2 @ x1
+66958-│           ; arg int64_t arg3 @ x2
+66959-│           ; arg int64_t arg4 @ x3
+66960-│           ; arg int64_t arg5 @ x4
+66961-│           ; arg int64_t arg6 @ x5
+66962-│           ; arg int64_t arg7 @ x6
+66963-│           ; arg int64_t arg8 @ x7
+66964-│           ; var int64_t var_30h @ stack - 0x30
+66965-│           ; var int64_t var_20h @ stack - 0x20
+66966-│           ; var int64_t var_10h @ stack - 0x10
+66967-│           0x0010c870      pacibsp
+66968-│           0x0010c874      stp   x29, x30, [var_30h]!
+66969-│           0x0010c878      stp   x22, x21, [var_20h]
+66970-│           0x0010c87c      stp   x20, x19, [var_10h]
+66971-│           0x0010c880      mov   x29, sp
+66972-│           0x0010c884      and   x19, x0, 0xffffffff                  ; arg1
+66973-│           0x0010c888      adrp  x0, 0x23c000
+66974-│           0x0010c88c      add   x0, x0, 0x380                        ; int64_t arg1
+66975-│           0x0010c890      bl    fcn.0014c9f8
+66976-│           0x0010c894      mov   w0, 0x1014
+66977-│           0x0010c898      movk  w0, 0xc200, lsl 16
+66978-│           0x0010c89c      mov   w1, 0xe
+66979-│           0x0010c8a0      mov   x2, x19
+--
+66997-│       │   ; DATA XREF from fcn.0001f654 @ 0x1fb30
+66998-│       │   0x0010c8e8      mov   x3, x21                              ; int64_t arg4
+66999-│       │   0x0010c8ec      mov   x4, x20                              ; int64_t arg5
+67000-│       │   0x0010c8f0      bl    fcn.0014c9f8
+67001-│      ┌──< 0x0010c8f4      b     0x10c904
+67002-│      │└─> 0x0010c8f8      adrp  x0, 0x271000
+67003-│      │    0x0010c8fc      add   x0, x0, 0x329                        ; int64_t arg1
+67004-│      │    0x0010c900      bl    fcn.0014c9f8
+67005-│      │    ; CODE XREF from fcn.0010c870 @ 0x10c8f4
+67006-│      └──> 0x0010c904      mov   x0, x19
+67007-│           0x0010c908      ldp   x20, x19, [var_10h]
+67008-│           0x0010c90c      ldp   x22, x21, [var_20h]
+67009-│           0x0010c910      ldp   x29, x30, [sp], 0x30
+67010-│           0x0010c914      autibsp
+67011-└           0x0010c918      ret
+67012:            ; CALL XREFS from fcn.0017bfac @ 0x17c050, 0x17c594
+67013-┌ fcn.0010c91c(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67014-│           ; arg int64_t arg1 @ x0
+67015-│           ; arg int64_t arg2 @ x1
+67016-│           ; arg int64_t arg3 @ x2
+67017-│           ; arg int64_t arg4 @ x3
+67018-│           ; arg int64_t arg5 @ x4
+67019-│           ; arg int64_t arg6 @ x5
+67020-│           ; arg int64_t arg7 @ x6
+67021-│           ; arg int64_t arg8 @ x7
+67022-│           ; var int64_t var_40h @ stack - 0x40
+67023-│           ; var int64_t var_30h @ stack - 0x30
+67024-│           ; var int64_t var_20h @ stack - 0x20
+67025-│           ; var int64_t var_10h @ stack - 0x10
+67026-│           0x0010c91c      pacibsp
+67027-│           0x0010c920      stp   x29, x30, [var_40h]!
+67028-│           0x0010c924      str   x23, [var_30h]
+67029-│           0x0010c928      stp   x22, x21, [var_20h]
+67030-│           0x0010c92c      stp   x20, x19, [var_10h]
+67031-│           0x0010c930      mov   x29, sp
+67032-│           0x0010c934      mov   x23, x0                              ; arg1
+67033-│           0x0010c938      adrp  x0, 0x250000
+67034-│           0x0010c93c      add   x0, x0, str.EL3SUCC                  ; 0xcc6 ; "EL3SUCC" ; int64_t arg1
+67035-│           0x0010c940      bl    fcn.0014c9f8
+67036-│           0x0010c944      mov   w0, 0x1014
+67037-│           0x0010c948      movk  w0, 0xc200, lsl 16
+--
+67060-│      ┌──< 0x0010c9a4      b     0x10c9bc
+67061-│      │└─> 0x0010c9a8      adrp  x0, 0x255000
+67062-│      │    0x0010c9ac      add   x0, x0, 0x4c1                        ; int64_t arg1
+67063-│      │    0x0010c9b0      mov   x1, x20                              ; int64_t arg2
+67064-│      │    0x0010c9b4      str   x20, [x23]
+67065-│      │    0x0010c9b8      bl    fcn.0014c9f8
+67066-│      │    ; CODE XREF from fcn.0010c91c @ 0x10c9a4
+67067-│      └──> 0x0010c9bc      mov   x0, x19
+67068-│           0x0010c9c0      ldp   x20, x19, [var_10h]
+67069-│           0x0010c9c4      ldp   x22, x21, [var_20h]
+67070-│           0x0010c9c8      ldr   x23, [var_30h]                       ; aav.0x00000010
+67071-│                                                                      ; [0x10:4]=0x14000004
+67072-│           0x0010c9cc      ldp   x29, x30, [sp], 0x40
+67073-│           0x0010c9d0      autibsp
+67074-└           0x0010c9d4      ret
+67075:            ; CALL XREF from fcn.0017bfac @ 0x17c620
+67076-┌ fcn.0010c9d8(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67077-│           ; arg int64_t arg2 @ x1
+67078-│           ; arg int64_t arg3 @ x2
+67079-│           ; arg int64_t arg4 @ x3
+67080-│           ; arg int64_t arg5 @ x4
+67081-│           ; arg int64_t arg6 @ x5
+67082-│           ; arg int64_t arg7 @ x6
+67083-│           ; arg int64_t arg8 @ x7
+67084-│           ; var int64_t var_30h @ stack - 0x30
+67085-│           ; var int64_t var_20h @ stack - 0x20
+67086-│           ; var int64_t var_10h @ stack - 0x10
+67087-│           0x0010c9d8      pacibsp
+67088-│           0x0010c9dc      stp   x29, x30, [var_30h]!
+67089-│           0x0010c9e0      stp   x22, x21, [var_20h]
+67090-│           0x0010c9e4      stp   x20, x19, [var_10h]
+67091-│           0x0010c9e8      mov   x29, sp
+67092-│           0x0010c9ec      adrp  x0, 0x268000
+67093-│           0x0010c9f0      add   x0, x0, 0x564                        ; int64_t arg1
+67094-│           0x0010c9f4      bl    fcn.0014c9f8
+67095-│           0x0010c9f8      mov   w0, 0x1014
+67096-│           0x0010c9fc      movk  w0, 0xc200, lsl 16
+67097-│           0x0010ca00      mov   w1, 0xf
+67098-│           0x0010ca04      mov   x2, xzr
+67099-│           0x0010ca08      mov   x3, xzr
+67100-│           0x0010ca0c      smc   0
+--
+67123-│     ┌───< 0x0010ca68      b     0x10ca84
+67124-│     ││└─> 0x0010ca6c      adrp  x0, 0x240000
+67125-│     ││    0x0010ca70      add   x0, x0, 0x770
+67126-│     ││┌─< 0x0010ca74      b     0x10ca80
+67127-│     │└──> 0x0010ca78      adrp  x0, 0x27a000
+67128-│     │ │   0x0010ca7c      add   x0, x0, 0x280
+67129-│     │ │   ; CODE XREF from fcn.0010c9d8 @ 0x10ca74
+67130-│     │ └─> 0x0010ca80      bl    fcn.0014c9f8
+67131-│     │     ; CODE XREF from fcn.0010c9d8 @ 0x10ca68
+67132-│     └───> 0x0010ca84      mov   x0, x19
+67133-│           0x0010ca88      ldp   x20, x19, [var_10h]
+67134-│           0x0010ca8c      ldp   x22, x21, [var_20h]
+67135-│           0x0010ca90      ldp   x29, x30, [sp], 0x30
+67136-│           0x0010ca94      autibsp
+67137-└           0x0010ca98      ret
+67138:            ; CALL XREFS from fcn.0017bfac @ 0x17c080, 0x17c62c
+67139-┌ fcn.0010ca9c(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67140-│           ; arg int64_t arg1 @ x0
+67141-│           ; arg int64_t arg2 @ x1
+67142-│           ; arg int64_t arg3 @ x2
+67143-│           ; arg int64_t arg4 @ x3
+67144-│           ; arg int64_t arg5 @ x4
+67145-│           ; arg int64_t arg6 @ x5
+67146-│           ; arg int64_t arg7 @ x6
+67147-│           ; arg int64_t arg8 @ x7
+67148-│           ; var int64_t var_40h @ stack - 0x40
+67149-│           ; var int64_t var_30h @ stack - 0x30
+67150-│           ; var int64_t var_20h @ stack - 0x20
+67151-│           ; var int64_t var_10h @ stack - 0x10
+67152-│           0x0010ca9c      pacibsp
+67153-│           0x0010caa0      stp   x29, x30, [var_40h]!
+67154-│           0x0010caa4      str   x23, [var_30h]
+67155-│           0x0010caa8      stp   x22, x21, [var_20h]
+67156-│           0x0010caac      stp   x20, x19, [var_10h]
+67157-│           0x0010cab0      mov   x29, sp
+67158-│           0x0010cab4      mov   x23, x0                              ; arg1
+67159-│           0x0010cab8      adrp  x0, 0x271000
+67160-│           0x0010cabc      add   x0, x0, 0x349                        ; int64_t arg1
+67161-│           0x0010cac0      bl    fcn.0014c9f8
+67162-│           0x0010cac4      mov   w0, 0x1014
+67163-│           0x0010cac8      movk  w0, 0xc200, lsl 16
+--
+67186-│      ┌──< 0x0010cb24      b     0x10cb3c
+67187-│      │└─> 0x0010cb28      adrp  x0, 0x262000
+67188-│      │    0x0010cb2c      add   x0, x0, 0x5e8                        ; int64_t arg1
+67189-│      │    0x0010cb30      mov   x1, x20                              ; int64_t arg2
+67190-│      │    0x0010cb34      str   x20, [x23]
+67191-│      │    0x0010cb38      bl    fcn.0014c9f8
+67192-│      │    ; CODE XREF from fcn.0010ca9c @ 0x10cb24
+67193-│      └──> 0x0010cb3c      mov   x0, x19
+67194-│           0x0010cb40      ldp   x20, x19, [var_10h]
+67195-│           0x0010cb44      ldp   x22, x21, [var_20h]
+67196-│           0x0010cb48      ldr   x23, [var_30h]                       ; aav.0x00000010
+67197-│                                                                      ; [0x10:4]=0x14000004
+67198-│           0x0010cb4c      ldp   x29, x30, [sp], 0x40
+67199-│           0x0010cb50      autibsp
+67200-└           0x0010cb54      ret
+67201:            ; CALL XREF from fcn.0017bfac @ 0x17c08c
+67202-┌ fcn.0010cb58(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67203-│           ; arg int64_t arg1 @ x0
+67204-│           ; arg int64_t arg2 @ x1
+67205-│           ; arg int64_t arg3 @ x2
+67206-│           ; arg int64_t arg4 @ x3
+67207-│           ; arg int64_t arg5 @ x4
+67208-│           ; arg int64_t arg6 @ x5
+67209-│           ; arg int64_t arg7 @ x6
+67210-│           ; arg int64_t arg8 @ x7
+67211-│           ; var int64_t var_40h @ stack - 0x40
+67212-│           ; var int64_t var_30h @ stack - 0x30
+67213-│           ; var int64_t var_20h @ stack - 0x20
+67214-│           ; var int64_t var_10h @ stack - 0x10
+67215-│           0x0010cb58      pacibsp
+67216-│           0x0010cb5c      stp   x29, x30, [var_40h]!
+67217-│           0x0010cb60      str   x23, [var_30h]
+67218-│           0x0010cb64      stp   x22, x21, [var_20h]
+67219-│           0x0010cb68      stp   x20, x19, [var_10h]
+67220-│           0x0010cb6c      mov   x29, sp
+67221-│           0x0010cb70      mov   x23, x0                              ; arg1
+67222-│           0x0010cb74      adrp  x0, str.setct_CertResTBE             ; 0x26a000
+67223-│           0x0010cb78      add   x0, x0, 0x879                        ; int64_t arg1
+67224-│           0x0010cb7c      bl    fcn.0014c9f8
+67225-│           0x0010cb80      mov   w0, 0x1014
+67226-│           0x0010cb84      movk  w0, 0xc200, lsl 16
+--
+67305-│       │   0x0010cc84      mov   x2, x22                              ; unsigned long arg3
+67306-│       │   0x0010cc88      mov   x3, x21                              ; int64_t arg4
+67307-│       │   0x0010cc8c      mov   x4, x20                              ; int64_t arg5
+67308-│       │   0x0010cc90      bl    fcn.0014c9f8
+67309-│      ┌──< 0x0010cc94      b     0x10cca4
+67310-│      │└─> 0x0010cc98      adrp  x0, 0x275000
+67311-│      │    0x0010cc9c      add   x0, x0, 0xbed                        ; int64_t arg1
+67312-│      │    0x0010cca0      bl    fcn.0014c9f8
+67313-│      │    ; CODE XREF from fcn.0010cc14 @ 0x10cc94
+67314-│      └──> 0x0010cca4      mov   x0, x19
+67315-│           0x0010cca8      ldp   x20, x19, [var_10h]
+67316-│           0x0010ccac      ldp   x22, x21, [var_20h]
+67317-│           0x0010ccb0      ldp   x29, x30, [sp], 0x30
+67318-│           0x0010ccb4      autibsp
+67319-└           0x0010ccb8      ret
+67320:            ; CALL XREF from fcn.0017bfac @ 0x17c098
+67321-            ; CALL XREF from fcn.0017ca28 @ 0x17ca80
+67322-┌ fcn.0010ccbc(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67323-│           ; arg int64_t arg1 @ x0
+67324-│           ; arg int64_t arg2 @ x1
+67325-│           ; arg int64_t arg3 @ x2
+67326-│           ; arg int64_t arg4 @ x3
+67327-│           ; arg int64_t arg5 @ x4
+67328-│           ; arg int64_t arg6 @ x5
+67329-│           ; arg int64_t arg7 @ x6
+67330-│           ; arg int64_t arg8 @ x7
+67331-│           ; var int64_t var_40h @ stack - 0x40
+67332-│           ; var int64_t var_30h @ stack - 0x30
+67333-│           ; var int64_t var_20h @ stack - 0x20
+67334-│           ; var int64_t var_10h @ stack - 0x10
+67335-│           0x0010ccbc      pacibsp
+67336-│           0x0010ccc0      stp   x29, x30, [var_40h]!
+67337-│           0x0010ccc4      str   x23, [var_30h]
+67338-│           0x0010ccc8      stp   x22, x21, [var_20h]
+67339-│           0x0010cccc      stp   x20, x19, [var_10h]
+67340-│           0x0010ccd0      mov   x29, sp
+67341-│           0x0010ccd4      mov   x23, x0                              ; arg1
+67342-│           0x0010ccd8      adrp  x0, 0x273000
+67343-│           0x0010ccdc      add   x0, x0, 0x3f9                        ; int64_t arg1
+67344-│           0x0010cce0      bl    fcn.0014c9f8
+67345-│           0x0010cce4      mov   w0, 0x1014
+--
+67369-│      ┌──< 0x0010cd44      b     0x10cd5c
+67370-│      │└─> 0x0010cd48      adrp  x0, 0x23c000
+67371-│      │    0x0010cd4c      add   x0, x0, 0x3e6                        ; int64_t arg1
+67372-│      │    0x0010cd50      mov   x1, x20                              ; int64_t arg2
+67373-│      │    0x0010cd54      str   x20, [x23]
+67374-│      │    0x0010cd58      bl    fcn.0014c9f8
+67375-│      │    ; CODE XREF from fcn.0010ccbc @ 0x10cd44
+67376-│      └──> 0x0010cd5c      mov   x0, x19
+67377-│           0x0010cd60      ldp   x20, x19, [var_10h]
+67378-│           0x0010cd64      ldp   x22, x21, [var_20h]
+67379-│           0x0010cd68      ldr   x23, [var_30h]                       ; aav.0x00000010
+67380-│                                                                      ; [0x10:4]=0x14000004
+67381-│           0x0010cd6c      ldp   x29, x30, [sp], 0x40
+67382-│           0x0010cd70      autibsp
+67383-└           0x0010cd74      ret
+67384:            ; CALL XREF from fcn.0017bfac @ 0x17c7b4
+67385-┌ fcn.0010cd78(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67386-│           ; arg int64_t arg2 @ x1
+67387-│           ; arg int64_t arg3 @ x2
+67388-│           ; arg int64_t arg4 @ x3
+67389-│           ; arg int64_t arg5 @ x4
+67390-│           ; arg int64_t arg6 @ x5
+67391-│           ; arg int64_t arg7 @ x6
+67392-│           ; arg int64_t arg8 @ x7
+67393-│           ; var int64_t var_30h @ stack - 0x30
+67394-│           ; var int64_t var_20h @ stack - 0x20
+67395-│           ; var int64_t var_10h @ stack - 0x10
+67396-│           0x0010cd78      pacibsp
+67397-│           0x0010cd7c      stp   x29, x30, [var_30h]!
+67398-│           0x0010cd80      stp   x22, x21, [var_20h]
+67399-│           0x0010cd84      stp   x20, x19, [var_10h]
+67400-│           0x0010cd88      mov   x29, sp
+67401-│           0x0010cd8c      adrp  x0, 0x257000
+67402-│           0x0010cd90      add   x0, x0, 0x3eb                        ; int64_t arg1
+67403-│           0x0010cd94      bl    fcn.0014c9f8
+67404-│           0x0010cd98      mov   w0, 0x1014
+67405-│           0x0010cd9c      movk  w0, 0xc200, lsl 16
+67406-│           0x0010cda0      mov   w1, 0x1f
+67407-│           0x0010cda4      mov   x2, xzr
+67408-│           0x0010cda8      mov   x3, xzr
+67409-│           0x0010cdac      smc   0
+--
+67424-│       │   0x0010cde8      mov   x2, x22                              ; unsigned long arg3
+67425-│       │   0x0010cdec      mov   x3, x21                              ; int64_t arg4
+67426-│       │   0x0010cdf0      mov   x4, x20                              ; int64_t arg5
+67427-│       │   0x0010cdf4      bl    fcn.0014c9f8
+67428-│      ┌──< 0x0010cdf8      b     0x10ce08
+67429-│      │└─> 0x0010cdfc      adrp  x0, str.setct_CertResTBE             ; 0x26a000
+67430-│      │    0x0010ce00      add   x0, x0, 0x890                        ; int64_t arg1
+67431-│      │    0x0010ce04      bl    fcn.0014c9f8
+67432-│      │    ; CODE XREF from fcn.0010cd78 @ 0x10cdf8
+67433-│      └──> 0x0010ce08      mov   x0, x19
+67434-│           0x0010ce0c      ldp   x20, x19, [var_10h]
+67435-│           0x0010ce10      ldp   x22, x21, [var_20h]
+67436-│           0x0010ce14      ldp   x29, x30, [sp], 0x30
+67437-│           0x0010ce18      autibsp
+67438-└           0x0010ce1c      ret
+67439:            ; CALL XREF from fcn.0017bfac @ 0x17c0e0
+67440-┌ fcn.0010ce20(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67441-│           ; arg int64_t arg1 @ x0
+67442-│           ; arg int64_t arg2 @ x1
+67443-│           ; arg int64_t arg3 @ x2
+67444-│           ; arg int64_t arg4 @ x3
+67445-│           ; arg int64_t arg5 @ x4
+67446-│           ; arg int64_t arg6 @ x5
+67447-│           ; arg int64_t arg7 @ x6
+67448-│           ; arg int64_t arg8 @ x7
+67449-│           ; var int64_t var_40h @ stack - 0x40
+67450-│           ; var int64_t var_30h @ stack - 0x30
+67451-│           ; var int64_t var_20h @ stack - 0x20
+67452-│           ; var int64_t var_10h @ stack - 0x10
+67453-│           0x0010ce20      pacibsp
+67454-│           0x0010ce24      stp   x29, x30, [var_40h]!
+67455-│           0x0010ce28      str   x23, [var_30h]
+67456-│           0x0010ce2c      stp   x22, x21, [var_20h]
+67457-│           0x0010ce30      stp   x20, x19, [var_10h]
+67458-│           0x0010ce34      mov   x29, sp
+67459-│           0x0010ce38      mov   x23, x0                              ; arg1
+67460-│           0x0010ce3c      adrp  x0, 0x273000
+67461-│           0x0010ce40      add   x0, x0, aav.0x00000414               ; int64_t arg1
+67462-│           0x0010ce44      bl    fcn.0014c9f8
+67463-│           0x0010ce48      mov   w0, 0x1014
+67464-│           0x0010ce4c      movk  w0, 0xc200, lsl 16
+--
+67487-│      ┌──< 0x0010cea8      b     0x10cec0
+67488-│      │└─> 0x0010ceac      adrp  x0, 0x24b000
+67489-│      │    0x0010ceb0      add   x0, x0, 0xf11                        ; int64_t arg1
+67490-│      │    0x0010ceb4      mov   x1, x20                              ; int64_t arg2
+67491-│      │    0x0010ceb8      str   x20, [x23]
+67492-│      │    0x0010cebc      bl    fcn.0014c9f8
+67493-│      │    ; CODE XREF from fcn.0010ce20 @ 0x10cea8
+67494-│      └──> 0x0010cec0      mov   x0, x19
+67495-│           0x0010cec4      ldp   x20, x19, [var_10h]
+67496-│           0x0010cec8      ldp   x22, x21, [var_20h]
+67497-│           0x0010cecc      ldr   x23, [var_30h]                       ; aav.0x00000010
+67498-│                                                                      ; [0x10:4]=0x14000004
+67499-│           0x0010ced0      ldp   x29, x30, [sp], 0x40
+67500-│           0x0010ced4      autibsp
+67501-└           0x0010ced8      ret
+67502:            ; CALL XREF from fcn.0017bfac @ 0x17c794
+67503-            ; CALL XREF from fcn.00183e40 @ 0x184250
+67504-┌ fcn.0010cedc(int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67505-│           ; arg int64_t arg2 @ x1
+67506-│           ; arg int64_t arg3 @ x2
+67507-│           ; arg int64_t arg4 @ x3
+67508-│           ; arg int64_t arg5 @ x4
+67509-│           ; arg int64_t arg6 @ x5
+67510-│           ; arg int64_t arg7 @ x6
+67511-│           ; arg int64_t arg8 @ x7
+67512-│           ; var int64_t var_30h @ stack - 0x30
+67513-│           ; var int64_t var_20h @ stack - 0x20
+67514-│           ; var int64_t var_10h @ stack - 0x10
+67515-│           0x0010cedc      pacibsp
+67516-│           0x0010cee0      stp   x29, x30, [var_30h]!
+67517-│           0x0010cee4      stp   x22, x21, [var_20h]
+67518-│           0x0010cee8      stp   x20, x19, [var_10h]
+67519-│           0x0010ceec      mov   x29, sp
+67520-│           0x0010cef0      adrp  x0, 0x245000
+67521-│           0x0010cef4      add   x0, x0, 0x3e2                        ; int64_t arg1
+67522-│           0x0010cef8      bl    fcn.0014c9f8
+67523-│           0x0010cefc      mov   w0, 0x1014
+67524-│           0x0010cf00      movk  w0, 0xc200, lsl 16
+67525-│           0x0010cf04      mov   w1, 0xf0000
+67526-│           0x0010cf08      mov   x2, xzr
+67527-│           0x0010cf0c      mov   x3, xzr
+--
+67543-│       │   0x0010cf4c      mov   x2, x22                              ; unsigned long arg3
+67544-│       │   0x0010cf50      mov   x3, x21                              ; int64_t arg4
+67545-│       │   0x0010cf54      mov   x4, x20                              ; int64_t arg5
+67546-│       │   0x0010cf58      bl    fcn.0014c9f8
+67547-│      ┌──< 0x0010cf5c      b     0x10cf6c
+67548-│      │└─> 0x0010cf60      adrp  x0, 0x259000
+67549-│      │    0x0010cf64      add   x0, x0, 0xb37                        ; int64_t arg1
+67550-│      │    0x0010cf68      bl    fcn.0014c9f8
+67551-│      │    ; CODE XREF from fcn.0010cedc @ 0x10cf5c
+67552-│      └──> 0x0010cf6c      mov   x0, x19
+67553-│           0x0010cf70      ldp   x20, x19, [var_10h]
+67554-│           0x0010cf74      ldp   x22, x21, [var_20h]
+67555-│           0x0010cf78      ldp   x29, x30, [sp], 0x30
+67556-│           0x0010cf7c      autibsp
+67557-└           0x0010cf80      ret
+67558:            ; CALL XREF from fcn.0017bfac @ 0x17c0d4
+67559-            ; CALL XREF from fcn.00183e40 @ 0x18422c
+67560-┌ fcn.0010cf84(int64_t arg1, int64_t arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+67561-│           ; arg int64_t arg1 @ x0
+67562-│           ; arg int64_t arg2 @ x1
+67563-│           ; arg int64_t arg3 @ x2
+67564-│           ; arg int64_t arg4 @ x3
+67565-│           ; arg int64_t arg5 @ x4
+67566-│           ; arg int64_t arg6 @ x5
+67567-│           ; arg int64_t arg7 @ x6
+67568-│           ; arg int64_t arg8 @ x7
+67569-│           ; var int64_t var_40h @ stack - 0x40
+67570-│           ; var int64_t var_30h @ stack - 0x30
+67571-│           ; var int64_t var_20h @ stack - 0x20
+67572-│           ; var int64_t var_10h @ stack - 0x10
+67573-│           0x0010cf84      pacibsp
+67574-│           0x0010cf88      stp   x29, x30, [var_40h]!
+67575-│           0x0010cf8c      str   x23, [var_30h]
+67576-│           0x0010cf90      stp   x22, x21, [var_20h]
+67577-│           0x0010cf94      stp   x20, x19, [var_10h]
+67578-│           0x0010cf98      mov   x29, sp
+67579-│           0x0010cf9c      mov   x23, x0                              ; arg1
+67580-│           0x0010cfa0      adrp  x0, 0x27a000
+67581-│           0x0010cfa4      add   x0, x0, 0x29e                        ; int64_t arg1
+67582-│           0x0010cfa8      bl    fcn.0014c9f8
+67583-│           0x0010cfac      mov   w0, 0x1014
+--
+149935-│       ╎                                                              ; [0x10:4]=0x14000004
+149936-│       ╎   0x001544d0      ldp   x29, x30, [sp], 0x20
+149937-│       ╎   0x001544d4      autibsp
+149938-│       ╎   0x001544d8      ret
+149939-│ ────────> 0x001544dc      ldrb  w8, [x19, 0x68]!                     ; aav.0x00000068
+149940-│       ╎                                                              ; [0x68:4]=0xd61f0000
+149941-│       ╎   0x001544e0      ldrb  w9, [x19, 3]                         ; [0x3:4]=0x48776b00
+149942-│       ╎   0x001544e4      ldrb  w10, [x19, 2]                        ; [0x2:4]=0x776b0000
+149943-│       ╎   0x001544e8      ldrb  w11, [x19, 1]                        ; [0x1:4]=0x6b000000
+149944-│       ╎   0x001544ec      bfi   w10, w9, 8, 8
+149945-│       ╎   0x001544f0      bfi   w8, w11, 8, 8
+149946-│       ╎   0x001544f4      bfi   w8, w10, 0x10, 0x10
+149947-│       ╎   0x001544f8      cmp   w8, w0
+149948-│       ╎   0x001544fc      cset  w0, eq
+149949-└       └─< 0x00154500      b     0x1544cc
+149950:            ; CALL XREF from fcn.0017bfac @ 0x17bfc0
+149951-┌ fcn.00154504();
+149952-│           ; var int64_t var_20h @ stack - 0x20
+149953-│           ; var int64_t var_10h @ stack - 0x10
+149954-│           0x00154504      pacibsp
+149955-│           0x00154508      stp   x29, x30, [var_20h]!
+149956-│           0x0015450c      str   x19, [var_10h]
+149957-│           0x00154510      mov   x29, sp
+149958-│           0x00154514      mov   w8, 0x102
+149959-│           0x00154518      adrp  x2, 0x2ad000
+149960-│           0x0015451c      adrp  x9, 0x2b4000
+149961-│           0x00154520      movk  w8, 0xb200, lsl 16
+149962-│           0x00154524      add   x2, x2, aav.0x00000d80
+149963-│           0x00154528      add   x9, x9, aav.0x00000460               ; "\t\xcd@\xb9\xea'\U00000002)\n\xd1@\xb9\t\xd5@\xb9\xea'\U00000003)\n\xd9@\xb9\t\xdd@\xb9\xea'\U00000004)\n\xe1@\xb9\t\xe5@\xb9\xe"
+149964-│           0x0015452c      add   x1, x8, aav.0x00000100
+149965-│           0x00154530      sub   x8, x9, x2
+149966-│           0x00154534      mov   w9, 1
+149967-│           0x00154538      add   x8, x8, 0xfff
+149968-│           0x0015453c      movk  w9, 0x9800, lsl 16
+149969-│           0x00154540      orr   x8, x9, x8, lsr 4
+149970-│           0x00154544      mov   w0, 0x102
+149971-│           0x00154548      and   x3, x8, 0xffffffffffffff01
+149972-│           0x0015454c      movk  w0, 0xb200, lsl 16
+149973-│           0x00154550      bl    fcn.0010a01c
+149974-│           0x00154554      mov   x19, x0
+149975-│           0x00154558      adrp  x0, str.setct_CertResTBE             ; 0x26a000
+149976-│           0x0015455c      add   x0, x0, 0xf4f                        ; int64_t arg1
+149977-│           0x00154560      mov   x1, x19                              ; int64_t arg2
+149978-│           0x00154564      bl    fcn.0014c9f8
+149979-│           0x00154568      mov   w0, w19
+149980-│           0x0015456c      ldr   x19, [var_10h]                       ; aav.0x00000010
+149981-│                                                                      ; [0x10:4]=0x14000004
+149982-│           0x00154570      ldp   x29, x30, [sp], 0x20
+149983-│           0x00154574      autibsp
+149984-└           0x00154578      ret
+149985:            ; CALL XREF from fcn.0017bfac @ 0x17bfcc
+149986-┌ fcn.0015457c();
+149987-│           ; var int64_t var_20h @ stack - 0x20
+149988-│           ; var int64_t var_10h @ stack - 0x10
+149989-│           0x0015457c      pacibsp
+149990-│           0x00154580      stp   x29, x30, [var_20h]!
+149991-│           0x00154584      stp   x20, x19, [var_10h]
+149992-│           0x00154588      mov   x29, sp
+149993-│           0x0015458c      adrp  x2, 0x2b4000
+149994-│           0x00154590      adrp  x8, 0x2b8000
+149995-│           0x00154594      add   x2, x2, aav.0x00000460               ; "\t\xcd@\xb9\xea'\U00000002)\n\xd1@\xb9\t\xd5@\xb9\xea'\U00000003)\n\xd9@\xb9\t\xdd@\xb9\xea'\U00000004)\n\xe1@\xb9\t\xe5@\xb9\xe"
+149996-│           0x00154598      add   x8, x8, aav.0x00000c38               ; "eived on 0x%lx from %s\n"
+149997-│           0x0015459c      sub   x8, x8, x2
+149998-│           0x001545a0      mov   w9, 1
+149999-│           0x001545a4      mov   w20, 0x102
+150000-│           0x001545a8      add   x8, x8, 0xfff
+150001-│           0x001545ac      movk  w9, 0x9800, lsl 16
+150002-│           0x001545b0      movk  w20, 0xb200, lsl 16
+150003-│           0x001545b4      orr   x8, x9, x8, lsr 4
+150004-│           0x001545b8      mov   w0, 0x102
+150005-│           0x001545bc      and   x3, x8, 0xffffffffffffff01
+150006-│           0x001545c0      add   x1, x20, 0xff
+150007-│           0x001545c4      movk  w0, 0xb200, lsl 16
+150008-│           0x001545c8      bl    fcn.0010a01c
+150009-│           0x001545cc      mov   x19, x0
+150010-│           0x001545d0      adrp  x0, 0x26f000
+--
+190225-│    ││││   0x00178f44      mov   w0, w19
+190226-│   ┌─────< 0x00178f48      b     0x178f5c
+190227-│   ││││└─> 0x00178f4c      adrp  x0, 0x23a000
+190228-│   ││││    0x00178f50      add   x0, x0, 0xfde                        ; int64_t arg1
+190229-│   ││││    0x00178f54      bl    fcn.0014c9f8
+190230-│   ││││    ; CODE XREF from fcn.00178dc4 @ 0x178e90
+190231-│   │└─└──> 0x00178f58      mov   w0, wzr
+190232-│   │ │     ; CODE XREFS from fcn.00178dc4 @ 0x178e20, 0x178f48
+190233-│   └─└───> 0x00178f5c      ldp   x20, x19, [var_10h]
+190234-│           0x00178f60      ldr   x21, [var_20h]                       ; aav.0x00000010
+190235-│                                                                      ; [0x10:4]=0x14000004
+190236-│           0x00178f64      ldp   x29, x30, [sp], 0x30
+190237-│           0x00178f68      autibsp
+190238-└           0x00178f6c      ret
+190239-        ╎   ; CALL XREF from fcn.00178dc4 @ 0x178ee8
+190240:        ╎   ; CALL XREF from fcn.0017bfac @ 0x17c564
+190241-┌ fcn.00178f70(int64_t arg1);
+190242-│       ╎   ; arg int64_t arg1 @ x0
+190243-│       ╎   ; var int64_t var_20h @ stack - 0x20
+190244-│       ╎   ; var int64_t var_10h @ stack - 0x10
+190245-│       ╎   0x00178f70      pacibsp
+190246-│       ╎   0x00178f74      stp   x29, x30, [var_20h]!
+190247-│       ╎   0x00178f78      str   x19, [var_10h]
+190248-│       ╎   0x00178f7c      mov   x29, sp
+190249-│       ╎   0x00178f80      mov   w0, wzr                              ; arg1
+190250-│       ╎   0x00178f84      bl    fcn.0017aee0
+190251-│      ┌──< 0x00178f88      cbz   w0, 0x178fa4
+190252-│      │╎   0x00178f8c      adrp  x0, 0x27d000
+190253-│      │╎   0x00178f90      adrp  x1, 0x25c000
+190254-│      │╎   0x00178f94      add   x0, x0, 0x2d8                        ; int64_t arg1
+190255-│      │╎   0x00178f98      add   x1, x1, 0x96b                        ; int64_t arg2
+190256-│      │╎   0x00178f9c      mov   w2, wzr
+190257-│      │╎   0x00178fa0      bl    fcn.0014c9f8
+190258-│      └──> 0x00178fa4      mov   w0, 1
+190259-│       ╎   0x00178fa8      bl    fcn.0017aee0
+190260-│      ┌──< 0x00178fac      cbz   w0, 0x178fc8
+190261-│      │╎   0x00178fb0      adrp  x0, 0x27d000
+190262-│      │╎   0x00178fb4      adrp  x1, 0x25c000
+190263-│      │╎   0x00178fb8      add   x0, x0, 0x2d8                        ; int64_t arg1
+190264-│      │╎   0x00178fbc      add   x1, x1, 0x96b                        ; int64_t arg2
+190265-│      │╎   0x00178fc0      mov   w2, 1
+--
+191361-│           0x00179e38      ldp   x20, x19, [var_10h]
+191362-│           0x00179e3c      ldp   x22, x21, [var_20h]
+191363-│           0x00179e40      ldp   x24, x23, [var_30h]
+191364-│           0x00179e44      ldp   x26, x25, [var_40h]
+191365-│           0x00179e48      ldp   x29, x30, [var_50h]
+191366-│           0x00179e4c      add   sp, sp, 0x70
+191367-│           0x00179e50      autibsp
+191368-└           0x00179e54      ret
+191369-            ; CALL XREF from fcn.0016f3e0 @ 0x16fb34
+191370-┌ fcn.00179e58();
+191371-│           0x00179e58      pacibsp
+191372-│           0x00179e5c      adrp  x0, 0x59f000
+191373-│           0x00179e60      add   x0, x0, 0xb78
+191374-│           0x00179e64      autibsp
+191375-└           0x00179e68      ret
+191376:      ╎╎╎   ; CALL XREF from fcn.0017bfac @ 0x17c754
+191377-┌ fcn.00179e6c(int64_t arg1, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8, int64_t arg_10h);
+191378-│     ╎╎╎   ; arg int64_t arg1 @ x0
+191379-│     ╎╎╎   ; arg int64_t arg5 @ x4
+191380-│     ╎╎╎   ; arg int64_t arg6 @ x5
+191381-│     ╎╎╎   ; arg int64_t arg7 @ x6
+191382-│     ╎╎╎   ; arg int64_t arg8 @ x7
+191383-│     ╎╎╎   ; var int64_t var_20h @ stack - 0x20
+191384-│     ╎╎╎   ; var int64_t var_10h @ stack - 0x10
+191385-│     ╎╎╎   ; arg int64_t arg_10h @ stack + 0x10
+191386-│     ╎╎╎   0x00179e6c      pacibsp
+191387-│     ╎╎╎   0x00179e70      stp   x29, x30, [var_20h]!
+191388-│     ╎╎╎   0x00179e74      str   x19, [var_10h]
+191389-│     ╎╎╎   0x00179e78      mov   x29, sp
+191390-│    ┌────< 0x00179e7c      tbnz  w0, 0x1f, 0x179eac
+191391-│    │╎╎╎   0x00179e80      mov   w3, w0                               ; arg1
+191392-│    │╎╎╎   0x00179e84      cmp   w0, 3                                ; arg1
+191393-│   ┌─────< 0x00179e88      b.lt  0x179ebc
+191394-│   ││╎╎╎   0x00179e8c      ldr   x19, [arg_10h]                       ; aav.0x00000010
+191395-│   ││╎╎╎                                                              ; [0x10:4]=0x14000004
+191396-│   ││╎╎╎   0x00179e90      adrp  x0, 0x243000
+191397-│   ││╎╎╎   0x00179e94      adrp  x1, 0x254000
+191398-│   ││╎╎╎   0x00179e98      add   x0, x0, 0xab1
+191399-│   ││╎╎╎   0x00179e9c      add   x1, x1, 0x59
+191400-│   ││╎╎╎   0x00179ea0      ldp   x29, x30, [sp], 0x20
+191401-│   ││╎╎╎   0x00179ea4      autibsp
+--
+191450-│     │╎╎                                                              ; [0x10:4]=0x14000004
+191451-│     │╎╎   0x00179f5c      adrp  x0, 0x241000
+191452-│     │╎╎   0x00179f60      adrp  x1, 0x27a000
+191453-│     │╎╎   0x00179f64      add   x0, x0, 0x5f0
+191454-│     │╎╎   0x00179f68      add   x1, x1, 0xfbb
+191455-│     │╎╎   0x00179f6c      ldp   x29, x30, [sp], 0x20
+191456-│     │╎╎   0x00179f70      autibsp
+191457-│     │└──< 0x00179f74      b     fcn.0014c9f8
+191458-│     └───> 0x00179f78      ldr   x19, [var_10h]                       ; aav.0x00000010
+191459-│       ╎                                                              ; [0x10:4]=0x14000004
+191460-│       ╎   0x00179f7c      adrp  x0, 0x23a000
+191461-│       ╎   0x00179f80      add   x0, x0, 0xfde
+191462-│       ╎   0x00179f84      ldp   x29, x30, [sp], 0x20
+191463-│       ╎   0x00179f88      autibsp
+191464-└       └─< 0x00179f8c      b     fcn.0014c9f8
+191465:            ; CALL XREF from fcn.0017bfac @ 0x17c758
+191466-            ; CALL XREF from fcn.00187cf0 @ 0x187e7c
+191467-┌ fcn.00179f90();
+191468-│           0x00179f90      pacibsp
+191469-│           0x00179f94      adrp  x8, 0x59f000
+191470-│           0x00179f98      ldr   w0, [x8, 0xc78]                      ; [0xc78:4]=0xa0d7373 ; "ss\r\n"
+191471-│           0x00179f9c      autibsp
+191472-└           0x00179fa0      ret
+191473-       ╎╎   ; CALL XREF from fcn.00175f44 @ 0x176f64
+191474-       ╎╎   ; CODE XREF from fcn.0017ca28 @ 0x17caa8
+191475-       ╎╎   ; CALL XREF from fcn.0017db48 @ 0x17def0
+191476-       ╎╎   ; CALL XREF from fcn.0017e384 @ 0x17e42c
+191477-┌ fcn.00179fa4(unsigned long arg1, int64_t arg2, int64_t arg3, int64_t arg4);
+191478-│      ╎╎   ; arg unsigned long arg1 @ x0
+191479-│      ╎╎   ; arg int64_t arg2 @ x1
+191480-│      ╎╎   ; arg int64_t arg3 @ x2
+191481-│      ╎╎   ; arg int64_t arg4 @ x3
+191482-│      ╎╎   ; var int64_t var_20h @ stack - 0x20
+191483-│      ╎╎   ; var int64_t var_10h @ stack - 0x10
+191484-│      ╎╎   0x00179fa4      pacibsp
+191485-│      ╎╎   0x00179fa8      stp   x29, x30, [var_20h]!
+191486-│      ╎╎   0x00179fac      str   x19, [var_10h]
+191487-│      ╎╎   0x00179fb0      mov   x29, sp
+191488-│      ╎╎   0x00179fb4      cmp   w0, 0xdff                            ; arg1
+191489-│     ┌───< 0x00179fb8      b.gt  0x179fe0
+191490-│     │╎╎   0x00179fbc      cmp   w0, aav.0x00000300                   ; arg1
+--
+193561-│       │   0x0017bb3c      adrp  x4, 0x26f000
+193562-│       │   0x0017bb40      mov   w3, w0
+193563-│       │   0x0017bb44      add   x4, x4, 0xef3                        ; int64_t arg5
+193564-│       │   0x0017bb48      mov   w0, 0xa
+193565-│       │   0x0017bb4c      mov   w2, 0xff0000
+193566-│       │   0x0017bb50      mov   w1, w19
+193567-│       │   0x0017bb54      bl    fcn.0013deb8
+193568-│       │   0x0017bb58      bl    fcn.000f9608
+193569-│       │   0x0017bb5c      mov   w0, -1
+193570-│       │   ; CODE XREF from fcn.0017baf8 @ 0x17bb28
+193571-│       └─> 0x0017bb60      ldr   x19, [var_10h]                       ; aav.0x00000010
+193572-│                                                                      ; [0x10:4]=0x14000004
+193573-│           0x0017bb64      ldp   x29, x30, [sp], 0x20
+193574-│           0x0017bb68      autibsp
+193575-└           0x0017bb6c      ret
+193576:            ; CALL XREF from fcn.0017bfac @ 0x17c76c
+193577-┌ fcn.0017bb70(int64_t arg2, int64_t arg3, int64_t arg4);
+193578-│           ; arg int64_t arg2 @ x1
+193579-│           ; arg int64_t arg3 @ x2
+193580-│           ; arg int64_t arg4 @ x3
+193581-│           ; var int64_t var_28h @ stack - 0x28
+193582-│           ; var int64_t var_24h @ stack - 0x24
+193583-│           ; var int64_t var_20h @ stack - 0x20
+193584-│           ; var int64_t var_10h @ stack - 0x10
+193585-│           0x0017bb70      pacibsp
+193586-│           0x0017bb74      sub   sp, sp, 0x30
+193587-│           0x0017bb78      stp   x29, x30, [var_20h]
+193588-│           0x0017bb7c      stp   x20, x19, [var_10h]
+193589-│           0x0017bb80      add   x29, sp, 0x10
+193590-│           0x0017bb84      adrp  x0, 0x26f000
+193591-│           0x0017bb88      add   x0, x0, 0xe25                        ; int64_t arg1
+193592-│           0x0017bb8c      strh  wzr, [var_24h]
+193593-│           0x0017bb90      str   wzr, [var_28h]
+193594-│           0x0017bb94      bl    fcn.001758fc
+193595-│       ┌─< 0x0017bb98      cbz   x0, 0x17bbe8
+193596-│       │   0x0017bb9c      ldrb  w1, [x0, 0x1c]!                      ; aav.0x0000001c
+193597-│       │                                                              ; [0x1c:4]=0
+193598-│       │   0x0017bba0      mov   w3, 6
+193599-│       │   0x0017bba4      ldrb  w8, [x0, -8]!                        ; aav.0x00000008
+193600-│       │                                                              ; [0x8:4]=0x68656164 ; "daeh"
+193601-│       │   0x0017bba8      ldrb  w12, [x0, 3]                         ; [0x3:4]=0x48776b00
+--
+193746-│      ││   0x0017bd8c      bl    fcn.000f9608
+193747-│      ││   0x0017bd90      mov   w0, -1
+193748-│     ┌───< 0x0017bd94      b     0x17bda8
+193749-│     ││└─> 0x0017bd98      adrp  x0, 0x251000
+193750-│     ││    0x0017bd9c      add   x0, x0, 0x8bc                        ; int64_t arg1
+193751-│     ││    0x0017bda0      bl    fcn.0014c9f8
+193752-│     │└──> 0x0017bda4      mov   w0, wzr
+193753-│     │     ; CODE XREF from fcn.0017bccc @ 0x17bd94
+193754-│     └───> 0x0017bda8      ldp   x20, x19, [var_10h]
+193755-│           0x0017bdac      ldp   x22, x21, [var_20h]
+193756-│           0x0017bdb0      ldr   x23, [var_30h]                       ; aav.0x00000010
+193757-│                                                                      ; [0x10:4]=0x14000004
+193758-│           0x0017bdb4      ldp   x29, x30, [sp], 0x40
+193759-│           0x0017bdb8      autibsp
+193760-└           0x0017bdbc      ret
+193761:        ╎   ; CALL XREF from fcn.0017bfac @ 0x17c7b8
+193762-┌ fcn.0017bdc0();
+193763-│       ╎   ; var int64_t var_30h @ stack - 0x30
+193764-│       ╎   ; var int64_t var_20h @ stack - 0x20
+193765-│       ╎   ; var int64_t var_10h @ stack - 0x10
+193766-│       ╎   0x0017bdc0      pacibsp
+193767-│       ╎   0x0017bdc4      stp   x29, x30, [var_30h]!
+193768-│       ╎   0x0017bdc8      str   x28, [var_20h]
+193769-│       ╎   0x0017bdcc      stp   x20, x19, [var_10h]
+193770-│       ╎   0x0017bdd0      mov   x29, sp
+193771-│       ╎   0x0017bdd4      sub   sp, sp, aav.0x00000400
+193772-│       ╎   0x0017bdd8      mov   x0, sp                               ; int64_t arg1
+193773-│       ╎   0x0017bddc      mov   w2, aav.0x00000400
+193774-│       ╎   0x0017bde0      mov   w1, wzr
+193775-│       ╎   0x0017bde4      bl    fcn.0014d8fc
+193776-│       ╎   0x0017bde8      adrp  x0, 0x23a000
+193777-│       ╎   0x0017bdec      add   x0, x0, 0xffa                        ; int64_t arg1
+193778-│       ╎   0x0017bdf0      bl    fcn.001758fc
+193779-│      ┌──< 0x0017bdf4      cbz   x0, 0x17be74
+193780-│      │╎   0x0017bdf8      mov   x8, x0
+193781-│      │╎   0x0017bdfc      ldrb  w1, [x8, 0x1c]!                      ; aav.0x0000001c
+193782-│      │╎                                                              ; [0x1c:4]=0
+193783-│      │╎   0x0017be00      mov   x19, x0
+193784-│      │╎   0x0017be04      mov   x0, sp                               ; int64_t arg1
+193785-│      │╎   0x0017be08      mov   w3, aav.0x00000400
+193786-│      │╎   0x0017be0c      ldrb  w2, [x8, -8]!                        ; aav.0x00000008
+--
+193884-│   └─────< 0x0017bf7c      b     0x17be5c
+193885-│    ╎└───> 0x0017bf80      adrp  x0, 0x251000
+193886-│    ╎      0x0017bf84      adrp  x1, 0x246000
+193887-│    ╎      0x0017bf88      add   x0, x0, 0x8f0                        ; int64_t arg1
+193888-│    ╎      0x0017bf8c      add   x1, x1, 0x2cd                        ; int64_t arg2
+193889-│    ╎      0x0017bf90      bl    fcn.0014c9f8
+193890-└    └────< 0x0017bf94      b     0x17be5c
+193891-            ; CALL XREF from fcn.00114100 @ 0x114290
+193892-┌ fcn.0017bf98();
+193893-│           0x0017bf98      pacibsp
+193894-│           0x0017bf9c      stp   x29, x30, [sp, -0x40]!
+193895-│           0x0017bfa0      str   x28, [sp, 0x10]
+193896-│           0x0017bfa4      stp   x22, x21, [sp, 0x20]
+193897-└           0x0017bfa8      stp   x20, x19, [sp, 0x30]
+193898-            ; CALL XREF from fcn.00060124 @ +0x7e8
+193899:┌ fcn.0017bfac(int64_t arg_10h, int64_t arg_20h, int64_t arg_30h);
+193900-│           ; var int64_t var_14h @ stack - 0x14
+193901-│           ; var int64_t var_4h @ stack - 0x4
+193902-│           ; arg int64_t arg_10h @ stack + 0x10
+193903-│           ; arg int64_t arg_20h @ stack + 0x20
+193904-│           ; arg int64_t arg_30h @ stack + 0x30
+193905:│           0x0017bfac      mov   x29, sp
+193906-│           0x0017bfb0      sub   sp, sp, 4, lsl 12
+193907-│           0x0017bfb4      bl    fcn.000f2f28
+193908-│       ┌─< 0x0017bfb8      cbnz  w0, 0x17bfd0
+193909-│       │   0x0017bfbc      mov   x1, xzr
+193910-│       │   0x0017bfc0      bl    fcn.00154504
+193911-│       │   0x0017bfc4      mov   w0, wzr
+193912-│       │   0x0017bfc8      mov   x1, xzr
+193913-│       │   0x0017bfcc      bl    fcn.0015457c
+193914-│       └─> 0x0017bfd0      adrp  x0, 0x5a0000
+193915-│           0x0017bfd4      adrp  x21, 0x5a0000
+193916-│           0x0017bfd8      add   x0, x0, aav.0x000004c0               ; int64_t arg1
+193917-│           0x0017bfdc      mov   w2, aav.0x00000108
+193918-│           0x0017bfe0      mov   w1, wzr
+193919-│           0x0017bfe4      str   x0, [x21, 0x4b8]
+193920-│           0x0017bfe8      bl    fcn.0014d8fc
+193921-│           0x0017bfec      adrp  x0, 0x5a0000
+193922-│           0x0017bff0      adrp  x20, 0x5a0000
+193923-│           0x0017bff4      add   x0, x0, 0x5c8                        ; int64_t arg1
+193924-│           0x0017bff8      mov   w2, 0x20
+193925-│           0x0017bffc      mov   w1, wzr
+193926-│           0x0017c000      str   x0, [x20, 0x5e8]
+193927-│           0x0017c004      bl    fcn.0014d8fc
+193928-│           0x0017c008      ldr   x0, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f ; int64_t arg1
+193929-│           0x0017c00c      adrp  x8, 0x5a0000
+193930-│           0x0017c010      adrp  x1, str.Page_Domain_Fault__used_only_for_faults_reported_in_the_PAR_EL1 ; 0x238000
+--
+194029-│           0x0017c19c      ldp   x29, x30, [sp], 0x10
+194030-│           0x0017c1a0      mov   x19, x0
+194031-│           0x0017c1a4      cmn   w19, 2
+194032-│       ┌─< 0x0017c1a8      b.ne  0x17c1c4
+194033-│       │   0x0017c1ac      adrp  x0, 0x27a000
+194034-│       │   0x0017c1b0      add   x0, x0, 0xfc7                        ; int64_t arg1
+194035-│       │   0x0017c1b4      mov   w1, -2
+194036-│       │   0x0017c1b8      bl    fcn.0014c9f8
+194037-│       │   0x0017c1bc      mov   x8, xzr
+194038-│      ┌──< 0x0017c1c0      b     0x17c1d8
+194039-│      │└─> 0x0017c1c4      adrp  x0, 0x265000
+194040-│      │    0x0017c1c8      mov   w1, w19
+194041-│      │    0x0017c1cc      add   x0, x0, aav.0x00000480               ; "\n\xe1@\xb9\t\xe5@\xb9\xea'\U00000005)\n\xe9@\xb9\t\xed@\xb9\xea'\U00000006)\U0000001f\U00000001" ; int64_t arg1
+194042-│      │    0x0017c1d0      bl    fcn.0014c9f8
+194043-│      │    0x0017c1d4      sxtw  x8, w19
+194044:│      │    ; CODE XREF from fcn.0017bfac @ 0x17c1c0
+194045-│      └──> 0x0017c1d8      ldr   x9, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+194046-│           0x0017c1dc      adrp  x0, 0x248000
+194047-│           0x0017c1e0      add   x0, x0, 0x54e                        ; int64_t arg1
+194048-│           0x0017c1e4      mov   w1, 1
+194049-│           0x0017c1e8      str   x8, [x9]
+194050-│           0x0017c1ec      bl    fcn.0014c9f8
+194051-│           0x0017c1f0      mov   w0, -0xf3
+194052-│           0x0017c1f4      mov   x1, xzr
+194053-│           0x0017c1f8      mov   w2, 1
+194054-│           0x0017c1fc      mov   x3, xzr
+194055-│           0x0017c200      stp   x29, x30, [var_14h]!
+194056-│           0x0017c204      smc   0
+194057-│           0x0017c208      ldp   x29, x30, [sp], 0x10
+194058-│           0x0017c20c      mov   x19, x0
+194059-│           0x0017c210      cmn   w19, 2
+194060-│       ┌─< 0x0017c214      b.ne  0x17c230
+194061-│       │   0x0017c218      adrp  x0, 0x27a000
+194062-│       │   0x0017c21c      add   x0, x0, 0xfc7                        ; int64_t arg1
+194063-│       │   0x0017c220      mov   w1, -2
+194064-│       │   0x0017c224      bl    fcn.0014c9f8
+194065-│       │   0x0017c228      mov   x8, xzr
+194066-│      ┌──< 0x0017c22c      b     0x17c244
+194067-│      │└─> 0x0017c230      adrp  x0, 0x265000
+194068-│      │    0x0017c234      mov   w1, w19
+194069-│      │    0x0017c238      add   x0, x0, aav.0x00000480               ; "\n\xe1@\xb9\t\xe5@\xb9\xea'\U00000005)\n\xe9@\xb9\t\xed@\xb9\xea'\U00000006)\U0000001f\U00000001" ; int64_t arg1
+194070-│      │    0x0017c23c      bl    fcn.0014c9f8
+194071-│      │    0x0017c240      sxtw  x8, w19
+194072:│      │    ; CODE XREF from fcn.0017bfac @ 0x17c22c
+194073-│      └──> 0x0017c244      ldr   x9, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+194074-│           0x0017c248      adrp  x0, 0x248000
+194075-│           0x0017c24c      add   x0, x0, 0x54e                        ; int64_t arg1
+194076-│           0x0017c250      mov   w1, 2
+194077-│           0x0017c254      str   x8, [x9, 8]
+194078-│           0x0017c258      bl    fcn.0014c9f8
+194079-│           0x0017c25c      mov   w0, -0xf3
+194080-│           0x0017c260      mov   x1, xzr
+194081-│           0x0017c264      mov   w2, 2
+194082-│           0x0017c268      mov   x3, xzr
+194083-│           0x0017c26c      stp   x29, x30, [var_14h]!
+194084-│           0x0017c270      smc   0
+194085-│           0x0017c274      ldp   x29, x30, [sp], 0x10
+194086-│           0x0017c278      mov   x19, x0
+194087-│           0x0017c27c      cmn   w19, 2
+194088-│       ┌─< 0x0017c280      b.ne  0x17c29c
+194089-│       │   0x0017c284      adrp  x0, 0x27a000
+194090-│       │   0x0017c288      add   x0, x0, 0xfc7                        ; int64_t arg1
+194091-│       │   0x0017c28c      mov   w1, -2
+194092-│       │   0x0017c290      bl    fcn.0014c9f8
+194093-│       │   0x0017c294      mov   x8, xzr
+194094-│      ┌──< 0x0017c298      b     0x17c2b0
+194095-│      │└─> 0x0017c29c      adrp  x0, 0x265000
+194096-│      │    0x0017c2a0      mov   w1, w19
+194097-│      │    0x0017c2a4      add   x0, x0, aav.0x00000480               ; "\n\xe1@\xb9\t\xe5@\xb9\xea'\U00000005)\n\xe9@\xb9\t\xed@\xb9\xea'\U00000006)\U0000001f\U00000001" ; int64_t arg1
+194098-│      │    0x0017c2a8      bl    fcn.0014c9f8
+194099-│      │    0x0017c2ac      sxtw  x8, w19
+194100:│      │    ; CODE XREF from fcn.0017bfac @ 0x17c298
+194101-│      └──> 0x0017c2b0      ldr   x9, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+194102-│           0x0017c2b4      adrp  x0, 0x248000
+194103-│           0x0017c2b8      add   x0, x0, 0x54e                        ; int64_t arg1
+194104-│           0x0017c2bc      mov   w1, 3
+194105-│           0x0017c2c0      str   x8, [x9, 0x10]
+194106-│           0x0017c2c4      bl    fcn.0014c9f8
+194107-│           0x0017c2c8      mov   w0, -0xf3
+194108-│           0x0017c2cc      mov   x1, xzr
+194109-│           0x0017c2d0      mov   w2, 3
+194110-│           0x0017c2d4      mov   x3, xzr
+194111-│           0x0017c2d8      stp   x29, x30, [var_14h]!
+194112-│           0x0017c2dc      smc   0
+194113-│           0x0017c2e0      ldp   x29, x30, [sp], 0x10
+194114-│           0x0017c2e4      mov   x19, x0
+194115-│           0x0017c2e8      cmn   w19, 2
+194116-│       ┌─< 0x0017c2ec      b.ne  0x17c308
+194117-│       │   0x0017c2f0      adrp  x0, 0x27a000
+194118-│       │   0x0017c2f4      add   x0, x0, 0xfc7                        ; int64_t arg1
+194119-│       │   0x0017c2f8      mov   w1, -2
+194120-│       │   0x0017c2fc      bl    fcn.0014c9f8
+194121-│       │   0x0017c300      mov   x10, xzr
+194122-│      ┌──< 0x0017c304      b     0x17c31c
+194123-│      │└─> 0x0017c308      adrp  x0, 0x265000
+194124-│      │    0x0017c30c      mov   w1, w19
+194125-│      │    0x0017c310      add   x0, x0, aav.0x00000480               ; "\n\xe1@\xb9\t\xe5@\xb9\xea'\U00000005)\n\xe9@\xb9\t\xed@\xb9\xea'\U00000006)\U0000001f\U00000001" ; int64_t arg1
+194126-│      │    0x0017c314      bl    fcn.0014c9f8
+194127-│      │    0x0017c318      sxtw  x10, w19
+194128:│      │    ; CODE XREF from fcn.0017bfac @ 0x17c304
+194129-│      └──> 0x0017c31c      ldr   x8, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+194130-│           0x0017c320      ldr   x9, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194131-│           0x0017c324      str   x10, [x8, 0x18]
+194132-│           0x0017c328      ldr   x1, [x9, 0x30]                       ; aav.0x00000030
+194133-│                                                                      ; [0x30:4]=0x58000911
+194134-│           0x0017c32c      ldr   x2, [x8]
+194135-│           0x0017c330      cmp   x1, x2
+194136-│       ┌─< 0x0017c334      b.eq  0x17c354
+194137-│       │   0x0017c338      adrp  x0, 0x241000
+194138-│       │   0x0017c33c      add   x0, x0, 0x607                        ; int64_t arg1
+194139-│       │   0x0017c340      bl    fcn.0014c9f8
+194140-│       │   0x0017c344      ldr   x8, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+194141-│       │   0x0017c348      ldr   x9, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194142-│       │   0x0017c34c      ldr   x10, [x8]
+194143-│       │   0x0017c350      str   x10, [x9, 0x30]
+194144-│       └─> 0x0017c354      ldr   x1, [x9, 0x40]                       ; aav.0x00000040
+194145-│                                                                      ; [0x40:4]=0xaa0003f4
+194146-│           0x0017c358      ldr   x2, [x8, 8]                          ; aav.0x00000008
+194147-│                                                                      ; [0x8:4]=0x68656164 ; "daeh"
+194148-│           0x0017c35c      cmp   x1, x2
+194149-│       ┌─< 0x0017c360      b.eq  0x17c380
+194150-│       │   0x0017c364      adrp  x0, 0x25a000
+194151-│       │   0x0017c368      add   x0, x0, 0x85d                        ; int64_t arg1
+194152-│       │   0x0017c36c      bl    fcn.0014c9f8
+194153-│       │   0x0017c370      ldr   x8, [x20, 0x5e8]                     ; [0x5e8:4]=0xf100c11f
+--
+194310-│  ││││││   0x0017c5ac      bl    fcn.0014c9f8
+194311-│  ││││││   0x0017c5b0      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194312-│  ││└────> 0x0017c5b4      ldp   x1, x2, [x8, 0x40]
+194313-│  ││ │││   0x0017c5b8      tst   x2, x1
+194314-│  ││┌────< 0x0017c5bc      b.eq  0x17c618
+194315-│  ││││││   0x0017c5c0      adrp  x0, 0x246000
+194316-│  ││││││   0x0017c5c4      add   x0, x0, 0x333                        ; int64_t arg1
+194317-│  ││││││   0x0017c5c8      bl    fcn.0014c9f8
+194318-│  ││││││   0x0017c5cc      mov   w0, 8
+194319-│  ││││││   0x0017c5d0      bl    fcn.0016e1a8
+194320-│ ┌───────< 0x0017c5d4      b     0x17c630
+194321-│ ││││││└─> 0x0017c5d8      adrp  x0, 0x23f000
+194322-│ ││││││    0x0017c5dc      add   x0, x0, 0xdf                         ; int64_t arg1
+194323-│ ││││││    0x0017c5e0      mov   w2, 0x206
+194324-│ ││││││    0x0017c5e4      bl    fcn.0014c9f8
+194325:│ ││││││    ; CODE XREFS from fcn.0017bfac @ 0x17c3ec, 0x17c614, 0x17c7f8
+194326-│ ─└──└└┌─> 0x0017c5e8      mov   w0, wzr
+194327-│ │ ││  ╎   0x0017c5ec      add   sp, sp, 4, lsl 12
+194328-│ │ ││  ╎   0x0017c5f0      ldp   x20, x19, [arg_30h]
+194329-│ │ ││  ╎   0x0017c5f4      ldp   x22, x21, [arg_20h]
+194330-│ │ ││  ╎   0x0017c5f8      ldr   x28, [arg_10h]                       ; aav.0x00000010
+194331-│ │ ││  ╎                                                              ; [0x10:4]=0x14000004
+194332-│ │ ││  ╎   0x0017c5fc      ldp   x29, x30, [sp], 0x40
+194333-│ │ ││  ╎   0x0017c600      autibsp
+194334-│ │ ││  ╎   0x0017c604      ret
+194335-│ │ └─────> 0x0017c608      adrp  x0, 0x246000
+194336-│ │  │  ╎   0x0017c60c      add   x0, x0, 0x30c                        ; int64_t arg1
+194337-│ │  │  ╎   0x0017c610      bl    fcn.0014c9f8
+194338-│ ────────< 0x0017c614      b     0x17c5e8
+194339-│ │  └────> 0x0017c618      orr   x8, x2, x1
+194340-│ │    ┌──< 0x0017c61c      cbnz  x8, 0x17c630
+194341-│ │    │╎   0x0017c620      bl    fcn.0010c9d8
+194342-│ │    │╎   0x0017c624      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194343-│ │    │╎   0x0017c628      add   x0, x8, 0x40                         ; aav.0x00000040 ; int64_t arg1
+194344-│ │    │╎   0x0017c62c      bl    fcn.0010ca9c
+194345:│ │    │╎   ; CODE XREF from fcn.0017bfac @ 0x17c5d4
+194346-│ └────└──> 0x0017c630      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194347-│       ╎   0x0017c634      mov   w9, 0xfdf0
+194348-│       ╎   0x0017c638      movk  w9, 0xf4bf, lsl 16
+194349-│       ╎   0x0017c63c      ldrb  w19, [x9]
+194350-│       ╎   0x0017c640      ldr   x1, [x8, 0x30]                       ; aav.0x00000030
+194351-│       ╎                                                              ; [0x30:4]=0x58000911
+194352-│       ╎   0x0017c644      cmp   x1, x19
+194353-│      ┌──< 0x0017c648      b.hs  0x17c710
+194354-│      │╎   0x0017c64c      adrp  x0, 0x274000
+194355-│      │╎   0x0017c650      add   x0, x0, 0x636                        ; int64_t arg1
+194356-│      │╎   0x0017c654      mov   w2, w19
+194357-│      │╎   0x0017c658      bl    fcn.0014c9f8
+194358-│      │╎   0x0017c65c      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194359-│      │╎   0x0017c660      ldr   x8, [x8, 0x40]                       ; aav.0x00000040
+194360-│      │╎                                                              ; [0x40:4]=0xaa0003f4
+194361-│     ┌───< 0x0017c664      cbz   x8, 0x17c694
+194362-│     ││╎   0x0017c668      mov   x0, x19                              ; unsigned long arg1
+194363-│     ││╎   0x0017c66c      bl    fcn.0010bd44
+194364-│     ││╎   0x0017c670      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194365-│     ││╎   0x0017c674      add   x0, x8, 0xc0                         ; aav.0x000000c0 ; int64_t arg1
+194366-│     ││╎   0x0017c678      bl    fcn.0010bc88
+194367-│     ││╎   0x0017c67c      mov   w0, 9
+194368-│     ││╎   0x0017c680      mov   w1, w19
+194369-│     ││╎   0x0017c684      bl    fcn.0017c904
+194370-│    ┌────< 0x0017c688      cbz   w0, 0x17c6a4
+--
+194377-│   │└────> 0x0017c6a4      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194378-│   │ ││╎   0x0017c6a8      adrp  x20, 0x5a0000
+194379-│   │ ││╎   0x0017c6ac      add   x20, x20, 0x620
+194380-│   │ ││╎   0x0017c6b0      ldp   w4, w3, [x20, 8]
+194381-│   │ ││╎   0x0017c6b4      ldr   x1, [x8, 0x30]                       ; aav.0x00000030
+194382-│   │ ││╎                                                              ; [0x30:4]=0x58000911 ; int64_t arg2
+194383-│   │ ││╎   0x0017c6b8      ldp   w6, w5, [x20]
+194384-│   │ ││╎   0x0017c6bc      adrp  x0, 0x254000
+194385-│   │ ││╎   0x0017c6c0      add   x0, x0, 0x98                         ; int64_t arg1
+194386-│   │ ││╎   0x0017c6c4      mov   w2, w19
+194387-│   │ ││╎   0x0017c6c8      bl    fcn.0017b890
+194388-│   │ ││╎   0x0017c6cc      mov   w1, 0x10
+194389-│   │ ││╎   0x0017c6d0      mov   x0, x20                              ; int64_t arg2
+194390-│   │ ││╎   0x0017c6d4      bl    fcn.0010b9d8
+194391-│   │ ││╎   0x0017c6d8      mov   x19, x0
+194392:│   │ ││╎   ; CODE XREF from fcn.0017bfac @ 0x17c690
+194393-│   └─────> 0x0017c6dc      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194394-│     ││╎   0x0017c6e0      add   x0, x8, 0x30                         ; aav.0x00000030 ; int64_t arg1
+194395-│     ││╎   0x0017c6e4      bl    fcn.0010bbcc
+194396-│    ┌────< 0x0017c6e8      cbz   x19, 0x17c6fc
+194397-│    │││╎   0x0017c6ec      adrp  x0, 0x271000
+194398-│    │││╎   0x0017c6f0      add   x0, x0, 0xfda
+194399-│    │││╎   0x0017c6f4      mov   x1, x19
+194400-│   ┌─────< 0x0017c6f8      b     0x17c70c
+194401-│   │└────> 0x0017c6fc      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194402-│   │ ││╎   0x0017c700      adrp  x0, str.E__s:_d_Failed_to_get_command_type_0x_08x ; 0x263000
+194403-│   │ ││╎   0x0017c704      add   x0, x0, 0x21b
+194404-│   │ ││╎   0x0017c708      ldr   x1, [x8, 0x30]                       ; aav.0x00000030
+194405-│   │ ││╎                                                              ; [0x30:4]=0x58000911
+194406:│   │ ││╎   ; CODE XREF from fcn.0017bfac @ 0x17c6f8
+194407-│   └─────> 0x0017c70c      bl    fcn.0017b890
+194408:│     ││╎   ; CODE XREF from fcn.0017bfac @ 0x17c6a0
+194409-│     └└──> 0x0017c710      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194410-│       ╎   0x0017c714      ldr   x9, [x8, 0x58]                       ; aav.0x00000058
+194411-│       ╎                                                              ; [0x58:4]=0xd51e1000
+194412-│      ┌──< 0x0017c718      cbnz  x9, 0x17c744
+194413-│      │╎   0x0017c71c      bl    fcn.0010c3fc
+194414-│      │╎   0x0017c720      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194415-│      │╎   0x0017c724      add   x0, x8, 0x58                         ; aav.0x00000058 ; int64_t arg1
+194416-│      │╎   0x0017c728      bl    fcn.0010c4a4
+194417-│      │╎   0x0017c72c      adrp  x0, 0x24a000
+194418-│      │╎   0x0017c730      add   x0, x0, 0xa01                        ; int64_t arg1
+194419-│      │╎   0x0017c734      bl    fcn.0014c9f8
+194420-│      │╎   0x0017c738      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194421-│      │╎   0x0017c73c      mov   w9, 1
+194422-│      │╎   0x0017c740      strb  w9, [x22, 0x5f0]
+194423-│      └──> 0x0017c744      ldr   x9, [x8, 0x68]                       ; aav.0x00000068
+194424-│       ╎                                                              ; [0x68:4]=0xd61f0000
+194425-│      ┌──< 0x0017c748      cbz   x9, 0x17c7fc
+194426-│     ┌───> 0x0017c74c      mov   w19, -1
+194427:│     ╎│╎   ; CODE XREFS from fcn.0017bfac @ 0x17c890, 0x17c900
+194428-│  ┌┌┌────> 0x0017c750      mov   w0, w19
+194429-│  ╎╎╎╎│╎   0x0017c754      bl    fcn.00179e6c
+194430-│  ╎╎╎╎│╎   0x0017c758      bl    fcn.00179f90
+194431-│  ╎╎╎╎│╎   0x0017c75c      mov   w1, w0
+194432-│  ╎╎╎╎│╎   0x0017c760      adrp  x0, 0x25a000
+194433-│  ╎╎╎╎│╎   0x0017c764      add   x0, x0, 0x892                        ; int64_t arg2
+194434-│  ╎╎╎╎│╎   0x0017c768      bl    fcn.0014c9f8
+194435-│  ╎╎╎╎│╎   0x0017c76c      bl    fcn.0017bb70
+194436-│  ╎╎╎╎│╎   0x0017c770      bl    fcn.0017d674
+194437-│ ┌───────< 0x0017c774      cbnz  w0, 0x17c7b8
+194438-│ │╎╎╎╎│╎   0x0017c778      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194439-│ │╎╎╎╎│╎   0x0017c77c      ldr   x9, [x8, 0xc8]                       ; aav.0x000000c8
+194440-│ │╎╎╎╎│╎                                                              ; [0xc8:4]=0xd50344ff
+194441-│ │╎╎╎╎│╎   0x0017c780      cmp   x9, str.k__9Ki_8                     ; 0x200 ; "k\t@9Ki(8\b\U00000005"
+194442-│ ────────< 0x0017c784      b.eq  0x17c79c
+194443-│ │╎╎╎╎│╎   0x0017c788      adrp  x0, 0x267000
+194444-│ │╎╎╎╎│╎   0x0017c78c      add   x0, x0, 0x2a0                        ; int64_t arg2
+194445-│ │╎╎╎╎│╎   0x0017c790      bl    fcn.0014c9f8
+194446-│ │╎╎╎╎│╎   0x0017c794      bl    fcn.0010cedc
+194447-│ │╎╎╎╎│╎   0x0017c798      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194448-│ ────────> 0x0017c79c      ldr   x8, [x8, 0xd0]                       ; aav.0x000000d0
+194449-│ │╎╎╎╎│╎                                                              ; [0xd0:4]=0xd5380501
+194450-│ │╎╎╎╎│╎   0x0017c7a0      cmp   x8, 1
+194451-│ ────────< 0x0017c7a4      b.eq  0x17c7b8
+194452-│ │╎╎╎╎│╎   0x0017c7a8      adrp  x0, str.EFUSE__Set_usb_disable_se1   ; 0x23b000
+--
+194522-│   ╎╎│     0x0017c8b4      add   x1, x8, 0x68                         ; aav.0x00000068 ; int64_t arg2
+194523-│   ╎╎│     0x0017c8b8      bl    fcn.0010c62c
+194524-│   ╎╎│ ┌─< 0x0017c8bc      cbz   x19, 0x17c8d4
+194525-│   ╎╎│ │   0x0017c8c0      adrp  x0, 0x261000
+194526-│   ╎╎│ │   0x0017c8c4      add   x0, x0, 0x115                        ; int64_t arg1
+194527-│   ╎╎│ │   0x0017c8c8      mov   x1, x19                              ; int64_t arg2
+194528-│   ╎╎│ │   0x0017c8cc      bl    fcn.0017b890
+194529-│   ╎╎│┌──< 0x0017c8d0      b     0x17c8ec
+194530-│   ╎╎││└─> 0x0017c8d4      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194531-│   ╎╎││    0x0017c8d8      adrp  x0, 0x276000
+194532-│   ╎╎││    0x0017c8dc      add   x0, x0, 0x9f0                        ; int64_t arg1
+194533-│   ╎╎││    0x0017c8e0      mov   w1, 7
+194534-│   ╎╎││    0x0017c8e4      ldr   x2, [x8, 0x68]                       ; aav.0x00000068
+194535-│   ╎╎││                                                               ; [0x68:4]=0xd61f0000 ; int64_t arg3
+194536-│   ╎╎││    0x0017c8e8      bl    fcn.0017b890
+194537:│   ╎╎││    ; CODE XREF from fcn.0017bfac @ 0x17c8d0
+194538-│   ╎╎│└──> 0x0017c8ec      mov   w19, 2
+194539:│   ╎╎│     ; CODE XREF from fcn.0017bfac @ 0x17c834
+194540-│   ╎╎└───> 0x0017c8f0      ldr   x8, [x21, 0x4b8]                     ; [0x4b8:4]=0xb900211f
+194541-│   ╎╎      0x0017c8f4      ldr   x8, [x8, 0x68]                       ; aav.0x00000068
+194542-│   ╎╎                                                                 ; [0x68:4]=0xd61f0000
+194543-│   └─────< 0x0017c8f8      cbz   x8, 0x17c750
+194544-│    ╎      0x0017c8fc      bl    fcn.0017d5b4
+194545-└    └────< 0x0017c900      b     0x17c750
+194546:            ; CALL XREF from fcn.0017bfac @ 0x17c684
+194547-┌ fcn.0017c904(unsigned long arg1, unsigned long arg2, int64_t arg3, int64_t arg4, int64_t arg5, int64_t arg6, int64_t arg7, int64_t arg8);
+194548-│           ; arg unsigned long arg1 @ x0
+194549-│           ; arg unsigned long arg2 @ x1
+194550-│           ; arg int64_t arg3 @ x2
+194551-│           ; arg int64_t arg4 @ x3
+194552-│           ; arg int64_t arg5 @ x4
+194553-│           ; arg int64_t arg6 @ x5
+194554-│           ; arg int64_t arg7 @ x6
+194555-│           ; arg int64_t arg8 @ x7
+194556-│           ; var int64_t var_10h @ stack - 0x10
+194557-│           0x0017c904      pacibsp
+194558-│           0x0017c908      stp   x29, x30, [var_10h]!
+194559-│           0x0017c90c      mov   x29, sp
+194560-│           0x0017c910      cmp   w0, 9                                ; arg1
+194561-│       ┌─< 0x0017c914      b.eq  0x17c948
+194562-│       │   0x0017c918      cmp   w0, 8
+194563-│      ┌──< 0x0017c91c      b.eq  0x17c938
+194564-│      ││   0x0017c920      cmp   w0, 7
+194565-│     ┌───< 0x0017c924      b.ne  0x17c964
+194566-│     │││   0x0017c928      adrp  x8, 0x5a0000
+194567-│     │││   0x0017c92c      mov   w0, wzr
+194568-│     │││   0x0017c930      str   w1, [x8, 0x618]
+194569-│    ┌────< 0x0017c934      b     0x17c9f4
+194570-│    ││└──> 0x0017c938      adrp  x8, 0x5a0000
+194571-│    ││ │   0x0017c93c      mov   w0, wzr
+--
+195466-│  │ ││     0x0017d498      add   x1, x1, 0x1e5                        ; int64_t arg2
+195467-│  │ ││     0x0017d49c      bl    fcn.0014c9f8
+195468-│  │ ││ ┌─< 0x0017d4a0      b     0x17d4bc
+195469-│ ─└──└───> 0x0017d4a4      add   x2, x0, 0x9c                         ; aav.0x0000009c ; unsigned long arg3
+195470-│    │  │   0x0017d4a8      adrp  x0, str.Page_Domain_Fault__used_only_for_faults_reported_in_the_PAR_EL1 ; 0x238000
+195471-│    │  │   0x0017d4ac      adrp  x1, 0x269000
+195472-│    │  │   0x0017d4b0      add   x0, x0, 0xd7a                        ; int64_t arg1
+195473-│    │  │   0x0017d4b4      add   x1, x1, 0x1e5                        ; int64_t arg2
+195474-│    │  │   0x0017d4b8      bl    fcn.0014c9f8
+195475-│    │  │   ; CODE XREF from fcn.0017d378 @ 0x17d4a0
+195476-│ ──────└─> 0x0017d4bc      mov   w0, wzr
+195477-│    │      ; CODE XREF from fcn.0017d378 @ 0x17d47c
+195478-│    └────> 0x0017d4c0      ldp   x29, x30, [sp], 0x10
+195479-│           0x0017d4c4      autibsp
+195480-└           0x0017d4c8      ret
+195481:            ; CALL XREF from fcn.0017bfac @ 0x17c804
+195482-┌ fcn.0017d4cc(int64_t arg2, int64_t arg3, int64_t arg4);
+195483-│           ; arg int64_t arg2 @ x1
+195484-│           ; arg int64_t arg3 @ x2
+195485-│           ; arg int64_t arg4 @ x3
+195486-│           ; var int64_t var_10h @ stack - 0x10
+195487-│           0x0017d4cc      pacibsp
+195488-│           0x0017d4d0      sub   sp, sp, 0x20
+195489-│           0x0017d4d4      stp   x29, x30, [var_10h]
+195490-│           0x0017d4d8      add   x29, sp, 0x10
+195491-│           0x0017d4dc      adrp  x0, 0x26f000
+195492-│           0x0017d4e0      add   x0, x0, 0xe25                        ; int64_t arg1
+195493-│           0x0017d4e4      stur  wzr, [var_10h + 0xc]
+195494-│           0x0017d4e8      bl    fcn.001758fc
+195495-│       ┌─< 0x0017d4ec      cbz   x0, 0x17d53c
+195496-│       │   0x0017d4f0      ldrb  w1, [x0, 0x1c]!                      ; aav.0x0000001c
+195497-│       │                                                              ; [0x1c:4]=0
+195498-│       │   0x0017d4f4      mov   w3, 4
+195499-│       │   0x0017d4f8      ldrb  w8, [x0, -8]!                        ; aav.0x00000008
+195500-│       │                                                              ; [0x8:4]=0x68656164 ; "daeh"
+195501-│       │   0x0017d4fc      ldrb  w12, [x0, 3]                         ; [0x3:4]=0x48776b00
+195502-│       │   0x0017d500      ldrb  w13, [x0, 2]                         ; [0x2:4]=0x776b0000
+195503-│       │   0x0017d504      ldrb  w14, [x0, 1]                         ; [0x1:4]=0x6b000000
+195504-│       │   0x0017d508      ldrb  w9, [x0, 0xb]                        ; [0xb:4]=104
+195505-│       │   0x0017d50c      ldrb  w10, [x0, 0xa]                       ; [0xa:4]=0x6865
+195506-│       │   0x0017d510      ldrb  w11, [x0, 9]                         ; [0x9:4]=0x686561
+--
+195534-│      ││   0x0017d57c      ldurb w4, [var_10h + 0xf]
+195535-│      ││   0x0017d580      adrp  x0, 0x248000
+195536-│      ││   0x0017d584      add   x0, x0, 0x5de                        ; int64_t arg1
+195537-│      ││   0x0017d588      bl    fcn.0014c9f8
+195538-│      └──> 0x0017d58c      mov   w0, -1
+195539-│      ┌──< 0x0017d590      b     0x17d5a4
+195540-│      │└─> 0x0017d594      adrp  x0, 0x25a000
+195541-│      │    0x0017d598      add   x0, x0, 0x8b2                        ; int64_t arg1
+195542-│      │    0x0017d59c      bl    fcn.0014c9f8
+195543-│      │    0x0017d5a0      mov   w0, wzr
+195544-│      │    ; CODE XREF from fcn.0017d4cc @ 0x17d590
+195545-│      └──> 0x0017d5a4      ldp   x29, x30, [var_10h]
+195546-│           0x0017d5a8      add   sp, sp, 0x20
+195547-│           0x0017d5ac      autibsp
+195548-└           0x0017d5b0      ret
+195549:        ╎   ; CALL XREF from fcn.0017bfac @ 0x17c8fc
+195550-┌ fcn.0017d5b4(int64_t arg2, int64_t arg3, int64_t arg4);
+195551-│       ╎   ; arg int64_t arg2 @ x1
+195552-│       ╎   ; arg int64_t arg3 @ x2
+195553-│       ╎   ; arg int64_t arg4 @ x3
+195554-│       ╎   ; var int64_t var_10h @ stack - 0x10
+195555-│       ╎   0x0017d5b4      pacibsp
+195556-│       ╎   0x0017d5b8      sub   sp, sp, 0x20
+195557-│       ╎   0x0017d5bc      stp   x29, x30, [var_10h]
+195558-│       ╎   0x0017d5c0      add   x29, sp, 0x10
+195559-│       ╎   0x0017d5c4      adrp  x0, 0x26f000
+195560-│       ╎   0x0017d5c8      add   x0, x0, 0xe25                        ; int64_t arg1
+195561-│       ╎   0x0017d5cc      stur  wzr, [var_10h + 0xc]
+195562-│       ╎   0x0017d5d0      bl    fcn.001758fc
+195563-│      ┌──< 0x0017d5d4      cbz   x0, 0x17d634
+195564-│      │╎   0x0017d5d8      ldrb  w1, [x0, 0x1c]!                      ; aav.0x0000001c
+195565-│      │╎                                                              ; [0x1c:4]=0
+195566-│      │╎   0x0017d5dc      mov   w3, 4
+195567-│      │╎   0x0017d5e0      ldrb  w8, [x0, -8]!                        ; aav.0x00000008
+195568-│      │╎                                                              ; [0x8:4]=0x68656164 ; "daeh"
+195569-│      │╎   0x0017d5e4      ldrb  w12, [x0, 3]                         ; [0x3:4]=0x48776b00
+195570-│      │╎   0x0017d5e8      ldrb  w13, [x0, 2]                         ; [0x2:4]=0x776b0000
+195571-│      │╎   0x0017d5ec      ldrb  w14, [x0, 1]                         ; [0x1:4]=0x6b000000
+195572-│      │╎   0x0017d5f0      ldrb  w9, [x0, 0xb]                        ; [0xb:4]=104
+195573-│      │╎   0x0017d5f4      ldrb  w10, [x0, 0xa]                       ; [0xa:4]=0x6865
+195574-│      │╎   0x0017d5f8      ldrb  w11, [x0, 9]                         ; [0x9:4]=0x686561
+--
+195591-│    ││ ╎   0x0017d63c      add   x0, x0, 0x6a4
+195592-│    ││ ╎   0x0017d640      add   sp, sp, 0x20
+195593-│    ││ ╎   0x0017d644      autibsp
+195594-│    ││ └─< 0x0017d648      b     fcn.0014c9f8
+195595-│    │└───> 0x0017d64c      mov   w2, w0
+195596-│    │      0x0017d650      adrp  x0, 0x241000
+195597-│    │      0x0017d654      adrp  x1, 0x256000
+195598-│    │      0x0017d658      add   x0, x0, 0x4de                        ; int64_t arg1
+195599-│    │      0x0017d65c      add   x1, x1, 0x27b                        ; int64_t arg2
+195600-│    │      0x0017d660      bl    fcn.0014c9f8
+195601-│    │      ; CODE XREF from fcn.0017d5b4 @ 0x17d630
+195602-│    └────> 0x0017d664      ldp   x29, x30, [var_10h]
+195603-│           0x0017d668      add   sp, sp, 0x20
+195604-│           0x0017d66c      autibsp
+195605-└           0x0017d670      ret
+195606:            ; CALL XREF from fcn.0017bfac @ 0x17c770
+195607-            ; CALL XREF from fcn.001829a8 @ 0x182a0c
+195608-            ; CALL XREF from fcn.00189d8c @ 0x189da0
+195609-┌ fcn.0017d674();
+195610-│           ; var int64_t var_10h @ stack - 0x10
+195611-│           0x0017d674      pacibsp
+195612-│           0x0017d678      stp   x29, x30, [var_10h]!
+195613-│           0x0017d67c      mov   x29, sp
+195614-│           0x0017d680      bl    fcn.0017bae4
+195615-│           0x0017d684      ldr   x8, [x0, 0x68]                       ; aav.0x00000068
+195616-│                                                                      ; [0x68:4]=0xd61f0000
+195617-│       ┌─< 0x0017d688      cbz   x8, 0x17d694
+195618-│      ┌──> 0x0017d68c      mov   w0, wzr
+195619-│     ┌───< 0x0017d690      b     0x17d6a0
+195620-│     │╎└─> 0x0017d694      ldr   x8, [x0, 0x70]                       ; aav.0x00000070
+195621-│     │╎                                                               ; [0x70:4]=0xd51ec000
+195622-│     │└──< 0x0017d698      cbz   x8, 0x17d68c
+195623-│     │     0x0017d69c      mov   w0, 1
+195624-│     │     ; CODE XREF from fcn.0017d674 @ 0x17d690
+195625-│     └───> 0x0017d6a0      ldp   x29, x30, [sp], 0x10
+195626-│           0x0017d6a4      autibsp
+195627-└           0x0017d6a8      ret
+195628-            ; XREFS: CALL 0x001114b0  CALL 0x0017bc98  CALL 0x0017d568
+195629-            ; XREFS: CALL 0x00184488  CALL 0x001851b0  CALL 0x00185440
+195630-            ; XREFS: CALL 0x0018546c  CALL 0x00185490  CALL 0x001854b4
+195631-            ; XREFS: CALL 0x00189a30
+--
+196686-│     └─└─> 0x0017e5c4      bl    fcn.0017baf8
+196687-│      │┌─< 0x0017e5c8      tbz   w0, 0x1f, 0x17e5e0
+196688-│      ││   0x0017e5cc      mov   w0, 0x4b40                           ; '@K'
+196689-│      ││   0x0017e5d0      movk  w0, 0x4c, lsl 16
+196690-│      ││   0x0017e5d4      bl    fcn.001b3f80
+196691-│      ││   0x0017e5d8      mov   w0, 0xe
+196692-│      ││   0x0017e5dc      bl    fcn.0016e1a8
+196693-│      │└─> 0x0017e5e0      bl    fcn.0018ac9c
+196694-│      │    ; CODE XREF from fcn.0017e384 @ 0x17e3b8
+196695-│      └──> 0x0017e5e4      ldr   x19, [var_10h]                       ; aav.0x00000010
+196696-│                                                                      ; [0x10:4]=0x14000004
+196697-│           0x0017e5e8      mov   w0, wzr
+196698-│           0x0017e5ec      ldp   x29, x30, [sp], 0x20
+196699-│           0x0017e5f0      autibsp
+196700-└           0x0017e5f4      ret
+196701:        ╎   ; CALL XREF from fcn.0017bfac @ 0x17c568
+196702-┌ fcn.0017e5f8();
+196703-│       ╎   ; var int64_t var_20h @ stack - 0x20
+196704-│       ╎   ; var int64_t var_10h @ stack - 0x10
+196705-│       ╎   0x0017e5f8      pacibsp
+196706-│       ╎   0x0017e5fc      sub   sp, sp, 0x120
+196707-│       ╎   0x0017e600      stp   x29, x30, [var_20h]
+196708-│       ╎   0x0017e604      stp   x28, x19, [var_10h]
+196709-│       ╎   0x0017e608      add   x29, sp, aav.0x00000100
+196710-│       ╎   0x0017e60c      mov   x0, sp                               ; int64_t arg1
+196711-│       ╎   0x0017e610      mov   w2, aav.0x00000100
+196712-│       ╎   0x0017e614      mov   w1, wzr
+196713-│       ╎   0x0017e618      bl    fcn.0014d8fc
+196714-│       ╎   0x0017e61c      adrp  x0, 0x278000
+196715-│       ╎   0x0017e620      add   x0, x0, 0x2f8                        ; int64_t arg1
+196716-│       ╎   0x0017e624      bl    fcn.001758fc
+196717-│      ┌──< 0x0017e628      cbz   x0, 0x17e698
+196718-│      │╎   0x0017e62c      mov   x19, x0
+196719-│      │╎   0x0017e630      ldrb  w1, [x19, 0x1c]!                     ; aav.0x0000001c
+196720-│      │╎                                                              ; [0x1c:4]=0
+196721-│      │╎   0x0017e634      mov   x0, sp                               ; int64_t arg1
+196722-│      │╎   0x0017e638      mov   w3, aav.0x00000100
+196723-│      │╎   0x0017e63c      ldrb  w2, [x19, -8]!                       ; aav.0x00000008
+196724-│      │╎                                                              ; [0x8:4]=0x68656164 ; "daeh"
+196725-│      │╎   0x0017e640      ldrb  w8, [x19, 0xb]                       ; [0xb:4]=104
+196726-│      │╎   0x0017e644      ldrb  w9, [x19, 0xa]                       ; [0xa:4]=0x6865
+===== FUNCTION 1796D0 =====
 ~/Documents/GitHub/crypto (main) ❯ 

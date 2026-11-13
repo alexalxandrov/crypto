@@ -1,0 +1,10 @@
+RELATED SBOOT FUNCTIONS
+Source: a26-analysis/current/full-sboot.asm.gz
+All extracted line counts verified against function-index.tsv
+
+fcn.0014d60c	78 lines
+fcn.001653ac	165 lines
+fcn.001584cc	736 lines
+fcn.00169738	369 lines
+fcn.001758fc	85 lines
+fcn.0016d2b4	131 lines

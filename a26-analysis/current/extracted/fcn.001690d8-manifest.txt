@@ -1,0 +1,8 @@
+SBOOT FUNCTION EXTRACTION
+Function: fcn.001690d8
+Expected lines from function-index.tsv: 444
+Extracted lines: 444
+Direct call sites: 8
+Source: a26-analysis/current/full-sboot.asm.gz
+Source SHA256: 7de9ba3094d5b61df1cd8e868e6b473ec81246e99dd90afddab59acada25a686
+Extraction UTC: 2026-11-12T17:34:19.482260+00:00
