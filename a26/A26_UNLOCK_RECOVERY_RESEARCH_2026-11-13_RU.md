@@ -410,3 +410,40 @@ blkid -p /dev/block/by-name/steady 2>/dev/null || true
 ### 14.4 Корреляция с физической разметкой телефона
 
 Сопоставление по live by-name map завершено на уровне имени/major block target: `steady -> /dev/block/sda3`. Размер, read-only flag и формат `sda3` ещё не получены. Не утверждать, что найденный Android block node уже byte-for-byte связан с тем runtime object, который возвращает `fcn.001758fc`; для этого нужны partition metadata и read-only format identification.
+## 15. Откуда берётся gate `0x540000+0x41c`: CertResTBE processing path
+
+Дополнительный анализ `full-sboot-part-00` подтвердил writer и ранний execution context для byte flag `0x540000+0x41c`.
+
+### 15.1 Writer `fcn.0010a57c`
+
+- Единственный подтверждённый write в текущем SBoot disassembly: `0x0010a808 strb w9, [x8,#0x41c]`, где `w9=1` и `x8` указывает на `0x540000`.
+- Инструкция находится в `fcn.0010a57c`, а не в `fcn.0010a810`.
+- В той же функции при конкретной ошибочной ветви на `0x0010a6f4` логируется строка с symbol `setct_CertResTBE` (`0x26a000+0x74a`).
+- До установки флага функция анализирует результат, связанный с областью `-0x5e00000`, и вызывает SMC wrappers `fcn.0010a0c8` (FID `-0x512`) / `fcn.0010a088` (FID `-0x500`), parser/record helpers и обрабатывает коды `0x1230`, `0x1231`, `0xfdaa...`.
+- В ветке, которая доходит до `0x10a808`, функция уже нормализовала local return `w19` к 0, затем выставляет flag=1. Это доказывает завершение соответствующей CertResTBE-processing ветви, но не смысл certificate result и не положительную/разрешающую политику OEM Unlock.
+
+### 15.2 Execution order и callers
+
+В `fcn.00114100` ранняя инициализация вызывает `fcn.0010ffcc` на `0x00114190`. Внутри `fcn.0010ffcc`:
+
+1. Выполняются DRAM encryption / security status checks (`fcn.00192678`, `fcn.001925f8`, `fcn.000f2f28`, `fcn.0010207c`, `fcn.0010a26c`).
+2. В нескольких ветвях вызывается `fcn.0010a57c` (`0x1100c8`, `0x110124`, а также отдельная ветвь с SMC `0x12e`).
+3. Затем идут `fcn.00124ccc`, повторная `fcn.000f2f28`, conditional `fcn.00124fa8`, `fcn.0010a810`, status cleanup, `fcn.00102220`, `fcn.0010a174` и `fcn.001039a8`.
+
+`fcn.0010a9a8` (getter `0x540000+0x41c`) имеет callers:
+- `fcn.00114100 @ 0x11446c`;
+- `fcn.0017baf8 @ 0x17bb08`;
+- `fcn.0017bfac @ 0x17c424`;
+- `fcn.00189d8c @ 0x189dac`.
+
+Иными словами, early-init path сначала проходит `fcn.0010ffcc` / CertResTBE processing, а позже STEADY loader `fcn.00189d8c` требует, чтобы getter `0x540000+0x41c` вернул 1.
+
+### 15.3 Семантическая граница
+
+На этом этапе флаг разумно описывать как **CertResTBE processing/readiness flag**, потому что он записывается внутри `fcn.0010a57c`, которая использует соответствующую diagnostic label и обрабатывает security/certificate result data. Однако нельзя пока утверждать, что:
+- это валидность ESS customer token;
+- это user-enabled OEM Unlock permission;
+- значение 1 означает подпись сертификата успешно проверена;
+- результат, переданный от SMC, тождественен STEADY signature verification в `fcn.001584cc`.
+
+Отдельный `fcn.001584cc` signature-check внутри STEADY-record parser остаётся отдельной проверкой. Таким образом, в раннем boot sequence имеются как минимум два различимых слоя: CertResTBE readiness gate и signature validation конкретной STEADY record. Не объединять их в один certificate flag.
