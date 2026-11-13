@@ -19,7 +19,7 @@ This official release record does not by itself prove which build, baseband, or 
 | File | Purpose |
 |---|---|
 | [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) | Main handoff dossier; chronology, artifacts, caveats, current intake requirements |
-| [A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md](A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md) | A26-specific ESS, mode-bit, lock-state and RPMB analysis |
+| [A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md](A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md) | A26-specific ESS, mode-bit, lock-state and RPMB analysis; corrected caller map and setter polarity |
 | [A26_DEVICE_STATE_2026-11-13_RU.md](A26_DEVICE_STATE_2026-11-13_RU.md) | Software information profile plus current device/Download Mode summary |
 | [A26_DOWNLOAD_MODE_2026-11-13_RU.md](A26_DOWNLOAD_MODE_2026-11-13_RU.md) | Complete ODIN MODE screen transcription; explicitly records that no other lines or fields are present |
 | [A26_RESEARCH_UPDATE_2026-11-13_RU.md](A26_RESEARCH_UPDATE_2026-11-13_RU.md) | Correction to earlier SBoot extraction claims and current static-analysis results |
@@ -38,13 +38,17 @@ The complete extract for `fcn.001690d8` is available at:
 - `../a26-analysis/current/extracted/fcn.001690d8-callers.asm`
 - `../a26-analysis/current/extracted/fcn.001690d8-manifest.txt`
 
+The new complete OEM lock-state callback/response-handler extraction is:
+
+- `../a26-analysis/current/extracted/oem-lockstate-callchain.asm`
+
 Do not rely on older handoff passages that say this function body is unavailable; that extraction gap has been closed.
 
 ## Outstanding evidence / next steps
 
 1. **Device software profile: COMPLETE.** Software information has been recorded in `A26_DEVICE_STATE_2026-11-13_RU.md`.
 2. **Download Mode screen: COMPLETE.** The full ODIN MODE transcription is in `A26_DOWNLOAD_MODE_2026-11-13_RU.md`. The owner explicitly confirmed that this is the entire screen and that no additional fields/rows exist. `OEM LOCK`, `FRP LOCK`, and `DEVICE STATE` rows are absent. Do not ask for this screen again.
-3. **SBoot semantic gaps:** complete parent-level control flow for `fcn.00153180` and `fcn.00153998`; decode the two unresolved log-string arguments; establish the polarity and meaning of the boolean passed to `fcn.001257bc`; resolve the key/counter used by `fcn.0017b7c8`.
+3. **SBoot semantic gaps:** the bodies of `fcn.00153180` and `fcn.00153998` are now extracted and classified as downstream response handlers, not synchronizer callers. The real chain is `fcn.00115610 → fcn.0017df80 → fcn.0017dfdc`. The setter's numeric polarity and bit-3 truth table are established; remaining work is to decode wrapper status IDs 7/6 and strings at `0x26f47b` / `0x259c35`, identify the data xref `aav.0x493e0 + 0x2380`, and resolve the `fcn.0017b7c8` object key/counter semantics.
 4. **EngMode service boundary:** validate the A26 ELF/VA mapping and trace the vendor service/TLC path without assuming that client-side `makeTokenReq` is a token issuer.
 5. **Device correlation:** compare source-backed static findings with read-only device state. Do not write RPMB/STEADY, patch SBoot, inject a token, or attempt downgrade.
 
