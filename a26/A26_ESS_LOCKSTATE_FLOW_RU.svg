@@ -79,22 +79,22 @@
   <rect x="485" y="500" width="385" height="255" class="card"/>
   <rect x="507" y="520" width="120" height="26" rx="13" class="observedTag"/>
   <text x="522" y="539" class="tag" fill="#1d4ed8">OBSERVED</text>
-  <text x="510" y="580" class="nodeTitle">STEADY partition</text>
-  <text x="510" y="617" class="body">/dev/block/by-name/steady</text>
-  <text x="510" y="647" class="body">→ /dev/block/sda3 on this A26</text>
-  <text x="510" y="677" class="body">Separate physical node confirmed</text>
-  <text x="510" y="707" class="body">Size / format / contents not yet read</text>
-  <text x="510" y="737" class="small">No writes or full partition dump performed.</text>
+  <text x="510" y="580" class="nodeTitle">PIT → STEADY catalog</text>
+  <text x="510" y="617" class="body">fcn.00175b28 loads resource key "PIT"</text>
+  <text x="510" y="647" class="body">magic 0x12349876; records stride 0x84</text>
+  <text x="510" y="677" class="body">fcn.001758fc searches key "STEADY"</text>
+  <text x="510" y="707" class="body">device: steady → sda3 · 4 MiB · RO=1</text>
+  <text x="510" y="737" class="small">Name match strong; exact UFS LBA mapping not proven.</text>
 
   <rect x="910" y="500" width="385" height="255" class="card"/>
   <rect x="932" y="520" width="120" height="26" rx="13" class="observedTag"/>
   <text x="947" y="539" class="tag" fill="#1d4ed8">OBSERVED</text>
   <text x="935" y="580" class="nodeTitle">STEADY secure parser</text>
   <text x="935" y="617" class="body">fcn.00189d8c → fcn.0018962c</text>
-  <text x="935" y="647" class="body">metadata parse / fcn.001690d8</text>
-  <text x="935" y="677" class="body">fcn.001584cc: SecureBoot signature check</text>
-  <text x="935" y="707" class="body">fcn.00169738 finalizes parsed object</text>
-  <text x="935" y="737" class="small">STEADY signature check is separate from CertResTBE.</text>
+  <text x="935" y="647" class="body">PIT record fields +0x14 / +0x1c → runtime IO</text>
+  <text x="935" y="677" class="body">fcn.001690d8 + SecureBoot signature check</text>
+  <text x="935" y="707" class="body">fcn.001584cc → fcn.00169738</text>
+  <text x="935" y="737" class="small">Exact block offset/length units remain unresolved.</text>
 
   <rect x="1335" y="500" width="405" height="255" class="card"/>
   <rect x="1357" y="520" width="120" height="26" rx="13" class="observedTag"/>
@@ -114,8 +114,8 @@
   <text x="1298" y="610" class="small">verified</text>
 
   <rect x="60" y="790" width="1680" height="62" class="gate"/>
-  <text x="85" y="818" class="nodeTitle">Additional preconditions inside fcn.00189d8c</text>
-  <text x="85" y="841" class="small">fcn.0017d674 checks runtime object fields +0x68/+0x70 · fcn.000f2f28 checks hardware/SMC-derived status (bit 3 at 0x11860810; SMC FID -0xe9) · semantic labels remain unresolved.</text>
+  <text x="85" y="818" class="nodeTitle">PIT resource backend + additional loader gates</text>
+  <text x="85" y="841" class="small">PIT path: fcn.0017f3dc → fcn.001b4678 → SMC FID -0xf0 / subcode 0x0e; EL3 integrity-error path. Gates: CertResTBE byte 0x540000+0x41c, runtime object +0x68/+0x70 and HW/SMC bit 3 at 0x11860810.</text>
 
   <!-- OEM sync / setter -->
   <rect x="180" y="900" width="620" height="225" class="card"/>
