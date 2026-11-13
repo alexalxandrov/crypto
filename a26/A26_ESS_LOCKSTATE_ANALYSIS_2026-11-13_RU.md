@@ -177,7 +177,7 @@ No flashing, downgrade, token installation, or RPMB/STEADY write is to be attemp
 
 1. **DONE — extract and classify** `fcn.00153180` and `fcn.00153998`. They are response handlers selected by `fcn.00115610`, not direct callers of `fcn.0017dfdc`.
 2. Trace the data xref/table entry `aav.0x000493e0 + 0x2380` that references `fcn.00115610`; identify the producer and exact callback/dispatch semantics.
-3. Decode the strings referenced by `fcn.0017df80` (`0x26f47b`, `0x259c35`) and determine the meaning of status IDs 7 and 6 passed to `fcn.0014b120`.
+3. Decode the numeric cmd0 values `0x26f47b` / `0x259c35` passed to `fcn.0014b120`, and trace consumers of the diagnostic buffer `0x5a0000 + 0x64c`.
 4. Resolve the object key at `0x24854a` used by `fcn.0017b7c8`, and all readers/writers of `0x59f000 + 0xc7c`; its current code increments a gated counter, but the counter's business meaning is not proven.
 5. Validate the ELF/program-header/base-address mapping for `a26-analysis/1.txt` and inspect the A26 service/TLC binaries at source level.
 6. Trace the A26 service-side implementation from Binder transaction 11 into TEEGRIS; separate request serialization, server issuance, signature validation, token installation, mode bitmap persistence, and the later SBoot lock-state sync.
