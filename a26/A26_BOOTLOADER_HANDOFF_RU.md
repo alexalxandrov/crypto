@@ -1086,3 +1086,150 @@ DEVICE_UNLOCKED: Parcel( 00000000 00000000)
 - `fcn.00183e40`: вызов на `+0x25c`.
 
 Это прямая связь OEM-unlock getter-пути с защищённым cached state, но значение ещё не классифицировано как UI toggle, policy input или final unlock authorization. Восстановить полный контекст `fcn.0017eb34` и расшифровать `0x265467` — приоритет следующего прохода. Полный отчёт: `A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md`.
+
+## 13. Самое новое состояние исследования: STEADY policy и unlock wipe path (13.11.2026)
+
+Этот раздел дополняет прежние разделы 10–12 и имеет приоритет при продолжении анализа.
+
+### 13.1 Подписанная политика ранней загрузки
+- Текущий J6 string scan (`a26-analysis/unlock-investigation/token-path.txt`, раздел `current`) содержит строки `STEADY partition read failed`, `[FMM] There is no STEADY Partition`, `[FMM] Lock state by STEADY`, `%s : can't find STEADY`, а также имя `STEADY` по VA `0x26fe25`. Фактический by-name mapping на телефоне теперь подтверждён: `/dev/block/by-name/steady -> /dev/block/sda3` (см. раздел 14).
+- Ранняя цепочка: `fcn.00114100 @ 0x1142ac → fcn.00189d8c → STEADY record parse → fcn.001690d8 → fcn.001584cc → fcn.00169738 → fcn.00188738 / fcn.0018962c`.
+- `fcn.001584cc` содержит SecureBoot diagnostic `Check digital signature fail. (Booting stop: ...)` и подпись/сертификатные проверки при подходящих version/flag conditions. После успешной обработки 32-byte bitmap публикуется в `0x5a6000+0xa90`; `fcn.001895dc(3)` читает bit 3.
+- Точное user-facing имя bit 3 всё ещё не доказано для A26. Не переносить enum Mode 3 / MODE_CUST_KERNEL с другого Samsung устройства как факт.
+
+### 13.2 Связь OEM synchronizer с factory wipe
+- Фактическая цепочка: `fcn.00115610 @ 0x00115628 → fcn.0017df80 → fcn.0017dfdc`.
+- `fcn.00153180` и `fcn.00153998` — более поздние response handlers, а не прямые callers `fcn.0017dfdc`. Старую ошибочную caller map не использовать.
+- В `fcn.0017dfdc`, после согласования bit 3/cached state и успешного поиска MISC record, строится буфер из J6 string `0x2691ec`: `recovery --wipe_data --reason=bootloader_unlock --locale=en_US`. `fcn.0014b120` / `fcn.0014b248` форматируют строку в buffer; это не сам reboot.
+- Дальше вызываются `fcn.001392bc`, `fcn.0016e57c`, `fcn.001503d0`, `fcn.00150b58` и `fcn.001257bc(w19)`. Семантика части промежуточных helpers и внешнее событие, приводящее к ветке, не установлены.
+
+### 13.3 Не называть fcn.00123f14 доказанным RPMB writer
+- `fcn.001257bc` обновляет cached value `0x56f000+0x8f0`; при guard `0x56f000+0x4e8` вызывает `fcn.00123f14(backend_id, op=1, request_object, status_ptr)`.
+- Полное тело `fcn.00123f14` использует block-range calculations, buffer allocation, `fcn.00124e0c`, `fcn.00122e14`, `fcn.001224ec` и diagnostics `setct_CertResTBE` / `[ICM] USB Loading Done`. Это многоцелевой I/O/command transport path с ICM/USB-related ветками; конечный persistent destination для lockstate caller не установлен.
+- Строки `OEM %s in RPMB` и `rpmb_set_lock_state` — полезные корреляции, но без происхождения backend ID `0x56f000+0x4d8` и полного dispatch не доказывают, что именно этот вызов напрямую меняет RPMB-поле.
+
+### 13.4 Следующий шаг — только read-only на устройстве
+
+Владелец уже подтвердил root через KernelSU. Для проверки соответствия SBoot partition diagnostics фактической разметке выполнить в обычном Android:
+
+```sh
+su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpmb|keystore"'
+```
+
+Это только список symlink. Никаких `dd` writes, записи в STEADY/RPMB, изменений resetprop или flash. Если block node STEADY существует, далее только получить target/size и снять read-only hash; до этого не делать предположений о точной разметке.
+
+### 13.5 Текущий практический вывод
+
+Наличие штатного Samsung unlock-related recovery wipe path доказано статически, но текущий SM-A266B на J6 по факту не показывает Device Unlock Mode, Android `allowed=true` не является SBoot grant, а `KG STATE: COMPLETED (0)` не доказывает unlock. Ветка `dd TWRP` не работает как bypass при `locked` AVB/SBoot; официальные старые a26x TWRP builds не проверены на Android 17/BIT12. Не прошивать image или blank vbmeta.
+
+Отдельные свежие отчёты и текущая decision matrix находятся в `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md` и `A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md`.
+## 14. On-device подтверждение раздела STEADY (13.11.2026)
+
+Владелец проверил `/dev/block/by-name` из KernelSU root. Получено:
+
+- `steady -> /dev/block/sda3` — **подтверждено в фактической разметке A266BXXUCDZJ6**.
+- `misc -> /dev/block/sda23`.
+- `persistent -> /dev/block/sda22`.
+- `metadata -> /dev/block/sda28`.
+- `recovery -> /dev/block/sda18`; размер recovery через `blockdev --getsize64` равен 100663296 bytes.
+- `ro.boot.boot_devices=13500000.ufs`; slot suffix пустой.
+- `/sdcard/Download` не содержит найденных имён `*twrp*` / `*recovery*`.
+
+Это подтверждает физическую by-name mapping для STEADY, но пока не раскрывает размер, структуру, содержимое или mount status раздела.
+
+Следующий зонд — строго read-only:
+
+```sh
+su -c '
+readlink -f /dev/block/by-name/steady
+blockdev --getsize64 /dev/block/by-name/steady
+blockdev --getro /dev/block/by-name/steady
+cat /sys/class/block/sda3/size
+cat /sys/class/block/sda3/ro
+cat /sys/class/block/sda3/uevent
+grep -w sda3 /proc/mounts || true
+ls -la /sys/class/block/sda3/holders 2>/dev/null || true
+blkid -p /dev/block/by-name/steady 2>/dev/null || true
+'
+```
+
+Нулевой read-only flag не означает, что запись допустима. Не выполнять `dd` write, не менять раздел и не выгружать весь его контент до отдельного анализа формата.
+## 15. Новая раскладка предварительных условий STEADY loader (13.11.2026)
+
+Raw J6 SBoot ARM64 disassembly уточнил начало `fcn.00189d8c`:
+
+- `fcn.0017d674()` → результат сохраняется в global `0x5a6000+0xa88`.
+- `fcn.0010a9a8()` возвращает byte из `0x540000+0x41c`; дальнейшая STEADY ветка требует значение `1`.
+- `fcn.000f2f28()` должен вернуть ненулевое значение, иначе загрузчик выходит по error path.
+- Далее выполняется `fcn.0018996c(0x19)`, после чего происходит поиск `STEADY` через `fcn.001758fc`.
+
+`fcn.0017d674` вызывает `fcn.0017bae4`, который возвращает pointer из `0x5a0000+0x4b8`; затем проверяются поля `+0x68` и `+0x70` этого runtime object. Семантика этих полей пока не названа.
+
+`fcn.000f2f28` проверяет hardware/SMC-derived status: `fcn.000f2b34` читает bit 3 слова по `0x11860810`; при установленном бите выполняется SMC call через `fcn.0010a0e8` с x0=`-0xe9`; в другой ветви читается слово по `0x20200064`. Затем проверяется marker/поля status word. Это не доказанный OEM-unlock flag.
+
+После прохождения gates цепочка идёт к `STEADY` record lookup, parser, `fcn.001690d8`, `fcn.001584cc` и 32-byte bitmap publication в `0x5a6000+0xa90`.
+
+Точные semantics глобального byte flag `0x540000+0x41c`, runtime object `0x5a0000+0x4b8`, hardware bit 3 и SMC ID `-0xe9` остаются открытыми. Не приписывать им имя OEM unlock без дополнительных xrefs.
+## 16. Уточнение STEADY prerequisite: CertResTBE gate (13.11.2026)
+
+### Writer global byte `0x540000+0x41c`
+- Getter: `fcn.0010a9a8` (`ldr byte [0x540000+0x41c]`).
+- Подтверждённый writer: `fcn.0010a57c` @ `0x10a57c`, store `0x10a808 strb 1,[0x540000+0x41c]`.
+- В error branch функции используется diagnostic symbol `setct_CertResTBE` (VA `0x26a74a`). Внутри выполняется разбор/security-result path с SMC wrappers FID `-0x512` и `-0x500`, а затем обрабатываются статусы вроде `0x1230` / `0x1231`.
+- Только success/handled-result branch, доходящая до `0x10a808`, устанавливает flag=1. Его значение описывать как CertResTBE processing/readiness flag, не как OEM-unlock разрешение или ESS token-valid bit.
+
+### Early-init order
+- `fcn.00114100 @ 0x114190 → fcn.0010ffcc` до перехода к STEADY loader.
+- `fcn.0010ffcc` выполняет DRAM/EL3 encryption checks, вызывает `fcn.0010a57c` в нескольких ветвях, затем `fcn.00124ccc`, `fcn.000f2f28`, условно `fcn.00124fa8`, `fcn.0010a810`, после чего продолжает cleanup/initialization.
+- Getter `fcn.0010a9a8` вызывается из `fcn.00114100`, `fcn.0017baf8`, `fcn.0017bfac` и `fcn.00189d8c`. Поэтому STEADY parser требует уже пройденного отдельного CertResTBE readiness gate.
+- STEADY path всё ещё проводит собственную отдельную signature validation через `fcn.001584cc`; не смешивать CertResTBE status с cryptographic verification конкретной STEADY record.
+
+Отчёт с полной разборкой: `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`, section 15.
+## 17. STEADY live metadata + registry indirection (13.11.2026)
+
+Live KernelSU metadata probe confirms `/dev/block/by-name/steady -> /dev/block/sda3`, size `4,194,304` bytes (4 MiB), sysfs sector count `8192`, and kernel read-only flag `1` in both `blockdev --getro` and `/sys/class/block/sda3/ro`. Partition metadata: `DEVTYPE=partition`, `PARTN=3`, `PARTNAME=steady`. No `/proc/mounts` match or sysfs holders; `blkid -p` emitted no recognized filesystem signature.
+
+This is a raw/non-recognized-filesystem candidate, not proof of an empty partition.
+
+### SBoot code-side detail
+
+- `fcn.001758fc` searches a RAM record table at `0x59d000+0xa50`, count at `0x59d000+0xa14`, stride `0x84`; it compares a 32-byte name/key using `fcn.0014dbd8`.
+- `fcn.00175b28` obtains a 0x2000-byte object through `fcn.0014237c(0x2000)`, validates magic `0x12349876`, processes its record count and copies 0x84-byte entries into RAM catalog rooted at `0x59d000+0xa10`.
+- `fcn.0014237c` is an internal object/resource-list accessor, then tail-calls `fcn.00206b84`. That final provider implementation remains to be recovered.
+
+Therefore `STEADY` string lookup is an in-memory registry operation, not direct I/O to a by-name Linux block path. The link from the 4 MiB `sda3` partition to the 0x2000-byte registry source is **not yet proven**.
+
+No bytes from STEADY have been dumped so far. Suggested next step is a one-block 4 KiB read into a file on `/sdcard/Download` (never as output to a block node), followed by static inspection before any wider acquisition.
+## 18. PIT resource и происхождение STEADY RAM catalog
+
+Raw J6 disassembly теперь подтверждает, что `fcn.00175b28` загружает ресурс с key `PIT` (VA `0x24a972`, raw ASCII `PIT`) через `fcn.0017f2ec`. Буфер `0x2000` предварительно выделяется `fcn.0014237c`; сама эта функция — allocator, а не UFS reader.
+
+Длинная resource path проходит `fcn.0017eb34` → `fcn.0017f3dc` → `fcn.001b4678`. Последняя очищает data cache через `fcn.0010f624` и выполняет SMC `-0xf0` с operation code `0x0e` для этой ветви. `fcn.0017f3dc` имеет bounds checks и логирует `[EL3 ENC] integrity check was failed` на status `-1`. Имя/семантика SMC service пока неизвестны.
+
+`fcn.00175b28` проверяет PIT magic `0x12349876`, затем копирует записи размером `0x84` из `buffer+0x1c` в RAM catalog `0x59d000+0xa2c`, count — `0x59d000+0xa14`. `fcn.001758fc` сканирует эти записи с шагом `0x84`, сравнивая 32-byte name/key at record offset `+0x24` через `fcn.0014dbd8`.
+
+`fcn.00189d8c` использует key `STEADY` (`0x26fe25`) и получает PIT record через `fcn.001758fc`. Далее собираются little-endian fields at record `+0x14..+0x17` and `+0x1c..+0x1f`, которые передаются в runtime-object backend `fcn.001390c0`. `fcn.0018962c` повторно использует запись и другие offsets/lengths. `fcn.001390c0` performs object/vtable dispatch through `[object+0xa8]`; numeric fields and units are not yet decoded.
+
+Physical device evidence: `PARTNAME=steady`, by-name `steady -> /dev/block/sda3`, size 4 MiB, kernel RO=1, not mounted, no holders, no `blkid` signature. Exact string correspondence PIT `STEADY` ↔ Android `steady` is strong; exact UFS LBA/length mapping remains unproven. Do not claim direct SBoot read of `/dev/block/sda3`.
+
+Full analysis and safe 4 KiB header-only read command are in `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`, section 18.
+## 19. Подтверждён SCSI backend selector для PIT-driven STEADY path
+
+`fcn.00114100` на раннем init path исполняет `mov w0,1; bl fcn.00138ddc` до `fcn.00175b28` (PIT loader). `fcn.00138ddc` напрямую пишет этот аргумент в global `0x572000+0x5e8`. Дополнительные storage init/health checks выполняются затем внутри setter.
+
+`fcn.00138f30(index)` читает этот global: mode 1 формирует имя `scsiN` (raw prefix at `0x243295`); mode 2 формирует `mmcN`, а для index 3 использует `mmcrpmb`. `fcn.00204950` разрешает такое имя по внутреннему object list.
+
+`fcn.001390c0(dest, selector, offset, length)` выбирает object через `fcn.00138f30(selector)`, вызывает его method pointer `[object+0xa8]` с `dest`, `offset`, `length`, затем releases object. Это storage backend dispatch, не memcpy.
+
+PIT `STEADY` record fields: dword at `+0x1c` становится SCSI object selector; dword at `+0x14` (плюс `0x12` в `fcn.00189d8c`, плюс `0x28` в `fcn.0018962c`) становится offset-like argument; length — `0x2c00` / `0x11000`. Единицы offset и реализация SCSI method `[object+0xa8]` пока не установлены.
+
+Это связывает PIT `STEADY` record с SBoot SCSI object layer, а device `steady -> sda3` даёт согласующееся on-device имя и SCSI-style Linux block node. Конкретный selector `scsiN` и равенство PIT offset с `/sys/class/block/sda3/start` ещё не доказаны. Следующий безопасный шаг — sysfs geometry (`sda3/start`, `sda3/size`, `sda/queue/logical_block_size`), без чтения или записи payload.
+## 20. Live UFS/SCSI geometry for `steady`
+
+Metadata-only probe: `sda` reports size `499785728` sysfs sectors, logical and physical block size `4096`; `sda3` reports `start=73728`, `size=8192`, `PARTNAME=steady`.
+
+With Linux sysfs block values in 512-byte sector units: whole `sda` = `255890292736` bytes (`238.31640625 GiB`); `sda3` begins at byte `37748736` (`36 MiB`) and spans `4194304` bytes (`4 MiB`), ending at byte offset `41943040` (`40 MiB`, exclusive). In 4-KiB blocks, partition start = `9216` (`0x2400`), length = `1024` (`0x400`), interval `[0x2400,0x2800)`.
+
+The PIT `STEADY` record's `+0x14` field reaches the SCSI object method as offset-like input after `+0x12` / `+0x28`; `+0x1c` selects `scsiN`. Its units and exact `scsiN` selector have not been identified. Therefore do not yet equate the PIT offset with 512-byte sector `0x12000`, 4-KiB LBA `0x2400`, or byte offset `0x02400000`. The SCSI object's method `[object+0xa8]` is the next reverse-engineering target.
+
+Safe acquisition remains header-only 4 KiB to `/sdcard/Download`, with the block node only as `if=`.

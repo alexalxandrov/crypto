@@ -4,7 +4,7 @@ Target under study: Samsung Galaxy A26 5G SM-A266B/DS, firmware A266BXXUCDZJ6, A
 
 ## Executive result
 
-The A26 SBoot contains a concrete routine named by its log string `sync_lockstate_custtoken` at VA `0x0026d660`. The routine at `fcn.0017dfdc` checks a bit in an in-memory mode bitmap, obtains a current state value, accesses an object under the `MISC` key, and can call `fcn.001257bc`, whose code logs `rpmb_set_lock_state` and invokes a storage layer. This is direct A26 evidence that customer-token-related state is synchronized with a protected OEM lock-state path.
+The A26 SBoot contains a concrete routine named by its log string `sync_lockstate_custtoken` at VA `0x0026d660`. The routine at `fcn.0017dfdc` checks a bit in an in-memory mode bitmap, obtains a current state value, accesses an object under the `MISC` key, and can call `fcn.001257bc`, which updates the cached state and, under a separate guard, invokes `fcn.00123f14` with a backend ID and request object. The lower helper contains ICM/USB transport-related branches; its final persistence destination is not yet proven. This is direct A26 evidence that customer-token-related state is synchronized with a protected OEM lock-state path.
 
 **It is not yet proof that this path unlocks the device, nor that the bit is definitively named Mode 3 in A26.** The direction of the boolean state (0 vs 1) and the exact meaning of the two log labels remain unresolved. The callers of the synchronizer are also not yet fully extracted.
 
@@ -50,7 +50,7 @@ The value's polarity remains unknown in this analysis: do not yet equate numeric
 
 The function takes a boolean-like integer, normalizes it with `cset w19, ne`, allocates/initializes a 0x100-byte request object, copies a 12-byte global structure, and updates the cached value at `0x56f000 + 0x8f0`.
 
-When an additional global guard at `0x56f000 + 0x4e8` is enabled, it invokes `fcn.00123f14` with a storage identifier read from `0x56f000 + 0x4d8`. It references the string `rpmb_set_lock_state` at `0x25c09e`. This establishes a state-setting/storage path, but the lower storage helper's complete semantics and the persisted field's polarity still require analysis.
+When an additional global guard at `0x56f000 + 0x4e8` is enabled, it invokes `fcn.00123f14` with a backend identifier read from `0x56f000 + 0x4d8`, operation value `1`, the prepared request object and an output/status pointer. Its body contains block-range calculations, buffer allocation, `fcn.00124e0c`, and ICM/USB-related diagnostic strings including `setct_CertResTBE` and `[ICM] USB Loading Done`. Therefore it is a generic backend/transport path, not yet a proven direct RPMB write. The nearby `rpmb_set_lock_state` label and `OEM %s in RPMB` diagnostic are correlations, not sufficient proof of the actual final storage destination or persisted field.
 
 **Guard distinction clarified from the complete getter/setter bodies:** `fcn.0012577c` also gates its read on `0x56f000 + 0x4e8`; if the guard is not 1, it returns `0x40300` without writing the output pointer. The caller `fcn.0017dfdc` checks a separate flag at `+0x4dc` before calling the getter, but does not visibly branch on the getter return before loading the output slot. The relationship between these guards and initialization of the output slot must be traced. A cache update and a successful guarded storage operation are separate facts.
 
@@ -356,4 +356,62 @@ Recorded xrefs:
 - `fcn.0017eb34` calls `fcn.0017af7c` at `0x17ebfc`, `0x17ec1c`, and `0x17ec30`;
 - `fcn.00183e40` calls it at offset `+0x25c`.
 
-Full semantic reconstruction of `fcn.0017eb34` and resolution of `0x265467` are now priorities. The J6 strings `androidboot.other.locked=%d` and the recovery argument `--reason=bootloader_unlock` are also present in the string table, but string presence alone does not prove they share this function's control path. See `A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md`.
+Full semantic reconstruction of `fcn.0017eb34` and resolution of `0x265467` are now priorities. The J6 strings `androidboot.other.locked=%d` and the recovery argument `--reason=bootloader_unlock` are present in the string table. The latter is now traced directly in fcn.0017dfdc: the function builds `recovery --wipe_data --reason=bootloader_unlock --locale=en_US` into a buffer and passes it to fcn.001392bc. This proves that the OEM lock-state synchronizer contains an unlock-related wipe path; it does not yet prove which external event makes that branch execute or that it unlocks the currently observed device. See `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`.
+
+## 5. Новая корреляция: OEM synchronizer содержит unlock wipe path (2026-11-13)
+
+Новая проверка полного блока ARM64 для fcn.0017dfdc подтвердила, что recovery argument string не просто соседняя строка в string table.
+
+Подтверждённая call chain ранней инициализации:
+
+- fcn.00115610 @ 0x00115628 → fcn.0017df80 → fcn.0017dfdc.
+- fcn.00153180 и fcn.00153998 — более поздние response handlers, а не прямые callers fcn.0017dfdc. Ранее приписанные им xrefs 0x1534e8 / 0x153d00 относятся к другой функции; старую ошибку caller map считать исправленной.
+
+Внутри fcn.0017dfdc после lock-state/bit-3 reconciliation и успешного MISC record lookup:
+1. fcn.00177854 подготавливает связанный object/context.
+2. fcn.001b3f80 вызывается с аргументом 0xF4240 (1 000 000 decimal); единицы и точная семантика helper пока не установлены.
+3. fcn.0014b120 формирует в stack buffer команду из string pointer 0x2691ec.
+4. В текущем J6 string scan 0x2691ec — recovery\n--wipe_data\n--reason=bootloader_unlock\n--locale=en_US\n.
+5. Полученный buffer передаётся в fcn.001392bc; далее вызываются fcn.0016e57c, fcn.001503d0, fcn.00150b58 и fcn.001257bc(w19).
+
+fcn.0014b120 / fcn.0014b248 — форматирование строки в переданный буфер; их не следует описывать как сам механизм reboot/Recovery launch. Не установлено, что вызывает именно этот branch (кнопка Download Mode, загрузочная policy event или иной transition), а роли opaque helpers после fcn.001392bc пока не доказаны.
+
+### Практическая значимость
+
+SBoot имеет штатную unlock-related factory-wipe команду и использует её внутри OEM lock-state synchronizer. Это подтверждает существование внутреннего wipe workflow, но не даёт готовой команды с Android, не доказывает unlock eligibility для A266BXXUCDZJ6 и не даёт основания писать в STEADY/RPMB или recovery. До продолжения анализа устройство остаётся read-only.
+
+Для следующего безопасного сопоставления нужно проверить наличие реального block node STEADY на устройстве:
+
+```sh
+su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpmb|keystore"'
+```
+
+Результат покажет только наличие/имя symlink, ничего не меняя.
+## 11. STEADY device metadata and SBoot registry indirection
+
+On-device read-only probe: `steady -> /dev/block/sda3`, `4194304` bytes (4 MiB), 8192 sysfs sectors, `ro=1` from both `blockdev` and sysfs, no mount entry, no holders, and no recognizable FS signature output from `blkid -p`.
+
+In SBoot, `fcn.001758fc` performs a 32-byte key lookup against an in-RAM catalog at `0x59d000+0xa50`, record stride `0x84`, count at `0x59d000+0xa14`. `fcn.00175b28` validates and parses a separate 0x2000-byte object with magic `0x12349876`, copying records into this catalog. The object is requested via `fcn.0014237c(0x2000)`; final provider `fcn.00206b84` is not yet extracted.
+
+Do not equate this in-memory lookup with direct access to Android `/dev/block/sda3`. The mapping between the partition and the resource object remains a research question.
+## 12. PIT-derived STEADY record and SMC resource path
+
+`fcn.00175b28` requests resource key `PIT` (raw string at VA `0x24a972`) via `fcn.0017f2ec`, after allocating a 0x2000-byte buffer. It checks magic `0x12349876`, parses the entry count, and copies 0x84-byte records from `buffer+0x1c` into RAM catalog `0x59d000+0xa2c`; count is published at `0x59d000+0xa14`.
+
+`fcn.001758fc` reads that count, compares a 32-byte requested name against the field at `record+0x24` (first key at `0x59d000+0xa50`), with stride 0x84, and returns the record base. In `fcn.00189d8c`, the request key is `STEADY` (`0x26fe25`).
+
+The PIT fetch path for payloads >0x200 uses `fcn.0017f3dc` → `fcn.001b4678`; the latter cleans data cache and invokes SMC FID `-0xf0`, operation subcode `0x0e` for that caller. `fcn.0017f3dc` contains bounds checks and reports `[EL3 ENC] integrity check was failed` on status -1. SMC semantics and physical source are unresolved.
+
+The live device has `PARTNAME=steady`, `/dev/block/sda3`, 4 MiB, kernel RO=1. This name match is a strong correlation with the PIT `STEADY` record, not proof of physical LBA mapping. `fcn.00189d8c` consumes little-endian PIT record fields +0x14 and +0x1c via `fcn.001390c0`; units/backend remain unresolved.
+## 13. SCSI backend selection in PIT STEADY path
+
+`fcn.00114100` calls `fcn.00138ddc(1)` before `fcn.00175b28` (PIT resource request). `fcn.00138ddc` stores its input into global `0x572000+0x5e8`. `fcn.00138f30(index)` maps mode 1 to resource names `scsiN`; mode 2 maps to `mmcN`, with `mmcrpmb` for index 3.
+
+`fcn.001390c0(dest, selector, offset, length)` resolves the selected object through `fcn.00138f30`, then invokes object method `[object+0xa8]` with `(object,dest,offset,length)` and releases the object. In `fcn.00189d8c` the PIT record dword at `+0x1c` is the selector, dword at `+0x14` plus `0x12` is an offset-like value, and length is `0x2c00`; in `fcn.0018962c`, the same fields are passed with offset plus `0x28` and length `0x11000`.
+
+This establishes SCSI object backend dispatch for the PIT-derived STEADY record path. Exact scsi index, offset units, and mapping to the Android `sda3` partition start remain unproven.
+## 14. Live physical geometry of `steady`
+
+User metadata: `sda` size 499785728 sysfs sectors; logical/physical block size 4096; `sda3` start 73728, size 8192, PARTNAME `steady`. Using Linux sysfs 512-byte sectors, `sda3` starts at byte 37748736 (36 MiB), length 4194304 (4 MiB), exclusive end 41943040 (40 MiB). This is 4-KiB LBA start 9216 (`0x2400`), length 1024 (`0x400`).
+
+SBoot PIT `STEADY` record field `+0x14` is an offset-like argument, with adjustments `+0x12` and `+0x28`; `+0x1c` selects a `scsiN` object. Until `[object+0xa8]` is resolved, no unit equivalence to `0x2400`, `0x12000`, or byte offset `0x02400000` can be asserted.

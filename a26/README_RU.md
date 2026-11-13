@@ -14,17 +14,21 @@ This official release record does not by itself prove which build, baseband, or 
 
 **No reproducible, supported end-user bootloader-unlock path has been demonstrated.** The presence of an OEM unlocking switch in Android UI is not proof that SBoot will permit the transition. Earlier owner notes say the switch was made visible after a temporary KernelSU `resetprop` change to `ro.boot.other.locked`.
 
+**STEADY physical partition: CONFIRMED.** The owner verified `/dev/block/by-name/steady -> /dev/block/sda3` from KernelSU root on the current Android 17 build. Partition size, on-disk format, and read-only status are still pending; no partition contents have been written or dumped.
+
 ## Documents in this folder
 
 | File | Purpose |
 |---|---|
-| [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) | Main handoff dossier; chronology, artifacts, caveats, current intake requirements |
-| [A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md](A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md) | A26-specific ESS, mode-bit, lock-state and RPMB analysis; corrected caller map and setter polarity |
+| [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) | Main handoff dossier; confirmed STEADY mapping, CertResTBE prerequisite, OEM wipe path and remaining read-only checks |
+| [A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md](A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md) | A26-specific ESS, signed STEADY policy bitmap, OEM lock-state synchronizer and bootloader-unlock recovery wipe path |
 | [A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md](A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md) | Exact bit-3/current-state truth table, inverse setter mapping, `get_oem_unlock_val` error-path label, opaque object pointer and caller xrefs |
 | [A26_DEVICE_STATE_2026-11-13_RU.md](A26_DEVICE_STATE_2026-11-13_RU.md) | Software information profile plus current device/Download Mode summary |
 | [A26_DOWNLOAD_MODE_2026-11-13_RU.md](A26_DOWNLOAD_MODE_2026-11-13_RU.md) | Complete ODIN MODE screen transcription; explicitly records that no other lines or fields are present |
 | [A26_RESEARCH_UPDATE_2026-11-13_RU.md](A26_RESEARCH_UPDATE_2026-11-13_RU.md) | Correction to earlier SBoot extraction claims and current static-analysis results |
-| [A26_ESS_LOCKSTATE_FLOW_RU.svg](A26_ESS_LOCKSTATE_FLOW_RU.svg) | Diagram: observed A26 paths vs unresolved ESS/token links |
+| [A26_ESS_LOCKSTATE_FLOW_RU.svg](A26_ESS_LOCKSTATE_FLOW_RU.svg) | Updated evidence diagram: PIT-derived STEADY catalog, SCSI mode/selector, sda3 start at 36 MiB / 4-KiB LBA 0x2400, signature check, bitmap and OEM sync |
+| [recovery/A26_RECOVERY_PREFLIGHT_2026-11-13_RU.md](recovery/A26_RECOVERY_PREFLIGHT_2026-11-13_RU.md) | Root/recovery partition read-only intake, official TWRP method, image/AVB compatibility risks |
+| [A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md](A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md) | Exact-build unlock assessment, PIT/STEADY + SCSI backend path, measured sda3 geometry, CertResTBE readiness, SecureBoot parser and read-only diagnostics |
 | `em.img` | **Empty (0 bytes)** as of this snapshot; not a usable firmware or Engineering Mode artifact |
 
 ## Main analysis corpus
@@ -51,7 +55,7 @@ Do not rely on older handoff passages that say this function body is unavailable
 2. **Download Mode screen: COMPLETE.** The full ODIN MODE transcription is in `A26_DOWNLOAD_MODE_2026-11-13_RU.md`. The owner explicitly confirmed that this is the entire screen and that no additional fields/rows exist. `OEM LOCK`, `FRP LOCK`, and `DEVICE STATE` rows are absent. Do not ask for this screen again.
 3. **SBoot semantic gaps:** the bodies of `fcn.00153180` and `fcn.00153998` are now extracted and classified as downstream response handlers, not synchronizer callers. The real chain is `fcn.00115610 → fcn.0017df80 → fcn.0017dfdc`. The setter's numeric polarity and bit-3 truth table are established; remaining work is to decode raw string/format-like data at `0x26f47b` / `0x259c35` consumed by `fcn.0014b248`, and trace consumers of buffer `0x5a0000 + 0x64c`, identify the data xref `aav.0x493e0 + 0x2380`, and resolve the `fcn.0017b7c8` object key/counter semantics.
 4. **EngMode service boundary:** validate the A26 ELF/VA mapping and trace the vendor service/TLC path without assuming that client-side `makeTokenReq` is a token issuer.
-5. **Device correlation:** compare source-backed static findings with read-only device state. Do not write RPMB/STEADY, patch SBoot, inject a token, or attempt downgrade.
+5. **Device correlation:** `steady -> /dev/block/sda3` is now confirmed. Next, capture only its size, sysfs uevent, mount/holder state, and block read-only flag. Do not dump the partition or write RPMB/STEADY, patch SBoot, inject a token, or attempt downgrade.
 
 ## Evidence discipline
 
