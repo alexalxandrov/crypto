@@ -5,7 +5,7 @@ import json
 from logs.log_config import get_logger
 # Ensure utils from parent directory can be imported
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils import persist_prices, db_connect, create_tables
+from work.projects.utils import persist_prices, db_connect, create_tables
 
 logger = get_logger('crypto_arbitrage')
 

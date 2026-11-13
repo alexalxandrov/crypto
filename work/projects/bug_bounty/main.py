@@ -6,7 +6,9 @@ import base64
 from logs.log_config import get_logger
 # Ensure utils from parent directory can be imported
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils import persist_repos, db_connect, create_tables
+# Import the utilities from the package rather than the top‑level
+# ``utils`` module which may exist in the environment.
+from work.projects.utils import persist_repos, db_connect, create_tables
 
 logger = get_logger('bug_bounty')
 
