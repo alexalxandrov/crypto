@@ -92,7 +92,7 @@ A second function is associated with the OEM-unlock value path, but the exact ro
 
 The J6 disassembly in `a26-analysis/unlock-investigation/current.txt` shows:
 
-- `fcn.0017af7c(arg1=1)`: calls `fcn.001758fc` with pointer `0x265467`. If an object is returned, it reads a byte at offset `+0x1c`, validates/derives a value through `fcn.001390c0`, and returns the byte stored in a local result. If the object is absent, it returns 0. The contents and semantic name of the key/data at `0x265467` are not yet resolved.
+- `fcn.0017af7c(arg1=1)`: calls `fcn.001758fc` with pointer `0x265467`. `fcn.001758fc` performs a lookup in an internal record table rooted at `0x59d000+0xa50` (stride `0x84`), comparing the supplied key against table entries via `fcn.0014dbd8`. If a record is returned, `fcn.0017af7c` reads a byte at offset `+0x1c`, validates/derives a value through `fcn.001390c0`, and returns the local result. If lookup fails, it returns 0. The semantic name/content of the key/data at `0x265467` is not yet resolved.
 - `fcn.0017af7c(arg1=0)`: requires global flag `0x56f000+0x4dc == 1`, calls `fcn.0012577c` to read the cached state, then returns `1 - state`. If the guard/getter path fails, it logs using the diagnostic string `get_oem_unlock_val` at `0x26b4ca` through `fcn.0014c9f8`, then returns 0.
 
 **Correction:** `get_oem_unlock_val` at `0x26b4ca` is passed as a diagnostic/log string on the getter error path. It is **not** proven to be the MISC/object key. The opaque object pointer/key used by the other branch is `0x265467`.
