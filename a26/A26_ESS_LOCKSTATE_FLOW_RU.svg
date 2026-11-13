@@ -106,8 +106,8 @@
   <text x="1360" y="707" class="body">A26 enum name remains unknown</text>
   <text x="1360" y="737" class="small">Do not equate with 0x11860810 bit 3 (hardware gate).</text>
 
-  <path d="M445 630 H900" class="observed"/>
-  <text x="590" y="610" class="small">flag 0x540000+0x41c = 1 required by loader</text>
+  <path d="M445 600 V470 H1100 V490" class="observed"/>
+  <text x="650" y="460" class="small">CertResTBE readiness gate required by STEADY loader</text>
   <path d="M870 630 H900" class="unresolved"/>
   <text x="872" y="610" class="small">STEADY backend mapping</text>
   <path d="M1295 630 H1325" class="observed"/>
