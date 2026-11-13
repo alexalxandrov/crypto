@@ -136,7 +136,7 @@ This establishes the software relationship `setter_arg = 1 - bit3` on accepted p
 
 ### 8.5 Wrapper side effects and counter
 
-`fcn.0017df80` writes status ID 7 through `fcn.0014b120`, calls the synchronizer, reads bit 3 again, and writes status ID 6 only when bit 3 is clear. The strings at `0x26f47b` and `0x259c35` remain unresolved.
+`fcn.0017df80` calls the diagnostic formatter `fcn.0014b120` before synchronization with destination `0x5a0000+0x64c`, capacity 7, and numeric cmd0 value `0x26f47b`; after synchronization it reads bit 3 again and, only when bit 3 is clear, calls the same formatter with cmd0 value `0x259c35`. These are not established status IDs or string pointers.
 
 `fcn.0017b7c8(1)` increments `0x59f000 + 0xc7c` unless the counter is `-1`, then performs a keyed-object/logging operation. The counter's precise meaning is not yet proven.
 
