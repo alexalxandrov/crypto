@@ -499,3 +499,60 @@ su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_header_4k.bin 
 ```
 
 Do not issue any `of=/dev/block/...` command. The target device node must appear only after `if=`. Do not acquire the full 4 MiB yet; first examine whether the first 4 KiB contains a recognizable structure and whether it is even relevant to the resource catalog.
+## 18. PIT resource → RAM partition catalog → STEADY record (новое подтверждённое звено)
+
+Разбор raw J6 SBoot disassembly установил, откуда берётся внутренний каталог, по которому `fcn.001758fc` ищет ключ `STEADY`.
+
+### 18.1 Загрузка PIT как именованного ресурса
+
+- В `fcn.00175b28` сначала запрашивается буфер `0x2000` через `fcn.0014237c(0x2000)`. Последняя функция в этой цепочке является generic heap/resource allocator; она не доказывает чтение с UFS.
+- После инициализации буфера `fcn.00175b28` вызывает `fcn.0017f2ec` с key pointer `0x24a972`. В raw `sboot.bin` по этому адресу находится строка `PIT`.
+- `fcn.0017f2ec` сверяет имя с таблицей разрешённых resource names, затем передаёт запрос в `fcn.0017eb34`. В текущем disassembly дополнительно расшифрованы другие имена/namespace strings, используемые этим кодом: `DPM` (`0x23f11a`), `VDDCAL_FW` (`0x245cf7`) и `SVM` (`0x265508`). Это resource keys, а не названия Android-разделов.
+- Для данных размером больше `0x200` `fcn.0017f2ec` продолжает обработку через `fcn.0017f3dc`. В `fcn.0017f3dc` выполняются bounds checks, после чего вызывается `fcn.001b4678`.
+
+### 18.2 Низкоуровневая граница: SMC / EL3
+
+`fcn.001b4678`:
+- строит descriptor в aligned stack buffer;
+- выполняет cache clean (`fcn.0010f624`) для descriptor, destination и input span;
+- вызывает общий SMC wrapper `fcn.0010a01c` с `x0 = -0xf0`, `x1 = operation code` (в ветке `fcn.0017f3dc` передаётся `0x0e`), `x2 = descriptor pointer`, `x3 = 0`.
+
+После возврата `fcn.0017f3dc` обрабатывает status; при `-1` логируется `[EL3 ENC] integrity check was failed`. Это подтверждает, что PIT/resource payload проходит через защищённый SMC/EL3 интерфейс и integrity-related path. Семантическое имя SMC `-0xf0` и точный смысл subcommand `0x0e` пока не установлены. Не называть его без дополнительной проверки прямым UFS `read`.
+
+### 18.3 Разбор PIT и построение record catalog
+
+После `fcn.0017f2ec("PIT", ...)` `fcn.00175b28` проверяет magic `0x12349876`, разбирает header/count и копирует записи размером `0x84` bytes из входного PIT buffer (начало записей — `buffer+0x1c`) в RAM region `0x59d000+0xa2c`. Количество записей публикуется по `0x59d000+0xa14`.
+
+`fcn.001758fc` затем:
+- читает count из `0x59d000+0xa14`;
+- проходит RAM entries с шагом `0x84`;
+- сравнивает 32-byte key через `fcn.0014dbd8`;
+- начинает сравнение с `0x59d000+0xa50`, то есть с поля `record+0x24` первого элемента (record base `0xa2c` + key offset `0x24`);
+- при совпадении возвращает указатель на начало записи (адрес key field минус `0x24`).
+
+Следовательно, `fcn.001758fc("STEADY")` — это точный lookup имени в RAM-каталоге, который заполняется из PIT payload. Это не самостоятельный прямой поиск файла/раздела в Linux.
+
+### 18.4 Связь с текущим physical by-name map
+
+В `fcn.00189d8c` ключ `STEADY` берётся из string VA `0x26fe25` и ищется через `fcn.001758fc`. После получения PIT record код собирает little-endian 32-bit значения из record offsets `+0x14..+0x17` и `+0x1c..+0x1f`; в одной ветви к первому значению прибавляется `0x12`, после чего вызван `fcn.001390c0` с operation length `0x2c00`. `fcn.0018962c` делает дополнительную обработку той же записи: собирает те же поля, прибавляет `0x28` к первому значению и вызывает `fcn.001390c0` с длиной `0x11000`. `fcn.001390c0` — runtime-object dispatch через function pointer `[object+0xa8]`, а не обычный `memcpy`; семантика этого backend object ещё исследуется.
+
+Это даёт сильную связь по имени между PIT record `STEADY` и live Android partition `PARTNAME=steady`, `/dev/block/by-name/steady -> /dev/block/sda3` (4 MiB, kernel RO). Но numeric fields PIT record ещё не декодированы в UFS LBA/length units, а SMC/resource source не сопоставлен с прямым Linux block path. Поэтому **точная физическая корреляция PIT STEADY record ↔ sda3 пока сильная гипотеза, а не доказанное равенство диапазонов**.
+
+### 18.5 Что доказано и что остаётся
+
+- Подтверждено: `fcn.00175b28` явно запрашивает именованный resource `PIT`; raw bytes at `0x24a972` равны ASCII `PIT`.
+- Подтверждено: PIT payload имеет magic `0x12349876`, из него копируются records stride `0x84`, а поле имени 32 bytes находится на record offset `+0x24`.
+- Подтверждено: `fcn.001758fc("STEADY")` сканирует именно этот RAM catalog.
+- Подтверждено: `STEADY` record передаёт поля `+0x14` и `+0x1c` дальше в runtime-object I/O/parser path.
+- Подтверждено: длинная загрузка PIT resource включает SMC `-0xf0` / operation `0x0e`, cache maintenance и EL3 integrity error path.
+- Не подтверждено: точная семантика двух PIT numeric fields, единицы измерения, backend object за `fcn.001390c0`, subcommand `0x0e`, а также точное соответствие диапазона разделу `/dev/block/sda3`.
+
+### 18.6 Минимальная следующая проверка STEADY (всё ещё read-only)
+
+Поскольку раздел всего 4 MiB, kernel пометил его `ro=1`, а файловая система не распознана, следующий осторожный шаг — только первые 4096 bytes в файл userdata для статического просмотра заголовка. Сам block node используется только как `if=`:
+
+```sh
+su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_header_4k.bin bs=4096 count=1 status=none && ls -lh /sdcard/Download/steady_header_4k.bin && sha256sum /sdcard/Download/steady_header_4k.bin'
+```
+
+Не выполнять полный dump и не использовать block device как `of=`. По первым 4 KiB проверим сигнатуру/структуру до решения о дальнейшей read-only выборке.
