@@ -1048,4 +1048,4 @@ DEVICE_UNLOCKED: Parcel( 00000000 00000000)
 
 **В wrapper `fcn.0017df80`:** до sync и при bit 3 = 0 после sync вызывается `fcn.0014b120` — форматирующий helper с шаблоном `cmd0 is not correct 0x%x`. Ему передаются destination `0x5a0000+0x64c`, capacity 7 и числовые cmd0 values `0x26f47b` / `0x259c35`. Это не подтверждённые status IDs или string pointers; смысл значений пока неизвестен.
 
-**Статус:** extraction `fcn.00153180` / `fcn.00153998` завершён; их прежняя классификация как direct callers отменена. Следующая задача — установить смысл table entry `aav.0x493e0 + 0x2380`, status IDs 7/6 и строк wrapper, а затем продолжить от этого callback к vendor service / TEEGRIS.
+**Статус:** extraction `fcn.00153180` / `fcn.00153998` завершён; их прежняя классификация как direct callers отменена. Следующая задача — установить смысл table entry `aav.0x493e0 + 0x2380`, cmd0 values `0x26f47b` / `0x259c35` и потребителей диагностического буфера, а затем продолжить от этого callback к vendor service / TEEGRIS.
