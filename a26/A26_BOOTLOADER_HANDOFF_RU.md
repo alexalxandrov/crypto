@@ -1086,3 +1086,40 @@ DEVICE_UNLOCKED: Parcel( 00000000 00000000)
 - `fcn.00183e40`: вызов на `+0x25c`.
 
 Это прямая связь OEM-unlock getter-пути с защищённым cached state, но значение ещё не классифицировано как UI toggle, policy input или final unlock authorization. Восстановить полный контекст `fcn.0017eb34` и расшифровать `0x265467` — приоритет следующего прохода. Полный отчёт: `A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md`.
+
+## 13. Самое новое состояние исследования: STEADY policy и unlock wipe path (13.11.2026)
+
+Этот раздел дополняет прежние разделы 10–12 и имеет приоритет при продолжении анализа.
+
+### 13.1 Подписанная политика ранней загрузки
+- Текущий J6 string scan (`a26-analysis/unlock-investigation/token-path.txt`, раздел `current`) содержит строки `STEADY partition read failed`, `[FMM] There is no STEADY Partition`, `[FMM] Lock state by STEADY`, `%s : can't find STEADY`, а также имя `STEADY` по VA `0x26fe25`. Это подтверждает, что текущий SBoot содержит отдельную STEADY-partition path; наличие фактического block symlink на телефоне ещё не проверено.
+- Ранняя цепочка: `fcn.00114100 @ 0x1142ac → fcn.00189d8c → STEADY record parse → fcn.001690d8 → fcn.001584cc → fcn.00169738 → fcn.00188738 / fcn.0018962c`.
+- `fcn.001584cc` содержит SecureBoot diagnostic `Check digital signature fail. (Booting stop: ...)` и подпись/сертификатные проверки при подходящих version/flag conditions. После успешной обработки 32-byte bitmap публикуется в `0x5a6000+0xa90`; `fcn.001895dc(3)` читает bit 3.
+- Точное user-facing имя bit 3 всё ещё не доказано для A26. Не переносить enum Mode 3 / MODE_CUST_KERNEL с другого Samsung устройства как факт.
+
+### 13.2 Связь OEM synchronizer с factory wipe
+- Фактическая цепочка: `fcn.00115610 @ 0x00115628 → fcn.0017df80 → fcn.0017dfdc`.
+- `fcn.00153180` и `fcn.00153998` — более поздние response handlers, а не прямые callers `fcn.0017dfdc`. Старую ошибочную caller map не использовать.
+- В `fcn.0017dfdc`, после согласования bit 3/cached state и успешного поиска MISC record, строится буфер из J6 string `0x2691ec`: `recovery --wipe_data --reason=bootloader_unlock --locale=en_US`. `fcn.0014b120` / `fcn.0014b248` форматируют строку в buffer; это не сам reboot.
+- Дальше вызываются `fcn.001392bc`, `fcn.0016e57c`, `fcn.001503d0`, `fcn.00150b58` и `fcn.001257bc(w19)`. Семантика части промежуточных helpers и внешнее событие, приводящее к ветке, не установлены.
+
+### 13.3 Не называть fcn.00123f14 доказанным RPMB writer
+- `fcn.001257bc` обновляет cached value `0x56f000+0x8f0`; при guard `0x56f000+0x4e8` вызывает `fcn.00123f14(backend_id, op=1, request_object, status_ptr)`.
+- Полное тело `fcn.00123f14` использует block-range calculations, buffer allocation, `fcn.00124e0c`, `fcn.00122e14`, `fcn.001224ec` и diagnostics `setct_CertResTBE` / `[ICM] USB Loading Done`. Это многоцелевой I/O/command transport path с ICM/USB-related ветками; конечный persistent destination для lockstate caller не установлен.
+- Строки `OEM %s in RPMB` и `rpmb_set_lock_state` — полезные корреляции, но без происхождения backend ID `0x56f000+0x4d8` и полного dispatch не доказывают, что именно этот вызов напрямую меняет RPMB-поле.
+
+### 13.4 Следующий шаг — только read-only на устройстве
+
+Владелец уже подтвердил root через KernelSU. Для проверки соответствия SBoot partition diagnostics фактической разметке выполнить в обычном Android:
+
+```sh
+su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpmb|keystore"'
+```
+
+Это только список symlink. Никаких `dd` writes, записи в STEADY/RPMB, изменений resetprop или flash. Если block node STEADY существует, далее только получить target/size и снять read-only hash; до этого не делать предположений о точной разметке.
+
+### 13.5 Текущий практический вывод
+
+Наличие штатного Samsung unlock-related recovery wipe path доказано статически, но текущий SM-A266B на J6 по факту не показывает Device Unlock Mode, Android `allowed=true` не является SBoot grant, а `KG STATE: COMPLETED (0)` не доказывает unlock. Ветка `dd TWRP` не работает как bypass при `locked` AVB/SBoot; официальные старые a26x TWRP builds не проверены на Android 17/BIT12. Не прошивать image или blank vbmeta.
+
+Отдельные свежие отчёты и текущая decision matrix находятся в `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md` и `A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md`.
