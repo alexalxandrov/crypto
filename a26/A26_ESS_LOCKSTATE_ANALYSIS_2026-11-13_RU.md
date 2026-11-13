@@ -341,3 +341,19 @@ The full body of `fcn.0017b7c8` shows that, for a positive input and unless the 
 - They are downstream response handlers selected by `fcn.00115610` according to `fcn.001530ec()` return values 2 or 4.
 - The actual synchronizer call is now traced through `fcn.0017df80`.
 - The exact 0/1 relationship between mode bit 3 and the value written to the cached/protected state is known; the user-facing lock/unlock meaning remains unresolved.
+
+
+## 9. Direct MISC lookup of `get_oem_unlock_val`
+
+The complete function `fcn.0017af7c` in `a26-analysis/unlock-investigation/current.txt` has two distinct argument branches:
+
+- Argument 1: MISC/object accessor key pointer `0x26b4ca`; the J6 string table identifies that address as `get_oem_unlock_val`. The function reads a byte from the returned object and returns it; lookup failure returns 0.
+- Argument 0: requires `0x56f000+0x4dc == 1`, reads cached state via `fcn.0012577c`, and returns `1 - state`.
+
+This is direct code evidence that the OEM-named key is queried by a function in the same lock-state subsystem. It does not yet establish whether the value is the Android Developer Options toggle, a policy bit, a derived status, or the final authorization result.
+
+Recorded xrefs:
+- `fcn.0017eb34` calls `fcn.0017af7c` at `0x17ebfc`, `0x17ec1c`, and `0x17ec30`;
+- `fcn.00183e40` calls it at offset `+0x25c`.
+
+Full semantic reconstruction of `fcn.0017eb34` is now a priority. The J6 strings `androidboot.other.locked=%d` and the recovery argument `--reason=bootloader_unlock` are also present in the string table, but string presence alone does not prove they share this function's control path. See `A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md`.
