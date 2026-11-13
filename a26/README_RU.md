@@ -26,6 +26,7 @@ This official release record does not by itself prove which build, baseband, or 
 | [A26_RESEARCH_UPDATE_2026-11-13_RU.md](A26_RESEARCH_UPDATE_2026-11-13_RU.md) | Correction to earlier SBoot extraction claims and current static-analysis results |
 | [A26_ESS_LOCKSTATE_FLOW_RU.svg](A26_ESS_LOCKSTATE_FLOW_RU.svg) | Diagram: observed A26 paths vs unresolved ESS/token links |
 | [recovery/A26_RECOVERY_PREFLIGHT_2026-11-13_RU.md](recovery/A26_RECOVERY_PREFLIGHT_2026-11-13_RU.md) | Root/recovery partition read-only intake, official TWRP method, image/AVB compatibility risks |
+| [A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md](A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md) | Updated exact-build unlock assessment, TWRP/AVB decision, Chimera model-list correction and read-only kexec diagnostics |
 | `em.img` | **Empty (0 bytes)** as of this snapshot; not a usable firmware or Engineering Mode artifact |
 
 ## Main analysis corpus
