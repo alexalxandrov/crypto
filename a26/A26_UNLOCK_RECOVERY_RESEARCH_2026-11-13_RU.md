@@ -302,7 +302,7 @@ fcn.0014b120 в проверенном call-chain extract использует f
 
 ### 11.4 Read-only проверка наличия STEADY block node на самом A26
 
-Текстовые ресурсы текущего SBoot содержат сообщения STEADY partition read failed, [FMM] There is no STEADY Partition и [FMM] Lock state by STEADY. Чтобы сопоставить это с реальной разметкой конкретного SM-A266B, достаточно прочитать имена block symlinks:
+Текстовые ресурсы текущего SBoot содержат сообщения STEADY partition read failed, [FMM] There is no STEADY Partition и [FMM] Lock state by STEADY. Фактическая проверка `/dev/block/by-name` на SM-A266B подтвердила `steady -> /dev/block/sda3`; подробности приведены в разделе 13.
 
 ```sh
 su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpmb|keystore"'
@@ -330,3 +330,52 @@ early policy load (STEADY) → SecureBoot signature verification → 32-byte bit
 Эти признаки указывают на многоцелевой I/O/command transport path с USB/ICM-related ветками. Они **не** доказывают, что вызов из fcn.001257bc напрямую записывает RPMB или какой именно persistent field он меняет. Для этого нужно восстановить происхождение значения backend ID из 0x56f000+0x4d8, ветку fcn.00123590 и semantics/dispatch fcn.00124e0c.
 
 Уточнённая формулировка: fcn.001257bc обновляет локальный cache, а при guard 0x56f000+0x4e8 вызывает fcn.00123f14 с backend ID, operation=1 и подготовленным object. Нижний transport/backend и destination этой операции пока не доказаны. Строка OEM %s in RPMB — диагностическая корреляция, а не достаточное доказательство конечного носителя.
+## 13. Подтверждение физического раздела STEADY на устройстве (2026-11-13)
+
+Владелец предоставил read-only вывод KernelSU shell для текущей сборки A266BXXUCDZJ6. Реальная разметка показывает:
+
+| By-name | Block node |
+|---|---|
+| `steady` | `/dev/block/sda3` |
+| `misc` | `/dev/block/sda23` |
+| `persistent` | `/dev/block/sda22` |
+| `metadata` | `/dev/block/sda28` |
+| `recovery` | `/dev/block/sda18` |
+
+Команда `readlink -f /dev/block/by-name/recovery` подтвердила `/dev/block/sda18`; `blockdev --getsize64` вернул 100663296 bytes. Для `steady` в этом сеансе подтверждён symlink `/dev/block/by-name/steady -> /dev/block/sda3`, но размер и read-only status самого `sda3` ещё не получены.
+
+Дополнительная корреляция:
+- `ro.boot.boot_devices=13500000.ufs`.
+- `ro.boot.slot_suffix` пустой.
+- Fingerprint: `samsung/a26xxx/a26x:17/CP2A.260605.016/A266BXXUCDZJ6_OXMCDZJ6:user/release-keys`.
+- KernelSU shell работает с `uid=0(root)`, SELinux context `u:r:ksu:s0`.
+- В `/sdcard/Download` не обнаружено файлов с именами `*twrp*` или `*recovery*`.
+
+**Что подтверждено:** отдельная запись `steady` есть в Android-visible by-name map и указывает на физический UFS block partition `/dev/block/sda3`. Это снимает прежнюю неопределённость «существует ли отдельный раздел с таким именем в разметке данного телефона».
+
+**Что не подтверждено:** это ещё не доказывает, что файл/объект, который читает конкретная функция SBoot, лежит в простом raw offset этого block node без промежуточного metadata/container layer. Наличие node не означает, что содержимое уже прочитано, корректно распознано или совпадает с объектом в bootloader RAM.
+
+### Следующий read-only metadata probe
+
+Получить только размер, sector count, read-only flag и sysfs uevent:
+
+```sh
+su -c '
+echo "=== STEADY BLOCK METADATA ==="
+readlink -f /dev/block/by-name/steady
+blockdev --getsize64 /dev/block/by-name/steady
+blockdev --getro /dev/block/by-name/steady
+cat /sys/class/block/sda3/size
+cat /sys/class/block/sda3/ro
+cat /sys/class/block/sda3/uevent
+echo "=== MOUNT / HOLDERS ==="
+grep -w sda3 /proc/mounts || true
+ls -la /sys/class/block/sda3/holders 2>/dev/null || true
+echo "=== IDENTIFICATION (READ ONLY) ==="
+blkid -p /dev/block/by-name/steady 2>/dev/null || true
+'
+```
+
+`blockdev --getro=0` будет означать лишь, что kernel block layer не пометил node read-only; это не разрешение выполнять запись. `blkid -p` читает сигнатуры для идентификации, не модифицирует раздел. Не выполнять `dd` в сторону раздела и пока не выгружать его полное содержимое.
+
+После получения размера можно сопоставить длину/структуру раздела с ожидаемым форматом STEADY и выбрать минимальный read-only acquisition. Никаких write-операций.
