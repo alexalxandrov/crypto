@@ -1170,3 +1170,18 @@ Raw J6 SBoot ARM64 disassembly уточнил начало `fcn.00189d8c`:
 После прохождения gates цепочка идёт к `STEADY` record lookup, parser, `fcn.001690d8`, `fcn.001584cc` и 32-byte bitmap publication в `0x5a6000+0xa90`.
 
 Точные semantics глобального byte flag `0x540000+0x41c`, runtime object `0x5a0000+0x4b8`, hardware bit 3 и SMC ID `-0xe9` остаются открытыми. Не приписывать им имя OEM unlock без дополнительных xrefs.
+## 16. Уточнение STEADY prerequisite: CertResTBE gate (13.11.2026)
+
+### Writer global byte `0x540000+0x41c`
+- Getter: `fcn.0010a9a8` (`ldr byte [0x540000+0x41c]`).
+- Подтверждённый writer: `fcn.0010a57c` @ `0x10a57c`, store `0x10a808 strb 1,[0x540000+0x41c]`.
+- В error branch функции используется diagnostic symbol `setct_CertResTBE` (VA `0x26a74a`). Внутри выполняется разбор/security-result path с SMC wrappers FID `-0x512` и `-0x500`, а затем обрабатываются статусы вроде `0x1230` / `0x1231`.
+- Только success/handled-result branch, доходящая до `0x10a808`, устанавливает flag=1. Его значение описывать как CertResTBE processing/readiness flag, не как OEM-unlock разрешение или ESS token-valid bit.
+
+### Early-init order
+- `fcn.00114100 @ 0x114190 → fcn.0010ffcc` до перехода к STEADY loader.
+- `fcn.0010ffcc` выполняет DRAM/EL3 encryption checks, вызывает `fcn.0010a57c` в нескольких ветвях, затем `fcn.00124ccc`, `fcn.000f2f28`, условно `fcn.00124fa8`, `fcn.0010a810`, после чего продолжает cleanup/initialization.
+- Getter `fcn.0010a9a8` вызывается из `fcn.00114100`, `fcn.0017baf8`, `fcn.0017bfac` и `fcn.00189d8c`. Поэтому STEADY parser требует уже пройденного отдельного CertResTBE readiness gate.
+- STEADY path всё ещё проводит собственную отдельную signature validation через `fcn.001584cc`; не смешивать CertResTBE status с cryptographic verification конкретной STEADY record.
+
+Отчёт с полной разборкой: `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`, section 15.
