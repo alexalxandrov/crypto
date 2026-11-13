@@ -695,3 +695,29 @@ su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_header_4k.bin 
 ```
 
 This allows static identification of any header/container signature without broad acquisition. The source partition remains read-only.
+
+## 21. Live STEADY header acquisition: first 4 KiB are zero-filled
+
+The artifact a26/steady_header_4k.bin was added to the repository and inspected byte-for-byte.
+
+- File length: **4096 bytes** (0x1000).
+- Byte content: **4096/4096 bytes are 0x00**; non-zero byte count is 0.
+- SHA-256 of the 4096-byte payload: `ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7`.
+- Git blob SHA: `08e7df176454f3ee5eeda13efa0adaa54828dfd8`.
+- No printable ASCII strings or non-zero regions were found. A format/header cannot be identified from an all-zero prefix.
+
+### Interpretation boundary
+
+This proves only that bytes [0x000000, 0x001000) of the Android block partition /dev/block/by-name/steady are zero-filled in the acquired read. It does **not** prove that the remaining 4 MiB partition is empty, erased, uninitialized, or unused. A reserved/padded prefix or metadata located later in the partition remains possible. The prior blkid -p result (no recognized filesystem signature) is consistent with this observation but does not establish a raw format.
+
+The acquisition source was the read-only block node; the output was a regular file under userdata and then placed in the repository. No block-device write, mount, unlock, or partition modification was performed.
+
+### Next bounded read-only acquisition
+
+The complete partition is only 4 MiB. To determine whether non-zero content exists beyond the first block, the next useful step is a read-only copy of exactly 1024 × 4096-byte blocks to userdata:
+
+```sh
+su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_full_4m.bin bs=4096 count=1024 status=none && wc -c < /sdcard/Download/steady_full_4m.bin && sha256sum /sdcard/Download/steady_full_4m.bin'
+```
+
+Expected output length is 4194304 bytes. This reads the partition only; the destination is a normal file. Inspecting the complete small payload would establish whether the zero prefix continues and could expose the record/data structure needed to correlate the PIT STEADY entry. Do not write the acquired file back to any block device.

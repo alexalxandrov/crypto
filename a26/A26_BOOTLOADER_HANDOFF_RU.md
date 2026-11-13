@@ -1233,3 +1233,17 @@ With Linux sysfs block values in 512-byte sector units: whole `sda` = `255890292
 The PIT `STEADY` record's `+0x14` field reaches the SCSI object method as offset-like input after `+0x12` / `+0x28`; `+0x1c` selects `scsiN`. Its units and exact `scsiN` selector have not been identified. Therefore do not yet equate the PIT offset with 512-byte sector `0x12000`, 4-KiB LBA `0x2400`, or byte offset `0x02400000`. The SCSI object's method `[object+0xa8]` is the next reverse-engineering target.
 
 Safe acquisition remains header-only 4 KiB to `/sdcard/Download`, with the block node only as `if=`.
+
+## 21. Read-only STEADY header result
+
+The repository artifact a26/steady_header_4k.bin is exactly 4096 bytes and is entirely zero-filled: 4096 zero bytes, zero non-zero bytes, no printable strings. SHA-256: `ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7`; Git blob SHA: `08e7df176454f3ee5eeda13efa0adaa54828dfd8`.
+
+This is evidence about the first 4 KiB only, not the complete 4-MiB steady partition. It does not prove the partition is empty or identify its format. The earlier blkid -p no-signature result remains non-conclusive.
+
+Next bounded acquisition, if continuing: copy the whole 4-MiB read-only partition to a normal userdata file using:
+
+```sh
+su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_full_4m.bin bs=4096 count=1024 status=none'
+```
+
+Then record byte count and SHA-256. Never use the destination as a block device and never write data to STEADY/RPMB.
