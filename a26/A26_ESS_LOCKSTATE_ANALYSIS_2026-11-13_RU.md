@@ -356,4 +356,34 @@ Recorded xrefs:
 - `fcn.0017eb34` calls `fcn.0017af7c` at `0x17ebfc`, `0x17ec1c`, and `0x17ec30`;
 - `fcn.00183e40` calls it at offset `+0x25c`.
 
-Full semantic reconstruction of `fcn.0017eb34` and resolution of `0x265467` are now priorities. The J6 strings `androidboot.other.locked=%d` and the recovery argument `--reason=bootloader_unlock` are also present in the string table, but string presence alone does not prove they share this function's control path. See `A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md`.
+Full semantic reconstruction of `fcn.0017eb34` and resolution of `0x265467` are now priorities. The J6 strings `androidboot.other.locked=%d` and the recovery argument `--reason=bootloader_unlock` are present in the string table. The latter is now traced directly in fcn.0017dfdc: the function builds `recovery --wipe_data --reason=bootloader_unlock --locale=en_US` into a buffer and passes it to fcn.001392bc. This proves that the OEM lock-state synchronizer contains an unlock-related wipe path; it does not yet prove which external event makes that branch execute or that it unlocks the currently observed device. See `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`.
+
+## 5. Новая корреляция: OEM synchronizer содержит unlock wipe path (2026-11-13)
+
+Новая проверка полного блока ARM64 для fcn.0017dfdc подтвердила, что recovery argument string не просто соседняя строка в string table.
+
+Подтверждённая call chain ранней инициализации:
+
+- fcn.00115610 @ 0x00115628 → fcn.0017df80 → fcn.0017dfdc.
+- fcn.00153180 и fcn.00153998 — более поздние response handlers, а не прямые callers fcn.0017dfdc. Ранее приписанные им xrefs 0x1534e8 / 0x153d00 относятся к другой функции; старую ошибку caller map считать исправленной.
+
+Внутри fcn.0017dfdc после lock-state/bit-3 reconciliation и успешного MISC record lookup:
+1. fcn.00177854 подготавливает связанный object/context.
+2. fcn.001b3f80 вызывается с 0xF4240 (1 000 000 µs).
+3. fcn.0014b120 формирует в stack buffer команду из string pointer 0x2691ec.
+4. В текущем J6 string scan 0x2691ec — recovery\n--wipe_data\n--reason=bootloader_unlock\n--locale=en_US\n.
+5. Полученный buffer передаётся в fcn.001392bc; далее вызываются fcn.0016e57c, fcn.001503d0, fcn.00150b58 и fcn.001257bc(w19).
+
+fcn.0014b120 / fcn.0014b248 — форматирование строки в переданный буфер; их не следует описывать как сам механизм reboot/Recovery launch. Не установлено, что вызывает именно этот branch (кнопка Download Mode, загрузочная policy event или иной transition), а роли opaque helpers после fcn.001392bc пока не доказаны.
+
+### Практическая значимость
+
+SBoot имеет штатную unlock-related factory-wipe команду и использует её внутри OEM lock-state synchronizer. Это подтверждает существование внутреннего wipe workflow, но не даёт готовой команды с Android, не доказывает unlock eligibility для A266BXXUCDZJ6 и не даёт основания писать в STEADY/RPMB или recovery. До продолжения анализа устройство остаётся read-only.
+
+Для следующего безопасного сопоставления нужно проверить наличие реального block node STEADY на устройстве:
+
+```sh
+su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpmb|keystore"'
+```
+
+Результат покажет только наличие/имя symlink, ничего не меняя.
