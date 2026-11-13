@@ -85,3 +85,73 @@ From the owner-provided device observations / prior handoff:
 ## 7. Current conclusion
 
 **No supported unlock path has been demonstrated.** The strongest result in this pass is a correction to the evidence map: the complete 0x001690d8 helper and its callers are already present in the repository, and the helper appears to be generic structured-object processing rather than a direct unlock primitive. The highest-value next work is semantic resolution of the secure-object keys and the OEM-string xrefs, not experimentation with writes to RPMB/TEE state.
+
+
+## 8. Corrected A26 customer-token lock-state call graph (2026-11-13)
+
+A full-part disassembly pass resolved a material xref attribution error in the earlier ESS note.
+
+### 8.1 Actual caller chain
+
+The actual direct call to `fcn.0017dfdc` is at `0x0017dfa4` inside `fcn.0017df80`. That wrapper is called at `0x00115628` by `fcn.00115610`:
+
+`fcn.00115610 → fcn.0017df80 → fcn.0017dfdc`
+
+`fcn.00115610` itself has a data xref from `aav.0x000493e0 + 0x2380`; the meaning of the referenced table/object is not yet established.
+
+### 8.2 The two previously misattributed functions
+
+The earlier report incorrectly treated xref lines after `fcn.0017dfdc` as callers of that function. In fact:
+
+- `0x001534e8` in `fcn.00153180` calls `fcn.0017e274`.
+- `0x00153d00` in `fcn.00153998` calls `fcn.0017e274`.
+- `0x0015360c` in `fcn.00153180` calls `fcn.0017e384`.
+- `0x0015422c` in `fcn.00153998` calls `fcn.0017e384`.
+
+Thus `fcn.00153180` (342 lines) and `fcn.00153998` (551 lines) are response handlers selected later by `fcn.00115610`, not direct callers of the customer-token synchronizer.
+
+### 8.3 Dispatch after synchronization
+
+Later in `fcn.00115610`, `fcn.001530ec()` selects a response path:
+
+- result 2 → `fcn.00153180(6, ...)`;
+- result 4 → `fcn.00153998(6, ...)`.
+
+This is a sequencing result: the synchronizer wrapper runs at the beginning of `fcn.00115610`; the two response handlers are selected later. This does not prove that the handlers issue, sign, install, or validate an ESS token.
+
+### 8.4 Setter polarity and bit-3 relation
+
+The complete `fcn.001257bc` body confirms that it normalizes its input to boolean 0/1 and stores that same value at `0x56f000 + 0x8f0` and object offset `+0xfc`. When the protected-storage guard is active, it passes the prepared object to `fcn.00123f14`.
+
+The synchronizer `fcn.0017dfdc` only accepts matching values of mode bit 3 and cached state. For accepted pairs, it calls the setter with the inverse:
+
+| Bit 3 | Cached state | Setter argument |
+|---:|---:|---:|
+| 0 | 0 | 1 |
+| 1 | 1 | 0 |
+| 0 | 1 | reject |
+| 1 | 0 | reject |
+
+This establishes the software relationship `setter_arg = 1 - bit3` on accepted paths. It does **not** establish whether numeric 1 means locked or unlocked.
+
+### 8.5 Wrapper side effects and counter
+
+`fcn.0017df80` writes status ID 7 through `fcn.0014b120`, calls the synchronizer, reads bit 3 again, and writes status ID 6 only when bit 3 is clear. The strings at `0x26f47b` and `0x259c35` remain unresolved.
+
+`fcn.0017b7c8(1)` increments `0x59f000 + 0xc7c` unless the counter is `-1`, then performs a keyed-object/logging operation. The counter's precise meaning is not yet proven.
+
+### 8.6 New reproducible extraction
+
+The complete bodies of `fcn.00115610`, `fcn.00153180`, `fcn.00153998`, and `fcn.0017df80` are now saved in:
+
+`a26-analysis/current/extracted/oem-lockstate-callchain.asm`
+
+The ESS analysis, handoff, README, and SVG were updated to use this corrected graph.
+
+### 8.7 Next highest-value targets
+
+1. Identify the data table/object at `aav.0x000493e0 + 0x2380` and why it references `fcn.00115610`.
+2. Decode status IDs 7 and 6 and the strings at `0x26f47b` / `0x259c35` passed by `fcn.0017df80`.
+3. Trace `fcn.0014b120` and its storage/status destination at `0x5a0000 + 0x64c`.
+4. Resolve the key and semantics of `fcn.0017b7c8`'s counter/object operation.
+5. Continue the EngMode HAL → TEEGRIS → signed-token validation/install path. Keep all device operations read-only.
