@@ -387,3 +387,10 @@ su -c 'ls -l /dev/block/by-name | grep -iE "steady|misc|persist|metadata|efs|rpm
 ```
 
 Результат покажет только наличие/имя symlink, ничего не меняя.
+## 11. STEADY device metadata and SBoot registry indirection
+
+On-device read-only probe: `steady -> /dev/block/sda3`, `4194304` bytes (4 MiB), 8192 sysfs sectors, `ro=1` from both `blockdev` and sysfs, no mount entry, no holders, and no recognizable FS signature output from `blkid -p`.
+
+In SBoot, `fcn.001758fc` performs a 32-byte key lookup against an in-RAM catalog at `0x59d000+0xa50`, record stride `0x84`, count at `0x59d000+0xa14`. `fcn.00175b28` validates and parses a separate 0x2000-byte object with magic `0x12349876`, copying records into this catalog. The object is requested via `fcn.0014237c(0x2000)`; final provider `fcn.00206b84` is not yet extracted.
+
+Do not equate this in-memory lookup with direct access to Android `/dev/block/sda3`. The mapping between the partition and the resource object remains a research question.
