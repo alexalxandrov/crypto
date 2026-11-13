@@ -155,3 +155,18 @@ The ESS analysis, handoff, README, and SVG were updated to use this corrected gr
 3. Trace consumers of the diagnostic buffer at `0x5a0000 + 0x64c` and determine why the wrapper formats those cmd0 values.
 4. Resolve the key and semantics of `fcn.0017b7c8`'s counter/object operation.
 5. Continue the EngMode HAL → TEEGRIS → signed-token validation/install path. Keep all device operations read-only.
+
+
+## 6. Lock-state truth table correction (13.11.2026)
+
+The complete `fcn.0017dfdc` body in `a26-analysis/unlock-investigation/current.txt` shows that the setter argument is the **inverse of bitmap bit 3**, provided the cached state equals bit 3:
+
+- bit 3 = 0 and cached state = 0 → call `fcn.001257bc(1)`;
+- bit 3 = 1 and cached state = 1 → call `fcn.001257bc(0)`;
+- either mismatched pair → fail closed.
+
+Earlier text that called the bit-3-set branch a no-op is incorrect. The exact truth table, relevant instructions, and semantic limitations are recorded in `a26/A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md`.
+
+The getter `fcn.0012577c` and setter `fcn.001257bc` both consult global guard `0x56f000+0x4e8`. The caller `fcn.0017dfdc` first checks a separate `0x56f000+0x4dc` flag. The current artifacts show the latter being written by `fcn.00124b04`, while `fcn.00124fa8` sets `+0x4e8` after copying a loaded value to `+0x8f0` and clears it on an error path. The relation and initialization ordering of these guards remain unresolved.
+
+This is a stronger reconstruction of the internal state machine, **not** proof that the internal value means “unlocked”, that bit 3 is Mode 3 on A26, or that a successful persistent RPMB write occurred on the owner's handset.
