@@ -177,7 +177,7 @@ No flashing, downgrade, token installation, or RPMB/STEADY write is to be attemp
 
 1. **DONE — extract and classify** `fcn.00153180` and `fcn.00153998`. They are response handlers selected by `fcn.00115610`, not direct callers of `fcn.0017dfdc`.
 2. Trace the data xref/table entry `aav.0x000493e0 + 0x2380` that references `fcn.00115610`; identify the producer and exact callback/dispatch semantics.
-3. Decode the numeric cmd0 values `0x26f47b` / `0x259c35` passed to `fcn.0014b120`, and trace consumers of the diagnostic buffer `0x5a0000 + 0x64c`.
+3. Decode the raw string/format-like data at `0x26f47b` and `0x259c35` consumed by `fcn.0014b248`, and trace consumers of the diagnostic buffer `0x5a0000 + 0x64c`.
 4. Resolve the object key at `0x24854a` used by `fcn.0017b7c8`, and all readers/writers of `0x59f000 + 0xc7c`; its current code increments a gated counter, but the counter's business meaning is not proven.
 5. Validate the ELF/program-header/base-address mapping for `a26-analysis/1.txt` and inspect the A26 service/TLC binaries at source level.
 6. Trace the A26 service-side implementation from Binder transaction 11 into TEEGRIS; separate request serialization, server issuance, signature validation, token installation, mode bitmap persistence, and the later SBoot lock-state sync.
@@ -323,7 +323,7 @@ Inside `fcn.0017df80`:
 3. It reads bit 3 again.
 4. If bit 3 is clear, it calls `fcn.0014b120` again with the same destination/capacity and variadic value `0x259c35`.
 
-The earlier interpretation of these as status IDs 7/6 and string pointers was incorrect. The body of `fcn.0014b120` shows that it uses the fixed format string `" cmd0 is not correct 0x%x\\n"` and delegates formatting to `fcn.0014b248`; x1 is a destination capacity and x2 is the first variadic value. Thus `0x26f47b` and `0x259c35` are values passed to a diagnostic formatter as `cmd0`, not confirmed string pointers or status IDs. Their semantic identity remains unresolved.
+The earlier interpretation of these as status IDs 7/6 was incorrect. `fcn.0014b120` passes the fixed string `" cmd0 is not correct 0x%x\\n"` and the x2 operand into `fcn.0014b248`. The latter sets x22=x2 and reads it byte-by-byte (`ldrb [x26],1`), with special handling for `%` bytes. Therefore the x2 operands `0x26f47b` and `0x259c35` are consumed as pointers to string/format-like data, not as numeric status IDs. The exact bytes and semantics at those addresses remain unresolved; do not label them as decoded strings until the raw data is inspected.
 
 ### 9.4 Counter helper reclassification
 
