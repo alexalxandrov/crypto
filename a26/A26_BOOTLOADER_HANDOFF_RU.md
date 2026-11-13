@@ -1200,3 +1200,16 @@ This is a raw/non-recognized-filesystem candidate, not proof of an empty partiti
 Therefore `STEADY` string lookup is an in-memory registry operation, not direct I/O to a by-name Linux block path. The link from the 4 MiB `sda3` partition to the 0x2000-byte registry source is **not yet proven**.
 
 No bytes from STEADY have been dumped so far. Suggested next step is a one-block 4 KiB read into a file on `/sdcard/Download` (never as output to a block node), followed by static inspection before any wider acquisition.
+## 18. PIT resource и происхождение STEADY RAM catalog
+
+Raw J6 disassembly теперь подтверждает, что `fcn.00175b28` загружает ресурс с key `PIT` (VA `0x24a972`, raw ASCII `PIT`) через `fcn.0017f2ec`. Буфер `0x2000` предварительно выделяется `fcn.0014237c`; сама эта функция — allocator, а не UFS reader.
+
+Длинная resource path проходит `fcn.0017eb34` → `fcn.0017f3dc` → `fcn.001b4678`. Последняя очищает data cache через `fcn.0010f624` и выполняет SMC `-0xf0` с operation code `0x0e` для этой ветви. `fcn.0017f3dc` имеет bounds checks и логирует `[EL3 ENC] integrity check was failed` на status `-1`. Имя/семантика SMC service пока неизвестны.
+
+`fcn.00175b28` проверяет PIT magic `0x12349876`, затем копирует записи размером `0x84` из `buffer+0x1c` в RAM catalog `0x59d000+0xa2c`, count — `0x59d000+0xa14`. `fcn.001758fc` сканирует эти записи с шагом `0x84`, сравнивая 32-byte name/key at record offset `+0x24` через `fcn.0014dbd8`.
+
+`fcn.00189d8c` использует key `STEADY` (`0x26fe25`) и получает PIT record через `fcn.001758fc`. Далее собираются little-endian fields at record `+0x14..+0x17` and `+0x1c..+0x1f`, которые передаются в runtime-object backend `fcn.001390c0`. `fcn.0018962c` повторно использует запись и другие offsets/lengths. `fcn.001390c0` performs object/vtable dispatch through `[object+0xa8]`; numeric fields and units are not yet decoded.
+
+Physical device evidence: `PARTNAME=steady`, by-name `steady -> /dev/block/sda3`, size 4 MiB, kernel RO=1, not mounted, no holders, no `blkid` signature. Exact string correspondence PIT `STEADY` ↔ Android `steady` is strong; exact UFS LBA/length mapping remains unproven. Do not claim direct SBoot read of `/dev/block/sda3`.
+
+Full analysis and safe 4 KiB header-only read command are in `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`, section 18.
