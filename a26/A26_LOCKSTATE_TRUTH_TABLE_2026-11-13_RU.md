@@ -86,26 +86,26 @@ The complete extracted function body is preserved verbatim in the repository sou
 Function `fcn.0017dfdc` begins at line 331 in `a26-analysis/unlock-investigation/current.txt`; setter `fcn.001257bc` follows immediately after the function body. The extracted text is an existing repository artifact, not newly executed firmware.
 
 
-## 6. Direct connection to `get_oem_unlock_val`: `fcn.0017af7c`
+## 6. OEM-unlock getter diagnostic label: `fcn.0017af7c`
 
-A second function ties the OEM-named configuration key to the protected cached state.
+A second function is associated with the OEM-unlock value path, but the exact role of its strings and object key must be distinguished carefully.
 
 The J6 disassembly in `a26-analysis/unlock-investigation/current.txt` shows:
 
-- `fcn.0017af7c(arg1=1)`: calls the generic MISC/object accessor with key pointer `0x26b4ca`. The J6 string table identifies this exact address as `get_oem_unlock_val`. It reads a byte from the returned object and returns that byte. If the lookup fails, it returns 0.
-- `fcn.0017af7c(arg1=0)`: requires global flag `0x56f000+0x4dc == 1`, calls `fcn.0012577c` to read the cached state, then returns `1 - state`. If the guard is unavailable or the getter fails, it takes the error/default path.
+- `fcn.0017af7c(arg1=1)`: calls `fcn.001758fc` with pointer `0x265467`. If an object is returned, it reads a byte at offset `+0x1c`, validates/derives a value through `fcn.001390c0`, and returns the byte stored in a local result. If the object is absent, it returns 0. The contents and semantic name of the key/data at `0x265467` are not yet resolved.
+- `fcn.0017af7c(arg1=0)`: requires global flag `0x56f000+0x4dc == 1`, calls `fcn.0012577c` to read the cached state, then returns `1 - state`. If the guard/getter path fails, it logs using the diagnostic string `get_oem_unlock_val` at `0x26b4ca` through `fcn.0014c9f8`, then returns 0.
 
-This is direct code-level use of the literal key `get_oem_unlock_val`, not mere co-occurrence in the strings table. It also establishes a second inverse mapping of the cached protected state.
+**Correction:** `get_oem_unlock_val` at `0x26b4ca` is passed as a diagnostic/log string on the getter error path. It is **not** proven to be the MISC/object key. The opaque object pointer/key used by the other branch is `0x265467`.
 
 ### 6.1. Related J6 strings
 
 The same J6 string table contains:
 
-- `get_oem_unlock_val` at `0x26b4ca`;
+- `get_oem_unlock_val` at `0x26b4ca` (diagnostic label used on the error path above);
 - `androidboot.other.locked=%d` at `0x26b317`;
 - recovery argument sequence `recovery\\n--wipe_data\\n--reason=bootloader_unlock\\n--locale=en_US\\n` at `0x2691ec`.
 
-Their proximity and naming are leads, not proof that all three are emitted by the same function or that this config key is the final authorization decision. Do not conflate the value returned by `fcn.0017af7c` with Android's `isDeviceOemUnlocked` result.
+Their naming/proximity are leads, not proof that all are emitted by the same function or that any one is the final authorization decision. Do not conflate the value returned by `fcn.0017af7c` with Android's `isDeviceOemUnlocked` result.
 
 ### 6.2. Cross-reference inventory
 
@@ -118,6 +118,6 @@ The full semantic reconstruction of `fcn.0017eb34` is now a priority target. Its
 
 ### 6.3. Interpretation status
 
-**Confirmed:** MISC key lookup for `get_oem_unlock_val`; a separate path returning the complement of the protected cached state; the listed callers.
+**Confirmed:** `fcn.0017af7c` returns the complement of the protected cached state in arg0 mode; it uses `0x265467` as an opaque object/data pointer in arg1 mode; `get_oem_unlock_val` is an error-path diagnostic label; the listed callers.
 
-**Not yet confirmed:** whether the value is the Android Developer Options toggle, a Samsung internal unlock policy value, a derived status, or an authorization input; how it interacts with bit 3; and whether it gates the final unlock transition.
+**Not yet confirmed:** the semantic name of the object/data at `0x265467`; whether the returned byte is the Android Developer Options toggle, a Samsung internal unlock policy value, a derived status, or an authorization input; how it interacts with bit 3; and whether it gates the final unlock transition.
