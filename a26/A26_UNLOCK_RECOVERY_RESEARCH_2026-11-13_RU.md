@@ -447,3 +447,55 @@ blkid -p /dev/block/by-name/steady 2>/dev/null || true
 - результат, переданный от SMC, тождественен STEADY signature verification в `fcn.001584cc`.
 
 Отдельный `fcn.001584cc` signature-check внутри STEADY-record parser остаётся отдельной проверкой. Таким образом, в раннем boot sequence имеются как минимум два различимых слоя: CertResTBE readiness gate и signature validation конкретной STEADY record. Не объединять их в один certificate flag.
+## 16. Live metadata STEADY на SM-A266B: размер и kernel RO (2026-11-13)
+
+Владелец выполнил metadata-only probe из KernelSU root. Получено:
+
+| Field | Result |
+|---|---:|
+| By-name target | `/dev/block/sda3` |
+| `blockdev --getsize64` | `4194304` bytes = 4 MiB |
+| sysfs sectors | `8192` |
+| Logical sector arithmetic | `8192 × 512 = 4194304` bytes |
+| `blockdev --getro` | `1` |
+| `/sys/class/block/sda3/ro` | `1` |
+| `DEVTYPE` | `partition` |
+| `PARTN` | `3` |
+| `PARTNAME` | `steady` |
+| Mount in `/proc/mounts` | no match |
+| `/sys/class/block/sda3/holders` | empty |
+| `blkid -p` | no signature/recognized filesystem output |
+
+The 4 MiB size is exactly consistent with 8192 sectors at 512 bytes/sector. Device reports the partition read-only in both blockdev and sysfs interfaces. This confirms kernel block-layer RO state, not hardware write-protection proof at every lower layer.
+
+No mountpoint or holders were observed. `blkid -p` produced no recognizable filesystem signature output; this is not evidence that the partition is empty. It may be a raw proprietary metadata area or another non-filesystem format.
+
+No partition payload was dumped in this step.
+
+## 17. Newly recovered SBoot STEADY registry indirection
+
+A fresh read of J6 `full-sboot-part-01` disassembly adds a concrete intermediate layer between the string `STEADY` and any physical partition backend:
+
+- `fcn.001758fc` constructs a lookup key, then compares exactly 32 bytes against an in-RAM record array rooted at `0x59d000+0xa50`, with record stride `0x84` (132 bytes). The record count is read from `0x59d000+0xa14`.
+- It uses `fcn.0014dbd8` for the 32-byte comparison. The returned pointer is adjusted to the record payload/header region; callers subsequently parse record fields.
+- `fcn.00175a28` performs a similar 32-byte lookup against a second array rooted at `0x59d000+0xa70`, also stepping by `0x84`.
+- `fcn.00175b28` requests an object of type/key `0x2000` via `fcn.0014237c(0x2000)`. If available, it validates a 0x2000-byte object beginning with magic `0x12349876`, processes its count/record fields, and copies 0x84-byte records into the in-RAM registry at `0x59d000+0xa10`. It ultimately publishes the count used at `0x59d000+0xa14`.
+- `fcn.0014237c` is a generic linked-list/resource accessor: it checks an internal list, performs cleanup with `fcn.001422a8` when needed, then tail-calls `fcn.00206b84`. The implementation of `fcn.00206b84` has not yet been recovered in this extract, so the backing source of resource `0x2000` remains unknown.
+
+The important correction is that `fcn.001758fc("STEADY")` is **not itself a raw block-device read**. It is an in-memory registry lookup. A physical source relationship between `sda3` and the object/record registry is still to be established.
+
+### Updated evidence status
+
+- Confirmed: Android by-name map points `steady` to `sda3`; partition is 4 MiB and kernel RO; no mount or holders; no filesystem signature was recognized by `blkid -p`.
+- Confirmed in SBoot: STEADY lookup uses a 32-byte key in an in-RAM record catalog; catalog is populated from a separate 0x2000-byte structured object with magic `0x12349876`.
+- Not confirmed: that the 0x2000-byte object is read directly from `sda3`, that its registry entries map 1:1 to GPT/by-name records, or that the complete 4 MiB partition is consumed by this path.
+
+### Minimal next acquisition (read-only)
+
+Read only the first 4096 bytes into a new file on `/sdcard/Download` for static header inspection; this writes a file to userdata, not to STEADY:
+
+```sh
+su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_header_4k.bin bs=4096 count=1 status=none && ls -lh /sdcard/Download/steady_header_4k.bin && sha256sum /sdcard/Download/steady_header_4k.bin'
+```
+
+Do not issue any `of=/dev/block/...` command. The target device node must appear only after `if=`. Do not acquire the full 4 MiB yet; first examine whether the first 4 KiB contains a recognizable structure and whether it is even relevant to the resource catalog.
