@@ -170,3 +170,49 @@ No flashing, downgrade, token installation, or RPMB/STEADY write is to be attemp
 7. Correlate only with read-only device observations. Do not write to RPMB/STEADY, patch SBoot, inject tokens, or downgrade.
 
 **Current answer to “can we unlock it right now?”: no safe, reproducible unlock method is established.** The code shows an authorization mechanism whose critical trust material/issuance step has not been satisfied.
+
+## 7. Проверка гипотезы «другой CSC = другой SBoot» (2026-11-13, дополнение)
+
+Проверены региональные пакеты SM-A266B для одного и того же PDA/AP build A266BXXUCDZJ6.
+
+### 7.1 CAU и контрольные регионы
+
+- CAU: PDA/AP A266BXXUCDZJ6, CSC package A266BOXMCDZJ6 (OXM).
+- XSG: тот же PDA/AP A266BXXUCDZJ6, CSC package A266BOJMCDZJ6 (OJM).
+- ACR также использует A266BOJMCDZJ6; SamFOTA показывает для ACR и XSG одинаковый SHA-256 полного пакета 17347ff4…dbebb23.
+- В индексируемых дочерних файлах SamFW для CAU, SKZ (OXM), XID (OLM), MID (OJM), INS (ODM) указан один и тот же BL-файл: BL_A266BXXUCDZJ6_A266BXXUCDZJ6_MQB116271260_REV00_user_low_ship_MULTI_CERT.tar.md5.zip, размер 8.53 MB.
+- Названия/размеры CSC-пакетов отличаются по региональным группам, тогда как компонент BL в этих каталогах имеет одинаковое имя и размер.
+
+Источники:
+- [SamMobile CAU J6](https://www.sammobile.com/samsung/galaxy-a26-5g/firmware/SM-A266B/CAU/download/A266BXXUCDZJ6/2189737/)
+- [SamMobile XSG J6](https://www.sammobile.com/samsung/galaxy-a26-5g/firmware/SM-A266B/XSG/download/A266BXXUCDZJ6/2112047/)
+- [SamFW CAU J6 — child files](https://samfw.com/firmware/SM-A266B/CAU/A266BXXUCDZJ6)
+- [SamFW SKZ J6 — child files](https://samfw.com/firmware/SM-A266B/SKZ/A266BXXUCDZJ6)
+- [SamFW XID J6 — child files](https://samfw.com/firmware/SM-A266B/XID/A266BXXUCDZJ6)
+- [SamFW MID J6 — child files](https://samfw.com/firmware/SM-A266B/MID/A266BXXUCDZJ6)
+- [SamFW INS J6 — child files](https://samfw.com/firmware/SM-A266B/INS/A266BXXUCDZJ6)
+- [SamFOTA XSG J6](https://samfota.com/firmware/sm-a266b/xsg/a266bxxucdzj6/)
+
+**Вывод с оговоркой:** данные сильно указывают на общий BL-компонент для региональных J6-пакетов, а не на отдельный SBoot, скомпилированный под каждый CSC. Побайтный SHA-256 дочернего BL-архива для каждой группы в открытых индексируемых карточках не опубликован, поэтому абсолютное равенство самих файлов не объявляется доказанным. Но оснований ожидать «открытый SBoot» только от перехода CAU/OXM на XSG/OJM нет. Смена CSC не является обоснованным способом снять ограничение OEM unlock.
+
+### 7.2 Что подтверждено по сохранённым в репозитории SBoot
+
+В репозитории имеются два извлечённых raw SBoot одинакового размера 8,388,608 байт:
+- J6 (a26-analysis/current/raw/sboot.bin): Git blob ID 7a239492904cce7a639560149628930040ffc9fe.
+- One UI 8.5 / A266BXXSCCZH3 (a26-analysis/oneui85/raw/sboot.bin): Git blob ID d5f1f6111773202f7b2a62359c55a79cc69ea5eb.
+
+Эти бинарники различаются. Следовательно, SBoot действительно меняется между версиями прошивки, но это не подтверждает региональную вариацию в рамках одного J6 build.
+
+Сопоставление строковых сканов двух SBoot:
+- 93 различных OEM/bootloader-related строки присутствуют в обоих сканах.
+- Среди общих строк сохраняются PO_OEM_UNLOCK, get_oem_unlock_val, Fail to unlock, Succeed to unlock, using unlock keys which was downloaded by odin, unlock_counter_rw, OEM %s in RPMB, OSUNLOCK и sync_lockstate_custtoken.
+- Это показывает, что соответствующие подсистемы/сообщения уже присутствовали в One UI 8.5; простого исчезновения этих строк в J6 нет. Но совпадение строк не доказывает равенство машинного кода, достижимость ветвей или работоспособность пользовательского unlock-пути.
+
+### 7.3 Практический результат
+
+1. Не прошивать XSG/OJM только ради надежды получить другой SBoot: по текущим данным это не подтверждается.
+2. Не использовать J5/J4 и старые One UI в качестве эксперимента: одинаковый SW REV/Binary сам по себе не является подтверждением безопасной совместимости всей цепочки и не даёт основания для downgrade.
+3. Наиболее значимый неразобранный lead остаётся не CSC, а ветка Odin key / customer-token: в обоих SBoot поколениях есть строки о ключах, загруженных Odin, однако текущая статическая выборка не показывает валидный пользовательский источник ключа и весь путь его проверки.
+4. Отсутствующие тела fcn.00153180 и fcn.00153998 остаются приоритетным пробелом. Их вызовы fcn.0017dfdc подтверждены, но полный контекст получения и передачи данных пока не извлечён.
+
+**Итог:** гипотеза «региональный CSC даст другой разблокируемый SBoot» получила отрицательную оценку. Продолжать следует анализ пути Odin/customer-token и точной семантики защищённого lock-state, не перепрошивая телефон.
