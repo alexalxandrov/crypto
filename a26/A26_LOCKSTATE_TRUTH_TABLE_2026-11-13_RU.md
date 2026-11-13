@@ -84,3 +84,40 @@ The complete extracted function body is preserved verbatim in the repository sou
 ## Source excerpt provenance
 
 Function `fcn.0017dfdc` begins at line 331 in `a26-analysis/unlock-investigation/current.txt`; setter `fcn.001257bc` follows immediately after the function body. The extracted text is an existing repository artifact, not newly executed firmware.
+
+
+## 6. Direct connection to `get_oem_unlock_val`: `fcn.0017af7c`
+
+A second function ties the OEM-named configuration key to the protected cached state.
+
+The J6 disassembly in `a26-analysis/unlock-investigation/current.txt` shows:
+
+- `fcn.0017af7c(arg1=1)`: calls the generic MISC/object accessor with key pointer `0x26b4ca`. The J6 string table identifies this exact address as `get_oem_unlock_val`. It reads a byte from the returned object and returns that byte. If the lookup fails, it returns 0.
+- `fcn.0017af7c(arg1=0)`: requires global flag `0x56f000+0x4dc == 1`, calls `fcn.0012577c` to read the cached state, then returns `1 - state`. If the guard is unavailable or the getter fails, it takes the error/default path.
+
+This is direct code-level use of the literal key `get_oem_unlock_val`, not mere co-occurrence in the strings table. It also establishes a second inverse mapping of the cached protected state.
+
+### 6.1. Related J6 strings
+
+The same J6 string table contains:
+
+- `get_oem_unlock_val` at `0x26b4ca`;
+- `androidboot.other.locked=%d` at `0x26b317`;
+- recovery argument sequence `recovery\\n--wipe_data\\n--reason=bootloader_unlock\\n--locale=en_US\\n` at `0x2691ec`.
+
+Their proximity and naming are leads, not proof that all three are emitted by the same function or that this config key is the final authorization decision. Do not conflate the value returned by `fcn.0017af7c` with Android's `isDeviceOemUnlocked` result.
+
+### 6.2. Cross-reference inventory
+
+The extracted J6 xref comments record calls to `fcn.0017af7c` from:
+
+- `fcn.0017eb34` at `0x17ebfc`, `0x17ec1c`, and `0x17ec30`;
+- `fcn.00183e40` at offset `+0x25c`.
+
+The full semantic reconstruction of `fcn.0017eb34` is now a priority target. Its complete body is not yet present in the targeted extracted files.
+
+### 6.3. Interpretation status
+
+**Confirmed:** MISC key lookup for `get_oem_unlock_val`; a separate path returning the complement of the protected cached state; the listed callers.
+
+**Not yet confirmed:** whether the value is the Android Developer Options toggle, a Samsung internal unlock policy value, a derived status, or an authorization input; how it interacts with bit 3; and whether it gates the final unlock transition.
