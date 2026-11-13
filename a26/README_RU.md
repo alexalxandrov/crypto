@@ -20,15 +20,15 @@ This official release record does not by itself prove which build, baseband, or 
 
 | File | Purpose |
 |---|---|
-| [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) | Main handoff dossier; chronology, artifacts, caveats, current intake requirements |
+| [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) | Main handoff dossier; confirmed STEADY mapping, CertResTBE prerequisite, OEM wipe path and remaining read-only checks |
 | [A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md](A26_ESS_LOCKSTATE_ANALYSIS_2026-11-13_RU.md) | A26-specific ESS, signed STEADY policy bitmap, OEM lock-state synchronizer and bootloader-unlock recovery wipe path |
 | [A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md](A26_LOCKSTATE_TRUTH_TABLE_2026-11-13_RU.md) | Exact bit-3/current-state truth table, inverse setter mapping, `get_oem_unlock_val` error-path label, opaque object pointer and caller xrefs |
 | [A26_DEVICE_STATE_2026-11-13_RU.md](A26_DEVICE_STATE_2026-11-13_RU.md) | Software information profile plus current device/Download Mode summary |
 | [A26_DOWNLOAD_MODE_2026-11-13_RU.md](A26_DOWNLOAD_MODE_2026-11-13_RU.md) | Complete ODIN MODE screen transcription; explicitly records that no other lines or fields are present |
 | [A26_RESEARCH_UPDATE_2026-11-13_RU.md](A26_RESEARCH_UPDATE_2026-11-13_RU.md) | Correction to earlier SBoot extraction claims and current static-analysis results |
-| [A26_ESS_LOCKSTATE_FLOW_RU.svg](A26_ESS_LOCKSTATE_FLOW_RU.svg) | Diagram: observed A26 paths vs unresolved ESS/token links |
+| [A26_ESS_LOCKSTATE_FLOW_RU.svg](A26_ESS_LOCKSTATE_FLOW_RU.svg) | Updated evidence diagram: CertResTBE gate, live STEADY partition, signature check, bitmap, OEM sync and unresolved storage/token links |
 | [recovery/A26_RECOVERY_PREFLIGHT_2026-11-13_RU.md](recovery/A26_RECOVERY_PREFLIGHT_2026-11-13_RU.md) | Root/recovery partition read-only intake, official TWRP method, image/AVB compatibility risks |
-| [A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md](A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md) | Exact-build unlock assessment, TWRP/AVB decision, signed STEADY bitmap, SBoot recovery wipe path and safe diagnostics |
+| [A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md](A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md) | Exact-build unlock assessment, signed STEADY policy, CertResTBE readiness gate, SecureBoot parser, recovery wipe path and safe diagnostics |
 | `em.img` | **Empty (0 bytes)** as of this snapshot; not a usable firmware or Engineering Mode artifact |
 
 ## Main analysis corpus
