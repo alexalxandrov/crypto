@@ -415,3 +415,11 @@ This establishes SCSI object backend dispatch for the PIT-derived STEADY record 
 User metadata: `sda` size 499785728 sysfs sectors; logical/physical block size 4096; `sda3` start 73728, size 8192, PARTNAME `steady`. Using Linux sysfs 512-byte sectors, `sda3` starts at byte 37748736 (36 MiB), length 4194304 (4 MiB), exclusive end 41943040 (40 MiB). This is 4-KiB LBA start 9216 (`0x2400`), length 1024 (`0x400`).
 
 SBoot PIT `STEADY` record field `+0x14` is an offset-like argument, with adjustments `+0x12` and `+0x28`; `+0x1c` selects a `scsiN` object. Until `[object+0xa8]` is resolved, no unit equivalence to `0x2400`, `0x12000`, or byte offset `0x02400000` can be asserted.
+
+## 15. First 4 KiB of live STEADY partition
+
+The uploaded repository artifact a26/steady_header_4k.bin is 4096 bytes. Byte-level inspection shows that every byte is 0x00 (non-zero count 0); no printable strings or non-zero ranges exist. SHA-256: `ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7`.
+
+This is limited to the prefix [0,4096) of /dev/block/by-name/steady. It does not establish that the complete 4-MiB partition is empty, erased, or non-filesystem data. The PIT/SCSI address-unit question remains unresolved; an all-zero prefix does not resolve the mapping.
+
+A bounded read-only full-partition copy (4 MiB = 1024 × 4096 bytes) to userdata is the next data acquisition that can reveal whether any later region contains metadata. No write to the source partition is required.
