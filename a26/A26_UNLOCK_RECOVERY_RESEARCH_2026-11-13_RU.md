@@ -220,3 +220,43 @@ The Download Mode screen reports RP SWREV B/K/S 12. Do not flash firmware, bootl
 | TWRP in chroot | Not a booted recovery; insufficient for safe recovery operations | Not a substitute |
 
 The next useful result is the read-only kexec diagnostic in section 7. Do not repeat Download Mode screen collection; it is already complete in the dossier.
+
+
+## 10. Новое подтверждение: boot-time bitfield загружается из STEADY и проходит SecureBoot-проверку
+
+Новая сверка выполнена по полным disassembly-блокам full-sboot-part-00/01 и raw sboot.bin (ARM64, flat image, RVA=file offset для рассматриваемых адресов).
+
+### 10.1 Источник bitmap
+
+- Глобальный bitmap расположен по адресу 0x5a6000+0xa90, размер 32 байта.
+- fcn.001895dc(bit) читает отдельный бит из этого массива; bit=3 используется в OEM lock-state reconciliation.
+- fcn.0018962c ищет внутреннюю запись с ключом STEADY (строка по 0x26fe25) и обрабатывает её данные.
+- В успешной ветке функция копирует 32 байта из parsed object+0x120 в 0x5a6000+0xa90 через fcn.0014d60c (копирование памяти).
+- fcn.00189d8c вызывается из ранней инициализации fcn.00114100 по адресу 0x1142ac; внутри она подготавливает обработку STEADY и в конце вызывает fcn.0018962c.
+
+### 10.2 Проверка SecureBoot перед публикацией bitmap
+
+В fcn.0018962c прослеживается следующий порядок:
+
+1. fcn.001690d8 обрабатывает структуру/метаданные и формирует промежуточное представление.
+2. fcn.001584cc вызывается для следующего этапа проверки объекта. Внутри функции присутствует явный diagnostic text: "SecureBoot: [%s] Check digital signature fail. (Booting stop: 0x%x)". В ветках с соответствующими version/flag conditions функция вызывает fcn.00163120 и выполняет проверки подписи/сертификатных полей.
+3. Caller проверяет результат fcn.001584cc: ненулевой результат переводит обработку в error path; нулевой позволяет продолжить.
+4. fcn.00169738 обрабатывает/собирает parsed object; после успешного статуса и соответствующего object flag выполняется копирование bitmap.
+
+fcn.00188738 не следует называть самостоятельным криптографическим verifier: его тело повторно ищет STEADY через fcn.001758fc и передаёт найденные поля парсеру fcn.001392bc. Фактическая явная SecureBoot/signature-check ветка в данном пути находится в fcn.001584cc.
+
+### 10.3 Следствие для текущего OEM Unlock
+
+Уточнённая цепочка теперь имеет вид:
+
+early init → STEADY record → metadata parse → SecureBoot signature checks → 32-byte bitmap → bit 3 → fcn.0017dfdc → cached OEM lock state.
+
+Это объясняет, почему Android-переключатель, включая его принудительное отображение через runtime resetprop, сам по себе не меняет ветвление SBoot: источник bit 3 — не Android Settings и не ro.boot.other.locked, а bitmap, формируемый из STEADY metadata в boot-time path.
+
+**Ограничения вывода:**
+- Семантика bit 3 именно как "user-requested OEM unlock" всё ещё не доказана по отдельным callers/metadata definition. Доказана только его связь с SBoot lock-state reconciliation.
+- Наличие SecureBoot signature-check в пути загрузки STEADY делает произвольное изменение bitmap на стороне Android недостаточным и не подтверждает, что можно заменить саму запись без действительной подписи.
+- Точное физическое хранилище исходной записи STEADY пока не установлено. Внутренний record lookup root 0x59d000+0xa50 и stride 0x84 — это RAM table lookup, а не доказательство конкретной eMMC/UFS/RPMB partition.
+- fcn.001257bc обновляет cache 0x56f000+0x8f0 и вызывает generic storage/backend wrapper fcn.00123f14 при ready guard. Сообщение "OEM %s in RPMB" — диагностическая строка; без полного подтверждения нижнего backend call-chain её недостаточно, чтобы утверждать, что конкретная операция напрямую пишет RPMB.
+
+**Практический вывод:** запись в recovery через dd и изменение Android property не решают текущую проблему. Следующий важный объект анализа — происхождение и provisioning записи STEADY / содержимого bitmap до передачи в этот ранний SBoot parser, а также точная семантика bit 3. До этого нет обоснованного безопасного способа менять соответствующий lock policy.
