@@ -410,3 +410,8 @@ The live device has `PARTNAME=steady`, `/dev/block/sda3`, 4 MiB, kernel RO=1. Th
 `fcn.001390c0(dest, selector, offset, length)` resolves the selected object through `fcn.00138f30`, then invokes object method `[object+0xa8]` with `(object,dest,offset,length)` and releases the object. In `fcn.00189d8c` the PIT record dword at `+0x1c` is the selector, dword at `+0x14` plus `0x12` is an offset-like value, and length is `0x2c00`; in `fcn.0018962c`, the same fields are passed with offset plus `0x28` and length `0x11000`.
 
 This establishes SCSI object backend dispatch for the PIT-derived STEADY record path. Exact scsi index, offset units, and mapping to the Android `sda3` partition start remain unproven.
+## 14. Live physical geometry of `steady`
+
+User metadata: `sda` size 499785728 sysfs sectors; logical/physical block size 4096; `sda3` start 73728, size 8192, PARTNAME `steady`. Using Linux sysfs 512-byte sectors, `sda3` starts at byte 37748736 (36 MiB), length 4194304 (4 MiB), exclusive end 41943040 (40 MiB). This is 4-KiB LBA start 9216 (`0x2400`), length 1024 (`0x400`).
+
+SBoot PIT `STEADY` record field `+0x14` is an offset-like argument, with adjustments `+0x12` and `+0x28`; `+0x1c` selects a `scsiN` object. Until `[object+0xa8]` is resolved, no unit equivalence to `0x2400`, `0x12000`, or byte offset `0x02400000` can be asserted.
