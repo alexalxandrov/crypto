@@ -4,7 +4,7 @@ Target under study: Samsung Galaxy A26 5G SM-A266B/DS, firmware A266BXXUCDZJ6, A
 
 ## Executive result
 
-The A26 SBoot contains a concrete routine named by its log string `sync_lockstate_custtoken` at VA `0x0026d660`. The routine at `fcn.0017dfdc` checks a bit in an in-memory mode bitmap, obtains a current state value, accesses an object under the `MISC` key, and can call `fcn.001257bc`, whose code logs `rpmb_set_lock_state` and invokes a storage layer. This is direct A26 evidence that customer-token-related state is synchronized with a protected OEM lock-state path.
+The A26 SBoot contains a concrete routine named by its log string `sync_lockstate_custtoken` at VA `0x0026d660`. The routine at `fcn.0017dfdc` checks a bit in an in-memory mode bitmap, obtains a current state value, accesses an object under the `MISC` key, and can call `fcn.001257bc`, which updates the cached state and, under a separate guard, invokes `fcn.00123f14` with a backend ID and request object. The lower helper contains ICM/USB transport-related branches; its final persistence destination is not yet proven. This is direct A26 evidence that customer-token-related state is synchronized with a protected OEM lock-state path.
 
 **It is not yet proof that this path unlocks the device, nor that the bit is definitively named Mode 3 in A26.** The direction of the boolean state (0 vs 1) and the exact meaning of the two log labels remain unresolved. The callers of the synchronizer are also not yet fully extracted.
 
@@ -50,7 +50,7 @@ The value's polarity remains unknown in this analysis: do not yet equate numeric
 
 The function takes a boolean-like integer, normalizes it with `cset w19, ne`, allocates/initializes a 0x100-byte request object, copies a 12-byte global structure, and updates the cached value at `0x56f000 + 0x8f0`.
 
-When an additional global guard at `0x56f000 + 0x4e8` is enabled, it invokes `fcn.00123f14` with a storage identifier read from `0x56f000 + 0x4d8`. It references the string `rpmb_set_lock_state` at `0x25c09e`. This establishes a state-setting/storage path, but the lower storage helper's complete semantics and the persisted field's polarity still require analysis.
+When an additional global guard at `0x56f000 + 0x4e8` is enabled, it invokes `fcn.00123f14` with a backend identifier read from `0x56f000 + 0x4d8`, operation value `1`, the prepared request object and an output/status pointer. Its body contains block-range calculations, buffer allocation, `fcn.00124e0c`, and ICM/USB-related diagnostic strings including `setct_CertResTBE` and `[ICM] USB Loading Done`. Therefore it is a generic backend/transport path, not yet a proven direct RPMB write. The nearby `rpmb_set_lock_state` label and `OEM %s in RPMB` diagnostic are correlations, not sufficient proof of the actual final storage destination or persisted field.
 
 **Guard distinction clarified from the complete getter/setter bodies:** `fcn.0012577c` also gates its read on `0x56f000 + 0x4e8`; if the guard is not 1, it returns `0x40300` without writing the output pointer. The caller `fcn.0017dfdc` checks a separate flag at `+0x4dc` before calling the getter, but does not visibly branch on the getter return before loading the output slot. The relationship between these guards and initialization of the output slot must be traced. A cache update and a successful guarded storage operation are separate facts.
 
