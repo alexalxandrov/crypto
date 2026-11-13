@@ -394,3 +394,12 @@ On-device read-only probe: `steady -> /dev/block/sda3`, `4194304` bytes (4 MiB),
 In SBoot, `fcn.001758fc` performs a 32-byte key lookup against an in-RAM catalog at `0x59d000+0xa50`, record stride `0x84`, count at `0x59d000+0xa14`. `fcn.00175b28` validates and parses a separate 0x2000-byte object with magic `0x12349876`, copying records into this catalog. The object is requested via `fcn.0014237c(0x2000)`; final provider `fcn.00206b84` is not yet extracted.
 
 Do not equate this in-memory lookup with direct access to Android `/dev/block/sda3`. The mapping between the partition and the resource object remains a research question.
+## 12. PIT-derived STEADY record and SMC resource path
+
+`fcn.00175b28` requests resource key `PIT` (raw string at VA `0x24a972`) via `fcn.0017f2ec`, after allocating a 0x2000-byte buffer. It checks magic `0x12349876`, parses the entry count, and copies 0x84-byte records from `buffer+0x1c` into RAM catalog `0x59d000+0xa2c`; count is published at `0x59d000+0xa14`.
+
+`fcn.001758fc` reads that count, compares a 32-byte requested name against the field at `record+0x24` (first key at `0x59d000+0xa50`), with stride 0x84, and returns the record base. In `fcn.00189d8c`, the request key is `STEADY` (`0x26fe25`).
+
+The PIT fetch path for payloads >0x200 uses `fcn.0017f3dc` → `fcn.001b4678`; the latter cleans data cache and invokes SMC FID `-0xf0`, operation subcode `0x0e` for that caller. `fcn.0017f3dc` contains bounds checks and reports `[EL3 ENC] integrity check was failed` on status -1. SMC semantics and physical source are unresolved.
+
+The live device has `PARTNAME=steady`, `/dev/block/sda3`, 4 MiB, kernel RO=1. This name match is a strong correlation with the PIT `STEADY` record, not proof of physical LBA mapping. `fcn.00189d8c` consumes little-endian PIT record fields +0x14 and +0x1c via `fcn.001390c0`; units/backend remain unresolved.
