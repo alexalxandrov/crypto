@@ -84,7 +84,7 @@
   <text x="510" y="647" class="body">magic 0x12349876; records stride 0x84</text>
   <text x="510" y="677" class="body">fcn.001758fc searches key "STEADY"</text>
   <text x="510" y="707" class="body">mode=1 selects SCSI; record +0x1c → scsiN</text>
-  <text x="510" y="737" class="small">sda3: start 36 MiB (4K LBA 0x2400), size 4 MiB; units unresolved.</text>
+  <text x="510" y="737" class="small">sda3: start 36 MiB, size 4 MiB; first 4 KiB read is all 00; remainder uninspected.</text>
 
   <rect x="910" y="500" width="385" height="255" class="card"/>
   <rect x="932" y="520" width="120" height="26" rx="13" class="observedTag"/>
