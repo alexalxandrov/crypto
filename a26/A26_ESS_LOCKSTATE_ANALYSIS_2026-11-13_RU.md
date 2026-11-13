@@ -403,3 +403,10 @@ Do not equate this in-memory lookup with direct access to Android `/dev/block/sd
 The PIT fetch path for payloads >0x200 uses `fcn.0017f3dc` → `fcn.001b4678`; the latter cleans data cache and invokes SMC FID `-0xf0`, operation subcode `0x0e` for that caller. `fcn.0017f3dc` contains bounds checks and reports `[EL3 ENC] integrity check was failed` on status -1. SMC semantics and physical source are unresolved.
 
 The live device has `PARTNAME=steady`, `/dev/block/sda3`, 4 MiB, kernel RO=1. This name match is a strong correlation with the PIT `STEADY` record, not proof of physical LBA mapping. `fcn.00189d8c` consumes little-endian PIT record fields +0x14 and +0x1c via `fcn.001390c0`; units/backend remain unresolved.
+## 13. SCSI backend selection in PIT STEADY path
+
+`fcn.00114100` calls `fcn.00138ddc(1)` before `fcn.00175b28` (PIT resource request). `fcn.00138ddc` stores its input into global `0x572000+0x5e8`. `fcn.00138f30(index)` maps mode 1 to resource names `scsiN`; mode 2 maps to `mmcN`, with `mmcrpmb` for index 3.
+
+`fcn.001390c0(dest, selector, offset, length)` resolves the selected object through `fcn.00138f30`, then invokes object method `[object+0xa8]` with `(object,dest,offset,length)` and releases the object. In `fcn.00189d8c` the PIT record dword at `+0x1c` is the selector, dword at `+0x14` plus `0x12` is an offset-like value, and length is `0x2c00`; in `fcn.0018962c`, the same fields are passed with offset plus `0x28` and length `0x11000`.
+
+This establishes SCSI object backend dispatch for the PIT-derived STEADY record path. Exact scsi index, offset units, and mapping to the Android `sda3` partition start remain unproven.
