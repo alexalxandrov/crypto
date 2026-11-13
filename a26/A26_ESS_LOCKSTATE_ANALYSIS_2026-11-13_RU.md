@@ -347,7 +347,7 @@ The full body of `fcn.0017b7c8` shows that, for a positive input and unless the 
 
 The complete function `fcn.0017af7c` in `a26-analysis/unlock-investigation/current.txt` has two distinct argument branches:
 
-- Argument 1: calls `fcn.001758fc` with pointer `0x265467`; if an object is returned, reads a byte at offset `+0x1c`, validates/derives a value through `fcn.001390c0`, and returns the local result. The semantic name/content of `0x265467` is unresolved.
+- Argument 1: calls `fcn.001758fc` with pointer `0x265467`; this helper searches an internal record table rooted at `0x59d000+0xa50`, using stride `0x84` and comparisons through `fcn.0014dbd8`. If a record is returned, the caller reads a byte at offset `+0x1c` and validates/derives a value through `fcn.001390c0`. The semantic name/content of the key at `0x265467` is unresolved.
 - Argument 0: requires `0x56f000+0x4dc == 1`, reads cached state via `fcn.0012577c`, and returns `1 - state`.
 
 When the arg0 getter path fails, the function logs with the string `get_oem_unlock_val` at `0x26b4ca` through `fcn.0014c9f8`. **This is a diagnostic label, not a proven MISC key.** The object/data pointer in the other branch is `0x265467`.
