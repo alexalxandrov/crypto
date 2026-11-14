@@ -1,11 +1,16 @@
 # A26 STEADY partition / OEM policy bitmap inspection — 2026-11-14
 
-Read-only analysis of the saved 4 MiB partition image. No device access or writes.
+Read-only analysis of repository backups and SBoot disassembly. No device access or writes.
 
 - File: a26/steady_full_4m.bin
 - Size: 4194304 bytes
 - SHA-256: c32ca8466d00f3270919fff9f36f07de7803600ce4152dbfae7ce6d53eed01bb
 - Non-zero bytes: 10638
+- SBoot binary SHA-256: 3ea5690c8599cfab07578fa304aee5097d3f3c9ed6ffd996cf3b215d364ca0ce
+- Header file: a26/steady_header_4k.bin
+- Header size: 4096 bytes
+- Header SHA-256: ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7
+- Header exact-match offset in full image: 0x0
 
 ## 1. Partition header (first 0x200 bytes)
 
@@ -43,159 +48,576 @@ Offset       Hex bytes
 000001e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 000001f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-## 2. Candidate signed policy bitmap
+## 2. Important correction: policy bitmap is not at a fixed raw offset
 
-SBoot function fcn.0018962c reads the STEADY object, then copies 32 bytes from read-buffer offset 0x120 into global bitmap 0x5a6a90. The read call adds 0x28 to the object-record offset. If the STEADY object starts at partition offset 0, the candidate bitmap is therefore at partition offset 0x148. This offset is conditional until the PIT/object-record base is independently confirmed.
+SBoot fcn.0018962c does not copy the policy bitmap from raw partition offset 0x148. It parses/validates a token object, obtains a pointer from a parsed context field (load from [context+0xad0]), then copies 32 bytes from parsed_object+0x120 to global bitmap 0x5a6a90. Therefore the earlier raw-offset-0x148 probe is not a valid bit3 measurement. Its zero value does not imply that the policy bit is zero.
 
-- Offset 0x00000120: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000128: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000138: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000148: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000158: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000168: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000178: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000188: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000198: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x000001a8: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x000001b8: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x000001c8: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x000001d8: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x000001e8: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x000001f8: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
-- Offset 0x00000208: bit3=0, set_bits=0/256, bytes=0000000000000000000000000000000000000000000000000000000000000000
+The next task is to identify the parser and the object-record offset that selects the token from the STEADY partition. Until then, no bit3 value is claimed.
 
-### Candidate 0x148
+## 3. Non-zero ranges and local hexdumps
 
-- Bytes: 0000000000000000000000000000000000000000000000000000000000000000
-- Bit 3 (LSB-first, first 64-bit word): 0
-- Set bits: 0/256
-- SHA-256: 66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925
+### 0x00002080–0x00002082 (3 bytes)
+00002080: 44 53 53 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x00002400–0x00002423 (36 bytes)
+00002400: a3 9b d3 79 1c b0 ee 09 56 2a 53 89 e9 24 ae cf
+00002410: 13 4c 9f 2c b5 e1 f3 3b cd 94 f1 1b b2 b7 de 22
+00002420: 45 53 49 14 00 45 03 00 00 00 cf 00 00 00 05 00
+### 0x00002425–0x00002426 (2 bytes)
+00002425: 45 03 00 00 00 cf 00 00 00 05 00 01 00 09 00 43
+### 0x0000242a–0x0000242a (1 bytes)
+0000242a: cf 00 00 00 05 00 01 00 09 00 43 4f 4d 50 4c 45
+### 0x0000242e–0x0000242e (1 bytes)
+0000242e: 05 00 01 00 09 00 43 4f 4d 50 4c 45 54 45 44 07
+### 0x00002430–0x00002430 (1 bytes)
+00002430: 01 00 09 00 43 4f 4d 50 4c 45 54 45 44 07 00 10
+### 0x00002432–0x00002432 (1 bytes)
+00002432: 09 00 43 4f 4d 50 4c 45 54 45 44 07 00 10 00 33
+### 0x00002434–0x0000243d (10 bytes)
+00002434: 43 4f 4d 50 4c 45 54 45 44 07 00 10 00 33 30 30
+### 0x0000243f–0x0000243f (1 bytes)
+0000243f: 10 00 33 30 30 32 37 37 66 35 62 37 30 34 30 38
+### 0x00002441–0x00002453 (19 bytes)
+00002441: 33 30 30 32 37 37 66 35 62 37 30 34 30 38 31 31
+00002451: 01 10 04 00 00 00 00 00 11 00 10 00 32 35 33 30
+### 0x00002459–0x00002459 (1 bytes)
+00002459: 11 00 10 00 32 35 33 30 32 34 31 35 32 35 30 30
+### 0x0000245b–0x0000245b (1 bytes)
+0000245b: 10 00 32 35 33 30 32 34 31 35 32 35 30 30 32 45
+### 0x0000245d–0x0000246d (17 bytes)
+0000245d: 32 35 33 30 32 34 31 35 32 35 30 30 32 45 38 41
+0000246d: 04 00 8e 00 14 00 28 00 01 d0 07 00 00 22 00 01
+### 0x0000246f–0x0000246f (1 bytes)
+0000246f: 8e 00 14 00 28 00 01 d0 07 00 00 22 00 01 d0 07
+### 0x00002471–0x00002471 (1 bytes)
+00002471: 14 00 28 00 01 d0 07 00 00 22 00 01 d0 07 00 00
+### 0x00002473–0x00002473 (1 bytes)
+00002473: 28 00 01 d0 07 00 00 22 00 01 d0 07 00 00 2d 00
+### 0x00002475–0x00002477 (3 bytes)
+00002475: 01 d0 07 00 00 22 00 01 d0 07 00 00 2d 00 01 e8
+### 0x0000247a–0x0000247a (1 bytes)
+0000247a: 22 00 01 d0 07 00 00 2d 00 01 e8 03 00 00 0a 00
+### 0x0000247c–0x0000247e (3 bytes)
+0000247c: 01 d0 07 00 00 2d 00 01 e8 03 00 00 0a 00 02 01
+### 0x00002481–0x00002481 (1 bytes)
+00002481: 2d 00 01 e8 03 00 00 0a 00 02 01 00 00 00 1c 00
+### 0x00002483–0x00002485 (3 bytes)
+00002483: 01 e8 03 00 00 0a 00 02 01 00 00 00 1c 00 00 00
+### 0x00002488–0x00002488 (1 bytes)
+00002488: 0a 00 02 01 00 00 00 1c 00 00 00 00 00 00 1a 00
+### 0x0000248a–0x0000248b (2 bytes)
+0000248a: 02 01 00 00 00 1c 00 00 00 00 00 00 1a 00 00 0f
+### 0x0000248f–0x0000248f (1 bytes)
+0000248f: 1c 00 00 00 00 00 00 1a 00 00 0f 27 00 00 35 00
+### 0x00002496–0x00002496 (1 bytes)
+00002496: 1a 00 00 0f 27 00 00 35 00 00 e8 03 00 00 34 00
+### 0x00002499–0x0000249a (2 bytes)
+00002499: 0f 27 00 00 35 00 00 e8 03 00 00 34 00 00 00 00
+### 0x0000249d–0x0000249d (1 bytes)
+0000249d: 35 00 00 e8 03 00 00 34 00 00 00 00 00 00 14 00
+### 0x000024a0–0x000024a1 (2 bytes)
+000024a0: e8 03 00 00 34 00 00 00 00 00 00 14 00 00 01 00
+### 0x000024a4–0x000024a4 (1 bytes)
+000024a4: 34 00 00 00 00 00 00 14 00 00 01 00 00 00 1b 00
+### 0x000024ab–0x000024ab (1 bytes)
+000024ab: 14 00 00 01 00 00 00 1b 00 00 0f 27 00 00 29 00
+### 0x000024ae–0x000024ae (1 bytes)
+000024ae: 01 00 00 00 1b 00 00 0f 27 00 00 29 00 01 64 00
+### 0x000024b2–0x000024b2 (1 bytes)
+000024b2: 1b 00 00 0f 27 00 00 29 00 01 64 00 00 00 3d 00
+### 0x000024b5–0x000024b6 (2 bytes)
+000024b5: 0f 27 00 00 29 00 01 64 00 00 00 3d 00 01 0a 00
+### 0x000024b9–0x000024b9 (1 bytes)
+000024b9: 29 00 01 64 00 00 00 3d 00 01 0a 00 00 00 41 00
+### 0x000024bb–0x000024bc (2 bytes)
+000024bb: 01 64 00 00 00 3d 00 01 0a 00 00 00 41 00 01 e8
+### 0x000024c0–0x000024c0 (1 bytes)
+000024c0: 3d 00 01 0a 00 00 00 41 00 01 e8 03 00 00 06 00
+### 0x000024c2–0x000024c3 (2 bytes)
+000024c2: 01 0a 00 00 00 41 00 01 e8 03 00 00 06 00 01 64
+### 0x000024c7–0x000024c7 (1 bytes)
+000024c7: 41 00 01 e8 03 00 00 06 00 01 64 00 00 00 01 00
+### 0x000024c9–0x000024cb (3 bytes)
+000024c9: 01 e8 03 00 00 06 00 01 64 00 00 00 01 00 01 e8
+### 0x000024ce–0x000024ce (1 bytes)
+000024ce: 06 00 01 64 00 00 00 01 00 01 e8 03 00 00 0c 00
+### 0x000024d0–0x000024d1 (2 bytes)
+000024d0: 01 64 00 00 00 01 00 01 e8 03 00 00 0c 00 01 64
+### 0x000024d5–0x000024d5 (1 bytes)
+000024d5: 01 00 01 e8 03 00 00 0c 00 01 64 00 00 00 0d 00
+### 0x000024d7–0x000024d9 (3 bytes)
+000024d7: 01 e8 03 00 00 0c 00 01 64 00 00 00 0d 00 00 e8
+### 0x000024dc–0x000024dc (1 bytes)
+000024dc: 0c 00 01 64 00 00 00 0d 00 00 e8 03 00 00 11 00
+### 0x000024de–0x000024df (2 bytes)
+000024de: 01 64 00 00 00 0d 00 00 e8 03 00 00 11 00 01 64
+### 0x000024e3–0x000024e3 (1 bytes)
+000024e3: 0d 00 00 e8 03 00 00 11 00 01 64 00 00 00 23 00
+### 0x000024e6–0x000024e7 (2 bytes)
+000024e6: e8 03 00 00 11 00 01 64 00 00 00 23 00 01 c8 00
+### 0x000024ea–0x000024ea (1 bytes)
+000024ea: 11 00 01 64 00 00 00 23 00 01 c8 00 00 00 21 00
+### 0x000024ec–0x000024ed (2 bytes)
+000024ec: 01 64 00 00 00 23 00 01 c8 00 00 00 21 00 01 64
+### 0x000024f1–0x000024f1 (1 bytes)
+000024f1: 23 00 01 c8 00 00 00 21 00 01 64 00 00 00 00 00
+### 0x000024f3–0x000024f4 (2 bytes)
+000024f3: 01 c8 00 00 00 21 00 01 64 00 00 00 00 00 00 00
+### 0x000024f8–0x000024f8 (1 bytes)
+000024f8: 21 00 01 64 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000024fa–0x000024fb (2 bytes)
+000024fa: 01 64 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x0007df20–0x0007df20 (1 bytes)
+0007df20: 48 00 00 00 02 cc e1 fa 31 e6 72 dc 37 d3 35 56
+### 0x0007df24–0x0007df37 (20 bytes)
+0007df24: 02 cc e1 fa 31 e6 72 dc 37 d3 35 56 0d fb 83 88
+0007df34: 59 64 eb c5 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x0007df48–0x0007df57 (16 bytes)
+0007df48: 08 41 58 c1 5c b7 94 b5 56 cc 76 f6 63 f5 ab aa
+### 0x0007dfe0–0x0007e072 (147 bytes)
+0007dfe0: 72 9a 78 88 7b d4 04 1f c5 77 b6 a5 5a b4 99 03
+0007dff0: 96 38 82 96 26 39 48 81 a3 55 6e 5e 7c b4 3e 7b
+0007e000: 8b 6b 9d 93 db a9 88 c5 45 84 ed a3 7f 99 ed 05
+0007e010: 5d 2f c4 d0 b9 e8 04 3c f8 59 47 e7 73 d4 c2 b4
+0007e020: 73 70 9d 2f 68 e6 48 e3 c2 6d 7a c9 e8 5e 66 1e
+0007e030: 7b 83 51 21 d4 46 73 6b 78 2a e1 b8 cb 09 90 a3
+0007e040: cd 17 6f 2a 49 09 8e a7 33 ff 19 6e c6 e3 87 99
+0007e050: af 1d 80 a3 6c a5 b7 9c f4 fb 84 ca 1d a5 fa 67
+0007e060: 5e b8 6f 97 07 c5 2a e3 ab bd 70 06 f9 27 55 6e
+0007e070: 08 11 e5 00 e9 e2 5f 60 38 51 4d 85 8e 88 2a 66
+### 0x0007e074–0x0007e0a7 (52 bytes)
+0007e074: e9 e2 5f 60 38 51 4d 85 8e 88 2a 66 90 98 78 2a
+0007e084: 19 8d 27 67 2a b7 53 16 91 8d 4d 4a 73 6e 17 f5
+0007e094: da c0 4c 9e 4c c3 43 76 19 c7 2d 0c e1 5e 27 01
+0007e0a4: d1 16 63 bc 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x0007e120–0x0007e120 (1 bytes)
+0007e120: 48 00 00 00 02 cc e1 fa 31 e6 72 dc 37 d3 35 56
+### 0x0007e124–0x0007e137 (20 bytes)
+0007e124: 02 cc e1 fa 31 e6 72 dc 37 d3 35 56 0d fb 83 88
+0007e134: 59 64 eb c5 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x0007e148–0x0007e157 (16 bytes)
+0007e148: 08 41 58 c1 5c b7 94 b5 56 cc 76 f6 63 f5 ab aa
+### 0x0007e1e0–0x0007e272 (147 bytes)
+0007e1e0: 72 9a 78 88 7b d4 04 1f c5 77 b6 a5 5a b4 99 03
+0007e1f0: 96 38 82 96 26 39 48 81 a3 55 6e 5e 7c b4 3e 7b
+0007e200: 8b 6b 9d 93 db a9 88 c5 45 84 ed a3 7f 99 ed 05
+0007e210: 5d 2f c4 d0 b9 e8 04 3c f8 59 47 e7 73 d4 c2 b4
+0007e220: 73 70 9d 2f 68 e6 48 e3 c2 6d 7a c9 e8 5e 66 1e
+0007e230: 7b 83 51 21 d4 46 73 6b 78 2a e1 b8 cb 09 90 a3
+0007e240: cd 17 6f 2a 49 09 8e a7 33 ff 19 6e c6 e3 87 99
+0007e250: af 1d 80 a3 6c a5 b7 9c f4 fb 84 ca 1d a5 fa 67
+0007e260: 5e b8 6f 97 07 c5 2a e3 ab bd 70 06 f9 27 55 6e
+0007e270: 08 11 e5 00 e9 e2 5f 60 38 51 4d 85 8e 88 2a 66
+### 0x0007e274–0x0007e2a7 (52 bytes)
+0007e274: e9 e2 5f 60 38 51 4d 85 8e 88 2a 66 90 98 78 2a
+0007e284: 19 8d 27 67 2a b7 53 16 91 8d 4d 4a 73 6e 17 f5
+0007e294: da c0 4c 9e 4c c3 43 76 19 c7 2d 0c e1 5e 27 01
+0007e2a4: d1 16 63 bc 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x00099200–0x00099205 (6 bytes)
+00099200: 63 70 5f 6f 74 70 00 00 00 00 00 00 00 00 00 00
+### 0x00099224–0x00099227 (4 bytes)
+00099224: 02 bb c2 fa 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000992c1–0x000992c3 (3 bytes)
+000992c1: 01 01 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000992e0–0x000992ff (32 bytes)
+000992e0: ad f8 4a 12 bf c5 fe 74 ce bd 1a 97 da 39 b1 31
+000992f0: c7 f5 01 16 76 51 d2 59 89 af 5b 67 34 64 b9 38
+### 0x0009e400–0x0009e405 (6 bytes)
+0009e400: 63 70 5f 6f 74 70 00 00 00 00 00 00 00 00 00 00
+### 0x0009e424–0x0009e427 (4 bytes)
+0009e424: 02 bb c2 fa 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x0009e4c1–0x0009e4c3 (3 bytes)
+0009e4c1: 01 01 01 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x0009e4e0–0x0009e4ff (32 bytes)
+0009e4e0: ad f8 4a 12 bf c5 fe 74 ce bd 1a 97 da 39 b1 31
+0009e4f0: c7 f5 01 16 76 51 d2 59 89 af 5b 67 34 64 b9 38
+### 0x000af024–0x000af027 (4 bytes)
+000af024: 02 cc cb fa 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000af0c3–0x000af0c3 (1 bytes)
+000af0c3: 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000af0e0–0x000af0ff (32 bytes)
+000af0e0: 6f 60 50 f8 e0 0c c5 71 7c 15 93 ff a4 db 46 e7
+000af0f0: 02 cf 49 6a 7c 3a 03 14 bb c0 05 d8 f7 af 5a 9f
+### 0x000af224–0x000af227 (4 bytes)
+000af224: 02 cc cb fa 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000af2c3–0x000af2c3 (1 bytes)
+000af2c3: 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000af2e0–0x000af2ff (32 bytes)
+000af2e0: 6f 60 50 f8 e0 0c c5 71 7c 15 93 ff a4 db 46 e7
+000af2f0: 02 cf 49 6a 7c 3a 03 14 bb c0 05 d8 f7 af 5a 9f
+### 0x000cb220–0x000cb221 (2 bytes)
+000cb220: 20 01 00 00 02 cc cf fa 5c d3 ce 31 6c 1a 01 ff
+### 0x000cb224–0x000cb237 (20 bytes)
+000cb224: 02 cc cf fa 5c d3 ce 31 6c 1a 01 ff 5b 06 92 09
+000cb234: 8b 5f 30 92 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000cb248–0x000cb257 (16 bytes)
+000cb248: b8 a6 64 97 9a dd 7c a6 b0 2c e4 9b 2d 54 90 b0
+### 0x000cb2e0–0x000cb350 (113 bytes)
+000cb2e0: 93 f1 89 fa 20 4c 4c db ea 4a 2d 01 60 aa a3 4c
+000cb2f0: ba 46 e3 03 db 25 37 b3 a0 8c 14 71 2a 5a fd 20
+000cb300: e9 f0 a3 b5 be 3d bb c7 98 9c 67 cd f1 66 ba f6
+000cb310: ab 56 f4 fd 23 35 06 76 3c 29 cb 4a 0d 5a aa 4a
+000cb320: df 19 b7 3c 18 bd 7f a1 f0 81 50 c6 5e 94 71 b6
+000cb330: 45 b5 4a a0 88 79 fc 38 82 91 25 8e cc 6a 6d 1e
+000cb340: b8 2f 18 29 1d a4 c2 88 f1 d6 dc 0b 34 05 e1 2c
+000cb350: 4e 00 9d 4b 9e bf ad ff 82 9b 68 f3 02 f7 12 1c
+### 0x000cb352–0x000cb405 (180 bytes)
+000cb352: 9d 4b 9e bf ad ff 82 9b 68 f3 02 f7 12 1c 85 61
+000cb362: 8a 6c 9c cb 0e de bd 7b 4c be 14 7c e6 fb e2 d5
+000cb372: 99 d6 8a 7c 7d c0 d9 80 b1 57 a1 3f 1f 95 ac e2
+000cb382: 1c 77 f2 6a 3a 0e 46 7b 0b d6 34 47 74 02 5d 4f
+000cb392: 78 b6 0e 27 0b e1 50 65 17 01 60 5d 53 a8 3b 2c
+000cb3a2: 34 f8 71 df 47 65 f8 b6 9b 35 0c e4 b9 0b 9c 6c
+000cb3b2: c0 c0 02 af cf 23 59 0c 48 7d 53 97 ee 75 0b 20
+000cb3c2: 8f 85 71 3b 25 f4 cd b8 2e 12 48 0d c1 f3 b0 45
+000cb3d2: a4 b2 ec 05 f7 4a 3f ff ff 98 30 97 b0 56 ef cf
+000cb3e2: 12 bc e1 0d d9 98 a0 f7 c5 33 b6 83 05 6f 3f 9c
+000cb3f2: 9f 53 d5 ad 47 0c eb ee 9a e2 47 6a 60 fc 97 e6
+000cb402: 4c a6 75 4e 00 7c 34 57 b7 d9 a2 d2 e4 d2 f0 41
+### 0x000cb407–0x000cb47f (121 bytes)
+000cb407: 7c 34 57 b7 d9 a2 d2 e4 d2 f0 41 69 26 c7 d4 bc
+000cb417: 51 19 19 fb 63 78 01 5f 7c 52 fc df 66 0f fd b1
+000cb427: 1f 07 2d eb ae 5b 40 75 ea 85 f2 a3 df 05 c2 11
+000cb437: 0b 75 96 bf f2 be 2f b2 48 dc 17 e8 6f 25 f6 d7
+000cb447: a9 e2 e0 c9 03 5b bc f9 13 78 ed 3c 16 fe ec 0a
+000cb457: 49 74 bc 55 08 a7 ab 93 84 7c 15 c4 a6 f1 e3 4b
+000cb467: 5a 3d d8 31 07 ba 2d d3 d7 07 7f 15 73 86 f3 28
+000cb477: 31 4c eb bc c2 72 25 d1 65 00 00 00 00 00 00 00
+### 0x000cb500–0x000cb64f (336 bytes)
+000cb500: 8c d5 e3 68 3a 24 a8 f6 b4 b2 5a 31 de a0 6d 2f
+000cb510: c3 91 fc 9e 52 a4 5d 60 4e 62 67 0d 32 73 8e 2b
+000cb520: ba 08 91 47 2a b2 b4 ee 1b 03 ba 8d 43 0f 67 70
+000cb530: fe 04 99 87 39 79 ae 34 59 96 f0 d2 63 30 39 b0
+000cb540: 72 e3 ba cb 54 fb be 10 86 c3 2d 1e ba 48 7b b1
+000cb550: 16 0a 88 93 72 a9 d8 0d 60 c8 2e 9f 1b 36 90 14
+000cb560: 10 df b4 82 6b 3c 86 ac 6d 65 22 18 76 b3 20 04
+000cb570: c9 f0 91 a7 dd 8a 24 3b 1b 9a cc 1b 07 2e c7 9d
+000cb580: e9 f2 c0 bf 8d b5 79 43 54 23 5d e8 57 fc 96 f1
+000cb590: cb d0 9e bb 7a 5f b6 b2 b3 9c bb 28 5d 02 80 45
+000cb5a0: f5 7a 29 85 3f 4d f3 20 95 66 8c 3f 56 b8 2f 94
+000cb5b0: a8 16 dc 97 7d 3d e7 8c b1 3e 69 96 ff ca b9 cb
+000cb5c0: da 92 cd 59 cb 3e 84 b0 fc d2 5e 12 18 31 55 d7
+000cb5d0: 5a 0c bd b4 f1 31 9c 7b 66 53 eb ae 95 5b b6 c9
+000cb5e0: f0 6c 80 77 33 3c 11 49 8d e4 a7 3b 19 59 a0 72
+000cb5f0: 5d 19 84 9c 97 62 22 bd 31 7e 96 20 a2 2c 0b 82
+### 0x000cb651–0x000cb69b (75 bytes)
+000cb651: 47 12 d6 65 e4 a1 17 61 9d de f0 9c f3 02 e9 7c
+000cb661: 8b 07 ac b4 cb aa bf 1a 4a 5d bf a7 ff 48 e0 85
+000cb671: 3a f5 47 c4 58 b8 5a c9 44 63 ff 11 82 4f a0 14
+000cb681: 90 7e c2 4c 75 0c f0 1a f4 ef 04 97 31 84 e3 3e
+000cb691: dd f9 e9 e8 33 a9 62 0b 93 70 d8 00 93 a7 26 a9
+### 0x000cb69d–0x000cb740 (164 bytes)
+000cb69d: 93 a7 26 a9 95 53 51 96 15 59 4e bf 8c db 16 26
+000cb6ad: 6b 32 1e 3a 55 e4 6f e1 0b 0d 16 60 cc e7 0a bb
+000cb6bd: 28 8a f8 d2 89 ae ef 66 96 05 ff 7b 1f d6 1d 49
+000cb6cd: ff 99 9d 2f 32 8f 13 a8 9b ab 2b ca 0a 52 39 32
+000cb6dd: d2 93 ae 46 80 7f c9 3b 1d e9 7f a0 5f ea 61 16
+000cb6ed: 66 b4 04 2f 02 e8 4c f1 a0 f8 8a 8d e3 dd 02 73
+000cb6fd: 67 3b 5e eb 78 73 64 19 ad 02 e6 43 0a b4 c5 31
+000cb70d: d5 ef 04 15 5f 42 de 55 c0 18 f3 ad da 2a c1 8e
+000cb71d: a5 ec db 0e d2 3a 74 4f 34 90 d9 f7 35 c8 c0 1a
+000cb72d: 33 6f ab e4 06 ce c2 b5 8a bd 03 84 ca 23 53 a8
+000cb73d: fb cf 31 5b 00 11 f0 03 c1 27 cc 76 ca 41 26 1a
+### 0x000cb742–0x000cba70 (815 bytes)
+000cb742: 11 f0 03 c1 27 cc 76 ca 41 26 1a 6d af e5 8e 28
+000cb752: 4d d3 f4 85 fc 74 e6 ce 3b e7 1c 2f 92 49 45 e9
+000cb762: ee b4 45 6b ed 03 bd 22 ab b4 3c 7d 26 40 c1 22
+000cb772: ae 11 8c 16 23 ef 67 f1 ae b9 13 9e b7 5c 6e 8c
+000cb782: 5c 5c 80 9f 5c 14 12 2a 1d e7 3e f9 85 f8 1a e8
+000cb792: 38 57 75 5d ba 98 ce cc 1b 89 83 ec 84 d2 7b ef
+000cb7a2: 48 d8 96 f1 3b c1 8f 85 f1 7a 44 05 9b c1 13 63
+000cb7b2: 0b 66 d7 af 22 63 d0 31 7e 67 48 5e 95 cc b0 9f
+000cb7c2: 74 c5 ea 3e a7 9f 48 d7 e1 e6 85 6b 5a 63 7d dd
+000cb7d2: ed 0f 8e e8 2e d2 ee 14 e3 a1 7b db 06 1c 28 73
+000cb7e2: 0e 56 af a8 32 d3 1c 75 a3 fb 3b f4 bd f1 ea 89
+000cb7f2: b9 ac 6c bf 28 c0 db e7 c1 f0 36 bb 73 08 33 f4
+000cb802: 4c 02 aa c7 70 2c 23 d0 e1 40 b3 4f 4b 7a a7 6b
+000cb812: 5a 34 b1 c5 01 34 da 73 2d a9 2b 65 d7 08 8b fe
+000cb822: bc 26 87 02 75 ff 34 ff ca 91 65 55 02 b4 7e 23
+000cb832: 89 fb f9 0c 9d 9c 7e 59 ab 34 be 51 42 a0 44 a8
+### 0x000cba72–0x000cbade (109 bytes)
+000cba72: ec bc 7c 7d db ee e3 a6 60 bb f0 2a 7d 45 f9 20
+000cba82: 31 fe 4e 73 01 ae ab 20 5d e9 f0 95 ec 60 1f 95
+000cba92: 7b 7e 35 ef 41 0e 5e 37 2d ef 18 25 59 21 31 03
+000cbaa2: 30 23 41 e3 21 dd ce 62 b9 2a 6f 4a 2f fe e6 ae
+000cbab2: c0 01 65 34 98 19 a1 ac a6 7a 1a 94 7b 8b 98 56
+000cbac2: d9 2e d9 8e b3 0a 39 49 30 62 c3 6d 38 94 51 e2
+000cbad2: fe 77 d4 45 14 7a 78 48 c5 89 d1 7a 78 00 3f 18
+### 0x000cbae0–0x000cbcef (528 bytes)
+000cbae0: 3f 18 60 21 c7 a3 5d c9 e3 4c 99 8c 94 d8 48 98
+000cbaf0: 78 e3 bf c0 eb ac b6 0d 2c ee 80 09 e0 a7 79 69
+000cbb00: 43 18 25 f3 78 52 32 e2 69 33 1b 75 b5 f3 0e 33
+000cbb10: 6b 6a da 80 1c de f2 28 08 f7 fb 07 81 42 f4 b2
+000cbb20: 2c 1b 89 7d f9 5a d6 ae 09 ed 4e d3 14 15 6f 12
+000cbb30: 40 b1 0c 8a 97 1e 03 14 86 18 d4 08 4b bc 48 6e
+000cbb40: 7b 4b db 36 ba 65 ab 68 22 76 63 c7 19 f4 7f 39
+000cbb50: 85 21 86 fe 57 c9 8e c9 4e 56 52 ef 26 09 d8 23
+000cbb60: 9b f9 b8 8c 91 90 a4 15 13 3c 73 1e 42 5c 94 2f
+000cbb70: bd 55 77 65 85 82 02 b9 5a 70 b1 1c 48 4f 37 fe
+000cbb80: 9d 6e 88 e3 4a 8c 50 cd ca 3c 7b a5 83 cb b9 25
+000cbb90: 2c 21 a2 fe e2 4e 6e 4f c2 e5 cc 12 e2 2f 69 f9
+000cbba0: c5 07 c6 48 5b a3 3a 79 be e9 ed 28 f9 f3 4d 2e
+000cbbb0: c7 9d fc d7 a4 fe 30 87 5d ce 58 b8 c1 54 38 58
+000cbbc0: a5 33 b7 f1 09 d3 ca 23 b0 8d d3 d8 68 2a 97 33
+000cbbd0: 67 83 68 7a f9 89 0e 1e ed b7 e7 d3 40 53 d5 2b
+### 0x000cbcf1–0x000cc248 (1368 bytes)
+000cbcf1: 75 f4 2e a7 eb 91 18 f3 fd aa 37 62 34 40 37 34
+000cbd01: 20 af 5f 14 f1 dc 51 9f b8 b5 56 15 d2 73 c7 08
+000cbd11: a7 e0 eb 82 5f 03 0e d9 2f 31 72 4d e3 7c d9 f0
+000cbd21: 51 d8 b4 ca 92 e4 d4 30 32 f0 03 1b e8 ae 74 d6
+000cbd31: e2 e5 be 6a 8a 7e 1e 6d a9 f0 57 fa 67 75 04 28
+000cbd41: cd 63 e5 d9 41 f7 1e 85 9e a3 ee ee d5 91 ad 62
+000cbd51: 9e 68 85 da 07 11 20 0e b3 39 63 b2 b6 df 5e e0
+000cbd61: f2 6c 9d 8d cf b9 c6 e2 e6 9a 1f 20 9c 5b 62 04
+000cbd71: e9 38 ad f1 fe 7b 94 65 cc a2 2f b9 56 2a 54 76
+000cbd81: 39 97 be 43 aa d3 ad 3d a4 dd 37 71 09 02 c4 62
+000cbd91: 7c 95 44 3b 07 2f 55 6f 7c 9c b4 48 04 08 60 4f
+000cbda1: a6 10 a4 b4 6c e7 89 57 d4 84 fb 3f 6a 6a 78 a6
+000cbdb1: 55 56 0a ec 30 10 7a 67 8c 50 98 dc d5 ed ec 47
+000cbdc1: 8d 17 c1 f4 8c 6a 39 db 7f f8 16 1b ed ee cc b7
+000cbdd1: 16 20 9a 44 13 75 3b d5 9e 7e 53 fe 36 46 99 03
+000cbde1: 27 57 90 98 f9 ad 50 bd f5 e5 b1 65 41 78 c0 d8
+### 0x000cc24a–0x000cc303 (186 bytes)
+000cc24a: d7 ca 67 b3 51 36 87 10 6e 7b f0 45 b0 e0 22 74
+000cc25a: 3e 10 bd 49 eb 9c 2f 0d 52 e9 6e e6 a5 90 bb 96
+000cc26a: c2 fb 14 e3 49 8d e5 c3 56 88 48 41 50 dd c6 4b
+000cc27a: 0e dd 16 81 43 97 b6 ba b0 6e f9 94 9d 6f 4f 4a
+000cc28a: 1f 4b 61 cf fe 55 3b 7a 40 69 07 a2 67 b1 7f cb
+000cc29a: 44 ea e6 40 b2 bb ed 3a e8 34 37 d0 46 42 de 9e
+000cc2aa: ca 97 b9 8d 5b 03 05 01 77 ba f7 43 52 bc 25 a2
+000cc2ba: 6b 64 af 3b 90 2a 6b 6a 21 82 13 79 bd b3 ae 6a
+000cc2ca: de 36 13 e5 1a 5b 6c fb a8 fd 93 cb 20 db 67 e8
+000cc2da: 0c f0 38 b6 8b b4 e4 7a ae e4 68 de e4 49 52 79
+000cc2ea: 82 9a 0c fa 4f 64 c7 f5 aa ef fa 25 21 f3 06 30
+000cc2fa: fd c2 03 d7 b7 5e 8a 52 a6 67 00 85 31 80 87 a6
+### 0x000cc305–0x000cc59f (667 bytes)
+000cc305: 85 31 80 87 a6 ee 21 5a ee 9d e3 15 76 e0 13 28
+000cc315: d5 9e f2 f0 ce b2 af e7 ff 57 12 9d 51 10 e3 da
+000cc325: 1f a6 3f 3b d4 8a c2 0d a3 97 61 7b 85 2d 20 0e
+000cc335: c5 a3 b3 b6 f8 fe 88 9d c3 34 28 98 4f 8c 8c b0
+000cc345: f7 14 7e 32 06 c7 b1 62 af e8 b9 36 d6 c4 4c ba
+000cc355: 74 58 da 37 b0 30 f3 15 7b 2b f5 c1 d6 38 dd 4c
+000cc365: 51 12 2e 8d c7 86 d5 cc 49 3e 43 bd b0 72 b1 30
+000cc375: 2f bb 44 08 e8 4b 3c f4 b7 da b1 35 41 fa dd 20
+000cc385: c2 58 ec 6c dd 8f 3a 6d 0c 74 da 08 3a bc 6b ab
+000cc395: 88 93 c8 53 c5 88 a5 8c 64 cd dc 96 d5 7c 05 d6
+000cc3a5: 13 87 32 8d 4a a2 5c c6 34 51 03 4c 7d af 2b 02
+000cc3b5: 13 72 63 da 8f 4f 7a 92 76 d9 c5 5b 40 0f 7a c2
+000cc3c5: d6 64 36 8e 24 c9 f7 2c d9 1f 6d 2a 38 c2 05 72
+000cc3d5: d8 35 ae 52 a0 8d 5d bc 8b 0c a5 2c ec 48 03 f5
+000cc3e5: 87 84 99 98 58 0b f9 e3 79 59 86 5e be 8b ff 7d
+000cc3f5: ba 02 1c bc 09 97 1b e2 5e bc 77 71 f1 26 3d 94
+### 0x000cc5a1–0x000cc5ea (74 bytes)
+000cc5a1: 8a f1 59 b3 84 2b 63 ec 38 6b 43 98 be 60 44 e0
+000cc5b1: 1a 95 1f 0e b3 eb f5 2d 71 0c 3f 98 14 fb 0d 58
+000cc5c1: 0f 40 a4 2c 1e b4 15 13 c8 e4 93 31 73 08 5a 7c
+000cc5d1: 98 06 fc c1 e9 b1 42 47 f4 2d e6 e2 d7 d1 14 ba
+000cc5e1: 07 97 e7 ba d9 40 7e 76 37 e2 00 b2 7c 18 eb 1b
+### 0x000cc5ec–0x000cc5ff (20 bytes)
+000cc5ec: b2 7c 18 eb 1b f5 12 17 14 94 27 a0 af 0d cf 54
+000cc5fc: 0f 6d c0 7d 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000cc620–0x000cc621 (2 bytes)
+000cc620: 20 01 00 00 02 cc cf fa 5c d3 ce 31 6c 1a 01 ff
+### 0x000cc624–0x000cc637 (20 bytes)
+000cc624: 02 cc cf fa 5c d3 ce 31 6c 1a 01 ff 5b 06 92 09
+000cc634: 8b 5f 30 92 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000cc648–0x000cc657 (16 bytes)
+000cc648: b8 a6 64 97 9a dd 7c a6 b0 2c e4 9b 2d 54 90 b0
+### 0x000cc6e0–0x000cc750 (113 bytes)
+000cc6e0: 93 f1 89 fa 20 4c 4c db ea 4a 2d 01 60 aa a3 4c
+000cc6f0: ba 46 e3 03 db 25 37 b3 a0 8c 14 71 2a 5a fd 20
+000cc700: e9 f0 a3 b5 be 3d bb c7 98 9c 67 cd f1 66 ba f6
+000cc710: ab 56 f4 fd 23 35 06 76 3c 29 cb 4a 0d 5a aa 4a
+000cc720: df 19 b7 3c 18 bd 7f a1 f0 81 50 c6 5e 94 71 b6
+000cc730: 45 b5 4a a0 88 79 fc 38 82 91 25 8e cc 6a 6d 1e
+000cc740: b8 2f 18 29 1d a4 c2 88 f1 d6 dc 0b 34 05 e1 2c
+000cc750: 4e 00 9d 4b 9e bf ad ff 82 9b 68 f3 02 f7 12 1c
+### 0x000cc752–0x000cc805 (180 bytes)
+000cc752: 9d 4b 9e bf ad ff 82 9b 68 f3 02 f7 12 1c 85 61
+000cc762: 8a 6c 9c cb 0e de bd 7b 4c be 14 7c e6 fb e2 d5
+000cc772: 99 d6 8a 7c 7d c0 d9 80 b1 57 a1 3f 1f 95 ac e2
+000cc782: 1c 77 f2 6a 3a 0e 46 7b 0b d6 34 47 74 02 5d 4f
+000cc792: 78 b6 0e 27 0b e1 50 65 17 01 60 5d 53 a8 3b 2c
+000cc7a2: 34 f8 71 df 47 65 f8 b6 9b 35 0c e4 b9 0b 9c 6c
+000cc7b2: c0 c0 02 af cf 23 59 0c 48 7d 53 97 ee 75 0b 20
+000cc7c2: 8f 85 71 3b 25 f4 cd b8 2e 12 48 0d c1 f3 b0 45
+000cc7d2: a4 b2 ec 05 f7 4a 3f ff ff 98 30 97 b0 56 ef cf
+000cc7e2: 12 bc e1 0d d9 98 a0 f7 c5 33 b6 83 05 6f 3f 9c
+000cc7f2: 9f 53 d5 ad 47 0c eb ee 9a e2 47 6a 60 fc 97 e6
+000cc802: 4c a6 75 4e 00 7c 34 57 b7 d9 a2 d2 e4 d2 f0 41
+### 0x000cc807–0x000cc87f (121 bytes)
+000cc807: 7c 34 57 b7 d9 a2 d2 e4 d2 f0 41 69 26 c7 d4 bc
+000cc817: 51 19 19 fb 63 78 01 5f 7c 52 fc df 66 0f fd b1
+000cc827: 1f 07 2d eb ae 5b 40 75 ea 85 f2 a3 df 05 c2 11
+000cc837: 0b 75 96 bf f2 be 2f b2 48 dc 17 e8 6f 25 f6 d7
+000cc847: a9 e2 e0 c9 03 5b bc f9 13 78 ed 3c 16 fe ec 0a
+000cc857: 49 74 bc 55 08 a7 ab 93 84 7c 15 c4 a6 f1 e3 4b
+000cc867: 5a 3d d8 31 07 ba 2d d3 d7 07 7f 15 73 86 f3 28
+000cc877: 31 4c eb bc c2 72 25 d1 65 00 00 00 00 00 00 00
+### 0x000cc900–0x000cca4f (336 bytes)
+000cc900: 8c d5 e3 68 3a 24 a8 f6 b4 b2 5a 31 de a0 6d 2f
+000cc910: c3 91 fc 9e 52 a4 5d 60 4e 62 67 0d 32 73 8e 2b
+000cc920: ba 08 91 47 2a b2 b4 ee 1b 03 ba 8d 43 0f 67 70
+000cc930: fe 04 99 87 39 79 ae 34 59 96 f0 d2 63 30 39 b0
+000cc940: 72 e3 ba cb 54 fb be 10 86 c3 2d 1e ba 48 7b b1
+000cc950: 16 0a 88 93 72 a9 d8 0d 60 c8 2e 9f 1b 36 90 14
+000cc960: 10 df b4 82 6b 3c 86 ac 6d 65 22 18 76 b3 20 04
+000cc970: c9 f0 91 a7 dd 8a 24 3b 1b 9a cc 1b 07 2e c7 9d
+000cc980: e9 f2 c0 bf 8d b5 79 43 54 23 5d e8 57 fc 96 f1
+000cc990: cb d0 9e bb 7a 5f b6 b2 b3 9c bb 28 5d 02 80 45
+000cc9a0: f5 7a 29 85 3f 4d f3 20 95 66 8c 3f 56 b8 2f 94
+000cc9b0: a8 16 dc 97 7d 3d e7 8c b1 3e 69 96 ff ca b9 cb
+000cc9c0: da 92 cd 59 cb 3e 84 b0 fc d2 5e 12 18 31 55 d7
+000cc9d0: 5a 0c bd b4 f1 31 9c 7b 66 53 eb ae 95 5b b6 c9
+000cc9e0: f0 6c 80 77 33 3c 11 49 8d e4 a7 3b 19 59 a0 72
+000cc9f0: 5d 19 84 9c 97 62 22 bd 31 7e 96 20 a2 2c 0b 82
+### 0x000cca51–0x000cca9b (75 bytes)
+000cca51: 47 12 d6 65 e4 a1 17 61 9d de f0 9c f3 02 e9 7c
+000cca61: 8b 07 ac b4 cb aa bf 1a 4a 5d bf a7 ff 48 e0 85
+000cca71: 3a f5 47 c4 58 b8 5a c9 44 63 ff 11 82 4f a0 14
+000cca81: 90 7e c2 4c 75 0c f0 1a f4 ef 04 97 31 84 e3 3e
+000cca91: dd f9 e9 e8 33 a9 62 0b 93 70 d8 00 93 a7 26 a9
+### 0x000cca9d–0x000ccb40 (164 bytes)
+000cca9d: 93 a7 26 a9 95 53 51 96 15 59 4e bf 8c db 16 26
+000ccaad: 6b 32 1e 3a 55 e4 6f e1 0b 0d 16 60 cc e7 0a bb
+000ccabd: 28 8a f8 d2 89 ae ef 66 96 05 ff 7b 1f d6 1d 49
+000ccacd: ff 99 9d 2f 32 8f 13 a8 9b ab 2b ca 0a 52 39 32
+000ccadd: d2 93 ae 46 80 7f c9 3b 1d e9 7f a0 5f ea 61 16
+000ccaed: 66 b4 04 2f 02 e8 4c f1 a0 f8 8a 8d e3 dd 02 73
+000ccafd: 67 3b 5e eb 78 73 64 19 ad 02 e6 43 0a b4 c5 31
+000ccb0d: d5 ef 04 15 5f 42 de 55 c0 18 f3 ad da 2a c1 8e
+000ccb1d: a5 ec db 0e d2 3a 74 4f 34 90 d9 f7 35 c8 c0 1a
+000ccb2d: 33 6f ab e4 06 ce c2 b5 8a bd 03 84 ca 23 53 a8
+000ccb3d: fb cf 31 5b 00 11 f0 03 c1 27 cc 76 ca 41 26 1a
+### 0x000ccb42–0x000cce70 (815 bytes)
+000ccb42: 11 f0 03 c1 27 cc 76 ca 41 26 1a 6d af e5 8e 28
+000ccb52: 4d d3 f4 85 fc 74 e6 ce 3b e7 1c 2f 92 49 45 e9
+000ccb62: ee b4 45 6b ed 03 bd 22 ab b4 3c 7d 26 40 c1 22
+000ccb72: ae 11 8c 16 23 ef 67 f1 ae b9 13 9e b7 5c 6e 8c
+000ccb82: 5c 5c 80 9f 5c 14 12 2a 1d e7 3e f9 85 f8 1a e8
+000ccb92: 38 57 75 5d ba 98 ce cc 1b 89 83 ec 84 d2 7b ef
+000ccba2: 48 d8 96 f1 3b c1 8f 85 f1 7a 44 05 9b c1 13 63
+000ccbb2: 0b 66 d7 af 22 63 d0 31 7e 67 48 5e 95 cc b0 9f
+000ccbc2: 74 c5 ea 3e a7 9f 48 d7 e1 e6 85 6b 5a 63 7d dd
+000ccbd2: ed 0f 8e e8 2e d2 ee 14 e3 a1 7b db 06 1c 28 73
+000ccbe2: 0e 56 af a8 32 d3 1c 75 a3 fb 3b f4 bd f1 ea 89
+000ccbf2: b9 ac 6c bf 28 c0 db e7 c1 f0 36 bb 73 08 33 f4
+000ccc02: 4c 02 aa c7 70 2c 23 d0 e1 40 b3 4f 4b 7a a7 6b
+000ccc12: 5a 34 b1 c5 01 34 da 73 2d a9 2b 65 d7 08 8b fe
+000ccc22: bc 26 87 02 75 ff 34 ff ca 91 65 55 02 b4 7e 23
+000ccc32: 89 fb f9 0c 9d 9c 7e 59 ab 34 be 51 42 a0 44 a8
+### 0x000cce72–0x000ccede (109 bytes)
+000cce72: ec bc 7c 7d db ee e3 a6 60 bb f0 2a 7d 45 f9 20
+000cce82: 31 fe 4e 73 01 ae ab 20 5d e9 f0 95 ec 60 1f 95
+000cce92: 7b 7e 35 ef 41 0e 5e 37 2d ef 18 25 59 21 31 03
+000ccea2: 30 23 41 e3 21 dd ce 62 b9 2a 6f 4a 2f fe e6 ae
+000cceb2: c0 01 65 34 98 19 a1 ac a6 7a 1a 94 7b 8b 98 56
+000ccec2: d9 2e d9 8e b3 0a 39 49 30 62 c3 6d 38 94 51 e2
+000cced2: fe 77 d4 45 14 7a 78 48 c5 89 d1 7a 78 00 3f 18
+### 0x000ccee0–0x000cd0ef (528 bytes)
+000ccee0: 3f 18 60 21 c7 a3 5d c9 e3 4c 99 8c 94 d8 48 98
+000ccef0: 78 e3 bf c0 eb ac b6 0d 2c ee 80 09 e0 a7 79 69
+000ccf00: 43 18 25 f3 78 52 32 e2 69 33 1b 75 b5 f3 0e 33
+000ccf10: 6b 6a da 80 1c de f2 28 08 f7 fb 07 81 42 f4 b2
+000ccf20: 2c 1b 89 7d f9 5a d6 ae 09 ed 4e d3 14 15 6f 12
+000ccf30: 40 b1 0c 8a 97 1e 03 14 86 18 d4 08 4b bc 48 6e
+000ccf40: 7b 4b db 36 ba 65 ab 68 22 76 63 c7 19 f4 7f 39
+000ccf50: 85 21 86 fe 57 c9 8e c9 4e 56 52 ef 26 09 d8 23
+000ccf60: 9b f9 b8 8c 91 90 a4 15 13 3c 73 1e 42 5c 94 2f
+000ccf70: bd 55 77 65 85 82 02 b9 5a 70 b1 1c 48 4f 37 fe
+000ccf80: 9d 6e 88 e3 4a 8c 50 cd ca 3c 7b a5 83 cb b9 25
+000ccf90: 2c 21 a2 fe e2 4e 6e 4f c2 e5 cc 12 e2 2f 69 f9
+000ccfa0: c5 07 c6 48 5b a3 3a 79 be e9 ed 28 f9 f3 4d 2e
+000ccfb0: c7 9d fc d7 a4 fe 30 87 5d ce 58 b8 c1 54 38 58
+000ccfc0: a5 33 b7 f1 09 d3 ca 23 b0 8d d3 d8 68 2a 97 33
+000ccfd0: 67 83 68 7a f9 89 0e 1e ed b7 e7 d3 40 53 d5 2b
+### 0x000cd0f1–0x000cd648 (1368 bytes)
+000cd0f1: 75 f4 2e a7 eb 91 18 f3 fd aa 37 62 34 40 37 34
+000cd101: 20 af 5f 14 f1 dc 51 9f b8 b5 56 15 d2 73 c7 08
+000cd111: a7 e0 eb 82 5f 03 0e d9 2f 31 72 4d e3 7c d9 f0
+000cd121: 51 d8 b4 ca 92 e4 d4 30 32 f0 03 1b e8 ae 74 d6
+000cd131: e2 e5 be 6a 8a 7e 1e 6d a9 f0 57 fa 67 75 04 28
+000cd141: cd 63 e5 d9 41 f7 1e 85 9e a3 ee ee d5 91 ad 62
+000cd151: 9e 68 85 da 07 11 20 0e b3 39 63 b2 b6 df 5e e0
+000cd161: f2 6c 9d 8d cf b9 c6 e2 e6 9a 1f 20 9c 5b 62 04
+000cd171: e9 38 ad f1 fe 7b 94 65 cc a2 2f b9 56 2a 54 76
+000cd181: 39 97 be 43 aa d3 ad 3d a4 dd 37 71 09 02 c4 62
+000cd191: 7c 95 44 3b 07 2f 55 6f 7c 9c b4 48 04 08 60 4f
+000cd1a1: a6 10 a4 b4 6c e7 89 57 d4 84 fb 3f 6a 6a 78 a6
+000cd1b1: 55 56 0a ec 30 10 7a 67 8c 50 98 dc d5 ed ec 47
+000cd1c1: 8d 17 c1 f4 8c 6a 39 db 7f f8 16 1b ed ee cc b7
+000cd1d1: 16 20 9a 44 13 75 3b d5 9e 7e 53 fe 36 46 99 03
+000cd1e1: 27 57 90 98 f9 ad 50 bd f5 e5 b1 65 41 78 c0 d8
+### 0x000cd64a–0x000cd703 (186 bytes)
+000cd64a: d7 ca 67 b3 51 36 87 10 6e 7b f0 45 b0 e0 22 74
+000cd65a: 3e 10 bd 49 eb 9c 2f 0d 52 e9 6e e6 a5 90 bb 96
+000cd66a: c2 fb 14 e3 49 8d e5 c3 56 88 48 41 50 dd c6 4b
+000cd67a: 0e dd 16 81 43 97 b6 ba b0 6e f9 94 9d 6f 4f 4a
+000cd68a: 1f 4b 61 cf fe 55 3b 7a 40 69 07 a2 67 b1 7f cb
+000cd69a: 44 ea e6 40 b2 bb ed 3a e8 34 37 d0 46 42 de 9e
+000cd6aa: ca 97 b9 8d 5b 03 05 01 77 ba f7 43 52 bc 25 a2
+000cd6ba: 6b 64 af 3b 90 2a 6b 6a 21 82 13 79 bd b3 ae 6a
+000cd6ca: de 36 13 e5 1a 5b 6c fb a8 fd 93 cb 20 db 67 e8
+000cd6da: 0c f0 38 b6 8b b4 e4 7a ae e4 68 de e4 49 52 79
+000cd6ea: 82 9a 0c fa 4f 64 c7 f5 aa ef fa 25 21 f3 06 30
+000cd6fa: fd c2 03 d7 b7 5e 8a 52 a6 67 00 85 31 80 87 a6
+### 0x000cd705–0x000cd99f (667 bytes)
+000cd705: 85 31 80 87 a6 ee 21 5a ee 9d e3 15 76 e0 13 28
+000cd715: d5 9e f2 f0 ce b2 af e7 ff 57 12 9d 51 10 e3 da
+000cd725: 1f a6 3f 3b d4 8a c2 0d a3 97 61 7b 85 2d 20 0e
+000cd735: c5 a3 b3 b6 f8 fe 88 9d c3 34 28 98 4f 8c 8c b0
+000cd745: f7 14 7e 32 06 c7 b1 62 af e8 b9 36 d6 c4 4c ba
+000cd755: 74 58 da 37 b0 30 f3 15 7b 2b f5 c1 d6 38 dd 4c
+000cd765: 51 12 2e 8d c7 86 d5 cc 49 3e 43 bd b0 72 b1 30
+000cd775: 2f bb 44 08 e8 4b 3c f4 b7 da b1 35 41 fa dd 20
+000cd785: c2 58 ec 6c dd 8f 3a 6d 0c 74 da 08 3a bc 6b ab
+000cd795: 88 93 c8 53 c5 88 a5 8c 64 cd dc 96 d5 7c 05 d6
+000cd7a5: 13 87 32 8d 4a a2 5c c6 34 51 03 4c 7d af 2b 02
+000cd7b5: 13 72 63 da 8f 4f 7a 92 76 d9 c5 5b 40 0f 7a c2
+000cd7c5: d6 64 36 8e 24 c9 f7 2c d9 1f 6d 2a 38 c2 05 72
+000cd7d5: d8 35 ae 52 a0 8d 5d bc 8b 0c a5 2c ec 48 03 f5
+000cd7e5: 87 84 99 98 58 0b f9 e3 79 59 86 5e be 8b ff 7d
+000cd7f5: ba 02 1c bc 09 97 1b e2 5e bc 77 71 f1 26 3d 94
+### 0x000cd9a1–0x000cd9ea (74 bytes)
+000cd9a1: 8a f1 59 b3 84 2b 63 ec 38 6b 43 98 be 60 44 e0
+000cd9b1: 1a 95 1f 0e b3 eb f5 2d 71 0c 3f 98 14 fb 0d 58
+000cd9c1: 0f 40 a4 2c 1e b4 15 13 c8 e4 93 31 73 08 5a 7c
+000cd9d1: 98 06 fc c1 e9 b1 42 47 f4 2d e6 e2 d7 d1 14 ba
+000cd9e1: 07 97 e7 ba d9 40 7e 76 37 e2 00 b2 7c 18 eb 1b
+### 0x000cd9ec–0x000cd9ff (20 bytes)
+000cd9ec: b2 7c 18 eb 1b f5 12 17 14 94 27 a0 af 0d cf 54
+000cd9fc: 0f 6d c0 7d 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000e0c00–0x000e0c1f (32 bytes)
+000e0c00: 46 46 46 21 21 46 46 46 55 4a 36 40 40 40 55 41
+000e0c10: 33 55 42 36 55 44 34 55 45 41 55 47 32 55 48 33
+### 0x000e0c24–0x000e0c27 (4 bytes)
+000e0c24: 02 cc c0 fa 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000e0c68–0x000e0ca3 (60 bytes)
+000e0c68: a6 66 b1 2c 09 e2 d3 55 8a 11 2b 77 56 88 bd 89
+000e0c78: b9 84 be 5a e2 83 fe ea 9e 30 ee ac c8 31 ef 57
+000e0c88: 30 32 37 37 66 35 62 37 30 34 30 38 35 37 4e 71
+000e0c98: 34 55 69 63 69 56 62 64 44 34 6f 34 00 00 00 00
+### 0x000e0cc3–0x000e0cc3 (1 bytes)
+000e0cc3: 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000e0ce0–0x000e0cff (32 bytes)
+000e0ce0: 18 40 d8 53 34 10 5f 1f 03 f0 aa 1a af 99 6f e3
+000e0cf0: 58 51 4c f2 52 af 03 db 72 53 82 88 07 9c 73 ca
+### 0x000e0e00–0x000e0e1f (32 bytes)
+000e0e00: 46 46 46 21 21 46 46 46 55 4a 36 40 40 40 55 41
+000e0e10: 33 55 42 36 55 44 34 55 45 41 55 47 32 55 48 33
+### 0x000e0e24–0x000e0e27 (4 bytes)
+000e0e24: 02 cc c0 fa 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000e0e68–0x000e0ea3 (60 bytes)
+000e0e68: a6 66 b1 2c 09 e2 d3 55 8a 11 2b 77 56 88 bd 89
+000e0e78: b9 84 be 5a e2 83 fe ea 9e 30 ee ac c8 31 ef 57
+000e0e88: 30 32 37 37 66 35 62 37 30 34 30 38 35 37 4e 71
+000e0e98: 34 55 69 63 69 56 62 64 44 34 6f 34 00 00 00 00
+### 0x000e0ec3–0x000e0ec3 (1 bytes)
+000e0ec3: 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### 0x000e0ee0–0x000e0eff (32 bytes)
+000e0ee0: 18 40 d8 53 34 10 5f 1f 03 f0 aa 1a af 99 6f e3
+000e0ef0: 58 51 4c f2 52 af 03 db 72 53 82 88 07 9c 73 ca
 
-## 3. Non-zero ranges
-
-- 0x00002080–0x00002082 (3 bytes)
-- 0x00002400–0x00002423 (36 bytes)
-- 0x00002425–0x00002426 (2 bytes)
-- 0x0000242a–0x0000242a (1 bytes)
-- 0x0000242e–0x0000242e (1 bytes)
-- 0x00002430–0x00002430 (1 bytes)
-- 0x00002432–0x00002432 (1 bytes)
-- 0x00002434–0x0000243d (10 bytes)
-- 0x0000243f–0x0000243f (1 bytes)
-- 0x00002441–0x00002453 (19 bytes)
-- 0x00002459–0x00002459 (1 bytes)
-- 0x0000245b–0x0000245b (1 bytes)
-- 0x0000245d–0x0000246d (17 bytes)
-- 0x0000246f–0x0000246f (1 bytes)
-- 0x00002471–0x00002471 (1 bytes)
-- 0x00002473–0x00002473 (1 bytes)
-- 0x00002475–0x00002477 (3 bytes)
-- 0x0000247a–0x0000247a (1 bytes)
-- 0x0000247c–0x0000247e (3 bytes)
-- 0x00002481–0x00002481 (1 bytes)
-- 0x00002483–0x00002485 (3 bytes)
-- 0x00002488–0x00002488 (1 bytes)
-- 0x0000248a–0x0000248b (2 bytes)
-- 0x0000248f–0x0000248f (1 bytes)
-- 0x00002496–0x00002496 (1 bytes)
-- 0x00002499–0x0000249a (2 bytes)
-- 0x0000249d–0x0000249d (1 bytes)
-- 0x000024a0–0x000024a1 (2 bytes)
-- 0x000024a4–0x000024a4 (1 bytes)
-- 0x000024ab–0x000024ab (1 bytes)
-- 0x000024ae–0x000024ae (1 bytes)
-- 0x000024b2–0x000024b2 (1 bytes)
-- 0x000024b5–0x000024b6 (2 bytes)
-- 0x000024b9–0x000024b9 (1 bytes)
-- 0x000024bb–0x000024bc (2 bytes)
-- 0x000024c0–0x000024c0 (1 bytes)
-- 0x000024c2–0x000024c3 (2 bytes)
-- 0x000024c7–0x000024c7 (1 bytes)
-- 0x000024c9–0x000024cb (3 bytes)
-- 0x000024ce–0x000024ce (1 bytes)
-- 0x000024d0–0x000024d1 (2 bytes)
-- 0x000024d5–0x000024d5 (1 bytes)
-- 0x000024d7–0x000024d9 (3 bytes)
-- 0x000024dc–0x000024dc (1 bytes)
-- 0x000024de–0x000024df (2 bytes)
-- 0x000024e3–0x000024e3 (1 bytes)
-- 0x000024e6–0x000024e7 (2 bytes)
-- 0x000024ea–0x000024ea (1 bytes)
-- 0x000024ec–0x000024ed (2 bytes)
-- 0x000024f1–0x000024f1 (1 bytes)
-- 0x000024f3–0x000024f4 (2 bytes)
-- 0x000024f8–0x000024f8 (1 bytes)
-- 0x000024fa–0x000024fb (2 bytes)
-- 0x0007df20–0x0007df20 (1 bytes)
-- 0x0007df24–0x0007df37 (20 bytes)
-- 0x0007df48–0x0007df57 (16 bytes)
-- 0x0007dfe0–0x0007e072 (147 bytes)
-- 0x0007e074–0x0007e0a7 (52 bytes)
-- 0x0007e120–0x0007e120 (1 bytes)
-- 0x0007e124–0x0007e137 (20 bytes)
-- 0x0007e148–0x0007e157 (16 bytes)
-- 0x0007e1e0–0x0007e272 (147 bytes)
-- 0x0007e274–0x0007e2a7 (52 bytes)
-- 0x00099200–0x00099205 (6 bytes)
-- 0x00099224–0x00099227 (4 bytes)
-- 0x000992c1–0x000992c3 (3 bytes)
-- 0x000992e0–0x000992ff (32 bytes)
-- 0x0009e400–0x0009e405 (6 bytes)
-- 0x0009e424–0x0009e427 (4 bytes)
-- 0x0009e4c1–0x0009e4c3 (3 bytes)
-- 0x0009e4e0–0x0009e4ff (32 bytes)
-- 0x000af024–0x000af027 (4 bytes)
-- 0x000af0c3–0x000af0c3 (1 bytes)
-- 0x000af0e0–0x000af0ff (32 bytes)
-- 0x000af224–0x000af227 (4 bytes)
-- 0x000af2c3–0x000af2c3 (1 bytes)
-- 0x000af2e0–0x000af2ff (32 bytes)
-- 0x000cb220–0x000cb221 (2 bytes)
-- 0x000cb224–0x000cb237 (20 bytes)
-- 0x000cb248–0x000cb257 (16 bytes)
-- 0x000cb2e0–0x000cb350 (113 bytes)
-- 0x000cb352–0x000cb405 (180 bytes)
-- 0x000cb407–0x000cb47f (121 bytes)
-- 0x000cb500–0x000cb64f (336 bytes)
-- 0x000cb651–0x000cb69b (75 bytes)
-- 0x000cb69d–0x000cb740 (164 bytes)
-- 0x000cb742–0x000cba70 (815 bytes)
-- 0x000cba72–0x000cbade (109 bytes)
-- 0x000cbae0–0x000cbcef (528 bytes)
-- 0x000cbcf1–0x000cc248 (1368 bytes)
-- 0x000cc24a–0x000cc303 (186 bytes)
-- 0x000cc305–0x000cc59f (667 bytes)
-- 0x000cc5a1–0x000cc5ea (74 bytes)
-- 0x000cc5ec–0x000cc5ff (20 bytes)
-- 0x000cc620–0x000cc621 (2 bytes)
-- 0x000cc624–0x000cc637 (20 bytes)
-- 0x000cc648–0x000cc657 (16 bytes)
-- 0x000cc6e0–0x000cc750 (113 bytes)
-- 0x000cc752–0x000cc805 (180 bytes)
-- 0x000cc807–0x000cc87f (121 bytes)
-- 0x000cc900–0x000cca4f (336 bytes)
-- 0x000cca51–0x000cca9b (75 bytes)
-- 0x000cca9d–0x000ccb40 (164 bytes)
-- 0x000ccb42–0x000cce70 (815 bytes)
-- 0x000cce72–0x000ccede (109 bytes)
-- 0x000ccee0–0x000cd0ef (528 bytes)
-- 0x000cd0f1–0x000cd648 (1368 bytes)
-- 0x000cd64a–0x000cd703 (186 bytes)
-- 0x000cd705–0x000cd99f (667 bytes)
-- 0x000cd9a1–0x000cd9ea (74 bytes)
-- 0x000cd9ec–0x000cd9ff (20 bytes)
-- 0x000e0c00–0x000e0c1f (32 bytes)
-- 0x000e0c24–0x000e0c27 (4 bytes)
-- 0x000e0c68–0x000e0ca3 (60 bytes)
-- 0x000e0cc3–0x000e0cc3 (1 bytes)
-- 0x000e0ce0–0x000e0cff (32 bytes)
-- 0x000e0e00–0x000e0e1f (32 bytes)
-- 0x000e0e24–0x000e0e27 (4 bytes)
-- 0x000e0e68–0x000e0ea3 (60 bytes)
-- 0x000e0ec3–0x000e0ec3 (1 bytes)
-- 0x000e0ee0–0x000e0eff (32 bytes)
-
-## 4. ASCII strings (first 4 MiB)
+## 4. ASCII strings
 
 - 0x00002434: COMPLETED
 - 0x00002441: 300277f5b7040811
@@ -249,8 +671,308 @@ SBoot function fcn.0018962c reads the STEADY object, then copies 32 bytes from r
 - 0x000e0e00: FFF!!FFFUJ6@@@UA3UB6UD4UEAUG2UH3
 - 0x000e0e87: W0277f5b7040857Nq4UiciVbdD4o4
 
-## 5. Interpretation limits
+## 5. Known candidate object locations
 
-- The 0x148 bitmap location is a derived candidate, not yet a verified partition offset.
-- A raw bit value is not sufficient to prove OEM unlock authorization unless the corresponding record is the one accepted by the J6 SBoot signature-validation path.
+### Offset 0x00002400
+00002400: a3 9b d3 79 1c b0 ee 09 56 2a 53 89 e9 24 ae cf
+00002410: 13 4c 9f 2c b5 e1 f3 3b cd 94 f1 1b b2 b7 de 22
+00002420: 45 53 49 14 00 45 03 00 00 00 cf 00 00 00 05 00
+00002430: 01 00 09 00 43 4f 4d 50 4c 45 54 45 44 07 00 10
+00002440: 00 33 30 30 32 37 37 66 35 62 37 30 34 30 38 31
+00002450: 31 01 10 04 00 00 00 00 00 11 00 10 00 32 35 33
+00002460: 30 32 34 31 35 32 35 30 30 32 45 38 41 04 00 8e
+00002470: 00 14 00 28 00 01 d0 07 00 00 22 00 01 d0 07 00
+00002480: 00 2d 00 01 e8 03 00 00 0a 00 02 01 00 00 00 1c
+00002490: 00 00 00 00 00 00 1a 00 00 0f 27 00 00 35 00 00
+000024a0: e8 03 00 00 34 00 00 00 00 00 00 14 00 00 01 00
+000024b0: 00 00 1b 00 00 0f 27 00 00 29 00 01 64 00 00 00
+000024c0: 3d 00 01 0a 00 00 00 41 00 01 e8 03 00 00 06 00
+000024d0: 01 64 00 00 00 01 00 01 e8 03 00 00 0c 00 01 64
+000024e0: 00 00 00 0d 00 00 e8 03 00 00 11 00 01 64 00 00
+000024f0: 00 23 00 01 c8 00 00 00 21 00 01 64 00 00 00 00
+00002500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002510: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002520: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002530: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002540: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002550: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002560: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002570: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00002590: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000025a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000025b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000025c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000025d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000025e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000025f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### Offset 0x0007df20
+0007df20: 48 00 00 00 02 cc e1 fa 31 e6 72 dc 37 d3 35 56
+0007df30: 0d fb 83 88 59 64 eb c5 00 00 00 00 00 00 00 00
+0007df40: 00 00 00 00 00 00 00 00 08 41 58 c1 5c b7 94 b5
+0007df50: 56 cc 76 f6 63 f5 ab aa 00 00 00 00 00 00 00 00
+0007df60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007df70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007df80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007df90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007dfa0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007dfb0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007dfc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007dfd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007dfe0: 72 9a 78 88 7b d4 04 1f c5 77 b6 a5 5a b4 99 03
+0007dff0: 96 38 82 96 26 39 48 81 a3 55 6e 5e 7c b4 3e 7b
+0007e000: 8b 6b 9d 93 db a9 88 c5 45 84 ed a3 7f 99 ed 05
+0007e010: 5d 2f c4 d0 b9 e8 04 3c f8 59 47 e7 73 d4 c2 b4
+0007e020: 73 70 9d 2f 68 e6 48 e3 c2 6d 7a c9 e8 5e 66 1e
+0007e030: 7b 83 51 21 d4 46 73 6b 78 2a e1 b8 cb 09 90 a3
+0007e040: cd 17 6f 2a 49 09 8e a7 33 ff 19 6e c6 e3 87 99
+0007e050: af 1d 80 a3 6c a5 b7 9c f4 fb 84 ca 1d a5 fa 67
+0007e060: 5e b8 6f 97 07 c5 2a e3 ab bd 70 06 f9 27 55 6e
+0007e070: 08 11 e5 00 e9 e2 5f 60 38 51 4d 85 8e 88 2a 66
+0007e080: 90 98 78 2a 19 8d 27 67 2a b7 53 16 91 8d 4d 4a
+0007e090: 73 6e 17 f5 da c0 4c 9e 4c c3 43 76 19 c7 2d 0c
+0007e0a0: e1 5e 27 01 d1 16 63 bc 00 00 00 00 00 00 00 00
+0007e0b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007e0c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007e0d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007e0e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007e0f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007e100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0007e110: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### Offset 0x00099200
+00099200: 63 70 5f 6f 74 70 00 00 00 00 00 00 00 00 00 00
+00099210: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099220: 00 00 00 00 02 bb c2 fa 00 00 00 00 00 00 00 00
+00099230: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099240: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099250: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099260: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099270: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099290: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000992a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000992b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000992c0: 00 01 01 01 00 00 00 00 00 00 00 00 00 00 00 00
+000992d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000992e0: ad f8 4a 12 bf c5 fe 74 ce bd 1a 97 da 39 b1 31
+000992f0: c7 f5 01 16 76 51 d2 59 89 af 5b 67 34 64 b9 38
+00099300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099310: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099320: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099330: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099340: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099350: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099360: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099370: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+00099390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000993a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000993b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000993c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000993d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000993e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000993f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### Offset 0x0009e400
+0009e400: 63 70 5f 6f 74 70 00 00 00 00 00 00 00 00 00 00
+0009e410: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e420: 00 00 00 00 02 bb c2 fa 00 00 00 00 00 00 00 00
+0009e430: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e440: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e450: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e460: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e470: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e480: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e490: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e4a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e4b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e4c0: 00 01 01 01 00 00 00 00 00 00 00 00 00 00 00 00
+0009e4d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e4e0: ad f8 4a 12 bf c5 fe 74 ce bd 1a 97 da 39 b1 31
+0009e4f0: c7 f5 01 16 76 51 d2 59 89 af 5b 67 34 64 b9 38
+0009e500: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e510: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e520: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e530: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e540: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e550: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e560: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e570: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e580: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e590: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e5a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e5b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e5c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e5d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e5e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0009e5f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### Offset 0x000af000
+000af000: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af010: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af020: 00 00 00 00 02 cc cb fa 00 00 00 00 00 00 00 00
+000af030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af040: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af050: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af060: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af070: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af080: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af0a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af0b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af0c0: 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+000af0d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af0e0: 6f 60 50 f8 e0 0c c5 71 7c 15 93 ff a4 db 46 e7
+000af0f0: 02 cf 49 6a 7c 3a 03 14 bb c0 05 d8 f7 af 5a 9f
+000af100: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af110: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af120: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af130: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af140: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af150: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af160: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af170: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af180: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af190: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af1a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af1b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af1c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af1d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af1e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af1f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### Offset 0x000af200
+000af200: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af210: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af220: 00 00 00 00 02 cc cb fa 00 00 00 00 00 00 00 00
+000af230: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af240: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af250: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af260: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af270: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af290: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af2a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af2b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af2c0: 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+000af2d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af2e0: 6f 60 50 f8 e0 0c c5 71 7c 15 93 ff a4 db 46 e7
+000af2f0: 02 cf 49 6a 7c 3a 03 14 bb c0 05 d8 f7 af 5a 9f
+000af300: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af310: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af320: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af330: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af340: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af350: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af360: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af370: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af380: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af390: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af3a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af3b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af3c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af3d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af3e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000af3f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### Offset 0x000cb220
+000cb220: 20 01 00 00 02 cc cf fa 5c d3 ce 31 6c 1a 01 ff
+000cb230: 5b 06 92 09 8b 5f 30 92 00 00 00 00 00 00 00 00
+000cb240: 00 00 00 00 00 00 00 00 b8 a6 64 97 9a dd 7c a6
+000cb250: b0 2c e4 9b 2d 54 90 b0 00 00 00 00 00 00 00 00
+000cb260: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb270: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb280: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb290: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb2a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb2b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb2c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb2d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000cb2e0: 93 f1 89 fa 20 4c 4c db ea 4a 2d 01 60 aa a3 4c
+000cb2f0: ba 46 e3 03 db 25 37 b3 a0 8c 14 71 2a 5a fd 20
+000cb300: e9 f0 a3 b5 be 3d bb c7 98 9c 67 cd f1 66 ba f6
+000cb310: ab 56 f4 fd 23 35 06 76 3c 29 cb 4a 0d 5a aa 4a
+000cb320: df 19 b7 3c 18 bd 7f a1 f0 81 50 c6 5e 94 71 b6
+000cb330: 45 b5 4a a0 88 79 fc 38 82 91 25 8e cc 6a 6d 1e
+000cb340: b8 2f 18 29 1d a4 c2 88 f1 d6 dc 0b 34 05 e1 2c
+000cb350: 4e 00 9d 4b 9e bf ad ff 82 9b 68 f3 02 f7 12 1c
+000cb360: 85 61 8a 6c 9c cb 0e de bd 7b 4c be 14 7c e6 fb
+000cb370: e2 d5 99 d6 8a 7c 7d c0 d9 80 b1 57 a1 3f 1f 95
+000cb380: ac e2 1c 77 f2 6a 3a 0e 46 7b 0b d6 34 47 74 02
+000cb390: 5d 4f 78 b6 0e 27 0b e1 50 65 17 01 60 5d 53 a8
+000cb3a0: 3b 2c 34 f8 71 df 47 65 f8 b6 9b 35 0c e4 b9 0b
+000cb3b0: 9c 6c c0 c0 02 af cf 23 59 0c 48 7d 53 97 ee 75
+000cb3c0: 0b 20 8f 85 71 3b 25 f4 cd b8 2e 12 48 0d c1 f3
+000cb3d0: b0 45 a4 b2 ec 05 f7 4a 3f ff ff 98 30 97 b0 56
+000cb3e0: ef cf 12 bc e1 0d d9 98 a0 f7 c5 33 b6 83 05 6f
+000cb3f0: 3f 9c 9f 53 d5 ad 47 0c eb ee 9a e2 47 6a 60 fc
+000cb400: 97 e6 4c a6 75 4e 00 7c 34 57 b7 d9 a2 d2 e4 d2
+000cb410: f0 41 69 26 c7 d4 bc 51 19 19 fb 63 78 01 5f 7c
+### Offset 0x000e0c00
+000e0c00: 46 46 46 21 21 46 46 46 55 4a 36 40 40 40 55 41
+000e0c10: 33 55 42 36 55 44 34 55 45 41 55 47 32 55 48 33
+000e0c20: 00 00 00 00 02 cc c0 fa 00 00 00 00 00 00 00 00
+000e0c30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0c40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0c50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0c60: 00 00 00 00 00 00 00 00 a6 66 b1 2c 09 e2 d3 55
+000e0c70: 8a 11 2b 77 56 88 bd 89 b9 84 be 5a e2 83 fe ea
+000e0c80: 9e 30 ee ac c8 31 ef 57 30 32 37 37 66 35 62 37
+000e0c90: 30 34 30 38 35 37 4e 71 34 55 69 63 69 56 62 64
+000e0ca0: 44 34 6f 34 00 00 00 00 00 00 00 00 00 00 00 00
+000e0cb0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0cc0: 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+000e0cd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0ce0: 18 40 d8 53 34 10 5f 1f 03 f0 aa 1a af 99 6f e3
+000e0cf0: 58 51 4c f2 52 af 03 db 72 53 82 88 07 9c 73 ca
+000e0d00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0d90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0da0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0db0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0dc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0dd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0de0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0df0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+### Offset 0x000e0e00
+000e0e00: 46 46 46 21 21 46 46 46 55 4a 36 40 40 40 55 41
+000e0e10: 33 55 42 36 55 44 34 55 45 41 55 47 32 55 48 33
+000e0e20: 00 00 00 00 02 cc c0 fa 00 00 00 00 00 00 00 00
+000e0e30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0e40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0e50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0e60: 00 00 00 00 00 00 00 00 a6 66 b1 2c 09 e2 d3 55
+000e0e70: 8a 11 2b 77 56 88 bd 89 b9 84 be 5a e2 83 fe ea
+000e0e80: 9e 30 ee ac c8 31 ef 57 30 32 37 37 66 35 62 37
+000e0e90: 30 34 30 38 35 37 4e 71 34 55 69 63 69 56 62 64
+000e0ea0: 44 34 6f 34 00 00 00 00 00 00 00 00 00 00 00 00
+000e0eb0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0ec0: 00 00 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+000e0ed0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0ee0: 18 40 d8 53 34 10 5f 1f 03 f0 aa 1a af 99 6f e3
+000e0ef0: 58 51 4c f2 52 af 03 db 72 53 82 88 07 9c 73 ca
+000e0f00: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f10: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f20: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f30: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0f90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0fa0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0fb0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0fc0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0fd0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0fe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+000e0ff0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+## 6. Interpretation limits
+
+- The SBoot parser, not a guessed fixed offset, determines the accepted token object.
+- A raw 32-byte sequence is not an authorization proof unless it is the exact parsed object accepted by the J6 signature-validation path.
 - Do not alter STEADY, RPMB, MISC or any other protected region.

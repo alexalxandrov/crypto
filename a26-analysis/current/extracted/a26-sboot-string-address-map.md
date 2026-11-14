@@ -47,6 +47,7 @@ androidboot.other.locked: file offset 0x26b317; known VA 0x26b317 implies load b
 --reason=bootloader_unlock
 --locale=en_US
 
+- VA 0x26fe25 / file offset 0x26fe25: STEADY
 - VA 0x260425 / file offset 0x260425: USERDATA
 - VA 0x24620d / file offset 0x24620d: erase
 - VA 0x269191 / file offset 0x269191: MDM MODE. CAN'T ERASE USERDATA.
