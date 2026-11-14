@@ -1292,3 +1292,28 @@ Support request draft: `a26/A26_CHIMERA_SUPPORT_REQUEST_EN.md`.
 Full evidence, exact links, and constraints: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
 
 No EUB connection, testpoint bridge, credit purchase, or unlock operation has been performed. Do not bridge unidentified pads or use the unrelated EDL/ISP/BROM diagram as an EUB schematic.
+
+
+---
+
+## 15. Engineering Mode / ESS runtime intake — 2026-11-14
+
+Свежая read-only проверка живого устройства и сопоставление с уже сохранёнными ELF:
+
+- Все пять служб сообщают running: engmode_hal, emservice, tz_service, tzts_service, proca.
+- Наблюдались отдельные SELinux domains: tzdaemon, tztsd, hal_engmode_default, hal_proca_default и emservice.
+- Найден AIDL endpoint vendor.samsung.hardware.security.engmode.ISehEngmode/default; соответствующий VINTF manifest присутствует.
+- Размеры двух vendor executables и шести vendor shared libraries совпадают с размерами файлов в a26-analysis/engmode/current/vendor/. Это сопоставление по размеру, не криптографическая проверка содержимого.
+- В libengmode_client.so обнаружены символы/строки makeTokenReq, getRequestMsg, getToken, installToken, isTokenInstalled, getLastTokenStatus, getModesbit, commandForESS и других client methods.
+- В libengmode_server.so обнаружены EngineeringModeLegacy / EngineeringModeWorld, методы обработки токенов и ESS, token cache, DID, а также STEADY read/write symbols and diagnostics.
+- Отфильтрованный поиск по последним 3000 строкам logcat не дал совпадений по узким ключам engmode/ESS/STEADY/token. Это только отсутствие совпадений в конечном фрагменте; это не доказывает отсутствия ESS-активности или неисправность службы.
+- Ранее прочитанный OEMLockService по-прежнему показывает carrier/user/overall allowed=true, device OEM unlocked=false.
+
+Подробные источники:
+
+- Сводка для пользователя: a26/A26_ENGMODE_ESS_RUNTIME_2026-11-14_RU.md
+- Подробный runtime intake и перечень строк/символов: a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md
+
+**Статус интерпретации:** наличие и запуск Engineering Mode/ESS software stack подтверждены. Наличие действительного Samsung-signed OEM-unlock token, его выдача для SM-A266B / A266BXXUCDZJ6, разрешённая mode bitmap и воспроизводимый пользовательский unlock path не подтверждены.
+
+**Не выполнялось:** не вызывались state-changing Binder/ESS методы (makeTokenReq, installToken, commandForESS, removeToken, sendFuseCmd, recoveryITL); не было записи в STEADY, RPMB, recovery, vbmeta или другие разделы. Все следующие действия остаются read-only/static-analysis-only до получения независимого и безопасного подтверждения процедуры.
