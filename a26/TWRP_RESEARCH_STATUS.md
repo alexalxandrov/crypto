@@ -15,9 +15,10 @@
 
 Жёсткие ограничения:
 - Загрузчик устройства заблокирован; Verified Boot — green.
-- Не выполнять разблокировку загрузчика, прошивку, запись в разделы, обход AVB/vbmeta, очистку userdata или другие изменяющие устройство операции.
-- Допустимы автономный анализ исходников/образов, статические проверки, сборка образа в build-среде и только read-only получение данных через ADB.
-- Все результаты сборки сначала проверять офлайн. Никаких инструкций по установке в рамках текущего этапа.
+- Пользователь теперь явно поставил цель: получить unlock или запустить TWRP; исследовать официальные и технически обоснованные пути разрешено.
+- Фактические записи в разделы, очистка userdata, unlock через сервисный инструмент и любые операции с риском потери данных/brick не выполнять без проверки точной совместимости, полной резервной копии и отдельного подтверждения непосредственно перед операцией.
+- Допустимы автономный анализ исходников/образов, статические проверки, сборка образа в build-среде и read-only получение данных через ADB.
+- Не выполнять непроверенные записи в recovery/vbmeta/STEADY/RPMB/MISC; не использовать downgrade ниже BIT 12.
 
 ## 2. Подтверждённая конфигурация устройства
 
@@ -263,3 +264,6 @@ Before buying credits or opening the phone, obtain written confirmation from Chi
 A public A26-specific kernel source (`os-guy-original/android_kernel_samsung_a26x`, `lineage-23.2`, Linux 5.15.180) has `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set` in `s5e8835-a26xxx_defconfig`. This is not the installed J6 5.15.197 config, but it weakens the in-memory kexec route. No kexec attempt is authorized.
 
 No recovery write is authorized by this research update. TWRP image still requires a bootloader unlock and separate Android 17/FBE compatibility validation.
+
+
+Host requirement for the newly identified Chimera EUB candidate: the official Chimera download page lists Windows 10 / Windows 11 32/64-bit. Parrot Linux, macOS and Windows 7 are not listed as supported hosts. Native Windows 10/11 is preferred; VM USB passthrough remains unverified.
