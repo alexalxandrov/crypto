@@ -890,3 +890,10 @@ Owner reports that the Android OEM unlocking switch appears temporarily; when vi
 The latest recorded boot properties remain locked (`flash.locked=1`, `vbmeta.device_state=locked`, `verifiedbootstate=green`); the previous OEMLockService read returned allowed=true but device OEM-unlocked=false. Android UI permission is not bootloader unlock.
 
 J6 static analysis links STEADY/PIT policy loading, signature validation and lock-state reconciliation, but the semantic name of bit 3, internal state polarity and a supported A26 signed ESS issuance path remain unresolved. Do not write TWRP/blank vbmeta or modify STEADY/RPMB.
+
+
+## 16. Chimera EUB bootloader unlock — 2026-11-14
+
+Current official Chimera model page for SM-A266B lists **Unlock / Relock Bootloader (EUB)**: https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b . This supersedes the older claim that the first-party page did not list the operation. Exact support for A266BXXUCDZJ6 / Android 17 / One UI 9 / BIT 12 / CAU remains unconfirmed; written support confirmation is required before payment or disassembly. Full assessment and support request: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
+
+Official Chimera download page lists Windows 10 / Windows 11 32/64-bit; Linux, macOS and Windows 7 are not listed as supported hosts. Public A26-specific kernel source (Linux 5.15.180) disables KEXEC and KEXEC_FILE; the installed J6 kernel is 5.15.197, so exact runtime config remains unknown.
