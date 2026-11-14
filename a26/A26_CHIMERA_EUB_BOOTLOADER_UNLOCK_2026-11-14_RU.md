@@ -43,11 +43,13 @@ Do not convert "feature listed for model" into "confirmed compatible with this f
 
 ## 3. Distinguish two different Chimera bootloader-unlock paths
 
-An August 2026 Chimera Exynos announcement describes a Download Mode / ODIN bootloader-unlock procedure for selected Exynos devices, with the stated boundary **below Android 16, when no emtoken is required**. A26 is listed in the Exynos 1380 group in that announcement.
+Chimera's own official Telegram announcement (post 279, 27.08.2026) describes a Samsung Download Mode / ODIN bootloader-unlock procedure for selected Exynos devices, with the stated boundary **below Android 16, when no emtoken is required**. It explicitly lists Exynos 1380 and Samsung Galaxy A26 5G (SM-A266B/M/U/U1).
 
-Source: https://news.halabtech.com/chimera-update-new-samsung-exynos-support-en-2026-08-27/
+First-party source: https://t.me/chimeratool_offical/279
 
-This Download Mode procedure must not be conflated with the separate **EUB** operation currently shown on the SM-A266B model page. The announcement's Android-version limitation may apply to the ODIN route; the public evidence does not say whether the EUB route has the same restriction.
+A mirrored copy is available at: https://news.halabtech.com/chimera-update-new-samsung-exynos-support-en-2026-08-27/
+
+This Download Mode procedure must not be conflated with the separate **EUB** operation currently shown on the SM-A266B model page. The first-party announcement's Android-version limitation explicitly excludes the installed Android 17 build from the ODIN route. The public evidence does not say whether the separate EUB route has the same restriction; this is the exact point Chimera support must confirm.
 
 The installed A266BXXUCDZJ6 is Android 17. Therefore the older Download Mode route is not a viable assumption for this phone. The EUB listing is the route that needs exact-build confirmation.
 
