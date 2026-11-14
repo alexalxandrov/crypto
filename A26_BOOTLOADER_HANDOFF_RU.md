@@ -902,3 +902,21 @@ Official Chimera download page lists Windows 10 / Windows 11 32/64-bit; Linux, m
 ## 17. AVB recovery hash proof — 2026-11-14
 
 Saved Samsung `vbmeta.img` contains a signed HASH descriptor for `recovery` (image_size 71,877,408 bytes; SHA-256 `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`). Stock recovery dump includes an AVB footer and matches the descriptor. The official TWRP TAR's recovery.img has no AVB footer and fails the signed recovery digest. Direct `dd` while locked is therefore not a viable boot path; do not test-write. Full report: `a26/recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md`.
+
+## 16. Chimera EUB candidate verified — 14.11.2026
+
+A live retrieval of the exact official Chimera model page for SM-A266B confirms that the current feature table lists `Unlock / Relock Bootloader — EUB` and `Patch Knoxguard — EUB`:
+https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b?procedureId=344
+
+The page links the A26 test-point guide:
+https://chimeratool.com/en/test-points/1440-test-point-for-samsung-galaxy-a26-5g-models.html
+It redirects to login when unauthenticated, so the pad diagram could not be inspected. Official EUB documentation says most Samsung Exynos devices require hardware testpoints; A266B was not found in the Switch-to-EUB/no-testpoint list.
+
+The global Chimera MDM guide says EUB KnoxGuard Patch unlocks the bootloader and sets KG Completed, but recommends this for Locked or Active states. This device already reports KG COMPLETED (0), so direct `Unlock / Relock Bootloader (EUB)` is the clearest candidate; Patch Knoxguard behavior on already-Completed state requires confirmation.
+
+Current Chimera desktop version 48.49.1158 supports Windows 10/11 32/64-bit. The current EULA requires at least Windows 10 and prohibits virtual-machine use. Supported route therefore requires a physical Windows 10/11 host.
+
+Support request draft: `a26/A26_CHIMERA_SUPPORT_REQUEST_EN.md`.
+Full evidence and constraints: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
+
+No EUB connection, testpoint bridge, credit purchase, or unlock operation has been performed. Do not bridge unidentified pads or use the unrelated EDL/ISP/BROM diagram as an EUB schematic.
