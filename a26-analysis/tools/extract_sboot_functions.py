@@ -22,7 +22,8 @@ TARGETS = [
     "fcn.0017dfdc", "fcn.0017df80", "fcn.001257bc", "fcn.0012577c",
     "fcn.001895dc", "fcn.00123f14", "fcn.001558e4", "fcn.0018efb4",
     "fcn.00179f90", "fcn.0017b0a0", "fcn.0017b1f8", "fcn.0014b120",
-    "fcn.0014b248", "fcn.001758fc", "fcn.0017db48", "fcn.001866ac",
+    "fcn.0014b248", "fcn.001758fc", "fcn.002049dc", "fcn.00138f30",
+    "fcn.001390c0", "fcn.00114a28", "fcn.001512d4", "fcn.0014b120", "fcn.0017db48", "fcn.001866ac",
     "fcn.001551fc", "fcn.0016e5f4", "fcn.0017cb74", "fcn.00188654",
     "fcn.00179e6c", "fcn.0017bb70", "fcn.0017d674", "fcn.0017bdc0",
     "fcn.0017d4cc", "fcn.0017d5b4", "fcn.0017c904", "fcn.0017e5f8",
@@ -147,7 +148,8 @@ known_vas = {0x24edc5, 0x23f11a, 0x245cf7, 0x2463d5, 0x265467, 0x26529e,
              0x265508, 0x26b4ca, 0x26f537, 0x26a977, 0x275d4a, 0x26d660,
              0x269201, 0x26b317, 0x2746cd, 0x26ff1c, 0x24854a, 0x250d3d,
              0x24aabd, 0x23e409, 0x251971, 0x240c92, 0x23e7fd, 0x25a8ca,
-             0x262794, 0x2691ec}
+             0x262794, 0x2691ec, 0x260425, 0x24620d, 0x269191, 0x2561a0,
+             0x2463b3, 0x276a7f}
 string_xrefs = []
 current_function = "<unknown>"
 for i, line in enumerate(lines):
@@ -189,7 +191,8 @@ if RAW_SBOOT.is_file():
                  0x26529e, 0x265508, 0x26b4ca, 0x26f537, 0x26a977,
                  0x275d4a, 0x26d660, 0x269201, 0x26b317, 0x2746cd, 0x26ff1c, 0x24854a, 0x250d3d,
                  0x24aabd, 0x23e409, 0x251971, 0x240c92, 0x23e7fd, 0x25a8ca,
-                 0x262794, 0x2691ec]
+                 0x262794, 0x2691ec, 0x260425, 0x24620d, 0x269191, 0x2561a0,
+                 0x2463b3, 0x276a7f]
     if pos >= 0:
         base = 0x26B317 - pos
         mapping += [f"androidboot.other.locked: file offset 0x{pos:x}; known VA 0x26b317 implies load base 0x{base:x}.", ""]
