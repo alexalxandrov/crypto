@@ -381,3 +381,47 @@ The AIDL NDK BnSehEngmode constructor and destructor also have PLT entries (0x60
 This mapping proves that the imported methods have PLT stubs and dynamic-linker slots in the executable. It does not yet prove which BL instructions in .text target each stub, whether the corresponding code path is reachable through an AIDL transaction, or whether the methods execute at runtime. The next step is to extract BL references from the saved full disassembly and inspect their containing-function context.
 
 The earlier note saying LLVM was unavailable is superseded: LLVM 21.1.8 is now installed. Root access is required to read this vendor executable from Termux. All operations so far remain static/read-only; no Binder/ESS methods or token operations were invoked and no device state was changed.
+
+
+## 11. AIDL executable: direct EngMode BL call sites — 2026-11-14
+
+The owner provided grep output from the saved full disassembly (LLVM 21.1.8, AArch64) showing direct BL instructions targeting the previously mapped EngMode PLT stubs. This advances the evidence from imported symbols and PLT availability to actual call references in the executable's .text.
+
+All 23 application-level android::engmodeclient methods in the relocation inventory have at least one direct BL call site in the AIDL service executable. The four shared lifecycle/data helpers (engmodeclient() constructor, getServer(), getBytes(), destructor) are also called repeatedly around these method-specific calls. Thus all 27 imported EngMode client symbols in the captured list have corresponding call references in .text.
+
+| EngMode client method | Direct BL instruction address | PLT target |
+|---|---:|---:|
+| getTokenInfoForJanus | 0x32c8 | 0x6160 |
+| getModesbit | 0x34d8 | 0x61e0 |
+| getStringModes | 0x36e8 | 0x61f0 |
+| getLastTokenStatus | 0x38f8 | 0x6200 |
+| getPriorityTime | 0x3b08 | 0x6210 |
+| setPriorityTime | 0x3d2c | 0x6220 |
+| getTUC | 0x3f24 | 0x6230 |
+| getToken | 0x403c | 0x6240 |
+| makeITLReq | 0x4274 | 0x6250 |
+| recoveryITL | 0x4480 | 0x6260 |
+| commandForESS | 0x45b8 | 0x6270 |
+| getServerTime | 0x47c8 | 0x6280 |
+| makeTokenReq | 0x4a24 | 0x6290 |
+| getRequestMsg | 0x4c98 | 0x62a0 |
+| getID | 0x4eb8 | 0x62b0 |
+| getExpiryDate | 0x50c8 | 0x62c0 |
+| removeToken | 0x52bc | 0x62d0 |
+| getNumOfModes | 0x53ac | 0x62e0 |
+| sendFuseCmd | 0x549c | 0x62f0 |
+| getVersion | 0x558c | 0x6300 |
+| isTokenInstalled | 0x567c | 0x6310 |
+| installToken | 0x5780 | 0x6320 |
+| getStatus | 0x58b4 | 0x6330 |
+
+Examples of the common helper calls are visible in the same disassembly blocks: constructor/getServer at 0x32ac/0x32bc, 0x34bc/0x34cc, etc.; getBytes at 0x32f0 and subsequent wrappers; destructor at 0x3394 and subsequent wrappers.
+
+### What this establishes — and what it does not
+
+- Established: the AIDL executable's .text contains direct call instructions to all 23 application-level EngMode client methods from the imported API list. These are not merely unused dynamic imports.
+- Strong structural indication: the repeated constructor → getServer → one method-specific call → getBytes → destructor pattern is consistent with per-method AIDL adapter/wrapper routines.
+- Not yet established: exact AIDL transaction-code-to-wrapper mapping, full function boundaries, runtime reachability, caller identity/permission checks, and successful execution of any method.
+- The semantics of getBytes and the exact guards/error paths must be confirmed from the instructions and register/data-flow context; do not infer them only from the method name.
+
+Next static step: inspect bounded disassembly windows around the high-value methods (especially getModesbit, commandForESS, makeTokenReq, installToken, sendFuseCmd and getStatus), then trace branch conditions, argument setup, return handling and adjacent strings. No Binder/ESS method was invoked; no token operation or device-state change occurred.
