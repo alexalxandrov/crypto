@@ -1362,3 +1362,19 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 Подробная карта: `a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md`. Runtime capture: `a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md`.
 
 Не установлены TA UUID/command IDs, secure-world payload semantics, AIDL forwarding logic, а также наличие действительной Samsung authorization для OEM Unlock. Binder/ESS методы не вызывались; состояние устройства и разделы хранения не менялись.
+
+
+## Дополнение 14 ноября 2026 — AIDL service → engmodeclient linkage
+
+Новый read-only `readelf -Ws` capture подтверждает, что `vendor.samsung.hardware.security.engmode-service` напрямую импортирует методы `android::engmodeclient`, определённые в `libengmode_client.so`. Direct DT_NEEDED на эту библиотеку уже был подтверждён; теперь установлены и соответствующие symbol imports.
+
+Импортируются группы методов:
+- token/request: `makeTokenReq`, `getRequestMsg`, `getToken`, `installToken`, `isTokenInstalled`, `removeToken`, `getLastTokenStatus`, `getTokenInfoForJanus`;
+- mode/status: `getModesbit`, `getStringModes`, `getNumOfModes`, `getStatus`;
+- ESS/ITL: `commandForESS`, `makeITLReq`, `recoveryITL`;
+- time/metadata: `getServerTime`, `getPriorityTime`, `setPriorityTime`, `getTUC`, `getVersion`;
+- other: constructor/destructor, `getServer`, `getID`, `getExpiryDate`, `sendFuseCmd`, `getBytes`.
+
+Тот же executable импортирует `BnSehEngmode` symbols из AIDL NDK glue. Это доказывает наличие AIDL Binder front end, непосредственно связанного с legacy EngMode client API. Это ещё не доказывает точную реализацию каждого AIDL transaction handler или успешный вызов методов на устройстве.
+
+Полная карта: `a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md`. State-changing Binder/ESS methods не вызывались; разделы устройства и bootloader state не менялись.
