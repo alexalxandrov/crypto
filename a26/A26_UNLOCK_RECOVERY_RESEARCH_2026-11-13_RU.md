@@ -785,3 +785,14 @@ The signed `vbmeta.img` contains a HASH descriptor for `recovery` with image siz
 This is direct cryptographic evidence that root-level `dd` into recovery while the bootloader remains locked cannot produce a bootable TWRP recovery under the current AVB chain. The block write may succeed, but SBoot/AVB will reject the modified recovery. Do not test this on the handset. The local build image was not available in this repository; it is still not stock and cannot satisfy the same signed recovery hash.
 
 The direct-`dd`-while-locked branch is closed. Pursue a real unlock/service authorization first; current leading candidate: Chimera EUB for SM-A266B, exact J6 / Android 17 / BIT 12 support unconfirmed.
+
+
+## 25. Chimera EUB support conflict — 2026-11-14
+
+The current first-party SM-A266B model page lists Unlock / Relock Bootloader (EUB). However, Chimera's first-party A26 EUB announcement lists SM-A266B/SM-A266M as EUB-compatible but its explicit procedure list does not include Bootloader Unlock. Source: https://t.me/s/chimeratool_offical?before=241
+
+The announcement may have been superseded by a later update, but no later A26-specific first-party announcement confirming EUB Bootloader Unlock was found. Therefore the model-page row is not sufficient to establish that the operation is actually available on this A26 firmware.
+
+The separate official ODIN/Download Mode unlock announcement includes A26 but explicitly limits that procedure to below Android 16 when no emtoken is required. The current A266BXXUCDZJ6 Android 17 firmware is outside that published boundary.
+
+**Decision:** Chimera remains a lead, not a confirmed path. Do not buy credits or open the device until support confirms EUB Bootloader Unlock for exact SM-A266B / A266BXXUCDZJ6 / Android 17 / BIT 12. Full support check and prepared question: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
