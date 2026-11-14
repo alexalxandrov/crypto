@@ -7,6 +7,7 @@ on:
       - '.github/workflows/a26-sboot-extract.yml'
       - 'a26-analysis/tools/extract_sboot_functions.py'
       - 'a26-analysis/tools/analyze_a26_avb.py'
+      - 'a26-analysis/tools/analyze_a26_steady.py'
   workflow_dispatch:
 
 permissions:
@@ -34,6 +35,8 @@ jobs:
           python a26-analysis/tools/extract_sboot_functions.py
           python -m py_compile a26-analysis/tools/analyze_a26_avb.py
           python a26-analysis/tools/analyze_a26_avb.py
+          python -m py_compile a26-analysis/tools/analyze_a26_steady.py
+          python a26-analysis/tools/analyze_a26_steady.py
 
       - name: Commit extracted assembly
         run: |
@@ -41,6 +44,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A a26-analysis/current/extracted/
           git add -A a26/recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md
+          git add -A a26/recovery/A26_STEADY_POLICY_BITMAP_ANALYSIS_2026-11-14_RU.md
           if git diff --cached --quiet; then
             echo "No extracted files changed."
           else
