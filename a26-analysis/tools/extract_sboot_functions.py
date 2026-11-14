@@ -25,7 +25,7 @@ TARGETS = [
     "fcn.0014b248", "fcn.001758fc", "fcn.0012c4dc", "fcn.0012c3dc",
     "fcn.0012bbe0", "fcn.00126b3c", "fcn.001283b8", "fcn.00138ddc",
     "fcn.0022d7ec", "fcn.0012c624", "fcn.0012c344", "fcn.0012c3a4",
-    "fcn.0012b810", "fcn.00126898", "fcn.001268b8", "fcn.0012a2a4",
+    "fcn.0012b810", "fcn.00126898", "fcn.001268b8", "fcn.00126760", "fcn.001395ec", "fcn.0012a2a4",
     "fcn.00127bc0", "fcn.0012c830", "fcn.002049dc", "fcn.00138f30",
     "fcn.001390c0", "fcn.00114a28", "fcn.001512d4", "fcn.0014b120", "fcn.0017db48", "fcn.001866ac",
     "fcn.001551fc", "fcn.0016e5f4", "fcn.0017cb74", "fcn.00188654",
