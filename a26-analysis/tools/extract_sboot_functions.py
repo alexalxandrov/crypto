@@ -26,6 +26,9 @@ TARGETS = [
     "fcn.001551fc", "fcn.0016e5f4", "fcn.0017cb74", "fcn.00188654",
     "fcn.00179e6c", "fcn.0017bb70", "fcn.0017d674", "fcn.0017bdc0",
     "fcn.0017d4cc", "fcn.0017d5b4", "fcn.0017c904", "fcn.0017e5f8",
+    "fcn.0016d638", "fcn.00177854", "fcn.0012467c", "fcn.0014dbd8",
+    "fcn.0014dcc4", "fcn.001392bc", "fcn.0013d500", "fcn.0013df98",
+    "fcn.0013deb8", "fcn.000f9608", "fcn.0016e57c", "fcn.001503d0", "fcn.00150b58",
 ]
 
 STRING_TERMS = [
@@ -139,7 +142,9 @@ for target in TARGETS:
 # Resolve ADRP + ADD references to known OEM/unlock string virtual addresses.
 known_vas = {0x24edc5, 0x23f11a, 0x245cf7, 0x2463d5, 0x265467, 0x26529e,
              0x265508, 0x26b4ca, 0x26f537, 0x26a977, 0x275d4a, 0x26d660,
-             0x269201, 0x26b317, 0x2746cd, 0x26ff1c}
+             0x269201, 0x26b317, 0x2746cd, 0x26ff1c, 0x24854a, 0x250d3d,
+             0x24aabd, 0x23e409, 0x251971, 0x240c92, 0x23e7fd, 0x25a8ca,
+             0x262794, 0x2691ec}
 string_xrefs = []
 current_function = "<unknown>"
 for i, line in enumerate(lines):
@@ -179,7 +184,9 @@ if RAW_SBOOT.is_file():
     base = None
     known_vas = [0x24edc5, 0x23f11a, 0x245cf7, 0x2463d5, 0x265467,
                  0x26529e, 0x265508, 0x26b4ca, 0x26f537, 0x26a977,
-                 0x275d4a, 0x26d660, 0x269201, 0x26b317, 0x2746cd, 0x26ff1c]
+                 0x275d4a, 0x26d660, 0x269201, 0x26b317, 0x2746cd, 0x26ff1c, 0x24854a, 0x250d3d,
+                 0x24aabd, 0x23e409, 0x251971, 0x240c92, 0x23e7fd, 0x25a8ca,
+                 0x262794, 0x2691ec]
     if pos >= 0:
         base = 0x26B317 - pos
         mapping += [f"androidboot.other.locked: file offset 0x{pos:x}; known VA 0x26b317 implies load base 0x{base:x}.", ""]
