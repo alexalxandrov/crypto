@@ -425,3 +425,38 @@ The relocation dump identifies R_AARCH64_JUMP_SLOT entries and the PLT dump expo
 Additional NDK Binder base imports include BnSehEngmode constructor PLT 0x60d0 / JUMP_SLOT 0x7478 and destructor PLT 0x6120 / JUMP_SLOT 0x74a0.
 
 This is a PLT-to-relocation map, not yet a call-site map. It proves imported API slots and stubs exist; .text BL references still need to be extracted before assigning methods to AIDL handler paths. The earlier “objdump unavailable” note is superseded by this successful LLVM capture. No service methods were executed and no device state was changed.
+
+
+## 16. AIDL executable direct BL references to EngMode API — 2026-11-14
+
+Owner-provided LLVM disassembly grep output shows direct AArch64 BL instructions from .text to all 23 application-level android::engmodeclient methods in the captured import/PLT inventory. The four shared helpers—constructor, getServer, getBytes, destructor—also have repeated call sites. Thus all 27 listed EngMode client imports have at least one direct call reference.
+
+| Method | BL site | PLT |
+|---|---:|---:|
+| getTokenInfoForJanus | 0x32c8 | 0x6160 |
+| getModesbit | 0x34d8 | 0x61e0 |
+| getStringModes | 0x36e8 | 0x61f0 |
+| getLastTokenStatus | 0x38f8 | 0x6200 |
+| getPriorityTime | 0x3b08 | 0x6210 |
+| setPriorityTime | 0x3d2c | 0x6220 |
+| getTUC | 0x3f24 | 0x6230 |
+| getToken | 0x403c | 0x6240 |
+| makeITLReq | 0x4274 | 0x6250 |
+| recoveryITL | 0x4480 | 0x6260 |
+| commandForESS | 0x45b8 | 0x6270 |
+| getServerTime | 0x47c8 | 0x6280 |
+| makeTokenReq | 0x4a24 | 0x6290 |
+| getRequestMsg | 0x4c98 | 0x62a0 |
+| getID | 0x4eb8 | 0x62b0 |
+| getExpiryDate | 0x50c8 | 0x62c0 |
+| removeToken | 0x52bc | 0x62d0 |
+| getNumOfModes | 0x53ac | 0x62e0 |
+| sendFuseCmd | 0x549c | 0x62f0 |
+| getVersion | 0x558c | 0x6300 |
+| isTokenInstalled | 0x567c | 0x6310 |
+| installToken | 0x5780 | 0x6320 |
+| getStatus | 0x58b4 | 0x6330 |
+
+The call-site pattern repeatedly places a constructor and getServer() before the method-specific call, with getBytes() and the client destructor in the same wrapper-like block. This is consistent with AIDL adapter routines, but exact function boundaries and the AIDL transaction-code mapping have not yet been established.
+
+This is static disassembly evidence: it proves call references exist, not that all paths are reachable or have been invoked. The meaning of getBytes() and all guards/error paths must be confirmed from instruction/data-flow context. Next inspect bounded windows around the read-only mode/status methods and separately the token/ESS methods. No Binder/ESS methods were called and no device state changed.
