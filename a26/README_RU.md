@@ -89,3 +89,12 @@ See [A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md](A26_MAINTENANCE_MODE_OEM_
 - [A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md](recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md) — signed vbmeta recovery hash descriptor; TWRP mismatch.
 
 Published A26 defconfig has `CONFIG_KEXEC` and `CONFIG_KEXEC_FILE` disabled; exact Android 17 J6 runtime config is pending. Standard TWRP `dd` is blocked by the signed recovery hash descriptor while bootloader remains locked. Chimera EUB remains unconfirmed for Android 17 / BIT C.
+
+## Chimera EUB — exact A266B route
+
+- [A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md](A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md) — exact official model-page EUB entries, testpoint and host requirements.
+- [A26_CHIMERA_SUPPORT_REQUEST_EN.md](A26_CHIMERA_SUPPORT_REQUEST_EN.md) — ready-to-send English question for exact Android 17 / BIT C support.
+- Official A266B testpoint guide: https://chimeratool.com/en/test-points/1440-test-point-for-samsung-galaxy-a26-5g-models.html (requires Chimera login).
+- Current Chimera desktop software requires physical Windows 10/11; its EULA disallows virtual-machine use.
+
+The official SM-A266B model page lists both Unlock/Relock Bootloader (EUB) and Patch Knoxguard (EUB). Exact J6 / Android 17 / BIT C behavior is not yet confirmed by Chimera support.
