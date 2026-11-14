@@ -1,7 +1,7 @@
 # Samsung Galaxy A26 5G — dossier index
 
 Target: **SM-A266B / SM-A266B/DS**  
-Research snapshot: **2026-11-13**  
+Research snapshot: **2026-11-14**  
 Repository branch: `main`
 
 ## Current position
@@ -98,3 +98,13 @@ Published A26 defconfig has `CONFIG_KEXEC` and `CONFIG_KEXEC_FILE` disabled; exa
 - Current Chimera desktop software requires physical Windows 10/11; its EULA disallows virtual-machine use.
 
 The official SM-A266B model page lists both Unlock/Relock Bootloader (EUB) and Patch Knoxguard (EUB). Exact J6 / Android 17 / BIT C behavior is not yet confirmed by Chimera support.
+
+
+## Engineering Mode / ESS runtime intake — 2026-11-14
+
+- [A26_ENGMODE_ESS_RUNTIME_2026-11-14_RU.md](A26_ENGMODE_ESS_RUNTIME_2026-11-14_RU.md) — сводка live-проверок: состояния служб, SELinux domains, Binder/VINTF, размеры vendor-бинарников, наличие token/ESS/STEADY символов, результат фильтрации журналов и границы доказанного.
+- [RUNTIME_DIAGNOSTICS_2026-11-14.md](../a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md) — подробный технический intake с наблюдаемыми процессами, размерами файлов, именами методов и строками ошибок из client/server библиотек.
+
+**Новый подтверждённый факт:** engmode_hal, emservice, tz_service, tzts_service и proca на устройстве сообщают running. Клиентская/серверная библиотеки содержат функции и строки для token/ESS и STEADY I/O. Это доказывает наличие программного стека, но не выдачу Samsung-signed OEM-unlock token и не разрешение на разблокировку. Узкий поиск по последним 3000 строкам logcat не дал совпадений; это ограниченный отрицательный результат, а не доказательство отсутствия ESS-активности.
+
+**Актуальное состояние OEM Lock не изменилось:** последняя read-only проверка показала carrier/user/overall allowed = true, но device OEM unlocked = false. Не вызывались state-changing методы HAL/ESS; в STEADY/RPMB и разделы загрузчика ничего не записывалось.
