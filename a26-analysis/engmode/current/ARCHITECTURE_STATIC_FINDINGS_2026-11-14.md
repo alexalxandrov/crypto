@@ -190,6 +190,67 @@ These are live device hashes. The repository's stored binary copies were not reh
 
 ## 6. Read-only continuation
 
-Next static-only checks should classify symbols as defined vs undefined in the actual ELF symbol tables and inspect DT_NEEDED/relocations for the two service executables. Do not invoke Binder/ESS methods as a substitute for static analysis. Do not write to STEADY, RPMB, recovery, vbmeta or bootloader partitions.
+The planned defined-vs-undefined symbol classification and service-executable DT_NEEDED inspection were completed in the 14 November follow-up; see section 7. The remaining static gaps are the exact AIDL-to-classic-Binder bridge semantics, complete transaction-to-handler mapping, and secure-world TA contract. Do not invoke Binder/ESS methods as a substitute for static analysis. Do not write to STEADY, RPMB, recovery, vbmeta or bootloader partitions.
 
 No state-changing calls or storage writes were performed during the collection recorded here.
+
+
+## 7. On-device ELF symbol ownership and cross-library linkage — 2026-11-14
+
+The owner supplied `readelf -d` and filtered `readelf -Ws` output from eight live files. In the symbol table, `Ndx=UND` denotes an imported symbol; a numeric section index denotes a definition in that ELF.
+
+### 7.1 Legacy Binder service: a linked server implementation
+
+- `/vendor/bin/emservice` has DT_NEEDED on `libengmode_server.so`.
+- Its symbol table imports `android::EngineeringModeHandler::instantiate()` as `UND`.
+- `libengmode_server.so` defines that exact `EngineeringModeHandler::instantiate()` symbol, as well as `EngineeringModeHandler::onTransact()` (4156 bytes), constructor/destructor symbols and `EngineeringModeWorld::emProcess()`.
+- `libengmode_server.so` defines `EngineeringModeWorld::emSyncUpCore()`, and its own STEADY accessors `em_read_to_steady(int, unsigned char*, unsigned int)` and `em_write_to_steady(int, unsigned char*, unsigned int)`.
+- `libengmode_server.so` imports `em_tlc_send` (`UND`); `libengmode_tlc.so` defines `em_tlc_send` (840 bytes).
+
+This yields a symbol-linked native path: `emservice → libengmode_server.so → libengmode_tlc.so`. It is stronger than a same-domain/string correlation: the executable imports the handler factory supplied by the server library, and the server imports the TLC function supplied by the TLC library. The server library also declares direct DT_NEEDED dependencies on `libengmode2lite.so`, `libstork_shared.so`, `libsecril-client.so` and `librtts_client.so`.
+
+### 7.2 TLC-to-TEE API boundary
+
+`libengmode_tlc.so` defines `em_tlc_send` and imports the following from `libteecl.so`:
+
+- `TEEC_InitializeContext`
+- `TEEC_OpenSession`
+- `TEEC_InvokeCommand`
+- `TEEC_AllocateSharedMemory`
+- `TEEC_ReleaseSharedMemory`
+- `TEEC_CloseSession`
+- `TEEC_FinalizeContext`
+
+The linked path therefore reaches a concrete TEE Client API transport implementation. This still does **not** reveal the target Trusted Application UUID, command identifiers, payload layout, access policy, or secure-world decision logic.
+
+### 7.3 Separate AIDL NDK service front end
+
+`/vendor/bin/vendor.samsung.hardware.security.engmode-service` directly depends on both `vendor.samsung.hardware.security.engmode-V1-ndk.so` and `libengmode_client.so`, as well as `libbinder.so` and `libbinder_ndk.so`.
+
+The executable imports `BnSehEngmode` construction/destruction and interface metadata symbols from the AIDL NDK glue library. The vendor NDK library defines `BpSehEngmode` proxy methods and `BnSehEngmode`/interface symbols. The visible proxy method surface includes token/status/mode/time operations and methods such as `makeTokenReq`, `installToken`, `removeToken`, `commandForEss`, `recoveryItl` and `sendFuseCmd`.
+
+This confirms that the AIDL executable uses the generated NDK Binder interface layer and separately links the classic Binder client library. It does **not**, by itself, prove which methods the executable forwards to `libengmode_client.so`, identify the classic Binder service name, or establish the exact AIDL-to-`emservice` call path. Keep this front end separate from the proven `emservice → server → TLC` linkage until those caller edges are statically established.
+
+### 7.4 EngMode 1.5 is a separate observed binary component
+
+`libengmode15.so` defines `em_ess_make_token_request`, `em_ess_install_token_v1` and `em_write_to_steady`. It is not listed among the direct DT_NEEDED dependencies of `libengmode_server.so` in the captured output. Do not assume it is called by that library; dynamic loading or use by another component remains possible but unproven.
+
+### 7.5 Confirmed versus unresolved
+
+**Confirmed by this symbol/dependency intake:**
+
+- `emservice` imports the handler factory defined by `libengmode_server.so`.
+- `libengmode_server.so` imports the `em_tlc_send` function defined by `libengmode_tlc.so`.
+- `libengmode_tlc.so` imports the TEEC functions from its TEE Client library dependency.
+- The AIDL HAL executable imports Binder NDK stub symbols and has a direct dependency on `libengmode_client.so`.
+- `libengmode15.so` exports ESS/token/STEADY functions but is not a direct dependency of the observed server library.
+
+**Still unresolved:**
+
+- The AIDL service's exact forwarding logic into `libengmode_client.so`.
+- The classic Binder service lookup name and exact transaction-code-to-handler map.
+- Whether and where `libengmode15.so` is loaded or called on this firmware.
+- TEE Trusted Application identity and secure-world command semantics.
+- Any end-user OEM-unlock authorization or reachable unlock operation.
+
+Only read-only ELF metadata and symbol tables were inspected. No Binder/ESS calls were issued and no device storage or security state was changed.
