@@ -14,7 +14,8 @@ Device details:
 - Firmware/AP: **A266BXXUCDZJ6**
 - Android: **17**
 - One UI: **9**
-- CSC: **CAU / OXM**
+- CSC: **CAU**
+- Hardware revision: **5**
 - Download Mode RP SWREV: **B:12 K:12 S:12 (binary C)**
 - KG STATE: **COMPLETED (0)**
 - WARRANTY VOID: **0**
