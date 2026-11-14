@@ -57,6 +57,70 @@ androidboot.other.locked: file offset 0x26b317; known VA 0x26b317 implies load b
 
 - VA 0x276a7f / file offset 0x276a7f: Device state switched (%d)
 
+- VA 0x23a6fb / file offset 0x23a6fb: UFS Check Read Device Desc Error: %d
+
+- VA 0x26cdd6 / file offset 0x26cdd6: UFS Check Read Geometry Desc Error: %d
+
+- VA 0x23c827 / file offset 0x23c827: UFS Check Read Config Desc Error: %d
+
+- VA 0x240c2a / file offset 0x240c2a: UFS Check Read BootlunEn Attr Error: %d
+
+- VA 0x253872 / file offset 0x253872: UFS supports TW feature, 0x%x
+
+- VA 0x240b79 / file offset 0x240b79: UFS_Config_Desc_Header wPeriodicRTCUpdate error
+
+- VA 0x25c25f / file offset 0x25c25f: UFS_Config_Desc_Header bLength error
+
+- VA 0x23a683 / file offset 0x23a683: UFS_Config_Desc_Header bDescriptorType error
+
+- VA 0x24c331 / file offset 0x24c331: UFS_Config_Desc_Header bConfDescContinue error
+
+- VA 0x24c361 / file offset 0x24c361: UFS_Config_Desc_Header bBootEnable error
+
+- VA 0x2629f0 / file offset 0x2629f0: UFS_Config_Desc_Header bDescrAccessEn error
+
+- VA 0x278560 / file offset 0x278560: UFS_Config_Desc_Header bInitPowerMode error
+
+- VA 0x25e0c1 / file offset 0x25e0c1: UFS_Config_Desc_Header bHighPriorityLUN error
+
+- VA 0x257684 / file offset 0x257684: UFS_Config_Desc_Header bSecureRemovalType error
+
+- VA 0x25e0f0 / file offset 0x25e0f0: UFS_Config_Desc_Header bInitActiveICCLevel error
+
+- VA 0x243170 / file offset 0x243170: UFS_Config_Desc_Header bWriteBoosterBufferType conf : %d, geom : %d
+
+- VA 0x25c2cd / file offset 0x25c2cd: dLUNumWriteBoosterBufferAllocUnits error at LU 0 %d, %d
+
+- VA 0x2558f3 / file offset 0x2558f3: UFS_Config_Desc_Header bWriteBoosterBufferNoUserSpaceReductionEn error
+
+- VA 0x23a721 / file offset 0x23a721: dLUNumWriteBoosterBufferAllocUnits error at LU%d	%d, %d
+
+- VA 0x2559d2 / file offset 0x2559d2: UFS Provision : PASS
+
+- VA 0x27858d / file offset 0x27858d: bLUEnable error at LU%d  %d, %d
+
+- VA 0x260794 / file offset 0x260794: bBootLunID error at LU%d  %d, %d
+
+- VA 0x2607b6 / file offset 0x2607b6: bLUWriteProtect error at LU%d  %d, %d
+
+- VA 0x23c8cb / file offset 0x23c8cb: bMemoryType error at LU%d  %d, %d
+
+- VA 0x264c50 / file offset 0x264c50: dNumSharedWriteBoosterBufferAllocUnits error %d, %d
+
+- VA 0x251077 / file offset 0x251077: bLogicalBlockSize error at LU%d  %d, %d
+
+- VA 0x25593b / file offset 0x25593b: bProvisioningType error at LU%d  %d, %d
+
+- VA 0x2785ae / file offset 0x2785ae: wContextCapabilities error at LU%d  %d, %d
+
+- VA 0x27ca0b / file offset 0x27ca0b: UFS bootLU is not enabled
+
+- VA 0x26f848 / file offset 0x26f848: dNumAllocUnits error at LU%d %d %d
+
+- VA 0x23e7b9 / file offset 0x23e7b9: dNumAllocUnits error at LU%d  %x, %x
+
+- VA 0x24f0ce / file offset 0x24f0ce: UFS Provision : FAIL
+
 
 ## OEM / unlock strings
 
