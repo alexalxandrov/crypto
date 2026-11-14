@@ -274,3 +274,18 @@ Host requirement for the newly identified Chimera EUB candidate: the official Ch
 Focused J6 disassembly shows `fcn.0016f3e0` passing the format string `androidboot.other.locked=%d` with value 1 to `fcn.0017184c` at VA `0x16fe84–0x16fe90`. This matches the observed runtime `ro.boot.other.locked=1`. A KernelSU `resetprop` override can expose the Android UI switch but does not alter SBoot's signed STEADY policy or protected lock-state cache. See `a26-analysis/current/extracted/bootarg-oem-locked-and-xref-audit.asm`.
 
 This confirms that the temporary Settings switch is not an unlock. It does not change the leading external candidate: Chimera EUB Bootloader Unlock for SM-A266B, with exact J6 / Android 17 / BIT 12 support still requiring written confirmation.
+\n\n## 14. AVB proof: locked recovery partition is cryptographically bound to stock image — 2026-11-14
+
+A read-only parser was run against the exact saved boot-chain files and the official TWRP TAR already in this repository. Full report:
+`a26/recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md`.
+
+Confirmed facts:
+- Samsung `vbmeta.img` is a valid AVB0 image (64 KiB), algorithm type 2, signature size 512 bytes, public key size 1032 bytes.
+- Its signed HASH descriptor explicitly names partition `recovery`, with image size **71,877,408 bytes** and SHA-256 digest `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`.
+- The stock recovery partition dump has an AVB footer and embedded vbmeta. Its image size and digest match the signed recovery descriptor exactly (**True**).
+- The official TWRP TAR member `recovery.img` is 74,027,008 bytes, has **no AVB footer**, and its first 71,877,408 bytes do **not** match the Samsung-signed recovery digest (**False**).
+- The embedded recovery vbmeta carries the same recovery HASH descriptor as the main vbmeta.
+
+**Conclusion:** while the bootloader remains locked and AVB is green, writing the official TWRP image with root-level `dd` does not make it a valid recovery image. Android may permit the block write, but the locked boot chain has a signed recovery hash descriptor that the TWRP image fails. The official TAR image is therefore expected to be rejected at boot or cause recovery verification failure. The locally built image was not present in this repository for byte-for-byte checking; because it is not the stock image, it cannot match the same Samsung-signed recovery digest unless it is literally identical to stock.
+
+This closes the direct-`dd`-while-locked branch. **Do not write TWRP before bootloader unlock.** A bootloader unlock (or a genuine service-level authorization that changes the trusted unlock state) is now a prerequisite. The leading external candidate remains Chimera EUB, pending written confirmation for J6 / Android 17 / BIT 12.
