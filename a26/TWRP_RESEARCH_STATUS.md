@@ -289,3 +289,11 @@ Confirmed facts:
 **Conclusion:** while the bootloader remains locked and AVB is green, writing the official TWRP image with root-level `dd` does not make it a valid recovery image. Android may permit the block write, but the locked boot chain has a signed recovery hash descriptor that the TWRP image fails. The official TAR image is therefore expected to be rejected at boot or cause recovery verification failure. The locally built image was not present in this repository for byte-for-byte checking; because it is not the stock image, it cannot match the same Samsung-signed recovery digest unless it is literally identical to stock.
 
 This closes the direct-`dd`-while-locked branch. **Do not write TWRP before bootloader unlock.** A bootloader unlock (or a genuine service-level authorization that changes the trusted unlock state) is now a prerequisite. The leading external candidate remains Chimera EUB, pending written confirmation for J6 / Android 17 / BIT 12.
+
+## 12. AVB and RAM boot gate — 2026-11-14
+
+The saved signed vbmeta contains a HASH descriptor for `recovery` (71,877,408 bytes, SHA-256 `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`). Stock recovery matches; official TWRP TAR recovery member (74,027,008 bytes) does not. The locally built TWRP image also does not match. A root-level `dd` cannot change the signed vbmeta descriptor; do not write recovery while locked.
+
+A26-specific source `os-guy-original/android_kernel_samsung_a26x`, branch `lineage-23.2`, `s5e8835-a26xxx_defconfig`, sets `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set`. This is an Android 16 / Linux 5.15.180 source tree, while the installed J6 kernel is 5.15.197 / Android 17. Exact runtime config must be checked from `/proc/config.gz`.
+
+See `a26/recovery/A26_KEXEC_RAM_RECOVERY_FEASIBILITY_2026-11-14_RU.md` and `a26/recovery/a26-readonly-preflight.sh`. No partition writes, no vbmeta patch, no test flash.
