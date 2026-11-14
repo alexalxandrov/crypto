@@ -74,3 +74,10 @@ Do not rely on older handoff passages that say this function body is unavailable
 - Android UI permission is not equivalent to bootloader unlock. The last recorded boot properties remain locked. No supported unlock path has been demonstrated.
 
 See [A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md](A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md) for the full observation record and technical interpretation.
+
+
+## Приоритетный unlock-кандидат — 14.11.2026
+
+Официальная модельная страница Chimera для SM-A266B теперь показывает `Unlock / Relock Bootloader (EUB)`. Совместимость с A266BXXUCDZJ6 / Android 17 / BIT 12 / CAU не подтверждена; перед оплатой и разборкой нужен письменный ответ Chimera. Полный разбор и текст запроса: [A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md](A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md).
+
+Аппаратная платформа: Exynos 1380 (`s5e8835`), не Exynos 1280.
