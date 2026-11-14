@@ -1387,3 +1387,12 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 В отфильтрованном section listing нет `.symtab` / `.strtab`, поэтому внутренние handler names stripped executable напрямую не видны. Termux не содержит objdump/llvm-objdump; пока не получены machine-code call sites. Следующий минимальный шаг — полный `readelf -rW` relocation table. Установка LLVM tools в Termux остаётся необязательной.
 
 Не выполнялись вызовы Binder/ESS и любые изменения устройства.
+
+
+## Дополнение 14 ноября 2026 — PLT / relocation map AIDL-службы
+
+После установки LLVM 21.1.8 владелец сохранил llvm-objdump capture под root: ~/a26_engmode/relocations.txt (66 строк), plt.txt (380 строк), disassembly.txt (3459 строк). Обычный пользователь Termux не имел read permission на vendor executable; root-запуск решил это ограничение.
+
+Теперь сопоставлены PLT stubs и R_AARCH64_JUMP_SLOT для 27 импортируемых android::engmodeclient методов, включая getModesbit, commandForESS, makeTokenReq, installToken и getStatus. Полная адресная таблица записана в a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md.
+
+Это PLT/relocation mapping, а не доказательство выполнения функций: следующий этап — извлечь BL references из .text и определить содержащие их участки кода. Запись не подразумевает вызов методов или изменение устройства.
