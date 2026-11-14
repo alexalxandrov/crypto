@@ -1,761 +1,683 @@
-12:44:16 oleg@parrot twrp-a26x → (line 11) ...
-echo "========== DEVICE PRODUCT FILES =========="
-find device/samsung/a26x -maxdepth 2 -type f \
-  \( -name '*.mk' -o -name '*.bp' -o -name '*.rc' \) \
-  -not -path '*/.git/*' -print
+12:47:06 oleg@parrot twrp-a26x → (line 10) ...
+find "$MOD" -maxdepth 1 -type f -delete
+cp -a "$STOCK"/*.ko "$MOD"/
+cp -a "$STOCK"/modules.dep "$STOCK"/modules.alias \
+      "$STOCK"/modules.softdep "$MOD"/
 
-echo
-echo "========== PRODUCT MAKEFILE =========="
-for f in device/samsung/a26x/twrp_a26x.mk \
-         device/samsung/a26x/Android.mk \
-         device/samsung/a26x/AndroidProducts.mk; do
-    if [ -f "$f" ]; then
-        echo "===== $f ====="
-        cat "$f"
-    fi
-done
+# Recovery использует специальный список загрузки
+cp "$STOCK/modules.load" "$MOD/modules.load.recovery"
 
-echo
-echo "========== MODULE FILES IN CURRENT BUILD OUTPUT =========="
-find out/target/product/a26x -type f \
-  \( -name '*.ko' -o -name 'modules.load*' -o -name 'modules.dep' \) \
-  -printf '%p %s bytes\n' | sort
-========== RECOVERY INIT SCRIPTS ==========
+echo "========== VALIDATION =========="
+printf "Modules: "
+find "$MOD" -maxdepth 1 -name '*.ko' | wc -l
 
-===== device/samsung/a26x/recovery/root/init.recovery.s5e8835.rc =====
-on init
-    write /proc/sys/kernel/hung_task_timeout_secs 0
+printf "Wrong vermagic: "
+find "$MOD" -maxdepth 1 -name '*.ko' -print0 |
+  xargs -0 -r -n1 sh -c '
+    modinfo -F vermagic "$0" 2>/dev/null |
+    grep -q "^5.15.197-android13-3-34427544 " || echo "$0"
+  ' | wc -l
 
-    start watchdogd
-    start health-hal-2-1
+echo "========== MODULE LIST =========="
+diff -u "$STOCK/modules.load" "$MOD/modules.load.recovery"
+'device/samsung/a26x/recovery/root/lib/modules' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153'
+'device/samsung/a26x/recovery/root/lib/modules/abc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/abc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/abc_hub.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/abc_hub.ko'
+'device/samsung/a26x/recovery/root/lib/modules/acecad.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/acecad.ko'
+'device/samsung/a26x/recovery/root/lib/modules/acpm-mfd-bus.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/acpm-mfd-bus.ko'
+'device/samsung/a26x/recovery/root/lib/modules/aiptek.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/aiptek.ko'
+'device/samsung/a26x/recovery/root/lib/modules/blk-sec-common.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/blk-sec-common.ko'
+'device/samsung/a26x/recovery/root/lib/modules/blk-sec-stats.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/blk-sec-stats.ko'
+'device/samsung/a26x/recovery/root/lib/modules/blk-sec-wb.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/blk-sec-wb.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cdc-wdm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cdc-wdm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cdc_mbim.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cdc_mbim.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cdc_subset.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cdc_subset.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cfg80211.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cfg80211.ko'
+'device/samsung/a26x/recovery/root/lib/modules/clk_exynos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/clk_exynos.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cmupmucal.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cmupmucal.ko'
+'device/samsung/a26x/recovery/root/lib/modules/common_muic.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/common_muic.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cpif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cpif.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cpif_memlogger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cpif_memlogger.ko'
+'device/samsung/a26x/recovery/root/lib/modules/cpif_page.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/cpif_page.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dc_vibrator.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dc_vibrator.ko'
+'device/samsung/a26x/recovery/root/lib/modules/debug-snapshot-debug-kinfo.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/debug-snapshot-debug-kinfo.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dev_ril_bridge.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dev_ril_bridge.ko'
+'device/samsung/a26x/recovery/root/lib/modules/direct_dm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/direct_dm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dma-buf-container.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dma-buf-container.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dss.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dss.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dw_mmc-exynos-sec.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dw_mmc-exynos-sec.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dw_mmc-pltfm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dw_mmc-pltfm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dw_mmc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dw_mmc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/dwc3-exynos-usb.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/dwc3-exynos-usb.ko'
+'device/samsung/a26x/recovery/root/lib/modules/ect_parser.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/ect_parser.ko'
+'device/samsung/a26x/recovery/root/lib/modules/ehld.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/ehld.ko'
+'device/samsung/a26x/recovery/root/lib/modules/ems.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/ems.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-acme.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-acme.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-adv-tracer-s2d.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-adv-tracer-s2d.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-adv-tracer.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-adv-tracer.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-afm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-afm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-bcm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-bcm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-bts.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-bts.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-btsops8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-btsops8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-chipid_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-chipid_v2.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-cm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-cm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-coresight.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-coresight.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-cpif-iommu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-cpif-iommu.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-cpuhp.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-cpuhp.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-cpupm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-cpupm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-dm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-dm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-drm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-drm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-dsufreq.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-dsufreq.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-ecc-handler.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-ecc-handler.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-el2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-el2.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-getcpustate.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-getcpustate.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-itmon-v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-itmon-v2.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-mcinfo.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-mcinfo.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-pd-dbg.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-pd-dbg.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-pd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-pd.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-pd_el3.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-pd_el3.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-pm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-pm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-pmu-if.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-pmu-if.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-reboot.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-reboot.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-s2mpu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-s2mpu.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-sdm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-sdm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-seclog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-seclog.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-seh.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-seh.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-ssld.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-ssld.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-tzasc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-tzasc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-ufcc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-ufcc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-usi_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-usi_v2.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos-wow.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos-wow.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos8835_audio.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos8835_audio.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos_acpm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos_acpm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos_devfreq.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos_devfreq.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos_mct_v3.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos_mct_v3.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos_mfc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos_mfc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos_pm_qos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos_pm_qos.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos_thermal_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos_thermal_v2.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exynos_tty.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exynos_tty.ko'
+'device/samsung/a26x/recovery/root/lib/modules/exyswd-rng.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/exyswd-rng.ko'
+'device/samsung/a26x/recovery/root/lib/modules/fimc-is.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/fimc-is.ko'
+'device/samsung/a26x/recovery/root/lib/modules/fingerprint.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/fingerprint.ko'
+'device/samsung/a26x/recovery/root/lib/modules/fingerprint_sysfs.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/fingerprint_sysfs.ko'
+'device/samsung/a26x/recovery/root/lib/modules/flexpmu_dbg.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/flexpmu_dbg.ko'
+'device/samsung/a26x/recovery/root/lib/modules/focaltech_ts_ft3519.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/focaltech_ts_ft3519.ko'
+'device/samsung/a26x/recovery/root/lib/modules/freq-qos-tracer.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/freq-qos-tracer.ko'
+'device/samsung/a26x/recovery/root/lib/modules/gdc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/gdc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/gnss_mbox.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/gnss_mbox.ko'
+'device/samsung/a26x/recovery/root/lib/modules/gnssif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/gnssif.ko'
+'device/samsung/a26x/recovery/root/lib/modules/gpu_cooling.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/gpu_cooling.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hanwang.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hanwang.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hardlockup-watchdog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hardlockup-watchdog.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hdm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hdm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-a4tech.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-a4tech.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-axff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-axff.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-belkin.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-belkin.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-cherry.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-cherry.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-chicony.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-chicony.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-cypress.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-cypress.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-dr.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-dr.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-emsff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-emsff.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-ezkey.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-ezkey.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-gaff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-gaff.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-gyration.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-gyration.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-holtek-kbd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-holtek-kbd.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-holtek-mouse.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-holtek-mouse.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-holtekff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-holtekff.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-kensington.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-kensington.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-keytouch.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-keytouch.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-kye.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-kye.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-monterey.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-monterey.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-ntrig.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-ntrig.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-ortek.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-ortek.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-petalynx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-petalynx.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-primax.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-primax.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-saitek.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-saitek.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-sjoy.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-sjoy.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-speedlink.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-speedlink.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-sunplus.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-sunplus.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-thrustmaster.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-thrustmaster.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-tivo.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-tivo.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-tmff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-tmff.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-topseed.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-topseed.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-twinhan.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-twinhan.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-waltop.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-waltop.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-zpff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-zpff.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hid-zydacron.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hid-zydacron.ko'
+'device/samsung/a26x/recovery/root/lib/modules/hook.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/hook.ko'
+'device/samsung/a26x/recovery/root/lib/modules/i2c-exynos5.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/i2c-exynos5.ko'
+'device/samsung/a26x/recovery/root/lib/modules/if_cb_manager.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/if_cb_manager.ko'
+'device/samsung/a26x/recovery/root/lib/modules/imgloader.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/imgloader.ko'
+'device/samsung/a26x/recovery/root/lib/modules/irq-gic-vh.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/irq-gic-vh.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-actuator-dw9818.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-actuator-dw9818.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-cis-4ha.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-cis-4ha.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-cis-gc02m1.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-cis-gc02m1.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-cis-imx258.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-cis-imx258.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-cis-jn1.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-cis-jn1.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-device-eeprom.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-device-eeprom.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-device-otprom.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-device-otprom.ko'
+'device/samsung/a26x/recovery/root/lib/modules/is-flash-s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/is-flash-s2mf301.ko'
+'device/samsung/a26x/recovery/root/lib/modules/isg6320.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/isg6320.ko'
+'device/samsung/a26x/recovery/root/lib/modules/kbtab.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/kbtab.ko'
+'device/samsung/a26x/recovery/root/lib/modules/kperfmon.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/kperfmon.ko'
+'device/samsung/a26x/recovery/root/lib/modules/leds-s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/leds-s2mf301.ko'
+'device/samsung/a26x/recovery/root/lib/modules/lvstest.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/lvstest.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mali_kbase.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mali_kbase.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-db7f2010b_a26x.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mcd-panel-db7f2010b_a26x.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-s6e8fc3_a26x.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mcd-panel-s6e8fc3_a26x.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-samsung-drv.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mcd-panel-samsung-drv.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-samsung-helper.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mcd-panel-samsung-helper.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mcd-panel.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mcd-panel.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mcu_ipc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mcu_ipc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/memlogger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/memlogger.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mfd_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mfd_s2mf301.ko'
+'device/samsung/a26x/recovery/root/lib/modules/modules.alias' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/modules.alias'
+'device/samsung/a26x/recovery/root/lib/modules/modules.dep' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/modules.dep'
+'device/samsung/a26x/recovery/root/lib/modules/modules.load.recovery' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/modules.load.recovery'
+'device/samsung/a26x/recovery/root/lib/modules/modules.softdep' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/modules.softdep'
+'device/samsung/a26x/recovery/root/lib/modules/muic_platform.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/muic_platform.ko'
+'device/samsung/a26x/recovery/root/lib/modules/muic_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/muic_s2mf301.ko'
+'device/samsung/a26x/recovery/root/lib/modules/mx_client_test.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/mx_client_test.ko'
+'device/samsung/a26x/recovery/root/lib/modules/nanohub.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/nanohub.ko'
+'device/samsung/a26x/recovery/root/lib/modules/net1080.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/net1080.ko'
+'device/samsung/a26x/recovery/root/lib/modules/nfc_stm_sec.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/nfc_stm_sec.ko'
+'device/samsung/a26x/recovery/root/lib/modules/npu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/npu.ko'
+'device/samsung/a26x/recovery/root/lib/modules/nu2111a_charger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/nu2111a_charger.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pablo-hws.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pablo-hws.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pablo-icpu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pablo-icpu.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pablo-libs.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pablo-libs.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pablo-self-tests.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pablo-self-tests.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pablo-smc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pablo-smc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pdic_notifier_module.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pdic_notifier_module.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pdic_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pdic_s2mf301.ko'
+'device/samsung/a26x/recovery/root/lib/modules/phy-exynos-mipi-dsim.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/phy-exynos-mipi-dsim.ko'
+'device/samsung/a26x/recovery/root/lib/modules/phy-exynos-mipi.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/phy-exynos-mipi.ko'
+'device/samsung/a26x/recovery/root/lib/modules/phy-exynos-usbdrd-super.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/phy-exynos-usbdrd-super.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pinctrl-samsung-core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pinctrl-samsung-core.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pl330.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pl330.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pmic_class.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pmic_class.ko'
+'device/samsung/a26x/recovery/root/lib/modules/pwm-samsung.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/pwm-samsung.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2m_pdic_notifier_module.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2m_pdic_notifier_module.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mf301_charger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mf301_charger.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mf301_fuelgauge.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mf301_fuelgauge.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mf301_pmeter.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mf301_pmeter.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_adc_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu15_adc_8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_key_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu15_key_8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_mfd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu15_mfd.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_pinctrl_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu15_pinctrl_8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_regulator_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu15_regulator_8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_rtc_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu15_rtc_8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu16_mfd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu16_mfd.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu16_pinctrl_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu16_pinctrl_8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s2mpu16_regulator_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s2mpu16_regulator_8835.ko'
+'device/samsung/a26x/recovery/root/lib/modules/s3c2410_wdt.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/s3c2410_wdt.ko'
+'device/samsung/a26x/recovery/root/lib/modules/samsung-dma.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/samsung-dma.ko'
+'device/samsung/a26x/recovery/root/lib/modules/samsung-iommu-group.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/samsung-iommu-group.ko'
+'device/samsung/a26x/recovery/root/lib/modules/samsung-secure-iova.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/samsung-secure-iova.ko'
+'device/samsung/a26x/recovery/root/lib/modules/samsung_dma_heap.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/samsung_dma_heap.ko'
+'device/samsung/a26x/recovery/root/lib/modules/samsung_iommu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/samsung_iommu.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sb-core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sb-core.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sb_wireless.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sb_wireless.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scaler.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scaler.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_bt.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_bt.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_log_collection.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_log_collection.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_logring.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_logring.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_mmap.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_mmap.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_mx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_mx.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_mx250_fm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_mx250_fm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_platform_mif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_platform_mif.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_wifilogger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_wifilogger.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsc_wlan.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsc_wlan.ko'
+'device/samsung/a26x/recovery/root/lib/modules/scsi_srpmb.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/scsi_srpmb.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec-auth-ds28e30.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec-auth-ds28e30.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec-auth-sle956681.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec-auth-sle956681.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec-battery.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec-battery.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec-direct-charger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec-direct-charger.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_argos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_argos.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_audio_debug.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_audio_debug.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_audio_sysfs.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_audio_sysfs.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_bootstat.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_bootstat.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_class.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_class.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_common_fn.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_common_fn.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_crash_key_user.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_crash_key_user.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_base_early.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_base_early.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_dprm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_dprm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_dprt.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_dprt.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_dtask.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_dtask.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_extra_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_extra_info.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_hardlockup_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_hardlockup_info.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_hw_param.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_hw_param.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_mode.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_mode.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_reset_reason.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_reset_reason.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_sched_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_sched_info.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_sched_report.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_sched_report.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_slab_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_slab_info.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_softdog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_softdog.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_stacktrace.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_stacktrace.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_test.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_test.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_debug_wdd_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_debug_wdd_info.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_hard_reset_hook.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_hard_reset_hook.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_input_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_input_notifier.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_key_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_key_notifier.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_panel_notifier_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_panel_notifier_v2.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_pd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_pd.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_pm_debug.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_pm_debug.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_pm_qos_monitor.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_pm_qos_monitor.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_reboot.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_reboot.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_switch_class.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_switch_class.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_thermistor.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_thermistor.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_vibrator.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_vibrator.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sec_wakeup_cpu_allocator.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sec_wakeup_cpu_allocator.ko'
+'device/samsung/a26x/recovery/root/lib/modules/secmem.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/secmem.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sensor_core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sensor_core.ko'
+'device/samsung/a26x/recovery/root/lib/modules/shm_ipc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/shm_ipc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/shub.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/shub.ko'
+'device/samsung/a26x/recovery/root/lib/modules/smfc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/smfc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/smsc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/smsc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/smsc75xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/smsc75xx.ko'
+'device/samsung/a26x/recovery/root/lib/modules/smsc95xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/smsc95xx.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-fs1816.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-fs1816.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-s3c-dma.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-s3c-dma.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-abox-gic.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-samsung-abox-gic.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-abox-sync-aw.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-samsung-abox-sync-aw.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-abox.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-samsung-abox.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-slif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-samsung-slif.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-vts-mailbox.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-samsung-vts-mailbox.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-vts.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-samsung-vts.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd-soc-smartpa-aw882xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd-soc-smartpa-aw882xx.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snd_debug_proc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snd_debug_proc.ko'
+'device/samsung/a26x/recovery/root/lib/modules/snvm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/snvm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/softdog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/softdog.ko'
+'device/samsung/a26x/recovery/root/lib/modules/spi-s3c64xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/spi-s3c64xx.ko'
+'device/samsung/a26x/recovery/root/lib/modules/spidev.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/spidev.ko'
+'device/samsung/a26x/recovery/root/lib/modules/ssg.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/ssg.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sysevent.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sysevent.ko'
+'device/samsung/a26x/recovery/root/lib/modules/sysevent_notif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/sysevent_notif.ko'
+'device/samsung/a26x/recovery/root/lib/modules/top_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/top_s2mf301.ko'
+'device/samsung/a26x/recovery/root/lib/modules/tuihw-inf.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/tuihw-inf.ko'
+'device/samsung/a26x/recovery/root/lib/modules/tuihw.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/tuihw.ko'
+'device/samsung/a26x/recovery/root/lib/modules/tzdev.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/tzdev.ko'
+'device/samsung/a26x/recovery/root/lib/modules/ufs-exynos-core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/ufs-exynos-core.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usb_f_conn_gadget.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usb_f_conn_gadget.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usb_f_dm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usb_f_dm.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usb_f_dm1.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usb_f_dm1.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usb_f_ss_mon_gadget.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usb_f_ss_mon_gadget.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usb_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usb_notifier.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usb_notify_layer.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usb_notify_layer.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usb_typec_manager.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usb_typec_manager.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usblp.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usblp.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usbserial.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usbserial.ko'
+'device/samsung/a26x/recovery/root/lib/modules/usdm-panel-oled-common.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/usdm-panel-oled-common.ko'
+'device/samsung/a26x/recovery/root/lib/modules/vbus_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/vbus_notifier.ko'
+'device/samsung/a26x/recovery/root/lib/modules/vibrator_vib_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/vibrator_vib_info.ko'
+'device/samsung/a26x/recovery/root/lib/modules/votf.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/votf.ko'
+'device/samsung/a26x/recovery/root/lib/modules/xhci-exynos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/xhci-exynos.ko'
+'device/samsung/a26x/recovery/root/lib/modules/xperf.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/xperf.ko'
+'device/samsung/a26x/recovery/root/lib/modules/zaurus.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/zaurus.ko'
+'device/samsung/a26x/recovery/root/lib/modules/zram.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/zram.ko'
+'device/samsung/a26x/recovery/root/lib/modules/zsmalloc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules.old-5.15.153/zsmalloc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/abc_hub.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/abc_hub.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/abc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/abc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/acecad.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/acecad.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/acpm-mfd-bus.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/acpm-mfd-bus.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/aiptek.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/aiptek.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/blk-sec-common.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/blk-sec-common.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/blk-sec-stats.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/blk-sec-stats.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/blk-sec-wb.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/blk-sec-wb.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cdc_mbim.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cdc_mbim.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cdc_subset.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cdc_subset.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cdc-wdm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cdc-wdm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cfg80211.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cfg80211.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/clk_exynos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/clk_exynos.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cmupmucal.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cmupmucal.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/common_muic.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/common_muic.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cpif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cpif.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cpif_memlogger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cpif_memlogger.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/cpif_page.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/cpif_page.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dc_vibrator.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dc_vibrator.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/debug-snapshot-debug-kinfo.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/debug-snapshot-debug-kinfo.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dev_ril_bridge.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dev_ril_bridge.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/direct_dm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/direct_dm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dma-buf-container.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dma-buf-container.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dss.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dss.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dwc3-exynos-usb.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dwc3-exynos-usb.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dw_mmc-exynos-sec.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dw_mmc-exynos-sec.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dw_mmc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dw_mmc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/dw_mmc-pltfm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/dw_mmc-pltfm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/ect_parser.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/ect_parser.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/ehld.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/ehld.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/ems.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/ems.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos8835_audio.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos8835_audio.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-acme.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-acme.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos_acpm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos_acpm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-adv-tracer.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-adv-tracer.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-adv-tracer-s2d.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-adv-tracer-s2d.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-afm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-afm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-bcm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-bcm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-bts.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-bts.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-btsops8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-btsops8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-chipid_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-chipid_v2.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-cm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-cm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-coresight.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-coresight.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-cpif-iommu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-cpif-iommu.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-cpuhp.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-cpuhp.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-cpupm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-cpupm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos_devfreq.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos_devfreq.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-dm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-dm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-drm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-drm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-dsufreq.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-dsufreq.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-ecc-handler.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-ecc-handler.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-el2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-el2.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-getcpustate.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-getcpustate.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-itmon-v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-itmon-v2.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-mcinfo.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-mcinfo.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos_mct_v3.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos_mct_v3.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos_mfc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos_mfc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-pd-dbg.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-pd-dbg.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-pd_el3.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-pd_el3.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-pd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-pd.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-pm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-pm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos_pm_qos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos_pm_qos.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-pmu-if.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-pmu-if.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-reboot.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-reboot.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-s2mpu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-s2mpu.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-sdm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-sdm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-seclog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-seclog.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-seh.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-seh.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-ssld.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-ssld.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos_thermal_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos_thermal_v2.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos_tty.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos_tty.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-tzasc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-tzasc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-ufcc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-ufcc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-usi_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-usi_v2.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exynos-wow.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exynos-wow.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/exyswd-rng.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/exyswd-rng.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/fimc-is.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/fimc-is.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/fingerprint.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/fingerprint.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/fingerprint_sysfs.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/fingerprint_sysfs.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/flexpmu_dbg.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/flexpmu_dbg.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/focaltech_ts_ft3519.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/focaltech_ts_ft3519.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/freq-qos-tracer.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/freq-qos-tracer.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/gdc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/gdc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/gnssif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/gnssif.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/gnss_mbox.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/gnss_mbox.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/gpu_cooling.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/gpu_cooling.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hanwang.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hanwang.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hardlockup-watchdog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hardlockup-watchdog.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hdm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hdm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-a4tech.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-a4tech.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-axff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-axff.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-belkin.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-belkin.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-cherry.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-cherry.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-chicony.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-chicony.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-cypress.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-cypress.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-dr.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-dr.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-emsff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-emsff.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-ezkey.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-ezkey.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-gaff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-gaff.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-gyration.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-gyration.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-holtekff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-holtekff.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-holtek-kbd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-holtek-kbd.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-holtek-mouse.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-holtek-mouse.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-kensington.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-kensington.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-keytouch.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-keytouch.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-kye.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-kye.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-monterey.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-monterey.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-ntrig.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-ntrig.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-ortek.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-ortek.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-petalynx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-petalynx.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-saitek.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-saitek.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-sjoy.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-sjoy.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-speedlink.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-speedlink.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-sunplus.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-sunplus.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-thrustmaster.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-thrustmaster.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-tivo.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-tivo.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-tmff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-tmff.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-topseed.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-topseed.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-twinhan.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-twinhan.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-waltop.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-waltop.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-zpff.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-zpff.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hid-zydacron.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hid-zydacron.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/hook.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/hook.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/i2c-exynos5.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/i2c-exynos5.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/if_cb_manager.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/if_cb_manager.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/imgloader.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/imgloader.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/irq-gic-vh.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/irq-gic-vh.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-actuator-dw9818.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-actuator-dw9818.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-cis-4ha.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-cis-4ha.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-cis-gc02m1.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-cis-gc02m1.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-cis-imx258.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-cis-imx258.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-cis-jn1.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-cis-jn1.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-device-eeprom.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-device-eeprom.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-device-otprom.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-device-otprom.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/is-flash-s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/is-flash-s2mf301.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/isg6320.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/isg6320.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/kbtab.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/kbtab.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/kperfmon.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/kperfmon.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/leds-s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/leds-s2mf301.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/lvstest.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/lvstest.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mali_kbase.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mali_kbase.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mcd-panel-db7f2010b_a26x.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-db7f2010b_a26x.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mcd-panel.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mcd-panel.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mcd-panel-s6e8fc3_a26x.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-s6e8fc3_a26x.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mcd-panel-samsung-drv.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-samsung-drv.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mcd-panel-samsung-helper.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mcd-panel-samsung-helper.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mcu_ipc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mcu_ipc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/memlogger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/memlogger.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mfd_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mfd_s2mf301.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/muic_platform.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/muic_platform.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/muic_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/muic_s2mf301.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/mx_client_test.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/mx_client_test.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/nanohub.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/nanohub.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/net1080.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/net1080.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/nfc_stm_sec.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/nfc_stm_sec.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/npu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/npu.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/nu2111a_charger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/nu2111a_charger.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pablo-hws.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pablo-hws.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pablo-icpu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pablo-icpu.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pablo-libs.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pablo-libs.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pablo-self-tests.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pablo-self-tests.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pablo-smc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pablo-smc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pdic_notifier_module.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pdic_notifier_module.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pdic_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pdic_s2mf301.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/phy-exynos-mipi-dsim.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/phy-exynos-mipi-dsim.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/phy-exynos-mipi.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/phy-exynos-mipi.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/phy-exynos-usbdrd-super.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/phy-exynos-usbdrd-super.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pinctrl-samsung-core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pinctrl-samsung-core.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pl330.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pl330.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pmic_class.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pmic_class.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/pwm-samsung.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/pwm-samsung.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mf301_charger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mf301_charger.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mf301_fuelgauge.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mf301_fuelgauge.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mf301_pmeter.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mf301_pmeter.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2m_pdic_notifier_module.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2m_pdic_notifier_module.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu15_adc_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_adc_8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu15_key_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_key_8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu15_mfd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_mfd.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu15_pinctrl_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_pinctrl_8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu15_regulator_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_regulator_8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu15_rtc_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu15_rtc_8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu16_mfd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu16_mfd.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu16_pinctrl_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu16_pinctrl_8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s2mpu16_regulator_8835.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s2mpu16_regulator_8835.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/s3c2410_wdt.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/s3c2410_wdt.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/samsung_dma_heap.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/samsung_dma_heap.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/samsung-dma.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/samsung-dma.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/samsung-iommu-group.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/samsung-iommu-group.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/samsung_iommu.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/samsung_iommu.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/samsung-secure-iova.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/samsung-secure-iova.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sb-core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sb-core.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sb_wireless.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sb_wireless.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scaler.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scaler.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_bt.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_bt.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_log_collection.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_log_collection.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_logring.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_logring.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_mmap.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_mmap.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_mx250_fm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_mx250_fm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_mx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_mx.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_platform_mif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_platform_mif.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_wifilogger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_wifilogger.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsc_wlan.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsc_wlan.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/scsi_srpmb.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/scsi_srpmb.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_argos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_argos.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_audio_debug.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_audio_debug.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_audio_sysfs.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_audio_sysfs.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec-auth-ds28e30.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec-auth-ds28e30.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec-auth-sle956681.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec-auth-sle956681.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec-battery.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec-battery.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_bootstat.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_bootstat.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_class.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_class.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_common_fn.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_common_fn.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_crash_key_user.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_crash_key_user.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_base_early.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_base_early.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_dprm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_dprm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_dprt.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_dprt.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_dtask.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_dtask.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_extra_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_extra_info.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_hardlockup_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_hardlockup_info.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_hw_param.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_hw_param.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_mode.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_mode.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_reset_reason.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_reset_reason.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_sched_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_sched_info.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_sched_report.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_sched_report.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_slab_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_slab_info.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_softdog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_softdog.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_stacktrace.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_stacktrace.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_test.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_test.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_debug_wdd_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_debug_wdd_info.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec-direct-charger.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec-direct-charger.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_hard_reset_hook.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_hard_reset_hook.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_input_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_input_notifier.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_key_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_key_notifier.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/secmem.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/secmem.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_panel_notifier_v2.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_panel_notifier_v2.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_pd.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_pd.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_pm_debug.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_pm_debug.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_pm_qos_monitor.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_pm_qos_monitor.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_reboot.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_reboot.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_switch_class.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_switch_class.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_thermistor.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_thermistor.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_vibrator.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_vibrator.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sec_wakeup_cpu_allocator.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sec_wakeup_cpu_allocator.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sensor_core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sensor_core.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/shm_ipc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/shm_ipc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/shub.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/shub.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/smfc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/smfc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/smsc75xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/smsc75xx.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/smsc95xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/smsc95xx.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/smsc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/smsc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd_debug_proc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd_debug_proc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-fs1816.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-fs1816.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-s3c-dma.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-s3c-dma.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-samsung-abox-gic.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-abox-gic.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-samsung-abox.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-abox.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-samsung-abox-sync-aw.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-abox-sync-aw.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-samsung-slif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-slif.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-samsung-vts.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-vts.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-samsung-vts-mailbox.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-samsung-vts-mailbox.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snd-soc-smartpa-aw882xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snd-soc-smartpa-aw882xx.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/snvm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/snvm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/softdog.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/softdog.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/spidev.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/spidev.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/spi-s3c64xx.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/spi-s3c64xx.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/ssg.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/ssg.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sysevent.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sysevent.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/sysevent_notif.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/sysevent_notif.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/top_s2mf301.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/top_s2mf301.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/tuihw-inf.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/tuihw-inf.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/tuihw.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/tuihw.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/tzdev.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/tzdev.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/ufs-exynos-core.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/ufs-exynos-core.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usb_f_conn_gadget.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usb_f_conn_gadget.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usb_f_dm1.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usb_f_dm1.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usb_f_dm.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usb_f_dm.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usb_f_ss_mon_gadget.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usb_f_ss_mon_gadget.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usblp.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usblp.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usb_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usb_notifier.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usb_notify_layer.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usb_notify_layer.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usbserial.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usbserial.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usb_typec_manager.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usb_typec_manager.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/usdm-panel-oled-common.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/usdm-panel-oled-common.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/vbus_notifier.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/vbus_notifier.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/vibrator_vib_info.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/vibrator_vib_info.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/votf.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/votf.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/xhci-exynos.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/xhci-exynos.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/xperf.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/xperf.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/zaurus.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/zaurus.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/zram.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/zram.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/zsmalloc.ko' -> 'device/samsung/a26x/recovery/root/lib/modules/zsmalloc.ko'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/modules.dep' -> 'device/samsung/a26x/recovery/root/lib/modules/modules.dep'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/modules.alias' -> 'device/samsung/a26x/recovery/root/lib/modules/modules.alias'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/modules.softdep' -> 'device/samsung/a26x/recovery/root/lib/modules/modules.softdep'
+'/home/oleg/a26x-analysis/vendor-ramdisk01/lib/modules/modules.load' -> 'device/samsung/a26x/recovery/root/lib/modules/modules.load.recovery'
+========== VALIDATION ==========
+Modules: 291
+Wrong vermagic: 0
+========== MODULE LIST ==========
+12:47:12 oleg@parrot twrp-a26x → cd ~/android/twrp-a26x
 
-on late-init
-    setprop sys.usb.controller 13200000.dwc3
-    setprop ro.debuggable 1
-    setprop service.adb.root 1
-    setprop sys.usb.configfs 1
-    setprop sys.usb.config adb
+export JAVA_HOME="$PWD/prebuilts/jdk/jdk11/linux-x86"
+export PATH="$JAVA_HOME/bin:$PATH"
 
-on boot
+source build/envsetup.sh
+lunch twrp_a26x-eng
+mka recoveryimage -j4
+including device/samsung/a26x/vendorsetup.sh
+Trying dependencies-only mode on a non-existing device tree?
 
-# Set watchdog timer to 30 seconds and fed it every 10 seconds to get a 20 second margin
-service watchdogd /system/bin/watchdogd 10 20
-    class core
-    oneshot
-    seclabel u:r:watchdogd:s0
+============================================
+PLATFORM_VERSION_CODENAME=REL
+PLATFORM_VERSION=14
+TARGET_PRODUCT=twrp_a26x
+TARGET_BUILD_VARIANT=eng
+TARGET_BUILD_TYPE=release
+TARGET_ARCH=arm64
+TARGET_ARCH_VARIANT=armv8-a
+TARGET_CPU_VARIANT=generic
+HOST_ARCH=x86_64
+HOST_2ND_ARCH=x86
+HOST_OS=linux
+HOST_OS_EXTRA=Linux-7.1.13+parrot7-amd64-x86_64-Parrot-Security-7.4-(echo)
+HOST_CROSS_OS=windows
+HOST_CROSS_ARCH=x86
+HOST_CROSS_2ND_ARCH=x86_64
+HOST_BUILD_TYPE=release
+BUILD_ID=SP2A.220405.004
+OUT_DIR=out
+============================================
+build/make/core/soong_config.mk:194: warning: BOARD_PLAT_PUBLIC_SEPOLICY_DIR has been deprecated. Use SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS instead.
+build/make/core/soong_config.mk:195: warning: BOARD_PLAT_PRIVATE_SEPOLICY_DIR has been deprecated. Use SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS instead.
+============================================
+PLATFORM_VERSION_CODENAME=REL
+PLATFORM_VERSION=14
+TARGET_PRODUCT=twrp_a26x
+TARGET_BUILD_VARIANT=eng
+TARGET_BUILD_TYPE=release
+TARGET_ARCH=arm64
+TARGET_ARCH_VARIANT=armv8-a
+TARGET_CPU_VARIANT=generic
+HOST_ARCH=x86_64
+HOST_2ND_ARCH=x86
+HOST_OS=linux
+HOST_OS_EXTRA=Linux-7.1.13+parrot7-amd64-x86_64-Parrot-Security-7.4-(echo)
+HOST_CROSS_OS=windows
+HOST_CROSS_ARCH=x86
+HOST_CROSS_2ND_ARCH=x86_64
+HOST_BUILD_TYPE=release
+BUILD_ID=SP2A.220405.004
+OUT_DIR=out
+============================================
+wildcard(out/target/product/a26x/clean_steps.mk) was changed, regenerating...
+$(shell find device/samsung/a26x/recovery/root -type f) was changed, regenerating...
+[ 93% 1030/1097] including bootable/recovery/Android.mk ...
+bootable/recovery/prebuilt/Android.mk:454: warning: vendor_hw:  bootable/recovery/prebuilt/relink.sh out/target/product/a26x/recovery/root/vendor/bin/hw 
+[ 98% 1084/1097] including system/sepolicy/Android.mk ...
+system/sepolicy/Android.mk:57: warning: BOARD_PLAT_PUBLIC_SEPOLICY_DIR has been deprecated. Use SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS instead.
+system/sepolicy/Android.mk:62: warning: BOARD_PLAT_PRIVATE_SEPOLICY_DIR has been deprecated. Use SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS instead.
+[100% 1282/1282] build out/target/product/a26x/recovery.img
 
-===== device/samsung/a26x/recovery/root/init.recovery.samsung.rc =====
-on init
-    # unlink /efs > /mnt/vendor/efs
-    rm /efs
-    mkdir /efs
-    mkdir /sec_efs
+#### build completed successfully (59 seconds) ####
 
-#to cut charging battery path
-    write /sys/class/power_supply/battery/siop_level 0
-===== device/samsung/a26x/recovery/root/init.recovery.usb.rc =====
-on fs && property:sys.usb.configfs=1
-    mkdir /config/usb_gadget/g1/functions/ffs.mtp
-
-on fs
-    mkdir /dev/usb-ffs/mtp 0770 mtp mtp
-    mount functionfs mtp /dev/usb-ffs/mtp uid=2000,gid=2000
-
-on property:sys.usb.config=mtp,adb
-    start adbd
-
-# Configfs triggers
-on property:sys.usb.config=none && property:sys.usb.configfs=1
-    rm /config/usb_gadget/g1/configs/b.1/f2
-
-on property:sys.usb.config=mtp,adb && property:sys.usb.ffs.ready=1 && property:sys.usb.configfs=1
-    write /config/usb_gadget/g1/idProduct 0x04E8
-    write /config/usb_gadget/g1/configs/b.1/strings/0x409/configuration "fastboot"
-    symlink /config/usb_gadget/g1/functions/ffs.adb /config/usb_gadget/g1/configs/b.1/f1
-    symlink /config/usb_gadget/g1/functions/ffs.mtp /config/usb_gadget/g1/configs/b.1/f2
-    write /config/usb_gadget/g1/UDC ${sys.usb.controller}
-    setprop sys.usb.state ${sys.usb.config}
-===== device/samsung/a26x/recovery/root/ueventd.rc =====
-import /vendor/etc/ueventd.rc
-import /odm/etc/ueventd.rc
-
-firmware_directories /etc/firmware/ /odm/firmware/ /vendor/firmware/ /firmware/image/
-uevent_socket_rcvbuf_size 16M
-
-subsystem graphics
-    devname uevent_devpath
-    dirname /dev/graphics
-
-subsystem drm
-    devname uevent_devpath
-    dirname /dev/dri
-
-subsystem input
-    devname uevent_devpath
-    dirname /dev/input
-
-subsystem sound
-    devname uevent_devpath
-    dirname /dev/snd
-
-subsystem dma_heap
-   devname uevent_devpath
-   dirname /dev/dma_heap
-# ueventd can only set permissions on device nodes and their associated
-# sysfs attributes, not on arbitrary paths.
-#
-# format for /dev rules: devname mode uid gid
-# format for /sys rules: nodename attr mode uid gid
-# shortcut: "mtd@NN" expands to "/dev/mtd/mtdNN"
-
-/dev/null                 0666   root       root
-/dev/zero                 0666   root       root
-/dev/full                 0666   root       root
-/dev/ptmx                 0666   root       root
-/dev/tty                  0666   root       root
-/dev/random               0666   root       root
-/dev/urandom              0666   root       root
-/dev/ashmem*              0666   root       root
-/dev/binder               0666   root       root
-/dev/hwbinder             0666   root       root
-/dev/vndbinder            0666   root       root
-
-/dev/pmsg0                0222   root       log
-/dev/dma_heap/system      0444   system     system
-/dev/dma_heap/system-uncached      0444   system     system
-/dev/dma_heap/system-secure        0444   system     system
-
-# kms driver for drm based gpu
-/dev/dri/*                0666   root       graphics
-
-# these should not be world writable
-/dev/uhid                 0660   uhid       uhid
-/dev/uinput               0660   uhid       uhid
-/dev/rtc0                 0640   system     system
-/dev/tty0                 0660   root       system
-/dev/ttySAC0              0660   root       radio
-/dev/graphics/*           0660   root       graphics
-/dev/input/*              0660   root       input
-/dev/v4l-touch*           0660   root       input
-/dev/snd/*                0660   system     audio
-/dev/bus/usb/*            0660   root       usb
-/dev/mtp_usb              0660   root       mtp
-/dev/usb_accessory        0660   root       usb
-/dev/tun                  0660   system     vpn
-/dev/power_on_alarm       0220   system     radio
-
-# CDMA radio interface MUX
-/dev/ppp                  0660   radio      vpn
-
-/dev/kvm                  0600   system     system
-/dev/vhost-vsock          0600   system	    system
-
-# sysfs properties
-/sys/devices/platform/trusty.*      trusty_version        0440  root   log
-/dev/input/event* 0660 system input
-/sys/devices/virtual/input/input*   enable      0660  root   input
-/sys/devices/virtual/input/input*   enable2      0660  root   input
-/sys/devices/virtual/input/input*   poll_delay  0660  root   input
-/sys/devices/virtual/usb_composite/*   enable      0664  root   system
-/sys/devices/system/cpu/cpu*   cpufreq/scaling_max_freq   0664  system system
-/sys/devices/system/cpu/cpu*   cpufreq/scaling_min_freq   0664  system system
-/sys/devices/virtual/misc/uhid/*/leds/* brightness   0664  system system
-/sys/devices/virtual/misc/uhid/*/leds/* multi_intensity   0664  system system
-/sys/class/sec/tsp/cmd 0660 system radio
-/sys/class/sec/tsp1/cmd 0660 system radio
-/sys/class/sec/tsp2/cmd 0660 system radio
-/sys/class/sec/tsp/input/enabled 0660 system system
-/sys/class/sec/sec_epen/input/enabled 0660 system system
-/sys/class/sec/tsp/enabled 0660 system system
-/sys/class/sec/sec_epen/enabled 0660 system system
-
-# Big Hammer
-/dev/wbrc        0660 bluetooth bluetooth
-
-# CNSS
-/sys/class/devcoredump/devcd*    data    0660    wifi     system
-
-# parallel_restorecon_dir
-# Never include the "/sys/devices/platform/soc/1d84000.ufshc" path
-parallel_restorecon_dir /sys
-parallel_restorecon_dir /sys/devices
-parallel_restorecon_dir /sys/firmware
-parallel_restorecon_dir /sys/bus
-parallel_restorecon_dir /sys/class
-parallel_restorecon_dir /sys/fs
-parallel_restorecon_dir /sys/module
-parallel_restorecon_dir /sys/firmware/devicetree
-parallel_restorecon_dir /sys/devices/virtual
-parallel_restorecon_dir /sys/devices/platform
-parallel_restorecon_dir /sys/devices/platform/soc
-========== DEVICE PRODUCT FILES ==========
-device/samsung/a26x/Android.mk
-device/samsung/a26x/AndroidProducts.mk
-device/samsung/a26x/BoardConfig.mk
-device/samsung/a26x/device.mk
-device/samsung/a26x/mkbootimg.mk
-device/samsung/a26x/twrp_a26x.mk
-
-========== PRODUCT MAKEFILE ==========
-===== device/samsung/a26x/twrp_a26x.mk =====
-#
-# Copyright (C) 2025 The Android Open Source Project
-# Copyright (C) 2025 SebaUbuntu's TWRP device tree generator
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
-# Inherit from those products. Most specific first.
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
-
-# Inherit some common twrp stuff.
-$(call inherit-product-if-exists, vendor/twrp/config/common.mk)
-
-# Inherit some common pbrp stuff.
-$(call inherit-product-if-exists, vendor/pb/config/common.mk)
-
-# Inherit from a26x device
-$(call inherit-product, device/samsung/a26x/device.mk)
-
-PRODUCT_DEVICE := a26x
-PRODUCT_NAME := twrp_a26x
-PRODUCT_BRAND := samsung
-PRODUCT_MODEL := SM-A266B
-PRODUCT_MANUFACTURER := samsung
-
-PRODUCT_GMS_CLIENTID_BASE := android-samsung
-
-PRODUCT_BUILD_PROP_OVERRIDES += \
-    PRIVATE_BUILD_DESC="a26xxx-user 13 TP1A.220624.014 A266BXXS4AYG9 release-keys"
-
-BUILD_FINGERPRINT := samsung/a26xxx/a26x:13/TP1A.220624.014/A266BXXS4AYG9:user/release-keys
-===== device/samsung/a26x/Android.mk =====
-#
-# Copyright (C) 2025 The Android Open Source Project
-# Copyright (C) 2025 SebaUbuntu's TWRP device tree generator
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
-LOCAL_PATH := $(call my-dir)
-
-ifeq ($(TARGET_DEVICE),a26x)
-include $(call all-subdir-makefiles,$(LOCAL_PATH))
-endif
-===== device/samsung/a26x/AndroidProducts.mk =====
-#
-# Copyright (C) 2025 The Android Open Source Project
-# Copyright (C) 2025 SebaUbuntu's TWRP device tree generator
-#
-# SPDX-License-Identifier: Apache-2.0
-#
-
-PRODUCT_MAKEFILES := \
-    $(LOCAL_DIR)/twrp_a26x.mk
-
-COMMON_LUNCH_CHOICES := \
-    twrp_a26x-eng
-
-========== MODULE FILES IN CURRENT BUILD OUTPUT ==========
-out/target/product/a26x/recovery/root/lib/modules/abc_hub.ko 31800 bytes
-out/target/product/a26x/recovery/root/lib/modules/abc.ko 121240 bytes
-out/target/product/a26x/recovery/root/lib/modules/acecad.ko 18504 bytes
-out/target/product/a26x/recovery/root/lib/modules/acpm-mfd-bus.ko 14544 bytes
-out/target/product/a26x/recovery/root/lib/modules/aiptek.ko 56280 bytes
-out/target/product/a26x/recovery/root/lib/modules/blk-sec-common.ko 16032 bytes
-out/target/product/a26x/recovery/root/lib/modules/blk-sec-stats.ko 50168 bytes
-out/target/product/a26x/recovery/root/lib/modules/blk-sec-wb.ko 26696 bytes
-out/target/product/a26x/recovery/root/lib/modules/cdc_mbim.ko 33200 bytes
-out/target/product/a26x/recovery/root/lib/modules/cdc_subset.ko 15040 bytes
-out/target/product/a26x/recovery/root/lib/modules/cdc-wdm.ko 56760 bytes
-out/target/product/a26x/recovery/root/lib/modules/cfg80211.ko 2340424 bytes
-out/target/product/a26x/recovery/root/lib/modules/clk_exynos.ko 69176 bytes
-out/target/product/a26x/recovery/root/lib/modules/cmupmucal.ko 1276504 bytes
-out/target/product/a26x/recovery/root/lib/modules/common_muic.ko 122432 bytes
-out/target/product/a26x/recovery/root/lib/modules/cpif.ko 868600 bytes
-out/target/product/a26x/recovery/root/lib/modules/cpif_memlogger.ko 17816 bytes
-out/target/product/a26x/recovery/root/lib/modules/cpif_page.ko 25000 bytes
-out/target/product/a26x/recovery/root/lib/modules/dc_vibrator.ko 20408 bytes
-out/target/product/a26x/recovery/root/lib/modules/debug-snapshot-debug-kinfo.ko 14368 bytes
-out/target/product/a26x/recovery/root/lib/modules/dev_ril_bridge.ko 32136 bytes
-out/target/product/a26x/recovery/root/lib/modules/direct_dm.ko 120768 bytes
-out/target/product/a26x/recovery/root/lib/modules/dma-buf-container.ko 53032 bytes
-out/target/product/a26x/recovery/root/lib/modules/dss.ko 453648 bytes
-out/target/product/a26x/recovery/root/lib/modules/dwc3-exynos-usb.ko 176232 bytes
-out/target/product/a26x/recovery/root/lib/modules/dw_mmc-exynos-sec.ko 105336 bytes
-out/target/product/a26x/recovery/root/lib/modules/dw_mmc.ko 181776 bytes
-out/target/product/a26x/recovery/root/lib/modules/dw_mmc-pltfm.ko 23952 bytes
-out/target/product/a26x/recovery/root/lib/modules/ect_parser.ko 84400 bytes
-out/target/product/a26x/recovery/root/lib/modules/ehld.ko 50720 bytes
-out/target/product/a26x/recovery/root/lib/modules/ems.ko 1201664 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos8835_audio.ko 85088 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-acme.ko 72256 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos_acpm.ko 92808 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-adv-tracer.ko 42992 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-adv-tracer-s2d.ko 30288 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-afm.ko 53008 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-bcm.ko 197624 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-bts.ko 75128 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-btsops8835.ko 24488 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-chipid_v2.ko 27272 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-cm.ko 37624 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-coresight.ko 40024 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-cpif-iommu.ko 53640 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-cpuhp.ko 30256 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-cpupm.ko 89968 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos_devfreq.ko 116832 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-dm.ko 61576 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-drm.ko 1594576 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-dsufreq.ko 34096 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-ecc-handler.ko 23848 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-el2.ko 33984 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-getcpustate.ko 21448 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-itmon-v2.ko 70672 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-mcinfo.ko 21656 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos_mct_v3.ko 29728 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos_mfc.ko 2151192 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-pd-dbg.ko 24320 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-pd_el3.ko 11224 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-pd.ko 32312 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-pm.ko 42648 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos_pm_qos.ko 337200 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-pmu-if.ko 21864 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-reboot.ko 26264 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-s2mpu.ko 63792 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-sdm.ko 11792 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-seclog.ko 23272 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-seh.ko 18704 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-ssld.ko 31904 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos_thermal_v2.ko 202856 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos_tty.ko 126312 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-tzasc.ko 22320 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-ufcc.ko 79072 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-usi_v2.ko 16608 bytes
-out/target/product/a26x/recovery/root/lib/modules/exynos-wow.ko 28904 bytes
-out/target/product/a26x/recovery/root/lib/modules/exyswd-rng.ko 15848 bytes
-out/target/product/a26x/recovery/root/lib/modules/fimc-is.ko 5886904 bytes
-out/target/product/a26x/recovery/root/lib/modules/fingerprint.ko 82488 bytes
-out/target/product/a26x/recovery/root/lib/modules/fingerprint_sysfs.ko 16280 bytes
-out/target/product/a26x/recovery/root/lib/modules/flexpmu_dbg.ko 43488 bytes
-out/target/product/a26x/recovery/root/lib/modules/focaltech_ts_ft3519.ko 504856 bytes
-out/target/product/a26x/recovery/root/lib/modules/freq-qos-tracer.ko 24992 bytes
-out/target/product/a26x/recovery/root/lib/modules/gdc.ko 464224 bytes
-out/target/product/a26x/recovery/root/lib/modules/gnssif.ko 168176 bytes
-out/target/product/a26x/recovery/root/lib/modules/gnss_mbox.ko 34168 bytes
-out/target/product/a26x/recovery/root/lib/modules/gpu_cooling.ko 45912 bytes
-out/target/product/a26x/recovery/root/lib/modules/hanwang.ko 21128 bytes
-out/target/product/a26x/recovery/root/lib/modules/hardlockup-watchdog.ko 31344 bytes
-out/target/product/a26x/recovery/root/lib/modules/hdm.ko 23744 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-a4tech.ko 15488 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-axff.ko 18016 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-belkin.ko 14248 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-cherry.ko 13864 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-chicony.ko 21960 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-cypress.ko 15304 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-dr.ko 19120 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-emsff.ko 16800 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-ezkey.ko 13352 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-gaff.ko 17120 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-gyration.ko 18176 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-holtekff.ko 12328 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-holtek-kbd.ko 14496 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-holtek-mouse.ko 13784 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-kensington.ko 11632 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-keytouch.ko 11976 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-kye.ko 16944 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-monterey.ko 14288 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-ntrig.ko 37704 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-ortek.ko 12168 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-petalynx.ko 16400 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-primax.ko 12072 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-saitek.ko 15256 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-sjoy.ko 16544 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-speedlink.ko 12168 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-sunplus.ko 13424 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-thrustmaster.ko 19920 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-tivo.ko 14544 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-tmff.ko 13272 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-topseed.ko 20584 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-twinhan.ko 12848 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-waltop.ko 14240 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-zpff.ko 12112 bytes
-out/target/product/a26x/recovery/root/lib/modules/hid-zydacron.ko 20024 bytes
-out/target/product/a26x/recovery/root/lib/modules/hook.ko 11568 bytes
-out/target/product/a26x/recovery/root/lib/modules/i2c-exynos5.ko 48304 bytes
-out/target/product/a26x/recovery/root/lib/modules/if_cb_manager.ko 27736 bytes
-out/target/product/a26x/recovery/root/lib/modules/imgloader.ko 19736 bytes
-out/target/product/a26x/recovery/root/lib/modules/irq-gic-vh.ko 14672 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-actuator-dw9818.ko 172656 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-cis-4ha.ko 200264 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-cis-gc02m1.ko 282288 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-cis-imx258.ko 236776 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-cis-jn1.ko 193600 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-device-eeprom.ko 101024 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-device-otprom.ko 105512 bytes
-out/target/product/a26x/recovery/root/lib/modules/is-flash-s2mf301.ko 154832 bytes
-out/target/product/a26x/recovery/root/lib/modules/isg6320.ko 110072 bytes
-out/target/product/a26x/recovery/root/lib/modules/kbtab.ko 18448 bytes
-out/target/product/a26x/recovery/root/lib/modules/kperfmon.ko 39352 bytes
-out/target/product/a26x/recovery/root/lib/modules/leds-s2mf301.ko 43872 bytes
-out/target/product/a26x/recovery/root/lib/modules/lvstest.ko 33000 bytes
-out/target/product/a26x/recovery/root/lib/modules/mali_kbase.ko 1855808 bytes
-out/target/product/a26x/recovery/root/lib/modules/mcd-panel-db7f2010b_a26x.ko 429768 bytes
-out/target/product/a26x/recovery/root/lib/modules/mcd-panel.ko 1410240 bytes
-out/target/product/a26x/recovery/root/lib/modules/mcd-panel-s6e8fc3_a26x.ko 388488 bytes
-out/target/product/a26x/recovery/root/lib/modules/mcd-panel-samsung-drv.ko 275232 bytes
-out/target/product/a26x/recovery/root/lib/modules/mcd-panel-samsung-helper.ko 131600 bytes
-out/target/product/a26x/recovery/root/lib/modules/mcu_ipc.ko 74000 bytes
-out/target/product/a26x/recovery/root/lib/modules/memlogger.ko 126152 bytes
-out/target/product/a26x/recovery/root/lib/modules/mfd_s2mf301.ko 69224 bytes
-out/target/product/a26x/recovery/root/lib/modules/modules.dep 106001 bytes
-out/target/product/a26x/recovery/root/lib/modules/modules.load.recovery 4801 bytes
-out/target/product/a26x/recovery/root/lib/modules/muic_platform.ko 119256 bytes
-out/target/product/a26x/recovery/root/lib/modules/muic_s2mf301.ko 201432 bytes
-out/target/product/a26x/recovery/root/lib/modules/mx_client_test.ko 39784 bytes
-out/target/product/a26x/recovery/root/lib/modules/nanohub.ko 388384 bytes
-out/target/product/a26x/recovery/root/lib/modules/net1080.ko 18720 bytes
-out/target/product/a26x/recovery/root/lib/modules/nfc_stm_sec.ko 104024 bytes
-out/target/product/a26x/recovery/root/lib/modules/npu.ko 2248248 bytes
-out/target/product/a26x/recovery/root/lib/modules/nu2111a_charger.ko 206440 bytes
-out/target/product/a26x/recovery/root/lib/modules/pablo-hws.ko 2455944 bytes
-out/target/product/a26x/recovery/root/lib/modules/pablo-icpu.ko 260728 bytes
-out/target/product/a26x/recovery/root/lib/modules/pablo-libs.ko 614512 bytes
-out/target/product/a26x/recovery/root/lib/modules/pablo-self-tests.ko 257680 bytes
-out/target/product/a26x/recovery/root/lib/modules/pablo-smc.ko 12376 bytes
-out/target/product/a26x/recovery/root/lib/modules/pdic_notifier_module.ko 106896 bytes
-out/target/product/a26x/recovery/root/lib/modules/pdic_s2mf301.ko 357768 bytes
-out/target/product/a26x/recovery/root/lib/modules/phy-exynos-mipi-dsim.ko 23152 bytes
-out/target/product/a26x/recovery/root/lib/modules/phy-exynos-mipi.ko 41736 bytes
-out/target/product/a26x/recovery/root/lib/modules/phy-exynos-usbdrd-super.ko 155808 bytes
-out/target/product/a26x/recovery/root/lib/modules/pinctrl-samsung-core.ko 140280 bytes
-out/target/product/a26x/recovery/root/lib/modules/pl330.ko 80832 bytes
-out/target/product/a26x/recovery/root/lib/modules/pmic_class.ko 14512 bytes
-out/target/product/a26x/recovery/root/lib/modules/pwm-samsung.ko 35232 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mf301_charger.ko 133144 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mf301_fuelgauge.ko 160968 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mf301_pmeter.ko 84096 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2m_pdic_notifier_module.ko 586296 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu15_adc_8835.ko 21232 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu15_key_8835.ko 32296 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu15_mfd.ko 44904 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu15_pinctrl_8835.ko 38960 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu15_regulator_8835.ko 69312 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu15_rtc_8835.ko 46608 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu16_mfd.ko 40752 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu16_pinctrl_8835.ko 40896 bytes
-out/target/product/a26x/recovery/root/lib/modules/s2mpu16_regulator_8835.ko 44640 bytes
-out/target/product/a26x/recovery/root/lib/modules/s3c2410_wdt.ko 68224 bytes
-out/target/product/a26x/recovery/root/lib/modules/samsung_dma_heap.ko 244816 bytes
-out/target/product/a26x/recovery/root/lib/modules/samsung-dma.ko 19960 bytes
-out/target/product/a26x/recovery/root/lib/modules/samsung-iommu-group.ko 12648 bytes
-out/target/product/a26x/recovery/root/lib/modules/samsung_iommu.ko 97280 bytes
-out/target/product/a26x/recovery/root/lib/modules/samsung-secure-iova.ko 17184 bytes
-out/target/product/a26x/recovery/root/lib/modules/sb-core.ko 65056 bytes
-out/target/product/a26x/recovery/root/lib/modules/sb_wireless.ko 17640 bytes
-out/target/product/a26x/recovery/root/lib/modules/scaler.ko 234096 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_bt.ko 218416 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_log_collection.ko 53368 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_logring.ko 140568 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_mmap.ko 44016 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_mx250_fm.ko 43584 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_mx.ko 722216 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_platform_mif.ko 164840 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_wifilogger.ko 87648 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsc_wlan.ko 2781040 bytes
-out/target/product/a26x/recovery/root/lib/modules/scsi_srpmb.ko 27664 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_argos.ko 52248 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_audio_debug.ko 54880 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_audio_sysfs.ko 105536 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec-auth-ds28e30.ko 246720 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec-auth-sle956681.ko 224760 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec-battery.ko 859096 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_bootstat.ko 52552 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_class.ko 16000 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_common_fn.ko 362472 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_crash_key_user.ko 14336 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_base_early.ko 37832 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_dprm.ko 16792 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_dprt.ko 36536 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_dtask.ko 19416 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_extra_info.ko 101632 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_hardlockup_info.ko 26760 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_hw_param.ko 16976 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug.ko 33600 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_mode.ko 12792 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_reset_reason.ko 27024 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_sched_info.ko 24600 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_sched_report.ko 27136 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_slab_info.ko 17888 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_softdog.ko 13432 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_stacktrace.ko 14864 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_test.ko 135464 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_debug_wdd_info.ko 12712 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec-direct-charger.ko 157504 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_hard_reset_hook.ko 15544 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_input_notifier.ko 13688 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_key_notifier.ko 21936 bytes
-out/target/product/a26x/recovery/root/lib/modules/secmem.ko 29456 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_panel_notifier_v2.ko 13968 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_pd.ko 35080 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_pm_debug.ko 21624 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_pm_qos_monitor.ko 28488 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_reboot.ko 46848 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_switch_class.ko 20632 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_thermistor.ko 21248 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_vibrator.ko 93992 bytes
-out/target/product/a26x/recovery/root/lib/modules/sec_wakeup_cpu_allocator.ko 17464 bytes
-out/target/product/a26x/recovery/root/lib/modules/sensor_core.ko 30712 bytes
-out/target/product/a26x/recovery/root/lib/modules/shm_ipc.ko 48736 bytes
-out/target/product/a26x/recovery/root/lib/modules/shub.ko 743472 bytes
-out/target/product/a26x/recovery/root/lib/modules/smfc.ko 125624 bytes
-out/target/product/a26x/recovery/root/lib/modules/smsc75xx.ko 87472 bytes
-out/target/product/a26x/recovery/root/lib/modules/smsc95xx.ko 85144 bytes
-out/target/product/a26x/recovery/root/lib/modules/smsc.ko 23424 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd_debug_proc.ko 28000 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-fs1816.ko 107128 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-s3c-dma.ko 10912 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-samsung-abox-gic.ko 39408 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-samsung-abox.ko 1745752 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-samsung-abox-sync-aw.ko 48904 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-samsung-slif.ko 103312 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-samsung-vts.ko 323328 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-samsung-vts-mailbox.ko 43368 bytes
-out/target/product/a26x/recovery/root/lib/modules/snd-soc-smartpa-aw882xx.ko 564000 bytes
-out/target/product/a26x/recovery/root/lib/modules/snvm.ko 69744 bytes
-out/target/product/a26x/recovery/root/lib/modules/softdog.ko 24192 bytes
-out/target/product/a26x/recovery/root/lib/modules/spidev.ko 43384 bytes
-out/target/product/a26x/recovery/root/lib/modules/spi-s3c64xx.ko 72400 bytes
-out/target/product/a26x/recovery/root/lib/modules/ssg.ko 75376 bytes
-out/target/product/a26x/recovery/root/lib/modules/sysevent.ko 68856 bytes
-out/target/product/a26x/recovery/root/lib/modules/sysevent_notif.ko 22408 bytes
-out/target/product/a26x/recovery/root/lib/modules/top_s2mf301.ko 36824 bytes
-out/target/product/a26x/recovery/root/lib/modules/tuihw-inf.ko 26688 bytes
-out/target/product/a26x/recovery/root/lib/modules/tuihw.ko 55472 bytes
-out/target/product/a26x/recovery/root/lib/modules/tzdev.ko 351112 bytes
-out/target/product/a26x/recovery/root/lib/modules/ufs-exynos-core.ko 369784 bytes
-out/target/product/a26x/recovery/root/lib/modules/usb_f_conn_gadget.ko 72136 bytes
-out/target/product/a26x/recovery/root/lib/modules/usb_f_dm1.ko 26472 bytes
-out/target/product/a26x/recovery/root/lib/modules/usb_f_dm.ko 37112 bytes
-out/target/product/a26x/recovery/root/lib/modules/usb_f_ss_mon_gadget.ko 59136 bytes
-out/target/product/a26x/recovery/root/lib/modules/usblp.ko 46632 bytes
-out/target/product/a26x/recovery/root/lib/modules/usb_notifier.ko 61232 bytes
-out/target/product/a26x/recovery/root/lib/modules/usb_notify_layer.ko 378056 bytes
-out/target/product/a26x/recovery/root/lib/modules/usbserial.ko 110440 bytes
-out/target/product/a26x/recovery/root/lib/modules/usb_typec_manager.ko 100864 bytes
-out/target/product/a26x/recovery/root/lib/modules/usdm-panel-oled-common.ko 156680 bytes
-out/target/product/a26x/recovery/root/lib/modules/vbus_notifier.ko 17392 bytes
-out/target/product/a26x/recovery/root/lib/modules/vibrator_vib_info.ko 21944 bytes
-out/target/product/a26x/recovery/root/lib/modules/votf.ko 173184 bytes
-out/target/product/a26x/recovery/root/lib/modules/xhci-exynos.ko 54056 bytes
-out/target/product/a26x/recovery/root/lib/modules/xperf.ko 167968 bytes
-out/target/product/a26x/recovery/root/lib/modules/zaurus.ko 19224 bytes
-out/target/product/a26x/recovery/root/lib/modules/zram.ko 189632 bytes
-out/target/product/a26x/recovery/root/lib/modules/zsmalloc.ko 82936 bytes
-12:44:18 oleg@parrot twrp-a26x → cd ~/android/twrp-a26x
-
-grep -RniE \
-  'modules\.load\.recovery|modules\.load|modprobe|insmod|load.*module|module.*load' \
-  bootable/recovery system/core system/extras \
-  --exclude='*.ko' 2>/dev/null | head -200
-bootable/recovery/Android.mk:323:ifneq ($(TW_LOAD_VENDOR_MODULES),)
-bootable/recovery/Android.mk:324:    LOCAL_SRC_FILES += kernel_module_loader.cpp
-bootable/recovery/Android.mk:325:    LOCAL_C_INCLUDES += system/core/libmodprobe/include
-bootable/recovery/Android.mk:326:    LOCAL_STATIC_LIBRARIES += libmodprobe
-bootable/recovery/Android.mk:327:    LOCAL_CFLAGS += -DTW_LOAD_VENDOR_MODULES=$(TW_LOAD_VENDOR_MODULES)
-bootable/recovery/Android.mk:328:    ifeq ($(TW_LOAD_VENDOR_MODULES_EXCLUDE_GKI),true)
-bootable/recovery/Android.mk:329:        LOCAL_CFLAGS += -DTW_LOAD_VENDOR_MODULES_EXCLUDE_GKI
-bootable/recovery/Android.mk:331:    ifeq ($(TW_LOAD_VENDOR_BOOT_MODULES),true)
-bootable/recovery/Android.mk:332:        LOCAL_CFLAGS += -DTW_LOAD_VENDOR_BOOT_MODULES
-bootable/recovery/Android.mk:626:    TWRP_REQUIRED_MODULES += sload_f2fs \
-bootable/recovery/Android.mk:632:ifneq ($(TW_LOAD_VENDOR_MODULES),)
-bootable/recovery/Android.mk:633:    TWRP_REQUIRED_MODULES += libmodprobe
-bootable/recovery/fuse/ChangeLog:880:	* lib: fix locking when loading a filesystem module
-bootable/recovery/fuse/ChangeLog:1035:	modules can be built into libfuse or loaded from shared object
-bootable/recovery/fuse/ChangeLog:1280:	* fusermount: revert modprobe change (2006-08-18) since it
-bootable/recovery/fuse/ChangeLog:1402:	* fusermount: try to modprobe fuse module if invoked by root and
-bootable/recovery/fuse/ChangeLog:1405:	module autoloading won't work.  Reported by Szakacsits Szabolcs
-bootable/recovery/fuse/ChangeLog:2040:	* Remove '--enable-auto-modprobe' configure flag.  Module
-bootable/recovery/fuse/ChangeLog:2203:	* Enable the auto-loading of the module via access to the
-bootable/recovery/fuse/ChangeLog:2682:	* fusermount: fix warning if fuse module is not loaded
-bootable/recovery/fuse/ChangeLog:2911:	* By default don't modprobe the fuse module for non-root.  The old
-bootable/recovery/fuse/ChangeLog:2912:	behavior can be restored with the '--enable-auto-modprobe' flag of
-bootable/recovery/fuse/ChangeLog:3375:	* fusermount can use modprobe with module-init-tools
-bootable/recovery/fuse/README:33:modprobe fuse
-bootable/recovery/fuse/cuse_lowlevel.c:309:			fprintf(stderr, "cuse: device not found, try 'modprobe cuse' first\n");
-bootable/recovery/fuse/fuse.c:264:static int fuse_load_so_module(const char *module)
-bootable/recovery/fuse/fuse.c:297:		int err = fuse_load_so_module(module);
-bootable/recovery/fuse/mount.c:467:			fprintf(stderr, "fuse: device not found, try 'modprobe fuse' first\n");
-bootable/recovery/gui/libguitwrp_defaults.go:323:	android.AddLoadHook(module, libGuiDefaults)
-bootable/recovery/kernel_module_loader.cpp:1:#include "kernel_module_loader.hpp"
-bootable/recovery/kernel_module_loader.cpp:5:const std::vector<std::string> kernel_modules_requested = TWFunc::split_string(EXPAND(TW_LOAD_VENDOR_MODULES), ' ', true);
-bootable/recovery/kernel_module_loader.cpp:7:BOOT_MODE KernelModuleLoader::Get_Boot_Mode() {
-bootable/recovery/kernel_module_loader.cpp:22:bool KernelModuleLoader::Load_Vendor_Modules() {
-bootable/recovery/kernel_module_loader.cpp:32:	int modules_loaded = 0;
-bootable/recovery/kernel_module_loader.cpp:34:	LOGINFO("Attempting to load modules\n");
-bootable/recovery/kernel_module_loader.cpp:57:#ifndef TW_LOAD_VENDOR_MODULES_EXCLUDE_GKI
-bootable/recovery/kernel_module_loader.cpp:69:				modules_loaded += Try_And_Load_Modules(module_dir, false);
-bootable/recovery/kernel_module_loader.cpp:70:				if (modules_loaded >= expected_module_count) goto exit;
-bootable/recovery/kernel_module_loader.cpp:76:#ifdef TW_LOAD_VENDOR_BOOT_MODULES
-bootable/recovery/kernel_module_loader.cpp:78:				modules_loaded += Try_And_Load_Modules(module_dir, false);
-bootable/recovery/kernel_module_loader.cpp:79:				if (modules_loaded >= expected_module_count) goto exit;
-bootable/recovery/kernel_module_loader.cpp:98:		modules_loaded += Try_And_Load_Modules(module_dir, true);
-bootable/recovery/kernel_module_loader.cpp:99:		if (modules_loaded >= expected_module_count) goto exit;
-bootable/recovery/kernel_module_loader.cpp:102:	modules_loaded += Try_And_Load_Modules(vendor_dlkm_base_dir, true);
-bootable/recovery/kernel_module_loader.cpp:103:	if (modules_loaded >= expected_module_count) goto exit;
-bootable/recovery/kernel_module_loader.cpp:116:int KernelModuleLoader::Try_And_Load_Modules(std::string module_dir, bool vendor_is_mounted) {
-bootable/recovery/kernel_module_loader.cpp:118:		int modules_loaded = 0;
-bootable/recovery/kernel_module_loader.cpp:130:			Modprobe m({module_dir}, "modules.load.twrp", false);
-bootable/recovery/kernel_module_loader.cpp:131:			m.LoadListedModules(false);
-bootable/recovery/kernel_module_loader.cpp:132:			modules_loaded = m.GetModuleCount();
-bootable/recovery/kernel_module_loader.cpp:134:			LOGINFO("Modules Loaded: %d\n", modules_loaded);
-bootable/recovery/kernel_module_loader.cpp:136:		return modules_loaded;
-bootable/recovery/kernel_module_loader.cpp:139:std::vector<string> KernelModuleLoader::Skip_Loaded_Kernel_Modules() {
-bootable/recovery/kernel_module_loader.cpp:141:	std::vector<string> loaded_modules;
-bootable/recovery/kernel_module_loader.cpp:143:	if (TWFunc::read_file(kernel_module_file, loaded_modules) < 0)
-bootable/recovery/kernel_module_loader.cpp:144:		LOGINFO("failed to get loaded kernel modules\n");
-bootable/recovery/kernel_module_loader.cpp:145:	LOGINFO("number of modules loaded by init: %zu\n", loaded_modules.size());
-bootable/recovery/kernel_module_loader.cpp:146:	if (loaded_modules.size() == 0)
-bootable/recovery/kernel_module_loader.cpp:148:	for (auto&& module_line:loaded_modules) {
-bootable/recovery/kernel_module_loader.cpp:160:bool KernelModuleLoader::Write_Module_List(std::string module_dir) {
-bootable/recovery/kernel_module_loader.cpp:165:	auto deduped_modules = Skip_Loaded_Kernel_Modules();
-bootable/recovery/kernel_module_loader.cpp:167:		LOGINFO("Requested modules are loaded\n");
-bootable/recovery/kernel_module_loader.cpp:185:		std::string module_file = module_dir + "/modules.load.twrp";
-bootable/recovery/kernel_module_loader.cpp:192:bool KernelModuleLoader::Copy_Modules_To_Tmpfs(std::string module_dir) {
-bootable/recovery/kernel_module_loader.hpp:1:#ifndef _KERNELMODULELOADER_HPP
-bootable/recovery/kernel_module_loader.hpp:2:#define _KERNELMODULELOADER_HPP
-bootable/recovery/kernel_module_loader.hpp:9:#include <modprobe/modprobe.h>
-bootable/recovery/kernel_module_loader.hpp:25:class KernelModuleLoader
-bootable/recovery/kernel_module_loader.hpp:28:	static bool Load_Vendor_Modules(); // Load specific maintainer defined kernel modules in TWRP
-bootable/recovery/kernel_module_loader.hpp:31:	static int Try_And_Load_Modules(std::string module_dir, bool vendor_is_mounted); // Use libmodprobe to attempt loading kernel modules
-bootable/recovery/kernel_module_loader.hpp:32:	static bool Write_Module_List(std::string module_dir); // Write list of modules to load from TW_LOAD_VENDOR_MODULES
-bootable/recovery/kernel_module_loader.hpp:33:	static bool Copy_Modules_To_Tmpfs(std::string module_dir); // Copy modules to ramdisk for loading
-bootable/recovery/kernel_module_loader.hpp:34:	static std::vector<string> Skip_Loaded_Kernel_Modules(); // return list of loaded kernel modules already done by init
-bootable/recovery/kernel_module_loader.hpp:38:#endif // _KERNELMODULELOADER_HPP
-bootable/recovery/libaosprecovery_defaults.go:53:	android.AddLoadHook(module, libAospRecoveryDefaults)
-bootable/recovery/minuitwrp/libminuitwrp_defaults.go:211:	android.AddLoadHook(module, libMinuiTwrpDefaults)
-bootable/recovery/partitionmanager.cpp:78:#ifdef TW_LOAD_VENDOR_MODULES
-bootable/recovery/partitionmanager.cpp:79:#include "kernel_module_loader.hpp"
-bootable/recovery/partitionmanager.cpp:407:#ifdef TW_LOAD_VENDOR_MODULES
-bootable/recovery/partitionmanager.cpp:408:	KernelModuleLoader::Load_Vendor_Modules();
-bootable/recovery/twrp.cpp:401:#ifdef TW_LOAD_VENDOR_MODULES
-bootable/recovery/variables.h:155:#define TW_MODULES_MOUNTED_PROP       "twrp.modules.loaded"     // property for successfully mounted modules
-system/core/TEST_MAPPING:40:      "name": "libmodprobe_tests"
-system/core/init/Android.bp:174:        "libmodprobe",
-system/core/init/Android.bp:332:        "libmodprobe",
-system/core/init/Android.mk:127:    libmodprobe \
-system/core/init/README.md:502:`insmod [-f] <path> [<options>]`
-system/core/init/README.md:804:> How long in ms it took to load kernel modules.
-system/core/init/builtins.cpp:355:static Result<void> do_insmod(const BuiltinArguments& args) {
-system/core/init/builtins.cpp:1457:        {"insmod",                  {1,     kMax, {true,   do_insmod}}},
-system/core/init/first_stage_init.cpp:37:#include <modprobe/modprobe.h>
-system/core/init/first_stage_init.cpp:114:std::string GetModuleLoadList(bool recovery, const std::string& dir_path) {
-system/core/init/first_stage_init.cpp:115:    auto module_load_file = "modules.load";
-system/core/init/first_stage_init.cpp:118:        std::string recovery_load_path = dir_path + "/modules.load.recovery";
-system/core/init/first_stage_init.cpp:120:            module_load_file = "modules.load.recovery";
-system/core/init/first_stage_init.cpp:124:    return module_load_file;
-system/core/init/first_stage_init.cpp:128:bool LoadKernelModules(bool recovery, bool want_console, int& modules_loaded) {
-system/core/init/first_stage_init.cpp:140:        LOG(INFO) << "Unable to open /lib/modules, skipping module loading.";
-system/core/init/first_stage_init.cpp:157:    // Sort the directories so they are iterated over during module loading
-system/core/init/first_stage_init.cpp:168:        Modprobe m({dir_path}, GetModuleLoadList(recovery, dir_path));
-system/core/init/first_stage_init.cpp:169:        bool retval = m.LoadListedModules(!want_console);
-system/core/init/first_stage_init.cpp:170:        modules_loaded = m.GetModuleCount();
-system/core/init/first_stage_init.cpp:171:        if (modules_loaded > 0) {
-system/core/init/first_stage_init.cpp:176:    Modprobe m({MODULE_BASE_DIR}, GetModuleLoadList(recovery, MODULE_BASE_DIR));
-system/core/init/first_stage_init.cpp:177:    bool retval = m.LoadListedModules(!want_console);
-system/core/init/first_stage_init.cpp:178:    modules_loaded = m.GetModuleCount();
-system/core/init/first_stage_init.cpp:179:    if (modules_loaded > 0) {
-system/core/init/first_stage_init.cpp:290:    if (!LoadKernelModules(IsRecoveryMode() && !ForceNormalBoot(cmdline, bootconfig), want_console,
-system/core/init/first_stage_init.cpp:293:            LOG(ERROR) << "Failed to load kernel modules, starting console";
-system/core/init/first_stage_init.cpp:295:            LOG(FATAL) << "Failed to load kernel modules";
-system/core/init/first_stage_init.cpp:302:        LOG(INFO) << "Loaded " << module_count << " kernel modules took "
-system/core/init/modalias_handler.cpp:22:#include <modprobe/modprobe.h>
-system/core/init/modalias_handler.cpp:28:    : modprobe_(base_paths) {}
-system/core/init/modalias_handler.cpp:32:    modprobe_.LoadWithAliases(uevent.modalias, true);
-system/core/init/modalias_handler.h:22:#include <modprobe/modprobe.h>
-system/core/init/modalias_handler.h:38:    Modprobe modprobe_;
-system/core/libmodprobe/Android.bp:6:    name: "libmodprobe",
-system/core/libmodprobe/Android.bp:13:        "libmodprobe.cpp",
-system/core/libmodprobe/Android.bp:14:        "libmodprobe_ext.cpp",
-system/core/libmodprobe/Android.bp:23:    name: "libmodprobe_tests",
-system/core/libmodprobe/Android.bp:30:        "libmodprobe_test.cpp",
-system/core/libmodprobe/Android.bp:31:        "libmodprobe.cpp",
-system/core/libmodprobe/Android.bp:32:        "libmodprobe_ext_test.cpp",
-system/core/libmodprobe/include/modprobe/modprobe.h:25:class Modprobe {
-system/core/libmodprobe/include/modprobe/modprobe.h:27:    Modprobe(const std::vector<std::string>&, const std::string load_file = "modules.load",
-system/core/libmodprobe/include/modprobe/modprobe.h:30:    bool LoadListedModules(bool strict = true);
-system/core/libmodprobe/include/modprobe/modprobe.h:31:    bool LoadWithAliases(const std::string& module_name, bool strict,
-system/core/libmodprobe/include/modprobe/modprobe.h:43:    bool InsmodWithDeps(const std::string& module_name, const std::string& parameters);
-system/core/libmodprobe/include/modprobe/modprobe.h:44:    bool Insmod(const std::string& path_name, const std::string& parameters);
-system/core/libmodprobe/include/modprobe/modprobe.h:66:    std::vector<std::string> module_load_;
-system/core/libmodprobe/include/modprobe/modprobe.h:69:    std::unordered_set<std::string> module_loaded_;
-system/core/libmodprobe/libmodprobe.cpp:17:#include <modprobe/modprobe.h>
-system/core/libmodprobe/libmodprobe.cpp:34:std::string Modprobe::MakeCanonical(const std::string& module_path) {
-system/core/libmodprobe/libmodprobe.cpp:55:bool Modprobe::ParseDepCallback(const std::string& base_path,
-system/core/libmodprobe/libmodprobe.cpp:91:bool Modprobe::ParseAliasCallback(const std::vector<std::string>& args) {
-system/core/libmodprobe/libmodprobe.cpp:112:bool Modprobe::ParseSoftdepCallback(const std::vector<std::string>& args) {
-system/core/libmodprobe/libmodprobe.cpp:148:bool Modprobe::ParseLoadCallback(const std::vector<std::string>& args) {
-system/core/libmodprobe/libmodprobe.cpp:156:    this->module_load_.emplace_back(canonical_name);
-system/core/libmodprobe/libmodprobe.cpp:161:bool Modprobe::ParseOptionsCallback(const std::vector<std::string>& args) {
-system/core/libmodprobe/libmodprobe.cpp:198:bool Modprobe::ParseBlocklistCallback(const std::vector<std::string>& args) {
-system/core/libmodprobe/libmodprobe.cpp:223:void Modprobe::ParseCfg(const std::string& cfg,
-system/core/libmodprobe/libmodprobe.cpp:242:void Modprobe::AddOption(const std::string& module_name, const std::string& option_name,
-system/core/libmodprobe/libmodprobe.cpp:254:void Modprobe::ParseKernelCmdlineOptions(void) {
-system/core/libmodprobe/libmodprobe.cpp:316:Modprobe::Modprobe(const std::vector<std::string>& base_paths, const std::string load_file,
-system/core/libmodprobe/libmodprobe.cpp:322:        auto alias_callback = std::bind(&Modprobe::ParseAliasCallback, this, _1);
-system/core/libmodprobe/libmodprobe.cpp:325:        auto dep_callback = std::bind(&Modprobe::ParseDepCallback, this, base_path, _1);
-system/core/libmodprobe/libmodprobe.cpp:328:        auto softdep_callback = std::bind(&Modprobe::ParseSoftdepCallback, this, _1);
-system/core/libmodprobe/libmodprobe.cpp:331:        auto load_callback = std::bind(&Modprobe::ParseLoadCallback, this, _1);
-system/core/libmodprobe/libmodprobe.cpp:334:        auto options_callback = std::bind(&Modprobe::ParseOptionsCallback, this, _1);
-system/core/libmodprobe/libmodprobe.cpp:337:        auto blocklist_callback = std::bind(&Modprobe::ParseBlocklistCallback, this, _1);
-system/core/libmodprobe/libmodprobe.cpp:344:std::vector<std::string> Modprobe::GetDependencies(const std::string& module) {
-system/core/libmodprobe/libmodprobe.cpp:352:bool Modprobe::InsmodWithDeps(const std::string& module_name, const std::string& parameters) {
-system/core/libmodprobe/libmodprobe.cpp:364:    // load module dependencies in reverse order
-system/core/libmodprobe/libmodprobe.cpp:366:        LOG(VERBOSE) << "Loading hard dep for '" << module_name << "': " << *dep;
-system/core/libmodprobe/libmodprobe.cpp:375:            LOG(VERBOSE) << "Loading soft pre-dep for '" << module << "': " << softdep;
-system/core/libmodprobe/libmodprobe.cpp:380:    // load target module itself with args
-system/core/libmodprobe/libmodprobe.cpp:381:    if (!Insmod(dependencies[0], parameters)) {
-system/core/libmodprobe/libmodprobe.cpp:388:            LOG(VERBOSE) << "Loading soft post-dep for '" << module << "': " << softdep;
-system/core/libmodprobe/libmodprobe.cpp:396:bool Modprobe::LoadWithAliases(const std::string& module_name, bool strict,
-system/core/libmodprobe/libmodprobe.cpp:399:    if (module_loaded_.count(canonical_name)) {
-system/core/libmodprobe/libmodprobe.cpp:403:    std::set<std::string> modules_to_load = {canonical_name};
-system/core/libmodprobe/libmodprobe.cpp:404:    bool module_loaded = false;
-system/core/libmodprobe/libmodprobe.cpp:406:    // use aliases to expand list of modules to load (multiple modules
-system/core/libmodprobe/libmodprobe.cpp:411:        if (module_loaded_.count(MakeCanonical(aliased_module))) continue;
-system/core/libmodprobe/libmodprobe.cpp:412:        modules_to_load.emplace(aliased_module);
-system/core/libmodprobe/libmodprobe.cpp:415:    // attempt to load all modules aliased to this name
-system/core/libmodprobe/libmodprobe.cpp:416:    for (const auto& module : modules_to_load) {
-system/core/libmodprobe/libmodprobe.cpp:418:        if (InsmodWithDeps(module, parameters)) module_loaded = true;
-system/core/libmodprobe/libmodprobe.cpp:421:    if (strict && !module_loaded) {
-system/core/libmodprobe/libmodprobe.cpp:422:        LOG(ERROR) << "LoadWithAliases was unable to load " << module_name;
-system/core/libmodprobe/libmodprobe.cpp:428:bool Modprobe::IsBlocklisted(const std::string& module_name) {
-system/core/libmodprobe/libmodprobe.cpp:440:bool Modprobe::LoadListedModules(bool strict) {
-system/core/libmodprobe/libmodprobe.cpp:442:    for (const auto& module : module_load_) {
-system/core/libmodprobe/libmodprobe.cpp:443:        if (!LoadWithAliases(module, true)) {
-system/core/libmodprobe/libmodprobe.cpp:452:bool Modprobe::Remove(const std::string& module_name) {
-system/core/libmodprobe/libmodprobe.cpp:461:std::vector<std::string> Modprobe::ListModules(const std::string& pattern) {
-system/core/libmodprobe/libmodprobe.cpp:474:bool Modprobe::GetAllDependencies(const std::string& module,
-system/core/libmodprobe/libmodprobe_ext.cpp:24:#include <modprobe/modprobe.h>
-system/core/libmodprobe/libmodprobe_ext.cpp:26:std::string Modprobe::GetKernelCmdline(void) {
-system/core/libmodprobe/libmodprobe_ext.cpp:34:bool Modprobe::Insmod(const std::string& path_name, const std::string& parameters) {
-system/core/libmodprobe/libmodprobe_ext.cpp:52:    LOG(INFO) << "Loading module " << path_name << " with args '" << options << "'";
-system/core/libmodprobe/libmodprobe_ext.cpp:56:            // Module already loaded
-system/core/libmodprobe/libmodprobe_ext.cpp:57:            module_loaded_.emplace(canonical_name);
-system/core/libmodprobe/libmodprobe_ext.cpp:60:        PLOG(ERROR) << "Failed to insmod '" << path_name << "' with args '" << options << "'";
-system/core/libmodprobe/libmodprobe_ext.cpp:64:    LOG(INFO) << "Loaded kernel module " << path_name;
-system/core/libmodprobe/libmodprobe_ext.cpp:65:    module_loaded_.emplace(canonical_name);
-system/core/libmodprobe/libmodprobe_ext.cpp:70:bool Modprobe::Rmmod(const std::string& module_name) {
-system/core/libmodprobe/libmodprobe_ext.cpp:77:    module_loaded_.erase(canonical_name);
-system/core/libmodprobe/libmodprobe_ext.cpp:81:bool Modprobe::ModuleExists(const std::string& module_name) {
-system/core/libmodprobe/libmodprobe_ext_test.cpp:28:#include <modprobe/modprobe.h>
-system/core/libmodprobe/libmodprobe_ext_test.cpp:30:#include "libmodprobe_test.h"
-system/core/libmodprobe/libmodprobe_ext_test.cpp:32:std::string Modprobe::GetKernelCmdline(void) {
-system/core/libmodprobe/libmodprobe_ext_test.cpp:36:bool Modprobe::Insmod(const std::string& path_name, const std::string& parameters) {
-system/core/libmodprobe/libmodprobe_ext_test.cpp:44:    for (auto it = modules_loaded.begin(); it != modules_loaded.end(); ++it) {
-system/core/libmodprobe/libmodprobe_ext_test.cpp:58:    modules_loaded.emplace_back(path_name + options);
-system/core/libmodprobe/libmodprobe_ext_test.cpp:63:bool Modprobe::Rmmod(const std::string& module_name) {
-system/core/libmodprobe/libmodprobe_ext_test.cpp:64:    for (auto it = modules_loaded.begin(); it != modules_loaded.end(); it++) {
-system/core/libmodprobe/libmodprobe_ext_test.cpp:66:            modules_loaded.erase(it);
-system/core/libmodprobe/libmodprobe_ext_test.cpp:73:bool Modprobe::ModuleExists(const std::string& module_name) {
-system/core/libmodprobe/libmodprobe_test.cpp:24:#include <modprobe/modprobe.h>
-12:44:23 oleg@parrot twrp-a26x → 
+12:48:21 oleg@parrot twrp-a26x →
