@@ -97,3 +97,8 @@
 - полный экран ODIN MODE от 13.11.2026 уже переписан исчерпывающе; строки OEM LOCK, FRP LOCK и DEVICE STATE отсутствуют. Повторный сбор не требуется.
 
 Эти наблюдения не меняют прежний вывод: UI switch не является доказательством фактического unlock. Последние сохранённые boot properties — `ro.boot.flash.locked=1`, `ro.boot.vbmeta.device_state=locked`, `ro.boot.verifiedbootstate=green`; после этого снимка новое чтение не выполнялось. Maintenance Mode не предоставляет Developer Options и не может использоваться как подтверждённый способ включить переключатель перед входом в Download Mode.
+
+
+## 8. Аппаратная платформа — уточнение 14.11.2026
+
+` s5e8835 ` соответствует **Samsung Exynos 1380**, а не Exynos 1280. Это подтверждается A26-specific kernel source tree `os-guy-original/android_kernel_samsung_a26x` и опубликованными device/kernel materials. Codename `a26x` / SM-A266B остаётся прежним.
