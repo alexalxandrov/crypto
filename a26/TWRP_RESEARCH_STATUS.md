@@ -241,3 +241,11 @@ BOARD_USES_METADATA_PARTITION := true
 - Не считать `TW_INCLUDE_FBE_METADATA_DECRYPT := true` достаточным при `TW_INCLUDE_CRYPTO := false`.
 - Не утверждать, что Samsung KeyMint совместим с текущей recovery-сборкой только потому, что vendor сервис и библиотеки присутствуют на устройстве.
 - Не считать mkbootimg round-trip или recovery build завершёнными без фактических результатов.
+
+## 11. Bootloader gate update — 2026-11-14
+
+The owner reports that the OEM unlocking switch is temporarily visible and can be enabled, but Maintenance Mode itself requires a reboot to enter and another reboot to exit; Developer Options is absent inside Maintenance Mode. Both short and long Volume Up on the Custom OS screen lead to ordinary Download Mode without a Device Unlock confirmation prompt. The complete Download Mode screen is already transcribed in `A26_DOWNLOAD_MODE_2026-11-13_RU.md`; OEM LOCK / FRP LOCK / DEVICE STATE fields are absent.
+
+This does not change the last recorded boot-chain state: `ro.boot.flash.locked=1`, `ro.boot.vbmeta.device_state=locked`, `ro.boot.verifiedbootstate=green`. An Android OEM Unlock switch or KernelSU root does not authorize an unsigned recovery image.
+
+**TWRP decision unchanged: no `dd`, no blank-vbmeta write, no test flash.** Continue offline recovery/FBE compatibility research only. Any bootloader unlock path must first be independently demonstrated for this exact SM-A266B / A266BXXUCDZJ6 / BIT 12 configuration.
