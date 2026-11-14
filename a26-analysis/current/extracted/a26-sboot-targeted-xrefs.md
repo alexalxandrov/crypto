@@ -66,6 +66,11 @@ Decompressed lines: 469631
 - fcn.0017d5b4: **EXTRACTED**; index: `0x0017d5b4	fcn.0017d5b4	59`
 - fcn.0017c904: **EXTRACTED**; index: `0x0017c904	fcn.0017c904	85`
 - fcn.0017e5f8: **EXTRACTED**; index: `0x0017e5f8	fcn.0017e5f8	112`
+- fcn.001895dc: **EXTRACTED**; index: `0x001895dc	fcn.001895dc	17`
+- fcn.0018962c: **EXTRACTED**; index: `0x0018962c	fcn.0018962c	234`
+- fcn.00189d8c: **EXTRACTED**; index: `0x00189d8c	fcn.00189d8c	159`
+- fcn.00183e40: **EXTRACTED**; index: `0x00183e40	fcn.00183e40	237`
+- fcn.001690d8: **EXTRACTED**; index: `0x001690d8	fcn.001690d8	444`
 - fcn.0016d638: **EXTRACTED**; index: `0x0016d638	fcn.0016d638	301`
 - fcn.00177854: **EXTRACTED**; index: `0x00177854	fcn.00177854	105`
 - fcn.0012467c: **EXTRACTED**; index: `0x0012467c	fcn.0012467c	161`
@@ -1223,6 +1228,60 @@ Decompressed lines: 469631
 ### fcn.0017e5f8
 - line 194291, caller fcn.0017bfac: │  ││││││   0x0017c568      bl    fcn.0017e5f8
 
+### fcn.001895dc
+- line 72884, caller fcn.00111bb4: │ │││││││   0x00111f04      bl    fcn.001895dc
+- line 72923, caller fcn.00111bb4: │ │││││││   0x00111f9c      bl    fcn.001895dc
+- line 72980, caller fcn.00111bb4: │ │││││││   0x00112080      bl    fcn.001895dc
+- line 73018, caller fcn.00111bb4: │ │││││││   0x00112118      bl    fcn.001895dc
+- line 73165, caller fcn.00111bb4: │ │││││││   0x0011235c      bl    fcn.001895dc
+- line 73203, caller fcn.00111bb4: │ │││││││   0x001123f4      bl    fcn.001895dc
+- line 147054, caller fcn.00151958: │      ││   0x001519a0      bl    fcn.001895dc
+- line 179600, caller fcn.0016f3e0: │       │   0x0016fd28      bl    fcn.001895dc
+- line 179615, caller fcn.0016f3e0: │       │   0x0016fd64      bl    fcn.001895dc
+- line 179626, caller fcn.0016f3e0: │      │    0x0016fd90      bl    fcn.001895dc
+- line 179634, caller fcn.0016f3e0: │           0x0016fdac      bl    fcn.001895dc
+- line 186953, caller fcn.00175f44: │  ││││││   0x001760fc      bl    fcn.001895dc
+- line 187161, caller fcn.00175f44: │ │ │││││   0x00176428      bl    fcn.001895dc
+- line 187333, caller fcn.00175f44: │ │╎│││││   0x001766d0      bl    fcn.001895dc
+- line 187394, caller fcn.00175f44: │ │╎│││││   0x001767c4      bl    fcn.001895dc
+- line 187478, caller fcn.00175f44: │ │╎│││││   0x00176910      bl    fcn.001895dc
+- line 187621, caller fcn.00175f44: │ │╎│││││   0x00176b3c      bl    fcn.001895dc
+- line 195991, caller fcn.0017db48: │   ││ ╎╎   0x0017dba4      bl    fcn.001895dc
+- line 196265, caller fcn.0017df80: │           0x0017dfac      bl    fcn.001895dc
+- line 196325, caller fcn.0017dfdc: │      │    0x0017e07c      bl    fcn.001895dc
+- line 196334, caller fcn.0017dfdc: │    │ │    0x0017e09c      bl    fcn.001895dc
+- line 196563, caller fcn.0017e384: │      │    0x0017e3d8      bl    fcn.001895dc
+- line 196581, caller fcn.0017e384: │      ││   0x0017e420      bl    fcn.001895dc
+- line 196651, caller fcn.0017e384: │      │    0x0017e538      bl    fcn.001895dc
+- line 196669, caller fcn.0017e384: │      │    0x0017e580      bl    fcn.001895dc
+- line 197354, caller fcn.0017ed08: │ ││││││    0x0017ef18      bl    fcn.001895dc
+- line 197416, caller fcn.0017ed08: │  ││││││   0x0017f010      bl    fcn.001895dc
+- line 198241, caller fcn.0017fa60: │ │    ││   0x0017fba0      bl    fcn.001895dc
+- line 205650, caller fcn.0018629c: │ │││││╎╎   0x00186328      bl    fcn.001895dc
+- line 210893, caller fcn.0018ad94: │           0x0018adb0      bl    fcn.001895dc
+- line 211319, caller fcn.0018b2d4: │           0x0018b328      bl    fcn.001895dc
+- line 212033, caller fcn.0018bc84: │           0x0018bc94      bl    fcn.001895dc
+- line 236239, caller fcn.001a262c: │       ╎   0x001a263c      bl    fcn.001895dc
+
+### fcn.0018962c
+- line 209912, caller fcn.00189d8c: │     ╎└└─> 0x00189fc4      bl    fcn.0018962c
+
+### fcn.00189d8c
+- line 75248, caller fcn.00114100: │       └─> 0x001142ac      bl    fcn.00189d8c
+
+### fcn.00183e40
+- line 75288, caller fcn.00114100: │           0x00114340      bl    fcn.00183e40
+
+### fcn.001690d8
+- line 176912, caller fcn.0016d2b4: │     │││   0x0016d324      bl    fcn.001690d8
+- line 208653, caller fcn.00188ca8: │ ╎╎╎╎╎╎│   0x00188e28      bl    fcn.001690d8
+- line 208872, caller fcn.00188fc0: │ ╎╎╎╎╎╎│   0x00189140      bl    fcn.001690d8
+- line 209363, caller fcn.0018962c: │   ╎╎ ╎│   0x0018981c      bl    fcn.001690d8
+- line 209850, caller fcn.00189d8c: │    │╎│╎   0x00189ed8      bl    fcn.001690d8
+- line 210023, caller fcn.00189fd0: │ ╎╎╎╎╎╎│   0x0018a12c      bl    fcn.001690d8
+- line 210344, caller fcn.0018a2ac: │ ╎╎╎╎      0x0018a5d8      bl    fcn.001690d8
+- line 210658, caller fcn.0018a6d4: │ │╎╎╎╎╎│   0x0018aa44      bl    fcn.001690d8
+
 ### fcn.0016d638
 - line 73283, caller fcn.00111bb4: │ │││ │││   0x00112530      bl    fcn.0016d638
 - line 73339, caller fcn.00111bb4: │      │    0x00112604      bl    fcn.0016d638
@@ -2367,6 +2426,7 @@ Decompressed lines: 469631
 - VA 0x23e409, function fcn.00114100, lines 75355-75357: │ │╎╎╎╎││   0x00114448      adrp  x2, 0x23e000 || │ │╎╎╎╎││   0x00114450      add   x2, x2, 0x409                        ; int64_t arg3
 - VA 0x23e409, function fcn.00114100, lines 75569-75571: │     ╎     0x00114790      adrp  x2, 0x23e000 || │     ╎     0x00114798      add   x2, x2, 0x409                        ; int64_t arg3
 - VA 0x275d4a, function fcn.00114b6c, lines 76206-76207: │  ╎╎   │   0x00114ff4      adrp  x0, 0x275000 || │  ╎╎   │   0x00114ff8      add   x0, x0, 0xd4a                        ; int64_t arg1
+- VA 0x56f4d8, function fcn.00124ccc, lines 94748-94750: │  ││││ ╎   0x00124d7c      adrp  x1, 0x56f000 || │  ││││ ╎   0x00124d84      add   x1, x1, 0x4d8                        ; int64_t arg2
 - VA 0x266a2e, function fcn.00126760, lines 96808-96810: │     ││└─> 0x0012682c      adrp  x0, 0x266000 || │     ││    0x00126834      add   x0, x0, 0xa2e                        ; int64_t arg1
 - VA 0x24c27f, function fcn.001268b8, lines 96929-96931: │ └───────> 0x0012699c      adrp  x1, 0x24c000 || │   ││││╎   0x001269a4      add   x1, x1, 0x27f                        ; int64_t arg2
 - VA 0x259f6f, function fcn.001268b8, lines 96935-96937: │  │││││╎   0x001269b4      adrp  x1, 0x259000 || │  │││││╎   0x001269bc      add   x1, x1, 0xf6f                        ; int64_t arg2
@@ -2544,6 +2604,11 @@ Decompressed lines: 469631
 - VA 0x23e409, function fcn.001859b8, lines 205139-205142: │ │││││││   0x00185be4      adrp  x2, 0x23e000 || │ │││││││   0x00185bf0      add   x2, x2, 0x409                        ; int64_t arg3
 - VA 0x23e409, function fcn.0018629c, lines 205771-205772: │      ╎    0x001864f4      adrp  x1, 0x23e000 || │      ╎    0x001864f8      add   x1, x1, 0x409
 - VA 0x268356, function fcn.001866ac, lines 206156-206157: │           0x001869dc      adrp  x0, 0x268000 || │           0x001869e0      add   x0, x0, 0x356                        ; int64_t arg1
+- VA 0x5a6a90, function fcn.00188964, lines 208377-208378: │           0x00188a1c      adrp  x20, 0x5a6000 || │           0x00188a20      add   x20, x20, 0xa90
+- VA 0x5a6a90, function fcn.001895dc, lines 209199-209201: │           0x001895ec      adrp  x10, 0x5a6000 || │           0x001895f4      add   x10, x10, 0xa90
+- VA 0x5a6a90, function fcn.00189614, lines 209213-209214: │       ╎   0x00189618      adrp  x1, 0x5a6000 || │       ╎   0x0018961c      add   x1, x1, 0xa90
+- VA 0x5a6a90, function fcn.0018962c, lines 209436-209437: │           0x00189934      adrp  x20, 0x5a6000 || │           0x00189938      add   x20, x20, 0xa90
+- VA 0x5a6a90, function fcn.00189be8, lines 209641-209642: │           0x00189bec      adrp  x8, 0x5a6000 || │           0x00189bf0      add   x8, x8, 0xa90
 - VA 0x23e409, function fcn.0018b10c, lines 211154-211155: │      └──> 0x0018b158      adrp  x2, 0x23e000 || │       │   0x0018b15c      add   x2, x2, 0x409                        ; int64_t arg3
 - VA 0x268356, function fcn.0018bfb0, lines 212319-212320: │ ╎╎╎╎╎╎    0x0018c030      adrp  x0, 0x268000 || │ ╎╎╎╎╎╎    0x0018c034      add   x0, x0, 0x356                        ; int64_t arg1
 - VA 0x268356, function fcn.0018ed1c, lines 213551-213556: │   ││ │    0x0018ee2c      adrp  x24, 0x268000 || │   ││ │    0x0018ee40      add   x24, x24, 0x356
