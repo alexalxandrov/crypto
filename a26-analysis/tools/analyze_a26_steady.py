@@ -70,14 +70,31 @@ def main():
     strings=ascii_runs(data,5)
     out += [f"- 0x{off:08x}: {value[:160]}" for off,value in strings[:500]]
     if len(strings)>500: out.append(f"- ... {len(strings)-500} additional strings omitted")
-    out += ["","## 5. Known candidate object locations",""]
+    out += ["","## 5. SBoot magic and candidate policy field",""]
+    if SBOOT.is_file() and len(SBOOT.read_bytes())>0x24a4bc:
+        sb=SBOOT.read_bytes()
+        tail=sb[0x24a4bc:0x24a4bc+128]
+        magic=tail.split(b"\\x00",1)[0]
+        out += [f"- SBoot constant VA/file offset 0x24a4bc, length {len(magic)}: {magic.hex()}"]
+        for base in [0x7df20,0x7e120]:
+            hdr=data[base+0x28:base+0x28+len(magic)]
+            field=data[base+0x120:base+0x140]
+            out += [f"- Record base 0x{base:08x}: header at +0x28 matches SBoot constant: {hdr==magic}",
+                    f"  - Header bytes: {hdr.hex()}",
+                    f"  - Candidate 32-byte field at +0x120: {field.hex()}",
+                    f"  - Candidate bit3 (LSB-first): {(field[0]>>3)&1 if len(field)==32 else 'n/a'}",
+                    f"  - Candidate set bits: {sum(x.bit_count() for x in field)}/256"]
+    else:
+        out.append("SBoot binary unavailable or too short to inspect magic at 0x24a4bc.")
+    out += ["","This is a strong candidate mapping because SBoot compares the data read from STEADY at record+0x28 against the constant at 0x24a4bc, and later copies a 32-byte parsed field at object+0x120 into the policy bitmap. The record+0x120 raw field is not yet conclusively proven to be the same parsed field; bit3 is reported as a candidate only.",""]
+    out += ["","## 6. Known candidate object locations",""]
     for off in [0x2400,0x7df20,0x99200,0x9e400,0xaf000,0xaf200,0xcb220,0xe0c00,0xe0e00]:
         if off<len(data):
             chunk=data[off:off+0x200]
             out.append(f"### Offset 0x{off:08x}")
             for p in range(0,len(chunk),16):
                 out.append(f"{off+p:08x}: {chunk[p:p+16].hex(' ')}")
-    out += ["","## 6. Interpretation limits","",
+    out += ["","## 7. Interpretation limits","",
       "- The SBoot parser, not a guessed fixed offset, determines the accepted token object.",
       "- A raw 32-byte sequence is not an authorization proof unless it is the exact parsed object accepted by the J6 signature-validation path.",
       "- Do not alter STEADY, RPMB, MISC or any other protected region.",""]
