@@ -314,3 +314,32 @@ These facts support distinct interfaces: AIDL NDK glue, a classic Binder client/
 Important: hashes are from the live device. The binary copies in the repository were not rehashed in this operation, so no binary identity claim is made from the hashes yet.
 
 Detailed architecture interpretation: ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md in this directory.
+
+
+## 12. Service ELF symbol ownership and proven linkage — 2026-11-14
+
+Owner supplied a fresh read-only `readelf -d` / `readelf -Ws` capture for both service executables and six libraries. For symbol tables, `UND` means imported; a numeric section index means defined in that ELF.
+
+### Service executables
+
+- `/vendor/bin/vendor.samsung.hardware.security.engmode-service` DT_NEEDED: `vendor.samsung.hardware.security.engmode-V1-ndk.so`, `libengmode_client.so`, `libbinder.so`, `libbinder_ndk.so`, plus standard platform libraries.
+- It imports the AIDL `BnSehEngmode` constructor/destructor and `ISehEngmode` descriptor/metadata symbols from the generated vendor NDK library.
+- `/vendor/bin/emservice` DT_NEEDED includes `libengmode_server.so`; it imports `android::EngineeringModeHandler::instantiate()`, which is defined in that server library.
+
+### Server → TLC linkage
+
+- `libengmode_server.so` defines `EngineeringModeHandler::onTransact()`, `EngineeringModeHandler::instantiate()`, `EngineeringModeWorld::emProcess()`, `EngineeringModeWorld::emSyncUpCore()`, and its STEADY read/write accessors.
+- The server library imports `em_tlc_send`; `libengmode_tlc.so` defines that function.
+- TLC imports TEEC context/session/shared-memory/command functions from `libteecl.so`.
+
+The ELF linkage confirms `emservice → libengmode_server.so → libengmode_tlc.so → libteecl/TEEC API` as a linked native dependency/function path. It does not reveal Trusted Application UUID, command IDs, payload semantics or secure-world policy.
+
+### AIDL front end remains a separate branch
+
+The AIDL service executable uses the generated NDK Binder glue and also directly links `libengmode_client.so`, which itself depends on classic `libbinder.so`. The exact forwarding call path from individual AIDL methods to the classic Binder client is not yet proven. The NDK proxy methods are interface stubs, not evidence that any token operation was invoked.
+
+### Separate EngMode 1.5 component
+
+`libengmode15.so` defines `em_ess_make_token_request`, `em_ess_install_token_v1` and `em_write_to_steady`. It does not appear in the captured direct DT_NEEDED list for `libengmode_server.so`; no direct caller relationship is claimed.
+
+No Binder or ESS methods were called. No STEADY/RPMB/recovery/vbmeta/bootloader writes were performed.
