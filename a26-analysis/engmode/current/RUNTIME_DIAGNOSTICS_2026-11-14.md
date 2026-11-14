@@ -2,6 +2,8 @@
 
 ## Provenance
 
+User-facing summary: [a26/A26_ENGMODE_ESS_RUNTIME_2026-11-14_RU.md](../../../a26/A26_ENGMODE_ESS_RUNTIME_2026-11-14_RU.md).
+
 Source: owner-provided Termux output from the handset on 2026-11-14. Target in the current A26 dossier: SM-A266B, firmware A266BXXUCDZJ6. Collection was read-only. This file records what was shown; it does not claim that all possible runtime states or log buffers were captured.
 
 ## 1. Init service state
