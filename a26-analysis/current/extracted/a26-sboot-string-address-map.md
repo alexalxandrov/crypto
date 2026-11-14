@@ -30,6 +30,23 @@ androidboot.other.locked: file offset 0x26b317; known VA 0x26b317 implies load b
 
 - VA 0x26ff1c / file offset 0x26ff1c: No signinfo : (%s)
 
+- VA 0x24854a / file offset 0x24854a: DDI
+- VA 0x250d3d / file offset 0x250d3d: MISC
+- VA 0x24aabd / file offset 0x24aabd: Fail_to_switch_device_state
+- VA 0x23e409 / file offset 0x23e409: null
+- VA 0x251971 / file offset 0x251971: Failed to switch device state.
+
+- VA 0x240c92 / file offset 0x240c92: Unlock
+- VA 0x23e7fd / file offset 0x23e7fd: Lock
+- VA 0x25a8ca / file offset 0x25a8ca: OEM %s in RPMB
+
+- VA 0x262794 / file offset 0x262794: %s : RPMB is not initialized yet
+
+- VA 0x2691ec / file offset 0x2691ec: recovery
+--wipe_data
+--reason=bootloader_unlock
+--locale=en_US
+
 
 ## OEM / unlock strings
 
