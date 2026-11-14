@@ -425,3 +425,42 @@ Examples of the common helper calls are visible in the same disassembly blocks: 
 - The semantics of getBytes and the exact guards/error paths must be confirmed from the instructions and register/data-flow context; do not infer them only from the method name.
 
 Next static step: inspect bounded disassembly windows around the high-value methods (especially getModesbit, commandForESS, makeTokenReq, installToken, sendFuseCmd and getStatus), then trace branch conditions, argument setup, return handling and adjacent strings. No Binder/ESS method was invoked; no token operation or device-state change occurred.
+
+
+## 12. AIDL wrapper control flow: read-only EngMode queries — 2026-11-14
+
+The owner supplied bounded AArch64 disassembly for the wrappers containing getModesbit, getLastTokenStatus and getStatus. The observed control flow supports the following limited conclusions.
+
+### getModesbit wrapper (call at 0x34d8)
+
+- A client object is allocated, its constructor is called, and getServer() is invoked.
+- The return value from getServer() is tested with TBNZ on bit 31. A set sign bit takes the error/logging path.
+- On a nonnegative getServer() result, getModesbit() is called; its return value is checked with the same sign-bit test.
+- A 51,200-byte buffer is requested using calloc(1, 0xC800).
+- getBytes(client, buffer, &length) is then called. Here the wrapper treats a zero return as success (CBZ); nonzero enters a logged failure path.
+- Allocation failure and getBytes failure both lead to the visible sentinel 0xF0000000 (-268435456) being stored in the wrapper's result slot.
+- On the successful getBytes path, the wrapper proceeds into buffer/vector handling beginning at 0x35EC; the full continuation should be captured before describing the final payload transformation.
+
+### getLastTokenStatus wrapper (call at 0x38F8)
+
+The supplied block shows the same broad structure: construct client, getServer(), sign-bit check, call getLastTokenStatus(), sign-bit check, allocate a 0xC800-byte buffer, call getBytes(), and branch on zero/nonzero. The visible error fallback again stores 0xF0000000 for the allocation/getBytes failure path. Method-level errors are logged and copied to an output integer slot.
+
+### getStatus wrapper (call at 0x58B4)
+
+- getServer() is called first; a set sign bit in its return value selects the error/logging path.
+- Otherwise the wrapper prepares the arguments for getStatus() from a caller-provided structure.
+- It loads pointer/length-like values from offsets 0x00/0x08 and 0x18/0x20, computes two differences for length arguments, loads two additional 32-bit values at offset 0x30, and places the final scalar argument on the stack.
+- The getStatus() return is tested by sign bit. Negative values are logged; the returned integer is later written to the result slot.
+- Unlike the two byte-return wrappers above, this shown path does not call getBytes().
+
+The exact semantic types and meaning of the caller-provided structure fields must not be inferred from offsets alone; they require the AIDL parcel/type definition or further data-flow analysis.
+
+### Binder status versus EngMode operation result
+
+In all three supplied snippets, the wrapper reaches AStatus_newOk() on the common completion path, while the EngMode result/error is carried separately in an output value or payload. Therefore a successful Binder transport/status object does not imply that the underlying EngMode operation succeeded. This is a key distinction for any later runtime interpretation.
+
+### Evidence boundaries
+
+These are static control-flow observations from three wrapper regions, not proof of runtime invocation. Exact permission/caller checks, Binder transaction-code mapping and final output serialization are still open. The getBytes() return convention is established only for these call sites: zero is treated as success; nonzero as failure. Do not generalize beyond observed wrappers until its implementation is inspected.
+
+No Binder/ESS method was invoked, no token operation was attempted, and no device state was changed.
