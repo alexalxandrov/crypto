@@ -897,3 +897,8 @@ J6 static analysis links STEADY/PIT policy loading, signature validation and loc
 Current official Chimera model page for SM-A266B lists **Unlock / Relock Bootloader (EUB)**: https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b . This supersedes the older claim that the first-party page did not list the operation. Exact support for A266BXXUCDZJ6 / Android 17 / One UI 9 / BIT 12 / CAU remains unconfirmed; written support confirmation is required before payment or disassembly. Full assessment and support request: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
 
 Official Chimera download page lists Windows 10 / Windows 11 32/64-bit; Linux, macOS and Windows 7 are not listed as supported hosts. Public A26-specific kernel source (Linux 5.15.180) disables KEXEC and KEXEC_FILE; the installed J6 kernel is 5.15.197, so exact runtime config remains unknown.
+
+
+## 17. AVB recovery hash proof — 2026-11-14
+
+Saved Samsung `vbmeta.img` contains a signed HASH descriptor for `recovery` (image_size 71,877,408 bytes; SHA-256 `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`). Stock recovery dump includes an AVB footer and matches the descriptor. The official TWRP TAR's recovery.img has no AVB footer and fails the signed recovery digest. Direct `dd` while locked is therefore not a viable boot path; do not test-write. Full report: `a26/recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md`.
