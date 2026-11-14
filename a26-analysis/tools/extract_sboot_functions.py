@@ -30,6 +30,13 @@ TARGETS = [
     "fcn.0012577c",
     "fcn.001895dc",
     "fcn.00123f14",
+    "fcn.001558e4",
+    "fcn.0018efb4",
+    "fcn.00179f90",
+    "fcn.0017b0a0",
+    "fcn.0017b1f8",
+    "fcn.0014b120",
+    "fcn.0014b248",
 ]
 
 STRING_TERMS = [
@@ -56,6 +63,7 @@ current_function = "<outside-function>"
 current_target: str | None = None
 buffer: list[str] = []
 line_no = 0
+header_samples: list[str] = []
 
 def flush_function() -> None:
     global buffer, current_target
@@ -115,6 +123,8 @@ for target in TARGETS:
     index = index_rows.get(target, "not present in function-index.tsv")
     report.append(f"- {target}: **{status}**; index: `{index}`")
 
+report += ["", "## Header samples", ""]
+report += [f"- `{sample}`" for sample in header_samples]
 report += ["", "## Direct call sites", ""]
 for target in TARGETS:
     report.append(f"### {target}")
@@ -133,6 +143,7 @@ report += ["", "## Scope", "", "Static extraction only. No device access, no wri
 
 missing = sorted(target_set - found)
 print(f"Extracted {len(found)}/{len(TARGETS)} functions.")
+print("Header samples:", " | ".join(header_samples[:10]))
 print(f"Decompressed {line_no} lines.")
 if missing:
     print("Not extracted:", ", ".join(missing))
