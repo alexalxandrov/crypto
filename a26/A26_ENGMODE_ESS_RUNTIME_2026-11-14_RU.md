@@ -1,6 +1,6 @@
 # Samsung Galaxy A26 5G — Engineering Mode / ESS: runtime evidence
 
-**Дата наблюдений:** 14 ноября 2026 г.  
+**Дата наблюдений:** 14 ноября 2026 г. (2026-11-14)  
 **Устройство:** Samsung Galaxy A26 5G, SM-A266B  
 **Сборка:** A266BXXUCDZJ6 (Android 17 / One UI 9; профиль текущего досье)  
 **Режим сбора:** read-only; читались свойства, состояние процессов, метаданные файлов и журналы.
@@ -139,5 +139,6 @@ Android OEMLockService сообщал, что пользовательская/�
 
 ---
 
+**Подробный технический intake:** [RUNTIME_DIAGNOSTICS_2026-11-14.md](../a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md).  
 **Первичный источник наблюдений:** вывод Termux/KernelSU, предоставленный владельцем устройства в переписке 14.11.2026.  
 **Связанный корпус:** a26-analysis/engmode/current/ и сводка a26/README_RU.md.
