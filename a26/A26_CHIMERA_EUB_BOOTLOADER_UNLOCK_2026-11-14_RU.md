@@ -246,3 +246,36 @@ A model/build-specific English support request is saved in:
 It asks for exact J6 / Android 17 / BIT C support, whether the direct unlock or KnoxGuard Patch is the correct operation when KG is already Completed, whether a testpoint is mandatory, data-wipe consequences, and recovery risk. It deliberately omits DID/Chip ID and other unnecessary device identifiers.
 
 **Current assessment:** this is now a concrete, officially listed candidate path, not merely a generic guess. The remaining blockers are (a) exact-build compatibility confirmation, (b) access to the authenticated A26 testpoint diagram, and (c) a physical Windows 10/11 host. Do not purchase credits or bridge pads before those are resolved.
+
+## 11. EUB physical connection and testpoint verification
+
+Additional live checks on 2026-11-14:
+
+- The exact SM-A266B model page links the official TP guide: https://chimeratool.com/en/test-points/1440-test-point-for-samsung-galaxy-a26-5g-models.html
+- The guide redirects to Chimera login when accessed without an authenticated account. No pad coordinates/image were publicly retrievable.
+- The official EUB connect guide says most Samsung Exynos devices require hardware testpoints and describes EUB as a low-level Exynos USB booting interface. It also says Chimera handles EUB via UsbDk, with no separate Exynos driver required:
+  https://chimeratool.com/en/docs/samsung-exynos-devices-connect-the-device-in-eub-mode
+- The official Switch to EUB model search did not list SM-A266B. The no-testpoint guide is a limited method, not a general alternative:
+  https://chimeratool.com/en/models?q=Switch%20to%20EUB
+  https://chimeratool.com/en/docs/eub-mode-without-test-point
+- A third-party E-GSM Tool page for SM-A266B is labelled EDL / ISP / BROM. It is not an authenticated Chimera EUB schematic and must not be used to bridge pads for EUB:
+  https://www.egsmtool.com/testpoints/159
+- A YouTube video found in search is for SM-A266E, not the user's SM-A266B. It is not a substitute for the exact board revision 5 guide.
+- An older GSMHosting post from July 2025 reports one user failed to enumerate an EUB port on SM-A266B while attempting FRP. Chimera support replied that without a port in Device Manager they had no solution. This predates the Aug 2026 EUB support update and is not conclusive for the current build, but it is a real historical caution:
+  https://forum.gsmhosting.com/vbb/f898/samsung-galaxy-a26-sm-a266b-frp-unlock-android-15-a-3411327
+
+### Host OS / license constraints
+
+Chimera download page version 48.49.1158 (2026-11-10) lists Windows 10 and Windows 11 32/64-bit:
+https://chimeratool.com/en/download
+
+The current Chimera EULA requires at least Windows 10 and prohibits use in virtual machines. Therefore do not plan on Parrot/Linux+Wine, macOS, Windows 7, or a Windows VM as a supported execution host. A physical Windows 10/11 computer is required for the supported route.
+
+### Practical decision
+
+The EUB bootloader unlock is now a real, exact-model listed candidate. Before purchase or disassembly, obtain:
+1. Chimera support confirmation for A266BXXUCDZJ6 / Android 17 / BIT C / KG Completed.
+2. The official logged-in A266B testpoint diagram and confirmation it matches HW REV 5.
+3. Access to a physical Windows 10/11 host.
+
+Do not use the E-GSMTool EDL/ISP/BROM diagram or the SM-A266E video as an EUB testpoint guide. Do not short unidentified pads.
