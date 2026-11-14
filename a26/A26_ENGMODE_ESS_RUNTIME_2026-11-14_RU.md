@@ -142,3 +142,18 @@ Android OEMLockService сообщал, что пользовательская/�
 **Подробный технический intake:** [RUNTIME_DIAGNOSTICS_2026-11-14.md](../a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md).  
 **Первичный источник наблюдений:** вывод Termux/KernelSU, предоставленный владельцем устройства в переписке 14.11.2026.  
 **Связанный корпус:** a26-analysis/engmode/current/ и сводка a26/README_RU.md.
+
+
+## Дополнение: зависимости ELF и граница TEE — 14.11.2026
+
+Новая проверка readelf и strings на шести библиотеках с устройства уточнила архитектуру:
+
+- libengmode_server.so имеет DT_NEEDED на libengmode_tlc.so и libengmode2lite.so, а также libbinder.so, libstork_shared.so, libsecril-client.so и librtts_client.so.
+- libengmode_tlc.so зависит от libteecl.so; присутствуют имена TEEC_InitializeContext, TEEC_OpenSession, TEEC_InvokeCommand и em_tlc_send_teegris. Это подтверждает использование TEE Client API как транспорта к защищённой среде. UUID/команды TA и точная семантика обмена не установлены.
+- libengmode15.so содержит ESS request/token/STEADY functions, crypto dependency и строки динамической интеграции с RIL.
+- libengmode2lite.so содержит строки парсинга токенов/сертификатов, проверки подписей, nonce/session key и ESI metadata. Это наличие кода, не доказательство успешного выполнения.
+- vendor.samsung.hardware.security.engmode-V1-ndk.so содержит AIDL Bp/Bn glue и зависит от libbinder_ndk.so; libengmode_client.so и libengmode_server.so зависят от classic libbinder.so. Следовательно, нельзя сводить все интерфейсы к одному Binder protocol.
+
+Шесть live SHA-256 записаны в [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md). Сравнение этих хешей с хранящимися binary artifacts репозитория пока не выполнялось.
+
+**Новая граница доказанного:** подтверждены DT_NEEDED зависимости и TEE Client API names; прямой порядок вызовов между AIDL HAL, emservice и TLC пока не установлен. Не выполнялись Binder/ESS state-changing calls и записи в разделы устройства.
