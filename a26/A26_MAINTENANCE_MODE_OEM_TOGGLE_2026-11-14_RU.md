@@ -112,3 +112,12 @@ Root через KernelSU подтверждает права процесса An
 - `a26/TWRP_RESEARCH_STATUS.md` — отдельное исследование recovery/FBE и запрет на тестовую запись при locked state.
 
 **Итог:** временно включаемый Android OEM Unlock switch — наблюдение уровня UI/framework. Maintenance Mode не содержит Developer Options и не решает переход в Download Mode. На последнем зафиксированном состоянии bootloader/AVB остаётся locked; подтверждённого способа unlock для текущего SM-A266B / A266BXXUCDZJ6 пока нет.
+
+
+## 10. Why the switch can appear without unlock — new SBoot evidence
+
+The new focused extraction `a26-analysis/current/extracted/bootarg-oem-locked-and-xref-audit.asm` shows that J6 SBoot function `fcn.0016f3e0` passes `androidboot.other.locked=%d` to `fcn.0017184c` with value 1 (VA `0x16fe84–0x16fe90`). This is consistent with the previously observed Android property `ro.boot.other.locked=1`.
+
+KernelSU `resetprop` can override that property after SBoot has already executed, which explains why Android Settings can display OEM Unlock temporarily. It does not change the signed STEADY policy or the protected cached lock state. The UI switch is therefore not proof of bootloader authorization.
+
+The separate `fcn.0017dfdc` customer-token synchronizer still reads mode bit 3, compares it with protected cached state, and contains an unlock-related recovery wipe path. The exact bit label and state polarity remain unresolved. This separation explains why revealing/enabling the UI switch has not produced the Download Mode Device Unlock confirmation.
