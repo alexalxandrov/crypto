@@ -55,6 +55,16 @@ Decompressed lines: 469631
 - fcn.0016e57c: **EXTRACTED**; index: `0x0016e57c	fcn.0016e57c	31`
 - fcn.001503d0: **EXTRACTED**; index: `0x001503d0	fcn.001503d0	88`
 - fcn.00150b58: **EXTRACTED**; index: `0x00150b58	fcn.00150b58	35`
+- fcn.00114b6c: **EXTRACTED**; index: `0x00114b6c	fcn.00114b6c	377`
+- fcn.00114100: **EXTRACTED**; index: `0x00114100	fcn.00114100	441`
+- fcn.00115b44: **EXTRACTED**; index: `0x00115b44	fcn.00115b44	763`
+- fcn.00115610: **EXTRACTED**; index: `0x00115610	fcn.00115610	358`
+- fcn.00153180: **EXTRACTED**; index: `0x00153180	fcn.00153180	342`
+- fcn.00153998: **EXTRACTED**; index: `0x00153998	fcn.00153998	551`
+- fcn.0017f2ec: **EXTRACTED**; index: `0x0017f2ec	fcn.0017f2ec	73`
+- fcn.0017f4c4: **EXTRACTED**; index: `0x0017f4c4	fcn.0017f4c4	191`
+- fcn.0017ed08: **EXTRACTED**; index: `0x0017ed08	fcn.0017ed08	400`
+- fcn.0017f76c: **EXTRACTED**; index: `0x0017f76c	fcn.0017f76c	146`
 
 ## Function header samples
 
@@ -1813,6 +1823,44 @@ Decompressed lines: 469631
 - line 243571, caller fcn.001a8714: │      │    0x001a87cc      bl    fcn.00150b58
 - line 243608, caller fcn.001a8714: │           0x001a8860      bl    fcn.00150b58
 - line 394511, caller fcn.0022e430: │       ╎   0x0022e7ac      bl    fcn.00150b58
+
+### fcn.00114b6c
+- line 57490, caller fcn.00104c90: │      ││   0x00104d20      bl    fcn.00114b6c
+
+### fcn.00114100
+- line 37920, caller fcn.000f47c4: │           0x000f47fc      bl    fcn.00114100
+
+### fcn.00115b44
+- No direct BL call found in the scanned text.
+
+### fcn.00115610
+- line 77047, caller fcn.00115b44: │           0x00115b74      bl    fcn.00115610
+
+### fcn.00153180
+- line 76979, caller fcn.00115610: │       │   0x00115ab0      bl    fcn.00153180
+
+### fcn.00153998
+- line 76986, caller fcn.00115610: │      ││   0x00115acc      bl    fcn.00153998
+
+### fcn.0017f2ec
+- line 72832, caller fcn.00111bb4: │ │││││││   0x00111e34      bl    fcn.0017f2ec
+- line 73102, caller fcn.00111bb4: │ │  ││││   0x00112260      bl    fcn.0017f2ec
+- line 150996, caller fcn.001551fc: │ ╎╎╎╎╎│╎   0x001554f0      bl    fcn.0017f2ec
+- line 186589, caller fcn.00175b28: │      ││   0x00175c08      bl    fcn.0017f2ec
+- line 187096, caller fcn.00175f44: │ │ │││││   0x00176328      bl    fcn.0017f2ec
+- line 193830, caller fcn.0017bdc0: │ ╎╎╎╎      0x0017beac      bl    fcn.0017f2ec
+- line 197271, caller fcn.0017ed08: │     │     0x0017edcc      bl    fcn.0017f2ec
+- line 198171, caller fcn.0017fa60: │           0x0017fa8c      bl    fcn.0017f2ec
+
+### fcn.0017f4c4
+- line 187592, caller fcn.00175f44: │ │╎│││││   0x00176acc      bl    fcn.0017f4c4
+
+### fcn.0017ed08
+- line 150991, caller fcn.001551fc: │ ╎╎╎╎╎│╎   0x001554dc      bl    fcn.0017ed08
+
+### fcn.0017f76c
+- line 150978, caller fcn.001551fc: │ ╎╎╎╎╎│╎   0x001554ac      bl    fcn.0017f76c
+- line 187032, caller fcn.00175f44: │ │││││││   0x00176230      bl    fcn.0017f76c
 
 ## Direct ADRP+ADD xrefs to OEM/unlock strings
 

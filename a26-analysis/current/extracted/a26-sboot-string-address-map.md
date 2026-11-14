@@ -61,3 +61,7 @@ androidboot.other.locked: file offset 0x26b317; known VA 0x26b317 implies load b
 - --reason=bootloader_unlock: file offset 0x269201, inferred VA 0x269201
 - PERSISTENT: file offset 0x265467, inferred VA 0x265467
 - PO_OEM_UNLOCK: file offset 0x26529e, inferred VA 0x26529e
+
+## Raw pointer references to OEM / unlock strings and SBoot functions
+
+- VA 0x26b317: first LE32 offset 0x1d594f; first LE64 offset none
