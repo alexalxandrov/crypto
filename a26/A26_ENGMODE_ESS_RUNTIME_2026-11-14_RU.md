@@ -179,3 +179,20 @@ Android OEMLockService сообщал, что пользовательская/�
 `libengmode15.so` экспортирует `em_ess_make_token_request`, `em_ess_install_token_v1` и `em_write_to_steady`, но не фигурирует в зафиксированном прямом DT_NEEDED списке `libengmode_server.so`; связь вызова не предполагается без дополнительных доказательств.
 
 Результаты записаны в [подробную архитектурную карту](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) и [runtime diagnostics](../a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md). Вызовы Binder/ESS не выполнялись, разделы и состояние устройства не изменялись.
+
+
+## Дополнение: AIDL-служба напрямую импортирует legacy EngMode client API — 14.11.2026
+
+Свежий `readelf -Ws` показал, что `vendor.samsung.hardware.security.engmode-service` импортирует большой набор методов `android::engmodeclient`, а эти же символы определены в `libengmode_client.so`. Исполняемый файл также имеет прямой `DT_NEEDED` на эту библиотеку и импортирует `BnSehEngmode` из AIDL NDK glue.
+
+Среди импортов подтверждены:
+
+- token/request: `makeTokenReq`, `getRequestMsg`, `getToken`, `installToken`, `isTokenInstalled`, `removeToken`, `getLastTokenStatus`, `getTokenInfoForJanus`;
+- mode/status: `getModesbit`, `getStringModes`, `getNumOfModes`, `getStatus`;
+- ESS/ITL: `commandForESS`, `makeITLReq`, `recoveryITL`;
+- time/metadata: `getServerTime`, `getPriorityTime`, `setPriorityTime`, `getTUC`, `getVersion`;
+- дополнительные: `getServer`, `getID`, `getExpiryDate`, `sendFuseCmd`, `getBytes`.
+
+Таким образом, AIDL-service executable использует legacy EngMode client API напрямую. Это подтверждённая ELF-связь, а не просто совпадение библиотечных зависимостей. Точный порядок forwarding внутри AIDL-обработчиков, имя legacy Binder service и доступность каждого метода из внешней транзакции ещё не установлены.
+
+Подробности и полный перечень импортов записаны в [ARCHITECTURE_STATIC_FINDINGS](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) и [RUNTIME_DIAGNOSTICS](../a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md). Никакие методы не вызывались; устройство не изменялось.
