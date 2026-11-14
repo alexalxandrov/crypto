@@ -805,3 +805,24 @@ SamFW's ACR catalogue independently lists the installed `A266BXXUCDZJ6` as Andro
 The SM-A266B combination-firmware listing currently says combination files are still being sought; no verified BIT 12 combination package was located: https://samfw.com/firmware/SM-A266B/MID
 
 This does not establish a safe downgrade path. The official Chimera ODIN unlock announcement's no-emtoken path is only for Android versions below 16; Android 16 itself does not satisfy that condition, and Android 17 does not either. A same-BIT Android 16 build is therefore not a solution by itself. Do not flash an older package solely to test this.
+
+## 23. KEXEC / RAM recovery feasibility — 2026-11-14
+
+A26-specific kernel source located: https://github.com/os-guy-original/android_kernel_samsung_a26x, branch `lineage-23.2`, device defconfig `arch/arm64/configs/s5e8835-a26xxx_defconfig`.
+
+The A26 defconfig contains:
+```text
+CONFIG_IKCONFIG=y
+CONFIG_IKCONFIG_PROC=y
+# CONFIG_KEXEC is not set
+# CONFIG_KEXEC_FILE is not set
+```
+The source Makefile is 5.15.180 and the repository describes itself as Android 16 A26 kernel source. The current device reports 5.15.197 / Android 17, so this is a model-specific proxy, not exact proof of the live J6 config. Verify the running kernel through `/proc/config.gz`.
+
+Read-only collector: `a26/recovery/a26-readonly-preflight.sh`. Full assessment: `a26/recovery/A26_KEXEC_RAM_RECOVERY_FEASIBILITY_2026-11-14_RU.md`.
+
+The AVB report independently establishes a signed recovery HASH descriptor in vbmeta: expected stock image size 71,877,408 bytes and SHA-256 `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`. The official TWRP TAR recovery member is 74,027,008 bytes and does not match. Root-level dd cannot change the signed descriptor. Do not write recovery while locked.
+
+Firmware anti-rollback check: Android 15 A266B firmware tops out at binary 4; current J6 is binary C/12. Android 16 has a binary C build (A266BXXSCCZH3), but Chimera's published Download Mode unlock boundary is below Android 16. Downgrading to Android 15 is blocked by SW REV 12; Android 16 C does not meet the published version boundary.
+
+EUB remains uncertain: current Chimera SM-A266B model page lists Unlock/Relock Bootloader (EUB), but A26 EUB launch announcement omitted that operation. Exact Android 17 / BIT C support remains unconfirmed. See `A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
