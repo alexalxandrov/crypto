@@ -336,3 +336,48 @@ The owner checked common executable names (`llvm-objdump`, versioned llvm-objdum
 Use the available `readelf -rW` to preserve the complete relocation-to-dynamic-symbol mapping, then optionally install a Termux package that supplies LLVM/binutils disassembly tools and disassemble only this executable. The official Termux `libllvm` subpackage manifest includes `objdump`, `llvm-objdump`, and Android-target-prefixed objdump binaries; package installation is optional and must be initiated by the device owner. Do not call any Binder/ESS method.
 
 No runtime behavior was tested and no device state or storage was changed.
+
+
+## 10. AIDL executable: PLT ↔ JUMP_SLOT mapping — 2026-11-14
+
+The owner installed Termux LLVM 21.1.8. Direct access to the vendor executable from the unprivileged Termux shell returned Permission denied; rerunning LLVM under su -c produced the relocation, PLT and full-disassembly files. Captured files: ~/a26_engmode/relocations.txt (66 lines), ~/a26_engmode/plt.txt (380 lines), and ~/a26_engmode/disassembly.txt (3459 lines).
+
+The relocation dump and .plt disassembly agree. In each PLT stub, the ldr x17, [x16, #offset] access resolves into .got.plt; its effective address matches the corresponding R_AARCH64_JUMP_SLOT relocation. This provides a concrete PLT-stub-to-dynamic-relocation map.
+
+| EngMode client method | PLT stub | JUMP_SLOT / GOT.PLT |
+|---|---:|---:|
+| engmodeclient() | 0x6140 | 0x74b0 |
+| getServer() | 0x6150 | 0x74b8 |
+| getTokenInfoForJanus() | 0x6160 | 0x74c0 |
+| getBytes() | 0x6180 | 0x74d0 |
+| ~engmodeclient() | 0x6190 | 0x74d8 |
+| getModesbit() | 0x61e0 | 0x7500 |
+| getStringModes() | 0x61f0 | 0x7508 |
+| getLastTokenStatus() | 0x6200 | 0x7510 |
+| getPriorityTime() | 0x6210 | 0x7518 |
+| setPriorityTime() | 0x6220 | 0x7520 |
+| getTUC() | 0x6230 | 0x7528 |
+| getToken() | 0x6240 | 0x7530 |
+| makeITLReq() | 0x6250 | 0x7538 |
+| recoveryITL() | 0x6260 | 0x7540 |
+| commandForESS() | 0x6270 | 0x7548 |
+| getServerTime() | 0x6280 | 0x7550 |
+| makeTokenReq() | 0x6290 | 0x7558 |
+| getRequestMsg() | 0x62a0 | 0x7560 |
+| getID() | 0x62b0 | 0x7568 |
+| getExpiryDate() | 0x62c0 | 0x7570 |
+| removeToken() | 0x62d0 | 0x7578 |
+| getNumOfModes() | 0x62e0 | 0x7580 |
+| sendFuseCmd() | 0x62f0 | 0x7588 |
+| getVersion() | 0x6300 | 0x7590 |
+| isTokenInstalled() | 0x6310 | 0x7598 |
+| installToken() | 0x6320 | 0x75a0 |
+| getStatus() | 0x6330 | 0x75a8 |
+
+The AIDL NDK BnSehEngmode constructor and destructor also have PLT entries (0x60d0 and 0x6120 respectively), with JUMP_SLOT addresses 0x7478 and 0x74a0.
+
+### Evidence boundary
+
+This mapping proves that the imported methods have PLT stubs and dynamic-linker slots in the executable. It does not yet prove which BL instructions in .text target each stub, whether the corresponding code path is reachable through an AIDL transaction, or whether the methods execute at runtime. The next step is to extract BL references from the saved full disassembly and inspect their containing-function context.
+
+The earlier note saying LLVM was unavailable is superseded: LLVM 21.1.8 is now installed. Root access is required to read this vendor executable from Termux. All operations so far remain static/read-only; no Binder/ESS methods or token operations were invoked and no device state was changed.
