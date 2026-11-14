@@ -81,3 +81,11 @@ See [A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md](A26_MAINTENANCE_MODE_OEM_
 Официальная модельная страница Chimera для SM-A266B теперь показывает `Unlock / Relock Bootloader (EUB)`. Совместимость с A266BXXUCDZJ6 / Android 17 / BIT 12 / CAU не подтверждена; перед оплатой и разборкой нужен письменный ответ Chimera. Полный разбор и текст запроса: [A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md](A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md).
 
 Аппаратная платформа: Exynos 1380 (`s5e8835`), не Exynos 1280.
+
+## RAM recovery / kexec feasibility — 2026-11-14
+
+- [A26_KEXEC_RAM_RECOVERY_FEASIBILITY_2026-11-14_RU.md](recovery/A26_KEXEC_RAM_RECOVERY_FEASIBILITY_2026-11-14_RU.md) — A26-specific kernel defconfig, kexec feasibility, firmware anti-rollback, AVB recovery hash gate.
+- [a26-readonly-preflight.sh](recovery/a26-readonly-preflight.sh) — read-only runtime collector for J6 `/proc/config.gz`, OEM properties, kexec interfaces and recovery block metadata.
+- [A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md](recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md) — signed vbmeta recovery hash descriptor; TWRP mismatch.
+
+Published A26 defconfig has `CONFIG_KEXEC` and `CONFIG_KEXEC_FILE` disabled; exact Android 17 J6 runtime config is pending. Standard TWRP `dd` is blocked by the signed recovery hash descriptor while bootloader remains locked. Chimera EUB remains unconfirmed for Android 17 / BIT C.
