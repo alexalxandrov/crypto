@@ -29,6 +29,9 @@ TARGETS = [
     "fcn.0016d638", "fcn.00177854", "fcn.0012467c", "fcn.0014dbd8",
     "fcn.0014dcc4", "fcn.001392bc", "fcn.0013d500", "fcn.0013df98",
     "fcn.0013deb8", "fcn.000f9608", "fcn.0016e57c", "fcn.001503d0", "fcn.00150b58",
+    "fcn.00114b6c", "fcn.00114100", "fcn.00115b44", "fcn.00115610",
+    "fcn.00153180", "fcn.00153998", "fcn.0017f2ec", "fcn.0017f4c4",
+    "fcn.0017ed08", "fcn.0017f76c",
 ]
 
 STRING_TERMS = [
@@ -210,6 +213,14 @@ if RAW_SBOOT.is_file():
             mapping.append(f"- {term}: present at file offset 0x{p:x}")
         else:
             mapping.append(f"- {term}: not found")
+    mapping += ["", "## Raw pointer references to OEM / unlock strings and SBoot functions", ""]
+    pointer_targets = known_vas + [0x17af7c, 0x17eb34, 0x17dfdc, 0x14b6c,
+                                   0x16f3e0, 0x17184c, 0x1758fc, 0x17b7c8]
+    for value in pointer_targets:
+        p32 = raw.find(value.to_bytes(4, "little"))
+        p64 = raw.find(value.to_bytes(8, "little"))
+        if p32 >= 0 or p64 >= 0:
+            mapping.append(f"- VA 0x{value:x}: first LE32 offset {('0x%x' % p32) if p32 >= 0 else 'none'}; first LE64 offset {('0x%x' % p64) if p64 >= 0 else 'none'}")
     (OUT / "a26-sboot-string-address-map.md").write_text("\n".join(mapping) + "\n", encoding="utf-8")
 
 print(f"Extracted {len(found)}/{len(TARGETS)} functions from {len(lines)} lines.")
