@@ -364,3 +364,23 @@ The executable also imports `BnSehEngmode` interface symbols from `vendor.samsun
 This is direct link-time evidence for an AIDL-to-`engmodeclient` adapter layer. The exact per-method forwarding, call-site reachability, client service name and transaction mapping remain unverified. The empty filtered `readelf -rW` result is recorded only as a limitation of this capture; it does not negate the dynamic-symbol imports.
 
 No methods were called; this is static ELF evidence only.
+
+
+## 14. AIDL service executable: section layout / PLT metadata — 2026-11-14
+
+Owner-provided `readelf -S` and `readelf -d` output for `vendor.samsung.hardware.security.engmode-service`:
+
+- `.text` size: `0x3054` bytes.
+- `.plt` size: `0x3f0` bytes.
+- `.rela.plt` size: 1464 bytes; for ELF64/AArch64 standard 24-byte RELA records, this is 61 entries.
+- `.dynsym` size: `0x708`; `.dynstr` size: `0xd64`.
+- `.got` size: `0x20`; `.got.plt` size: `0x200`.
+- Dynamic flags: `BIND_NOW`, `NOW PIE`.
+
+The filtered section list showed no `.symtab` or `.strtab`; only a small set of local weak/support definitions was visible in the executable's dynamic symbol table. Internal implementation function names are not available from this symbol view.
+
+No disassembler binary was found in the current Termux PATH. Thus no disassembly/call-site analysis was completed. The 61 PLT relocation records are not 61 EngMode operations; the complete relocation table is needed to classify imports.
+
+Next capture should include the full `readelf -rW` output. If the owner opts to install tools, the official Termux LLVM tool subpackage includes `objdump`, `llvm-objdump` and Android-target-prefixed objdump binaries. This is an optional Termux package install, not a required device change.
+
+No methods were invoked and no device state was modified.
