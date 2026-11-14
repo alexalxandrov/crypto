@@ -23,7 +23,10 @@ TARGETS = [
     "fcn.001895dc", "fcn.00123f14", "fcn.001558e4", "fcn.0018efb4",
     "fcn.00179f90", "fcn.0017b0a0", "fcn.0017b1f8", "fcn.0014b120",
     "fcn.0014b248", "fcn.001758fc", "fcn.0012c4dc", "fcn.0012c3dc",
-    "fcn.0012bbe0", "fcn.00126b3c", "fcn.001283b8", "fcn.00138ddc", "fcn.002049dc", "fcn.00138f30",
+    "fcn.0012bbe0", "fcn.00126b3c", "fcn.001283b8", "fcn.00138ddc",
+    "fcn.0022d7ec", "fcn.0012c624", "fcn.0012c344", "fcn.0012c3a4",
+    "fcn.0012b810", "fcn.00126898", "fcn.001268b8", "fcn.0012a2a4",
+    "fcn.00127bc0", "fcn.0012c830", "fcn.002049dc", "fcn.00138f30",
     "fcn.001390c0", "fcn.00114a28", "fcn.001512d4", "fcn.0014b120", "fcn.0017db48", "fcn.001866ac",
     "fcn.001551fc", "fcn.0016e5f4", "fcn.0017cb74", "fcn.00188654",
     "fcn.00179e6c", "fcn.0017bb70", "fcn.0017d674", "fcn.0017bdc0",
@@ -150,7 +153,12 @@ known_vas = {0x24edc5, 0x23f11a, 0x245cf7, 0x2463d5, 0x265467, 0x26529e,
              0x269201, 0x26b317, 0x2746cd, 0x26ff1c, 0x24854a, 0x250d3d,
              0x24aabd, 0x23e409, 0x251971, 0x240c92, 0x23e7fd, 0x25a8ca,
              0x262794, 0x2691ec, 0x260425, 0x24620d, 0x269191, 0x2561a0,
-             0x2463b3, 0x276a7f}
+             0x2463b3, 0x276a7f, 0x23a6fb, 0x26cdd6, 0x23c827, 0x240c2a,
+             0x253872, 0x240b79, 0x25c25f, 0x23a683, 0x24c331, 0x24c361,
+             0x2629f0, 0x278560, 0x25e0c1, 0x257684, 0x25e0f0, 0x243170,
+             0x25c2cd, 0x2558f3, 0x23a721, 0x2559d2, 0x27858d, 0x260794,
+             0x2607b6, 0x23c8cb, 0x264c50, 0x251077, 0x25593b, 0x2785ae,
+             0x27ca0b, 0x26f848, 0x23e7b9, 0x24f0ce}
 string_xrefs = []
 current_function = "<unknown>"
 for i, line in enumerate(lines):
@@ -193,7 +201,12 @@ if RAW_SBOOT.is_file():
                  0x275d4a, 0x26d660, 0x269201, 0x26b317, 0x2746cd, 0x26ff1c, 0x24854a, 0x250d3d,
                  0x24aabd, 0x23e409, 0x251971, 0x240c92, 0x23e7fd, 0x25a8ca,
                  0x262794, 0x2691ec, 0x260425, 0x24620d, 0x269191, 0x2561a0,
-                 0x2463b3, 0x276a7f]
+                 0x2463b3, 0x276a7f, 0x23a6fb, 0x26cdd6, 0x23c827, 0x240c2a,
+                 0x253872, 0x240b79, 0x25c25f, 0x23a683, 0x24c331, 0x24c361,
+                 0x2629f0, 0x278560, 0x25e0c1, 0x257684, 0x25e0f0, 0x243170,
+                 0x25c2cd, 0x2558f3, 0x23a721, 0x2559d2, 0x27858d, 0x260794,
+                 0x2607b6, 0x23c8cb, 0x264c50, 0x251077, 0x25593b, 0x2785ae,
+                 0x27ca0b, 0x26f848, 0x23e7b9, 0x24f0ce]
     if pos >= 0:
         base = 0x26B317 - pos
         mapping += [f"androidboot.other.locked: file offset 0x{pos:x}; known VA 0x26b317 implies load base 0x{base:x}.", ""]
