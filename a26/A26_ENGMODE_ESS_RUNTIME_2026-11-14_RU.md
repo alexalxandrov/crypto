@@ -220,3 +220,28 @@ Android OEMLockService сообщал, что пользовательская/�
 Сопоставлены адреса PLT-stub с R_AARCH64_JUMP_SLOT для ключевых методов legacy API. Например: engmodeclient() — PLT 0x6140 / slot 0x74b0; getServer() — 0x6150 / 0x74b8; getModesbit() — 0x61e0 / 0x7500; commandForESS() — 0x6270 / 0x7548; makeTokenReq() — 0x6290 / 0x7558; installToken() — 0x6320 / 0x75a0; getStatus() — 0x6330 / 0x75a8. Полная таблица из 27 EngMode методов находится в архитектурной карте и runtime diagnostics.
 
 Это доказывает соответствие PLT stub ↔ GOT/relocation slot, но ещё не доказывает фактические BL call sites в .text и достижимость методов через AIDL transactions. Предыдущая заметка об отсутствии objdump устарела. Никакие Binder/ESS методы не вызывались; состояние устройства не менялось.
+
+
+## Дополнение: прямые BL call sites из AIDL executable — 14.11.2026
+
+По сохранённому LLVM-дизассемблеру найдены прямые AArch64 BL-вызовы ко всем 23 прикладным методам android::engmodeclient из relocation inventory. Четыре общих метода — constructor, getServer, getBytes, destructor — также многократно вызываются. Следовательно, все 27 импортированных EngMode client symbols имеют хотя бы одну ссылку-вызов в .text.
+
+Адреса method-specific call sites:
+- getTokenInfoForJanus — 0x32c8;
+- getModesbit — 0x34d8;
+- getStringModes — 0x36e8;
+- getLastTokenStatus — 0x38f8;
+- getPriorityTime — 0x3b08; setPriorityTime — 0x3d2c;
+- getTUC — 0x3f24; getToken — 0x403c;
+- makeITLReq — 0x4274; recoveryITL — 0x4480;
+- commandForESS — 0x45b8; getServerTime — 0x47c8;
+- makeTokenReq — 0x4a24; getRequestMsg — 0x4c98;
+- getID — 0x4eb8; getExpiryDate — 0x50c8;
+- removeToken — 0x52bc; getNumOfModes — 0x53ac;
+- sendFuseCmd — 0x549c; getVersion — 0x558c;
+- isTokenInstalled — 0x567c; installToken — 0x5780;
+- getStatus — 0x58b4.
+
+Повторяющаяся структура вокруг вызовов — constructor → getServer() → специализированный метод → getBytes() → destructor — согласуется с набором AIDL adapter/wrapper routines. Однако точные границы функций, transaction-code mapping, проверки разрешений и достижимость каждого обработчика ещё не восстановлены. Семантику getBytes() также нельзя выводить только из имени.
+
+Следующий этап — разбор ограниченных диапазонов дизассемблера вокруг getModesbit, commandForESS, makeTokenReq, installToken, sendFuseCmd и getStatus: условия ветвления, подготовка аргументов, обработка результата и соседние строки. Это исключительно статический анализ; методы не вызывались и состояние устройства не менялось.
