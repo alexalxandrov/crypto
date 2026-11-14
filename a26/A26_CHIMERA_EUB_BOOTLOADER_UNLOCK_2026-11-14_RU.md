@@ -181,3 +181,25 @@ Current public firmware catalog cross-check:
 - SamFW's SM-A266B combination-firmware section currently says it is still working to obtain combination files; no verified BIT 12 combination package was located: https://samfw.com/firmware/SM-A266B/MID
 
 The official Chimera ODIN unlock announcement's no-emtoken path is limited to Android versions below 16. Android 16 is not below 16; Android 17 is further outside that boundary. A same-BIT Android 16 firmware does not solve the stated requirement. Do not downgrade merely to test this; it is not a demonstrated unlock path and could create additional rollback or data-loss risk.
+
+## 7. Firmware anti-rollback and Android 15 downgrade check
+
+Firmware history shows:
+- Android 15 releases for SM-A266B are binaries 1, 2, 3 and 4.
+- Android 16 releases progress through 4, 5, 6, 7, 8, 9, B (11), and C (12).
+- Android 16 build `A266BXXSCCZH3` is binary C/12.
+- Installed Android 17 `A266BXXUCDZJ6` is also binary C/12.
+
+Sources:
+- Samsung official history: https://doc.samsungmobile.com/SM-A266B/033189250417/eng.html
+- SamFW binary/SW REV table: https://samfw.com/firmware/SM-A266B/XME
+
+Therefore an Android 15 downgrade would require crossing the current SW REV 12 rollback floor down to binary 4 or lower; this is not a valid route. Android 16 C is not "below Android 16" and therefore does not satisfy the stated OS boundary of Chimera's Download Mode/ODIN unlock announcement. Do not attempt firmware downgrade as a way to reach that feature.
+
+## 8. Exact-build EUB support status remains unconfirmed
+
+The model page row and A26-specific EUB launch announcement still conflict. No public first-party evidence found in this check confirms that EUB's **Unlock / Relock Bootloader** operation completes on Android 17 / A266BXXUCDZJ6 / BIT C / CSC CAU. The separate EUB row may have been added later, but this has not been independently validated. Obtain written support confirmation before purchase, test-point work, or remote servicing.
+
+## 9. Related RAM-recovery path
+
+The A26-specific Android 16 kernel defconfig sets `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set`; current Android 17 J6 runtime config remains to be read from `/proc/config.gz`. See `a26/recovery/A26_KEXEC_RAM_RECOVERY_FEASIBILITY_2026-11-14_RU.md` and run `a26/recovery/a26-readonly-preflight.sh`.
