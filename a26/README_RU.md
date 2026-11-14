@@ -142,3 +142,10 @@ Latest evidence confirms that libengmode_server depends on TLC and 2Lite; TLC de
 LLVM 21.1.8 установлен в Termux; vendor executable анализировался через root из-за Permission denied для обычного пользователя. Сохранены ~/a26_engmode/relocations.txt, plt.txt и disassembly.txt. Получено соответствие PLT stub ↔ R_AARCH64_JUMP_SLOT для 27 EngMode client methods. Полная таблица адресов записана в [architecture static findings](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md).
 
 Это пока не call-site map: конкретные BL-инструкции из .text ещё требуется извлечь. Никакие ESS/Binder методы не вызывались; устройство не изменялось.
+
+
+### AIDL executable — direct EngMode call sites — 2026-11-14
+
+Owner-provided LLVM output identifies direct AArch64 BL references from .text to all 23 application-level EngMode client methods, plus repeated calls to constructor, getServer, getBytes and destructor. Therefore all 27 imported EngMode client symbols have at least one static call reference in the AIDL service executable. The per-method addresses are recorded in the architecture static findings document.
+
+The repeated constructor → getServer() → method-specific call → getBytes() → destructor sequence is consistent with AIDL adapter/wrapper routines, but exact transaction mapping and method reachability remain open. Next step: inspect bounded branch/argument/return contexts around selected call sites. No ESS/Binder methods were invoked; device state was not changed.
