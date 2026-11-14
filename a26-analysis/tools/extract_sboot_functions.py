@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "a26-analysis/current/full-sboot.asm.gz"
 INDEX = ROOT / "a26-analysis/current/function-index.tsv"
+RAW_SBOOT = ROOT / "a26-analysis/current/raw/sboot.bin"
 OUT = ROOT / "a26-analysis/current/extracted"
 
 TARGETS = [
@@ -136,6 +137,43 @@ report += ["## OEM / unlock string references", ""]
 report += [f"- {x}" for x in string_hits] if string_hits else ["- No string hits found."]
 report += ["", "## Scope", "", "Static extraction only; no device access, writes, token generation or firmware modification."]
 (OUT / "a26-sboot-targeted-xrefs.md").write_text("\n".join(report) + "\n", encoding="utf-8")
+
+# Resolve SBoot virtual addresses to raw-file offsets using the known direct
+# reference to androidboot.other.locked at VA 0x26b317.
+if RAW_SBOOT.is_file():
+    raw = RAW_SBOOT.read_bytes()
+    needle = b"androidboot.other.locked"
+    pos = raw.find(needle)
+    mapping = [
+        "# A26 J6 SBoot string / VA map", "",
+        f"Raw SBoot: {RAW_SBOOT.relative_to(ROOT)} ({len(raw)} bytes)",
+        f"SHA-256: {hashlib.sha256(raw).hexdigest()}", "",
+    ]
+    base = None
+    if pos >= 0:
+        base = 0x26B317 - pos
+        mapping += [f"androidboot.other.locked: file offset 0x{pos:x}; known VA 0x26b317 implies load base 0x{base:x}.", ""]
+        for va in [0x265467, 0x2659d8, 0x26b317]:
+            off = va - base
+            if 0 <= off < len(raw):
+                end = raw.find(bytes([0]), off, min(len(raw), off + 256))
+                if end < 0: end = min(len(raw), off + 256)
+                value = raw[off:end]
+                mapping.append(f"- VA 0x{va:x} / file offset 0x{off:x}: {value.decode('ascii','replace')}")
+            else:
+                mapping.append(f"- VA 0x{va:x}: outside raw image after base mapping")
+    else:
+        mapping += ["androidboot.other.locked was not found in raw SBoot; load-base mapping could not be inferred."]
+    mapping += ["", "## OEM / unlock strings", ""]
+    for term in STRING_TERMS:
+        p = raw.find(term.encode("ascii", "ignore"))
+        if p >= 0 and base is not None:
+            mapping.append(f"- {term}: file offset 0x{p:x}, inferred VA 0x{p+base:x}")
+        elif p >= 0:
+            mapping.append(f"- {term}: present at file offset 0x{p:x}")
+        else:
+            mapping.append(f"- {term}: not found")
+    (OUT / "a26-sboot-string-address-map.md").write_text("\n".join(mapping) + "\n", encoding="utf-8")
 
 print(f"Extracted {len(found)}/{len(TARGETS)} functions from {len(lines)} lines.")
 print("Function headers:", " | ".join(header_samples[:8]))
