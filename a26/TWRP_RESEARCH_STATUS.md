@@ -2,7 +2,7 @@
 
 **Устройство:** Samsung Galaxy A26 5G SM-A266B/DS  
 **Codename:** `a26x`  
-**SoC/platform:** Exynos 1280 / `s5e8835`  
+**SoC/platform:** Exynos 1380 / `s5e8835`  
 **Исследуемая прошивка:** `A266BXXUCDZJ6`  
 **Последнее обновление записи:** 2026-11-14  
 **Статус:** исследование цепочки расшифровки продолжается; сборка и проверка recovery пока не завершены.
@@ -249,3 +249,17 @@ The owner reports that the OEM unlocking switch is temporarily visible and can b
 This does not change the last recorded boot-chain state: `ro.boot.flash.locked=1`, `ro.boot.vbmeta.device_state=locked`, `ro.boot.verifiedbootstate=green`. An Android OEM Unlock switch or KernelSU root does not authorize an unsigned recovery image.
 
 **TWRP decision unchanged: no `dd`, no blank-vbmeta write, no test flash.** Continue offline recovery/FBE compatibility research only. Any bootloader unlock path must first be independently demonstrated for this exact SM-A266B / A266BXXUCDZJ6 / BIT 12 configuration.
+
+
+## 12. Chimera EUB unlock candidate — 2026-11-14
+
+The current official Chimera model page for SM-A266B lists **Unlock / Relock Bootloader (EUB)**:
+https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b
+
+This supersedes the older statement that the first-party model page did not list bootloader unlock. Exact compatibility with A266BXXUCDZJ6 / Android 17 / BIT 12 / CAU remains unconfirmed. The August 2026 ODIN-mode unlock announcement is limited to selected models below Android 16 when no emtoken is required; do not conflate that ODIN path with the EUB feature.
+
+Before buying credits or opening the phone, obtain written confirmation from Chimera support for the exact build, emtoken requirements, test-point requirement, data wipe and Knox consequences. See `A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
+
+A public A26-specific kernel source (`os-guy-original/android_kernel_samsung_a26x`, `lineage-23.2`, Linux 5.15.180) has `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set` in `s5e8835-a26xxx_defconfig`. This is not the installed J6 5.15.197 config, but it weakens the in-memory kexec route. No kexec attempt is authorized.
+
+No recovery write is authorized by this research update. TWRP image still requires a bootloader unlock and separate Android 17/FBE compatibility validation.
