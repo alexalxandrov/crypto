@@ -106,37 +106,45 @@ Consequences:
 
 **Decision: no `dd` write, no blank-vbmeta write, no test flash.**
 
-## 5. Professional service-tool evidence: Chimera
+## 5. Professional service-tool evidence: Chimera (updated 2026-11-14)
 
-This point corrects an earlier over-optimistic interpretation of a third-party reseller listing.
+**Correction:** the previous version stated that Chimera's first-party model page did not list Bootloader Unlock for SM-A266B. That statement is superseded. On 2026-11-14, Chimera's official SM-A266B page listed **Unlock / Relock Bootloader — EUB** in its model-specific Available Features table:
 
-### First-party model page
-
-Chimera's own model page for **SM-A266B** lists these available procedures/modes: Bypass KnoxGuard (ADB), Change CSC (ADB/EUB), Device Info (ODIN), Factory Reset (EUB/MODEM), Get Info (EUB/ADB/MODEM), Network Factory Reset (EUB), Patch KnoxGuard (EUB), Read Codes (EUB), Reboot (ADB), Reboot to Download (MODEM), Remove Common Criteria/FMM/Lost Mode/MDM (EUB), Remove FRP (MODEM), Repair Boot/Serial (EUB), Reset Battery Status (EUB), Store/Restore backup (EUB), Restore Security Backup (EUB), and Update Firmware (ODIN).
-
-The exact page does **not** list **Unlock / Relock Bootloader** among the SM-A266B features:
 https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b
 
-Chimera's general EUB support article lists bootloader-unlock support for selected named devices (including some A-series devices such as A25 variants) but does not list SM-A266B in its bootloader-unlock model list:
-https://chimeratool.com/docs/all-supported-exynos-models
-
-The generic feature page describes bootloader unlock across supported models, but a generic feature description is not confirmation for this device:
+This makes Chimera EUB the leading externally documented unlock candidate for this model. The generic feature page is:
 https://chimeratool.com/en/features/unlock-relock-bootloader
 
-### Conflicting reseller claim
+However, the model-level listing does not prove compatibility with the exact firmware **A266BXXUCDZJ6 / Android 17 / One UI 9 / BIT 12 / CSC CAU**. The page gives no build-specific matrix or successful job log for this combination.
 
-A third-party page advertises "Unlock / Relock Bootloader (EUB)" for SM-A266B:
-https://news.halabtech.com/samsung-samsung-galaxy-a26-5g-sm-a266b-chimera-en-2026-03
+### Important distinction: ODIN unlock vs EUB unlock
 
-This conflicts with Chimera's own per-model feature list. It does not specify A266BXXUCDZJ6, Android 17, binary revision 12 or a successful job log. Treat it as unverified marketing/catalog data, not a confirmed method.
+The August 2026 Chimera Exynos announcement describes a Download Mode / ODIN unlock procedure for selected models **below Android 16, when no emtoken is required**. A26 is listed in the Exynos 1380 group:
 
-**Do not pay for this operation or open the phone solely on the basis of the reseller row.** Before any service, request written confirmation from Chimera/support or the shop for all of:
-- exact model SM-A266B (not A266U/U1/M);
-- build A266BXXUCDZJ6;
-- Android 17 / One UI 9;
-- binary/rollback revision 12;
-- operation explicitly named *Bootloader Unlock*, not FRP removal, KnoxGuard servicing, repair boot, factory reset or backup;
-- whether the method requires EUB/test point and whether data is erased.
+https://news.halabtech.com/chimera-update-new-samsung-exynos-support-en-2026-08-27/
+
+Do not conflate this ODIN-mode procedure with the separate EUB operation listed on the SM-A266B model page. The public source does not state whether the EUB path has the same Android-version/emtoken restriction. Since the phone runs Android 17, the older ODIN path is not assumed compatible; EUB requires direct confirmation.
+
+A public A26 service article documents EUB/test-point use for FRP service on Android 15 / A266BXU1AYB5, not bootloader unlock:
+https://halabtech.com/samsung-a26-5g-frp-remove-via-test-point-eub/
+This supports EUB-mode feasibility only; it does not prove unlock success on J6 / Android 17.
+
+### Required written confirmation before payment or disassembly
+
+Ask official Chimera support to confirm:
+- SM-A266B/DS, build A266BXXUCDZJ6, Android 17 / One UI 9, CSC CAU/OXM, RP SWREV 12;
+- exact operation **Unlock / Relock Bootloader (EUB)**;
+- whether EM/ESS token is required and whether Chimera provisions it;
+- whether test point/full disassembly is required;
+- data wipe, Knox Warranty, KG/RMM and OTA consequences;
+- licence/credit requirements and refund policy if the exact build is unsupported.
+
+Official contacts: support@chimeratool.com; https://t.me/chimeratoolofficialsupport.
+
+Do not buy credits or open the phone solely because the model-level row exists. Do not substitute FRP, KnoxGuard, Repair Boot or Device Info operations for bootloader unlock.
+
+The full source assessment and ready-to-send support request are in:
+`a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
 
 ## 6. Can KernelSU boot TWRP without unlocking?
 
