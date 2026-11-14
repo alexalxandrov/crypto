@@ -158,3 +158,12 @@ Static LLVM windows around getModesbit (0x34d8), getLastTokenStatus (0x38f8) and
 getStatus unpacks pointer/length-like values from a caller structure, computes two lengths from field differences, and returns an integer status without calling getBytes in the shown block. The meanings of those input fields are not yet identified.
 
 The common completion path creates AStatus_newOk() while the EngMode result is conveyed separately. Binder transport status OK is therefore not equivalent to successful EngMode operation. Static evidence only; no methods were called and no device state changed.
+
+
+### Byte-vector handling and getStatus arguments — 2026-11-14
+
+Additional LLVM windows show that the successful getBytes path copies the byte payload into the AIDL output vector: it reads the returned length, expands std::vector<unsigned char> if needed, memcpy-copies exactly that length from the temporary buffer, writes zero to the separate EngMode result slot, then frees the buffer/client. getLastTokenStatus follows the same pattern.
+
+The getStatus native call receives two pointer/length pairs (x2/w3 and x4/w5), two scalars (w6/w7) and a final stack scalar, in addition to this and the first integer argument. The lengths are computed from field pairs at offsets 0x00/0x08 and 0x18/0x20. This fits the method signature shape but does not identify the field semantics.
+
+Binder AStatus, EngMode result integer and returned byte vector are distinct outputs. Static-only; no methods were called and the device was not changed.
