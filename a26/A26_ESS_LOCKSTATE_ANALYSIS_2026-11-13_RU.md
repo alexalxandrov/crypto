@@ -354,7 +354,7 @@ When the arg0 getter path fails, the function logs with the string `get_oem_unlo
 
 Recorded xrefs:
 - `fcn.0017eb34` calls `fcn.0017af7c` at `0x17ebfc`, `0x17ec1c`, and `0x17ec30`;
-- `fcn.00183e40` calls it at offset `+0x25c`.
+- A later full-body audit found no direct call to `fcn.0017af7c` inside `fcn.00183e40`; discard this xref attribution pending revalidation.
 
 Full semantic reconstruction of `fcn.0017eb34` and resolution of `0x265467` are now priorities. The J6 strings `androidboot.other.locked=%d` and the recovery argument `--reason=bootloader_unlock` are present in the string table. The latter is now traced directly in fcn.0017dfdc: the function builds `recovery --wipe_data --reason=bootloader_unlock --locale=en_US` into a buffer and passes it to fcn.001392bc. This proves that the OEM lock-state synchronizer contains an unlock-related wipe path; it does not yet prove which external event makes that branch execute or that it unlocks the currently observed device. See `A26_UNLOCK_RECOVERY_RESEARCH_2026-11-13_RU.md`.
 
@@ -423,3 +423,37 @@ The uploaded repository artifact a26/steady_header_4k.bin is 4096 bytes. Byte-le
 This is limited to the prefix [0,4096) of /dev/block/by-name/steady. It does not establish that the complete 4-MiB partition is empty, erased, or non-filesystem data. The PIT/SCSI address-unit question remains unresolved; an all-zero prefix does not resolve the mapping.
 
 A bounded read-only full-partition copy (4 MiB = 1024 × 4096 bytes) to userdata is the next data acquisition that can reveal whether any later region contains metadata. No write to the source partition is required.
+\n\n## 14. Direct xref for `androidboot.other.locked=1` and getter-xref correction (2026-11-14)
+
+### 14.1. Direct SBoot reference
+
+A focused extraction was added at:
+`a26-analysis/current/extracted/bootarg-oem-locked-and-xref-audit.asm`.
+
+In A26 J6 function `fcn.0016f3e0`:
+- `0x0016fe84`: `adrp x0, 0x26b000`
+- `0x0016fe88`: `add x0, x0, 0x317` — string VA `0x26b317`, decoded as `androidboot.other.locked=%d`
+- `0x0016fe8c`: `mov w1, 1`
+- `0x0016fe90`: `bl fcn.0017184c`
+
+This is a direct code xref and explicit value 1 passed to the same helper used throughout `fcn.0016f3e0` for key/value-like boot parameter formatting. The body of `fcn.0017184c` is not yet in the targeted extraction, so the final append/serialization semantics remain open. The previously recorded Android runtime property `ro.boot.other.locked=1` is consistent with this SBoot path.
+
+The function's caller annotations include `fcn.001558e4 @ 0x155d2c` and `fcn.0018efb4 @ 0x18efe8`.
+
+**Interpretation:** `other.locked=1` is a bootloader-supplied Android boot property, not proof that the protected OEM-unlock state itself equals 1. KernelSU `resetprop` changes the property after SBoot has already made its decision. It can reveal the Settings switch, but it cannot change the signed STEADY policy, SecureBoot validation, or protected lock-state cache. This directly explains why the switch can be exposed temporarily without producing an unlocked bootloader.
+
+### 14.2. Corrected getter cross-reference inventory
+
+The previous note attributed a direct call to `fcn.0017af7c` to `fcn.00183e40 @ +0x25c` and to `fcn.00187cf0 @ 0x187e7c`. Reinspection of the complete J6 bodies invalidates these direct-call attributions:
+- `fcn.00183e40` contains no direct `bl fcn.0017af7c` instruction.
+- At `0x00187e7c`, `fcn.00187cf0` calls `fcn.00179f90`, not `fcn.0017af7c`.
+
+The xref comment for `fcn.0017af7c` still lists `fcn.0017bfac @ 0x17c758`; the caller body is not in the current targeted extract, so this remains an unverified candidate. The previously recorded `fcn.0017eb34` offsets also require a fresh direct caller-body extraction before being treated as verified.
+
+### 14.3. Next static targets
+
+1. Extract `fcn.0017184c` and determine the exact key/value boot-parameter append semantics.
+2. Extract `fcn.0017bfac` and inspect the call at `0x17c758`.
+3. Extract `fcn.0017eb34` and validate the reported offsets `0x17ebfc`, `0x17ec1c`, `0x17ec30`.
+4. Trace the signed policy / bit-3 synchronizer separately from the Android-visible `other.locked` property.
+5. Continue to prioritize official Chimera EUB support confirmation for exact J6 / Android 17 / BIT 12.
