@@ -343,3 +343,24 @@ The AIDL service executable uses the generated NDK Binder glue and also directly
 `libengmode15.so` defines `em_ess_make_token_request`, `em_ess_install_token_v1` and `em_write_to_steady`. It does not appear in the captured direct DT_NEEDED list for `libengmode_server.so`; no direct caller relationship is claimed.
 
 No Binder or ESS methods were called. No STEADY/RPMB/recovery/vbmeta/bootloader writes were performed.
+
+
+## 13. AIDL service imports from libengmode_client — 2026-11-14
+
+Owner-provided `readelf -Ws` output shows that `/vendor/bin/vendor.samsung.hardware.security.engmode-service` imports (Ndx `UND`) a large set of `android::engmodeclient` methods. The same symbols are defined in `/vendor/lib64/libengmode_client.so`, which is also a direct DT_NEEDED dependency of the executable.
+
+Observed imported API groups:
+
+- Lifecycle/server: constructor, destructor, `getServer()`
+- Status and identity: `getStatus()`, `getID()`, `getExpiryDate()`, `getVersion()`, `getTUC()`
+- Token lifecycle: `makeTokenReq()`, `getRequestMsg()`, `getToken()`, `installToken()`, `isTokenInstalled()`, `removeToken()`, `getLastTokenStatus()`, `getTokenInfoForJanus()`
+- Modes: `getModesbit()`, `getStringModes()`, `getNumOfModes()`
+- ESS/ITL: `commandForESS()`, `makeITLReq()`, `recoveryITL()`
+- Time: `getServerTime()`, `getPriorityTime()`, `setPriorityTime()`
+- Other: `sendFuseCmd()`, `getBytes()`
+
+The executable also imports `BnSehEngmode` interface symbols from `vendor.samsung.hardware.security.engmode-V1-ndk.so`. Combined with its direct dependency on `libengmode_client.so`, this confirms that the AIDL service binary links the generated NDK Binder front end and the classic EngMode client API.
+
+This is direct link-time evidence for an AIDL-to-`engmodeclient` adapter layer. The exact per-method forwarding, call-site reachability, client service name and transaction mapping remain unverified. The empty filtered `readelf -rW` result is recorded only as a limitation of this capture; it does not negate the dynamic-symbol imports.
+
+No methods were called; this is static ELF evidence only.
