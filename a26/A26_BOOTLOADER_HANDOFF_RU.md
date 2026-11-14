@@ -1296,7 +1296,7 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 
 ---
 
-## 15. Engineering Mode / ESS runtime intake — 2026-11-14
+## Дополнение 14 ноября 2026 — Engineering Mode / ESS runtime intake
 
 Свежая read-only проверка живого устройства и сопоставление с уже сохранёнными ELF:
 
