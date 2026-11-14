@@ -267,3 +267,10 @@ No recovery write is authorized by this research update. TWRP image still requir
 
 
 Host requirement for the newly identified Chimera EUB candidate: the official Chimera download page lists Windows 10 / Windows 11 32/64-bit. Parrot Linux, macOS and Windows 7 are not listed as supported hosts. Native Windows 10/11 is preferred; VM USB passthrough remains unverified.
+
+
+## 13. SBoot boot-property confirmation — 2026-11-14
+
+Focused J6 disassembly shows `fcn.0016f3e0` passing the format string `androidboot.other.locked=%d` with value 1 to `fcn.0017184c` at VA `0x16fe84–0x16fe90`. This matches the observed runtime `ro.boot.other.locked=1`. A KernelSU `resetprop` override can expose the Android UI switch but does not alter SBoot's signed STEADY policy or protected lock-state cache. See `a26-analysis/current/extracted/bootarg-oem-locked-and-xref-audit.asm`.
+
+This confirms that the temporary Settings switch is not an unlock. It does not change the leading external candidate: Chimera EUB Bootloader Unlock for SM-A266B, with exact J6 / Android 17 / BIT 12 support still requiring written confirmation.
