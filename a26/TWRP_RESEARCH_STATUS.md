@@ -225,7 +225,7 @@ BOARD_USES_METADATA_PARTITION := true
 | 8 | Автономная сборка recovery image | Не начат |
 | 9 | Статическая проверка образа: header, offsets, размер, ramdisk contents, ELF dependencies, fstab, init/SELinux | Не начат |
 | 10 | Офлайн round-trip сравнение с stock и документирование результата | Не начат |
-| 11 | Любые действия на устройстве | Вне текущего разрешённого объёма; не выполнять |
+| 11 | Действия на устройстве | Цель разблокировки/TWRP явно разрешена владельцем; выполнять только после проверки конкретной процедуры, совместимости и резервной копии |
 
 ## 9. Что считать успехом
 
@@ -263,7 +263,7 @@ Before buying credits or opening the phone, obtain written confirmation from Chi
 
 A public A26-specific kernel source (`os-guy-original/android_kernel_samsung_a26x`, `lineage-23.2`, Linux 5.15.180) has `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set` in `s5e8835-a26xxx_defconfig`. This is not the installed J6 5.15.197 config, but it weakens the in-memory kexec route. No kexec attempt is authorized.
 
-No recovery write is authorized by this research update. TWRP image still requires a bootloader unlock and separate Android 17/FBE compatibility validation.
+The owner has explicitly authorized pursuing bootloader unlock or TWRP launch. No recovery write has been performed: the current bootloader remains locked, and the image still needs exact compatibility validation. Any eventual write must be preceded by a verified backup, confirmed unlock, and a final operation-specific check because a failed flash can brick the device or wipe data.
 
 
 Host requirement for the newly identified Chimera EUB candidate: the official Chimera download page lists Windows 10 / Windows 11 32/64-bit. Parrot Linux, macOS and Windows 7 are not listed as supported hosts. Native Windows 10/11 is preferred; VM USB passthrough remains unverified.
