@@ -149,3 +149,12 @@ LLVM 21.1.8 установлен в Termux; vendor executable анализиро
 Owner-provided LLVM output identifies direct AArch64 BL references from .text to all 23 application-level EngMode client methods, plus repeated calls to constructor, getServer, getBytes and destructor. Therefore all 27 imported EngMode client symbols have at least one static call reference in the AIDL service executable. The per-method addresses are recorded in the architecture static findings document.
 
 The repeated constructor → getServer() → method-specific call → getBytes() → destructor sequence is consistent with AIDL adapter/wrapper routines, but exact transaction mapping and method reachability remain open. Next step: inspect bounded branch/argument/return contexts around selected call sites. No ESS/Binder methods were invoked; device state was not changed.
+
+
+### AIDL wrapper control flow — read-only query methods — 2026-11-14
+
+Static LLVM windows around getModesbit (0x34d8), getLastTokenStatus (0x38f8) and getStatus (0x58b4) show getServer() checks and method-result checks based on bit 31. The two byte-return wrappers allocate a 0xC800-byte buffer and call getBytes(client, buffer, &length); zero is treated as success at those call sites, nonzero as failure. The visible allocation/getBytes failure sentinel is 0xF0000000 (-268435456).
+
+getStatus unpacks pointer/length-like values from a caller structure, computes two lengths from field differences, and returns an integer status without calling getBytes in the shown block. The meanings of those input fields are not yet identified.
+
+The common completion path creates AStatus_newOk() while the EngMode result is conveyed separately. Binder transport status OK is therefore not equivalent to successful EngMode operation. Static evidence only; no methods were called and no device state changed.
