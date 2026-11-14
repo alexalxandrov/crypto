@@ -1257,3 +1257,12 @@ Then record byte count and SHA-256. Never use the destination as a block device 
 Это не меняет подтверждённое состояние последнего read-only снимка: `flash.locked=1`, `vbmeta.device_state=locked`, `verifiedbootstate=green`; Android OEMLockService ранее возвращал allowed=true, но device OEM-unlocked=false. UI switch и bootloader state не тождественны.
 
 A26 J6 SBoot static analysis показывает STEADY/PIT policy bitmap, SecureBoot/signature-validation path и lock-state reconciliation. Точное имя bit 3, полярность internal state и доступность signed ESS authorization для SM-A266B остаются неразрешёнными. Maintenance Mode не является путём включения OEM Unlock; не повторять клавиатурные эксперименты, не записывать TWRP/blank vbmeta и не изменять STEADY/RPMB.
+
+
+## 16. Chimera EUB bootloader unlock — 2026-11-14
+
+The current official Chimera model page for SM-A266B lists **Unlock / Relock Bootloader (EUB)**: https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b . This supersedes the older claim that the first-party model page did not list the operation. Exact support for A266BXXUCDZJ6 / Android 17 / One UI 9 / BIT 12 / CSC CAU remains unconfirmed. Obtain written confirmation from Chimera before paying or opening the phone. Full assessment and support request: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
+
+Chimera's official download page lists Windows 10 / Windows 11 32/64-bit; Linux, macOS and Windows 7 are not listed as supported hosts. Native Windows 10/11 is preferred; VM USB passthrough is unverified.
+
+Public A26-specific kernel source `os-guy-original/android_kernel_samsung_a26x` (branch `lineage-23.2`, Linux 5.15.180) has `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set` in `s5e8835-a26xxx_defconfig`. This is not the exact installed J6 kernel config (5.15.197), but it makes kexec a lower-probability route.
