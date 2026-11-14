@@ -108,3 +108,10 @@ The official SM-A266B model page lists both Unlock/Relock Bootloader (EUB) and P
 **Новый подтверждённый факт:** engmode_hal, emservice, tz_service, tzts_service и proca на устройстве сообщают running. Клиентская/серверная библиотеки содержат функции и строки для token/ESS и STEADY I/O. Это доказывает наличие программного стека, но не выдачу Samsung-signed OEM-unlock token и не разрешение на разблокировку. Узкий поиск по последним 3000 строкам logcat не дал совпадений; это ограниченный отрицательный результат, а не доказательство отсутствия ESS-активности.
 
 **Актуальное состояние OEM Lock не изменилось:** последняя read-only проверка показала carrier/user/overall allowed = true, но device OEM unlocked = false. Не вызывались state-changing методы HAL/ESS; в STEADY/RPMB и разделы загрузчика ничего не записывалось.
+
+
+### ELF dependency / TEE architecture update — 2026-11-14
+
+- [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) — DT_NEEDED graph, AIDL NDK vs classic Binder separation, TLC → libteecl / TEEC interface, ESS 1.5 and 2Lite indicators, and six live on-device SHA-256 hashes.
+
+Latest evidence confirms that libengmode_server depends on TLC and 2Lite; TLC depends on libteecl and includes TEEC API names. This proves a TEE Client API transport layer exists in the EngMode stack, but does not identify the TA command contract or demonstrate a user-authorized OEM-unlock token path.
