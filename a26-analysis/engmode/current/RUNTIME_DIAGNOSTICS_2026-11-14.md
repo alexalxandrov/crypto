@@ -283,3 +283,34 @@ Interpretation: carrier/user/overall allowed = true; actual device OEM-unlocked 
 No makeTokenReq, installToken, commandForESS, removeToken, sendFuseCmd, recoveryITL, or other Binder/ESS state-changing call was issued during this intake. No token was forged or modified. No write was made to STEADY, RPMB, recovery, vbmeta, MISC, or any other partition.
 
 Further work in this folder should start with static inspection of already extracted binaries and their call graphs. Do not infer that an operation is safe merely because a corresponding client symbol exists.
+
+
+## 11. ELF dependency and TEE interface results — 2026-11-14
+
+Owner ran readelf -d, readelf --dyn-syms and strings against six live /vendor/lib64 libraries and recorded SHA-256 values.
+
+### Direct dependency findings
+
+- libengmode_tlc.so depends on libteecl.so and includes TEEC_InitializeContext, TEEC_OpenSession, TEEC_InvokeCommand, TEEC_AllocateSharedMemory, TEEC_ReleaseSharedMemory, TEEC_CloseSession, TEEC_FinalizeContext, em_tlc_send_teegris and em_tlc_teegris_clear.
+- libengmode_server.so depends on libengmode_tlc.so, libengmode2lite.so, libstork_shared.so, libsecril-client.so and librtts_client.so, as well as classic libbinder.so.
+- libengmode15.so depends on libcrypto.so and libstork_shared.so. Strings reference ESS request/token operations, STEADY read/write functions, and dynamic RIL/OEM request-hook loading.
+- libengmode2lite.so has only the listed NEEDED dependencies liblog.so, libc.so, libm.so and libdl.so. Its strings reference token parsing, certificate/signature checks, nonce/session-key handling, mode database parsing and ESI metadata.
+- libengmode_client.so depends on classic libbinder.so.
+- vendor.samsung.hardware.security.engmode-V1-ndk.so (vendor copy) depends on libbinder_ndk.so and exposes generated AIDL BpSehEngmode/BnSehEngmode/ISehEngmodeDefault symbols.
+
+These facts support distinct interfaces: AIDL NDK glue, a classic Binder client/server surface, ESS protocol libraries, RIL integration, and TLC-to-TEE transport. Exact direct call order between HAL and emservice is not yet established.
+
+### Live on-device hashes
+
+| Library | Size | SHA-256 |
+|---|---:|---|
+| libengmode_tlc.so | 15344 | b2912490aabd2f21fad06734c395ad9e45cfdd770613ba4adb7372f77431cfb1 |
+| libengmode15.so | 120704 | 9002b9140a64ae303f714f9468ed7473c23c1e64616b187dd1c43bc048dadffe |
+| libengmode2lite.so | 258368 | bebbd993147906a6bf1057a8cd6150400bf31a01eaa5f9009ff6d80b4ee2b3d6 |
+| vendor.samsung.hardware.security.engmode-V1-ndk.so | 63160 | 75e212847b352fd4afdb8c2feecb85a85f7b72b04caeb7afa8ad75e42def6e05 |
+| libengmode_client.so | 31776 | 02a531101e95d0fafad09306788c0a2a2c632790168b2db864ef1aecc6c7e2e0 |
+| libengmode_server.so | 99880 | ce58fa14943b2b34d27e8cd8bfd0ccab68f2672dad5f2e9f6f8058286536a8a2 |
+
+Important: hashes are from the live device. The binary copies in the repository were not rehashed in this operation, so no binary identity claim is made from the hashes yet.
+
+Detailed architecture interpretation: ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md in this directory.
