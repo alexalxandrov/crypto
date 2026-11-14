@@ -796,3 +796,12 @@ The announcement may have been superseded by a later update, but no later A26-sp
 The separate official ODIN/Download Mode unlock announcement includes A26 but explicitly limits that procedure to below Android 16 when no emtoken is required. The current A266BXXUCDZJ6 Android 17 firmware is outside that published boundary.
 
 **Decision:** Chimera remains a lead, not a confirmed path. Do not buy credits or open the device until support confirms EUB Bootloader Unlock for exact SM-A266B / A266BXXUCDZJ6 / Android 17 / BIT 12. Full support check and prepared question: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
+
+
+## 26. BIT 12 firmware and combination-image status — 2026-11-14
+
+SamFW's ACR catalogue independently lists the installed `A266BXXUCDZJ6` as Android 17 / One UI 9 / BIT C (12), and lists an Android 16 `A266BXXSCCZH3` build at the same BIT C (12): https://samfw.com/firmware/SM-A266B/ACR
+
+The SM-A266B combination-firmware listing currently says combination files are still being sought; no verified BIT 12 combination package was located: https://samfw.com/firmware/SM-A266B/MID
+
+This does not establish a safe downgrade path. The official Chimera ODIN unlock announcement's no-emtoken path is only for Android versions below 16; Android 16 itself does not satisfy that condition, and Android 17 does not either. A same-BIT Android 16 build is therefore not a solution by itself. Do not flash an older package solely to test this.
