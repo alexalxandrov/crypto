@@ -1396,3 +1396,12 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 Теперь сопоставлены PLT stubs и R_AARCH64_JUMP_SLOT для 27 импортируемых android::engmodeclient методов, включая getModesbit, commandForESS, makeTokenReq, installToken и getStatus. Полная адресная таблица записана в a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md.
 
 Это PLT/relocation mapping, а не доказательство выполнения функций: следующий этап — извлечь BL references из .text и определить содержащие их участки кода. Запись не подразумевает вызов методов или изменение устройства.
+
+
+## Дополнение 14 ноября 2026 — прямые call sites EngMode в AIDL executable
+
+Новый grep по полному LLVM-дизассемблеру выявил прямые AArch64 BL references ко всем 23 прикладным android::engmodeclient methods из relocation inventory. Общие constructor, getServer, getBytes и destructor тоже имеют повторяющиеся call sites. Тем самым все 27 импортов EngMode client API имеют реальные статические ссылки-вызовы в .text.
+
+Точные адреса вызовов и PLT targets приведены в a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md. Повторяющийся шаблон constructor → getServer() → method-specific call → getBytes() → destructor указывает на wrapper-like код AIDL-службы, но точное соответствие AIDL transaction codes отдельным блокам пока не установлено.
+
+Это всё ещё статический факт наличия инструкций вызова, а не доказательство runtime invocation или успешного прохождения проверок. Следующий этап — разбор ветвлений и аргументов вокруг selected call sites. Никакие методы не вызывались и устройство не менялось.
