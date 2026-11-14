@@ -436,7 +436,7 @@ The owner supplied bounded AArch64 disassembly for the wrappers containing getMo
 - A client object is allocated, its constructor is called, and getServer() is invoked.
 - The return value from getServer() is tested with TBNZ on bit 31. A set sign bit takes the error/logging path.
 - On a nonnegative getServer() result, getModesbit() is called; its return value is checked with the same sign-bit test.
-- A 51,200-byte buffer is requested using calloc(1, 0xC800).
+- A 51,200-byte buffer is requested using calloc(0xC800, 1) (AArch64 arguments x0=0xC800, x1=1; the allocation size is the product).
 - getBytes(client, buffer, &length) is then called. Here the wrapper treats a zero return as success (CBZ); nonzero enters a logged failure path.
 - Allocation failure and getBytes failure both lead to the visible sentinel 0xF0000000 (-268435456) being stored in the wrapper's result slot.
 - On the successful getBytes path, the wrapper proceeds into buffer/vector handling beginning at 0x35EC; the full continuation should be captured before describing the final payload transformation.
