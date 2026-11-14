@@ -76,7 +76,9 @@ def flush_function() -> None:
 
 with gzip.open(SOURCE, "rt", encoding="utf-8", errors="replace") as stream:
     for line_no, line in enumerate(stream, 1):
-        header = re.match(r"^FUNCTION:\s+(fcn\.[0-9a-fA-F]+)", line)
+        if len(header_samples) < 30 and ("fcn." in line or "FUNCTION" in line):
+            header_samples.append(line.rstrip())
+        header = re.match(r"^\s*(?:FUNCTION:\s*)?┌?\s*(fcn\.[0-9a-fA-F]+)\(", line)
         if header:
             flush_function()
             current_function = header.group(1)
@@ -125,6 +127,8 @@ for target in TARGETS:
 
 report += ["", "## Header samples", ""]
 report += [f"- `{sample}`" for sample in header_samples]
+report += ["", "## Header samples", ""]
+report += [f"- `{sample}`" for sample in header_samples]
 report += ["", "## Direct call sites", ""]
 for target in TARGETS:
     report.append(f"### {target}")
@@ -143,6 +147,7 @@ report += ["", "## Scope", "", "Static extraction only. No device access, no wri
 
 missing = sorted(target_set - found)
 print(f"Extracted {len(found)}/{len(TARGETS)} functions.")
+print("Header samples:", " | ".join(header_samples[:10]))
 print("Header samples:", " | ".join(header_samples[:10]))
 print(f"Decompressed {line_no} lines.")
 if missing:
