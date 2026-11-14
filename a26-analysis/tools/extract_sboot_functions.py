@@ -76,7 +76,7 @@ found: set[str] = set()
 for target in TARGETS:
     start_line = header_lines.get(target)
     if start_line is not None:
-        later = [n for n, pos in header_lines.items() if pos > start_line]
+        later = [pos for _, pos in header_lines.items() if pos > start_line]
         end_line = min(later, default=len(lines))
         extracted = lines[start_line:end_line]
     else:
