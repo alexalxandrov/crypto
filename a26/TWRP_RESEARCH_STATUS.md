@@ -297,3 +297,17 @@ The saved signed vbmeta contains a HASH descriptor for `recovery` (71,877,408 by
 A26-specific source `os-guy-original/android_kernel_samsung_a26x`, branch `lineage-23.2`, `s5e8835-a26xxx_defconfig`, sets `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set`. This is an Android 16 / Linux 5.15.180 source tree, while the installed J6 kernel is 5.15.197 / Android 17. Exact runtime config must be checked from `/proc/config.gz`.
 
 See `a26/recovery/A26_KEXEC_RAM_RECOVERY_FEASIBILITY_2026-11-14_RU.md` and `a26/recovery/a26-readonly-preflight.sh`. No partition writes, no vbmeta patch, no test flash.
+
+## 13. Current best unlock candidate — Chimera EUB (2026-11-14)
+
+The current first-party Chimera model page for exact model **SM-A266B** lists both `Unlock / Relock Bootloader (EUB)` and `Patch Knoxguard (EUB)`:
+https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b?procedureId=344
+
+The official page links an A26 testpoint guide, but it requires Chimera login:
+https://chimeratool.com/en/test-points/1440-test-point-for-samsung-galaxy-a26-5g-models.html
+
+Official EUB docs say most devices require a hardware testpoint; A266B was not found in the Switch-to-EUB/no-testpoint list. Current Chimera desktop version supports physical Windows 10/11; its EULA prohibits VM use. Exact Android 17 / A266BXXUCDZJ6 / BIT C / KG Completed success remains unconfirmed by support.
+
+Use the ready support request at `a26/A26_CHIMERA_SUPPORT_REQUEST_EN.md`. Do not buy credits, disassemble or bridge pads until exact-build support and the HW REV 5 diagram are confirmed.
+
+The AVB gate remains: no TWRP `dd` while locked. Once EUB unlock is confirmed and completed, re-evaluate recovery and Android 17 FBE compatibility.
