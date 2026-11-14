@@ -115,3 +115,11 @@ The official SM-A266B model page lists both Unlock/Relock Bootloader (EUB) and P
 - [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) — DT_NEEDED graph, AIDL NDK vs classic Binder separation, TLC → libteecl / TEEC interface, ESS 1.5 and 2Lite indicators, and six live on-device SHA-256 hashes.
 
 Latest evidence confirms that libengmode_server depends on TLC and 2Lite; TLC depends on libteecl and includes TEEC API names. This proves a TEE Client API transport layer exists in the EngMode stack, but does not identify the TA command contract or demonstrate a user-authorized OEM-unlock token path.
+
+
+### ELF symbol-linkage result — 2026-11-14
+
+- [A26_BOOTLOADER_HANDOFF_RU.md](A26_BOOTLOADER_HANDOFF_RU.md) — новый раздел с доказанными импортами/экспортами между `emservice`, `libengmode_server.so`, `libengmode_tlc.so` и TEEC API.
+- [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) — полная карта символов и границ между двумя Binder-контурами.
+
+**Новый результат:** подтверждён symbol-linked путь `emservice → libengmode_server → libengmode_tlc → libteecl/TEEC`. AIDL HAL отдельно использует NDK Binder glue и `libengmode_client.so`; конкретный forwarding path пока остаётся открытым. Это статическая архитектурная связь, не подтверждение разрешённого OEM-unlock token или операции.
