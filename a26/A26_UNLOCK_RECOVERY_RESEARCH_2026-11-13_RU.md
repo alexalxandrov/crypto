@@ -151,9 +151,9 @@ The full source assessment and ready-to-send support request are in:
 No tested A26-specific chainloader was found. A theoretical route is Linux `kexec`, which could replace the currently running kernel without returning through SBoot. But this is not established on the installed kernel:
 
 - the public A26 kernel source found during research identifies itself as Android 16, not the owner's Android 17 J6 kernel;
-- no exact J6 kernel config was located;
+- no exact J6 kernel config was located. A public A26-specific source tree (`os-guy-original/android_kernel_samsung_a26x`, branch `lineage-23.2`) uses kernel 5.15.180 and its `s5e8835-a26xxx_defconfig` explicitly has `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set`. This is a close device-specific clue, but not the installed 5.15.197 J6 config.
 - no A26/Exynos-1380-specific tested kexec-hardboot, reset path, or TWRP chainloader was found;
-- even `CONFIG_KEXEC=y` would prove only that the kernel compiled a kexec interface, not that Samsung's Exynos hardware can safely transition to the TWRP kernel or that signature/policy restrictions permit it.
+- even if the installed kernel unexpectedly has `CONFIG_KEXEC=y`, that proves only that the kernel compiled a kexec interface, not that Samsung's Exynos hardware can safely transition to the TWRP kernel or that signature/policy restrictions permit it.
 
 Public kernel tree:
 https://github.com/os-guy-original/android_kernel_samsung_a26x
@@ -223,11 +223,11 @@ The Download Mode screen reports RP SWREV B/K/S 12. Do not flash firmware, bootl
 | OEM switch / Android OEMLockService | UI was exposed through runtime property override; allowed=true is not SBoot unlock | Not proof |
 | TWRP via `dd` | AVB/SBoot locked; stored file is Odin TAR, not raw image | Do not write |
 | Blank vbmeta | Does not authorize unsigned image under locked boot chain | Do not write |
-| Chimera EUB bootloader unlock | First-party SM-A266B list does not include bootloader unlock; third-party page conflicts | Unverified |
-| KernelSU + kexec | Theoretical only; installed J6 kernel config and Exynos transition unverified | Read-only config check only |
+| Chimera EUB bootloader unlock | Current first-party SM-A266B page lists Unlock / Relock Bootloader (EUB); exact Android 17 / BIT 12 support not published | **Top candidate; confirm exact build before payment** |
+| KernelSU + kexec | Public A26-specific 5.15.180 defconfig disables KEXEC and KEXEC_FILE; installed 5.15.197 J6 config not directly read | Low probability; do not run kexec |
 | TWRP in chroot | Not a booted recovery; insufficient for safe recovery operations | Not a substitute |
 
-The next useful result is the read-only kexec diagnostic in section 7. Do not repeat Download Mode screen collection; it is already complete in the dossier.
+The next highest-value action is written Chimera confirmation for EUB bootloader unlock on exact J6 / Android 17 / BIT 12. The read-only kexec diagnostic is secondary. Do not repeat Download Mode screen collection; it is already complete in the dossier.
 
 
 ## 10. Новое подтверждение: boot-time bitfield загружается из STEADY и проходит SecureBoot-проверку
