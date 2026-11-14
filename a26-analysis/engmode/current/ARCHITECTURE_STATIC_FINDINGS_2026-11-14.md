@@ -464,3 +464,41 @@ In all three supplied snippets, the wrapper reaches AStatus_newOk() on the commo
 These are static control-flow observations from three wrapper regions, not proof of runtime invocation. Exact permission/caller checks, Binder transaction-code mapping and final output serialization are still open. The getBytes() return convention is established only for these call sites: zero is treated as success; nonzero as failure. Do not generalize beyond observed wrappers until its implementation is inspected.
 
 No Binder/ESS method was invoked, no token operation was attempted, and no device state was changed.
+
+
+## 13. Completed byte-vector handling in read-only wrappers — 2026-11-14
+
+The owner supplied the continuation of the getModesbit and getLastTokenStatus wrapper regions.
+
+### Successful getBytes path
+
+For the getModesbit wrapper:
+- At 0x35EC, the wrapper loads the byte count written by getBytes through the stack out-parameter.
+- It compares that count with the current output vector length (begin/end pointers are read from the vector object held in x22).
+- If the vector needs more space, it calls the local std::vector<unsigned char>::__append helper for the missing capacity/length.
+- It then calls memcpy with destination equal to the vector's current data position, source equal to the temporary 0xC800-byte allocation, and length equal to the signed-extended count.
+- It writes zero to the separate integer result slot, frees the temporary allocation, destroys/frees the client object and returns the AStatus object.
+
+The getLastTokenStatus wrapper shows the same structure at 0x3A0C onward: load byte count, calculate vector space, append if needed, memcpy from temporary buffer into the output vector, set integer result to zero, free buffer and client.
+
+This completes the earlier partial description: getBytes is not merely checked; on the zero-success branch its returned byte buffer is copied into the AIDL output vector. This also explains why the wrapper allocates a temporary buffer before calling getBytes.
+
+### getStatus argument preparation — more precise interpretation
+
+The getStatus call at 0x58B4 uses the eight AArch64 argument slots as follows:
+- x0: EngMode client object (this)
+- w1: first integer argument preserved from the wrapper input
+- x2: first pointer loaded from the input structure
+- w3: first byte-range length, computed as field at offset 0x08 minus the field at offset 0x00
+- x4: second pointer loaded from offset 0x18
+- w5: second byte-range length, computed as field at offset 0x20 minus the field at offset 0x18
+- w6, w7: two 32-bit scalar values loaded from offset 0x30
+- stack argument: an additional 32-bit scalar preserved from the wrapper input
+
+This matches the previously observed native method signature shape: getStatus(int, const unsigned char*, unsigned int, const unsigned char*, unsigned int, int, int, int), plus the C++ this pointer. It is consistent with a caller-info structure containing two byte ranges plus scalar metadata, but exact field names and semantics remain unproven without the AIDL parcelable/schema or call-site construction.
+
+### Error and result separation
+
+The getModesbit / getLastTokenStatus code writes an EngMode result integer independently of the byte vector. AStatus_newOk() is created on the common Binder completion path. Thus the output comprises a Binder-level status plus a separate EngMode result and, for the byte-return methods, a vector payload. Binder status OK does not imply getModesbit/getLastTokenStatus success.
+
+All analysis remains static. No methods were called and no data was written to protected partitions.
