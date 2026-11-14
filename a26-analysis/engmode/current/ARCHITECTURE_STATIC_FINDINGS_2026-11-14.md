@@ -306,3 +306,33 @@ AIDL client
 The AIDL-to-client edge is now directly supported by imports. The client-to-`emservice` service lookup and the exact Binder transaction mapping still require confirmation; therefore the full end-to-end path is a working architecture model, not yet a completely demonstrated runtime call trace.
 
 No Binder/ESS methods were invoked. No token operation, STEADY/RPMB write, or bootloader state change was performed.
+
+
+## 9. AIDL executable ELF layout and disassembler availability — 2026-11-14
+
+Owner supplied section and dynamic-linking metadata for `/vendor/bin/vendor.samsung.hardware.security.engmode-service`.
+
+### Observed layout
+
+- `.text`: address `0x3000`, size `0x3054`.
+- `.plt`: address `0x6060`, size `0x3f0`.
+- `.rela.plt`: address `0x1940`, size `1464` bytes.
+- `.dynsym`: size `0x708`; `.dynstr`: size `0xd64`.
+- `.got`: address `0x7418`, size `0x20`; `.got.plt`: address `0x7438`, size `0x200`.
+- Dynamic flags include `BIND_NOW` and `NOW PIE`.
+
+For this ELF64/AArch64 file, a standard RELA record is 24 bytes; the `.rela.plt` size therefore corresponds to 61 PLT relocation records. This is a count of imported PLT entries, not a count of EngMode calls or runtime invocations.
+
+### Symbol-table limitation
+
+The filtered section listing showed `.dynsym` / `.dynstr` but no `.symtab` / `.strtab`. The dynamic-symbol view reports only four locally defined dynamic functions in the executable (three weak support functions and a vector helper), while the EngMode methods remain undefined imports resolved from `libengmode_client.so`. The executable is therefore stripped of its ordinary full static symbol table in the captured file; internal AIDL handler function names are not directly available from this symbol listing.
+
+### Disassembler availability
+
+The owner checked common executable names (`llvm-objdump`, versioned llvm-objdump, and `objdump`); none was present in the current Termux PATH. Therefore no machine-code disassembly or call-site mapping was produced by this capture.
+
+### Next bounded static step
+
+Use the available `readelf -rW` to preserve the complete relocation-to-dynamic-symbol mapping, then optionally install a Termux package that supplies LLVM/binutils disassembly tools and disassemble only this executable. The official Termux `libllvm` subpackage manifest includes `objdump`, `llvm-objdump`, and Android-target-prefixed objdump binaries; package installation is optional and must be initiated by the device owner. Do not call any Binder/ESS method.
+
+No runtime behavior was tested and no device state or storage was changed.
