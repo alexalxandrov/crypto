@@ -1,0 +1,42 @@
+name: A26 SBoot targeted extraction
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/a26-sboot-extract.yml'
+      - 'a26-analysis/tools/extract_sboot_functions.py'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Extract target functions and xrefs
+        run: |
+          python -m py_compile a26-analysis/tools/extract_sboot_functions.py
+          python a26-analysis/tools/extract_sboot_functions.py
+
+      - name: Commit extracted assembly
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add a26-analysis/current/extracted/*.asm
+          git add a26-analysis/current/extracted/a26-sboot-targeted-xrefs.md
+          if git diff --cached --quiet; then
+            echo "No extracted files changed."
+          else
+            git commit -m "Extract A26 SBoot OEM unlock call paths"
+            git push
+          fi
