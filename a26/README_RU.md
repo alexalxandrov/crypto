@@ -123,3 +123,10 @@ Latest evidence confirms that libengmode_server depends on TLC and 2Lite; TLC de
 - [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) — полная карта символов и границ между двумя Binder-контурами.
 
 **Новый результат:** подтверждён symbol-linked путь `emservice → libengmode_server → libengmode_tlc → libteecl/TEEC`. AIDL HAL отдельно использует NDK Binder glue и `libengmode_client.so`; конкретный forwarding path пока остаётся открытым. Это статическая архитектурная связь, не подтверждение разрешённого OEM-unlock token или операции.
+
+
+### AIDL → legacy EngMode client API — 2026-11-14
+
+Новый `readelf -Ws` capture подтвердил прямые импорты `android::engmodeclient` методов из AIDL service executable; определения этих символов находятся в `libengmode_client.so`. Это связывает AIDL NDK Binder front end с legacy client API на уровне ELF symbols. Полный per-method forwarding и конечная Binder transaction map ещё не восстановлены.
+
+Подробности: [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md).
