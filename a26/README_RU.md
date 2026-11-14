@@ -135,3 +135,10 @@ Latest evidence confirms that libengmode_server depends on TLC and 2Lite; TLC de
 ### AIDL service ELF layout — 2026-11-14
 
 - В [архитектурной карте](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) записаны размеры `.text`, `.plt`, `.rela.plt`, PIE/BIND_NOW flags и ограничение из-за отсутствия objdump в Termux. Следующий сбор — полный `readelf -rW` без фильтрации.
+
+
+### AIDL executable — PLT / relocation map — 2026-11-14
+
+LLVM 21.1.8 установлен в Termux; vendor executable анализировался через root из-за Permission denied для обычного пользователя. Сохранены ~/a26_engmode/relocations.txt, plt.txt и disassembly.txt. Получено соответствие PLT stub ↔ R_AARCH64_JUMP_SLOT для 27 EngMode client methods. Полная таблица адресов записана в [architecture static findings](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md).
+
+Это пока не call-site map: конкретные BL-инструкции из .text ещё требуется извлечь. Никакие ESS/Binder методы не вызывались; устройство не изменялось.
