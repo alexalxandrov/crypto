@@ -721,3 +721,27 @@ su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_full_4m.bin bs
 ```
 
 Expected output length is 4194304 bytes. This reads the partition only; the destination is a normal file. Inspecting the complete small payload would establish whether the zero prefix continues and could expose the record/data structure needed to correlate the PIT STEADY entry. Do not write the acquired file back to any block device.
+
+## 22. Maintenance Mode и временный OEM Unlock switch — наблюдения владельца (2026-11-14)
+
+Новые сведения владельца, не отражённые в предыдущей версии исследования:
+
+- OEM unlocking switch появляется временно; когда он виден, владелец может включить его, и он остаётся в положении ON. Длительность и сохранение через reboot в этом сообщении не измерены.
+- Вход в Maintenance Mode требует перезагрузки; выход из него также требует перезагрузки.
+- Внутри Maintenance Mode Developer Options отсутствует полностью.
+- На экране Custom OS короткое и длительное нажатия Volume Up приводят к обычному Download Mode; подтверждение Device Unlock не появляется. После входа в Download Mode дополнительные нажатия не открывают отдельную ветку разблокировки.
+- Полный ODIN MODE экран уже сохранён и подтверждён как исчерпывающий; OEM LOCK / FRP LOCK / DEVICE STATE строк на нём нет. Не запрашивать перепись повторно.
+
+### Интерпретация
+
+Maintenance Mode не является путём включения OEM Unlock: в нём нет Developer Options. Вход и выход требуют reboot, поэтому невозможно считать, что временно показанный Android-переключатель будет доступен или сохранится после перехода между режимами.
+
+Переключатель Android, значение `OEMLockService allowed=true` и реальное состояние загрузчика — разные состояния. Предыдущий OEMLockService read-only результат сообщал allowed=true, но device OEM-unlocked=false. Последние зафиксированные boot properties остаются `ro.boot.flash.locked=1`, `ro.boot.vbmeta.device_state=locked`, `ro.boot.verifiedbootstate=green`; новый снимок после 13.11 не получен.
+
+Сопоставление с J6 SBoot: STEADY/PIT policy bitmap проходит SecureBoot/signature-validation path и участвует в lock-state reconciliation. Это объясняет, почему UI switch или runtime property override не доказывает изменения загрузочной policy. При этом точная семантика bit 3 и полярность внутреннего state остаются неизвестными.
+
+### Решение
+
+Не повторять стандартные комбинации клавиш и не запрашивать повторно экран ODIN MODE. Не записывать TWRP/blank vbmeta и не изменять STEADY/RPMB. Следующий этап — статически разобрать A26-specific resource/TEE/ESS path и callers getter `fcn.0017af7c`, а не экспериментировать с защищённым состоянием устройства.
+
+Источник новых пользовательских наблюдений: сообщение владельца от 14.11.2026 в текущем разговоре.
