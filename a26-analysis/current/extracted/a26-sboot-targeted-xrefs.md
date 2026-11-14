@@ -28,6 +28,7 @@ Decompressed lines: 469631
 - fcn.0014b120: **EXTRACTED**; index: `0x0014b120	fcn.0014b120	63`
 - fcn.0014b248: **EXTRACTED**; index: `0x0014b248	fcn.0014b248	211`
 - fcn.001758fc: **EXTRACTED**; index: `0x001758fc	fcn.001758fc	85`
+- fcn.0012c4dc: **EXTRACTED**; index: `0x0012c4dc	fcn.0012c4dc	95`
 - fcn.002049dc: **EXTRACTED**; index: `0x002049dc	fcn.002049dc	45`
 - fcn.00138f30: **EXTRACTED**; index: `0x00138f30	fcn.00138f30	73`
 - fcn.001390c0: **EXTRACTED**; index: `0x001390c0	fcn.001390c0	67`
@@ -672,6 +673,9 @@ Decompressed lines: 469631
 - line 223212, caller fcn.001971c0: │       │   0x001971fc      bl    fcn.001758fc
 - line 251623, caller fcn.001afa60: │           0x001afa7c      bl    fcn.001758fc
 - line 251724, caller fcn.001afb68: │       ╎   0x001afba8      bl    fcn.001758fc
+
+### fcn.0012c4dc
+- line 118288, caller fcn.00138ddc: │      ││   0x00138e00      bl    fcn.0012c4dc
 
 ### fcn.002049dc
 - line 92453, caller fcn.001224ec: │       │   0x00122cc0      bl    fcn.002049dc
