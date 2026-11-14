@@ -130,3 +130,8 @@ Latest evidence confirms that libengmode_server depends on TLC and 2Lite; TLC de
 Новый `readelf -Ws` capture подтвердил прямые импорты `android::engmodeclient` методов из AIDL service executable; определения этих символов находятся в `libengmode_client.so`. Это связывает AIDL NDK Binder front end с legacy client API на уровне ELF symbols. Полный per-method forwarding и конечная Binder transaction map ещё не восстановлены.
 
 Подробности: [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md).
+
+
+### AIDL service ELF layout — 2026-11-14
+
+- В [архитектурной карте](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) записаны размеры `.text`, `.plt`, `.rela.plt`, PIE/BIND_NOW flags и ограничение из-за отсутствия objdump в Termux. Следующий сбор — полный `readelf -rW` без фильтрации.
