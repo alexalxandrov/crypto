@@ -671,7 +671,24 @@ The next task is to identify the parser and the object-record offset that select
 - 0x000e0e00: FFF!!FFFUJ6@@@UA3UB6UD4UEAUG2UH3
 - 0x000e0e87: W0277f5b7040857Nq4UiciVbdD4o4
 
-## 5. Known candidate object locations
+## 5. SBoot magic and candidate policy field
+
+- SBoot constant VA/file offset 0x24a4bc, length 128: 454e47005b455d25733a2564204661696c656420746f20757064617465206c746920746f2065736928307825303878290a005b495d25733a2564205468697320697320636572742066726f6d20666163746f72790a0054525300656d5f746f6b656e5f6765745f746f6b656e5f6964005b455d25733a2564206f666673657420
+- Record base 0x0007df20: header at +0x28 matches SBoot constant: False
+  - Header bytes: 084158c15cb794b556cc76f663f5abaa00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  - Candidate 32-byte field at +0x120: cd176f2a49098ea733ff196ec6e38799af1d80a36ca5b79cf4fb84ca1da5fa67
+  - Candidate bit3 (LSB-first): 1
+  - Candidate set bits: 139/256
+- Record base 0x0007e120: header at +0x28 matches SBoot constant: False
+  - Header bytes: 084158c15cb794b556cc76f663f5abaa00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  - Candidate 32-byte field at +0x120: cd176f2a49098ea733ff196ec6e38799af1d80a36ca5b79cf4fb84ca1da5fa67
+  - Candidate bit3 (LSB-first): 1
+  - Candidate set bits: 139/256
+
+This is a strong candidate mapping because SBoot compares the data read from STEADY at record+0x28 against the constant at 0x24a4bc, and later copies a 32-byte parsed field at object+0x120 into the policy bitmap. The record+0x120 raw field is not yet conclusively proven to be the same parsed field; bit3 is reported as a candidate only.
+
+
+## 6. Known candidate object locations
 
 ### Offset 0x00002400
 00002400: a3 9b d3 79 1c b0 ee 09 56 2a 53 89 e9 24 ae cf
@@ -971,7 +988,7 @@ The next task is to identify the parser and the object-record offset that select
 000e0fe0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 000e0ff0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 
-## 6. Interpretation limits
+## 7. Interpretation limits
 
 - The SBoot parser, not a guessed fixed offset, determines the accepted token object.
 - A raw 32-byte sequence is not an authorization proof unless it is the exact parsed object accepted by the J6 signature-validation path.

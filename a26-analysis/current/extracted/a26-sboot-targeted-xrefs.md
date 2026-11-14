@@ -4862,6 +4862,12 @@ Decompressed lines: 469631
 - VA 0x245cf7, function fcn.001551fc, lines 150954-150956: │ ╎╎╎╎╎│╎   0x00155450      adrp  x1, 0x245000 || │ ╎╎╎╎╎│╎   0x00155458      add   x1, x1, 0xcf7                        ; int64_t arg2
 - VA 0x23e409, function fcn.001558e4, lines 151681-151684: │ ╎ ╎ ╎╎    0x00155ed0      adrp  x3, 0x23e000 || │ ╎ ╎ ╎╎    0x00155edc      add   x3, x3, 0x409                        ; int64_t arg4
 - VA 0x23e409, function fcn.001558e4, lines 151745-151747: │   ╎ ╎     0x00155fcc      adrp  x2, 0x23e000 || │   ╎ ╎     0x00155fd4      add   x2, x2, 0x409                        ; int64_t arg3
+- VA 0x24a4bc, function fcn.0015bbbc, lines 158319-158320: │  ╎ ╎╎╎╎   0x0015be74      adrp  x24, 0x24a000 || │  ╎ ╎╎╎╎   0x0015be78      add   x24, x24, 0x4bc
+- VA 0x24a4bc, function fcn.0015c54c, lines 158820-158821: │    ││││   0x0015c5d4      adrp  x1, 0x24a000 || │    ││││   0x0015c5d8      add   x1, x1, 0x4bc                        ; int64_t arg2
+- VA 0x24a4bc, function fcn.0015f218, lines 161952-161953: │     │││   0x0015f308      adrp  x22, 0x24a000 || │     │││   0x0015f30c      add   x22, x22, 0x4bc
+- VA 0x24a4bc, function fcn.0016afa4, lines 174500-174502: │ │││││││   0x0016b038      adrp  x1, 0x24a000 || │ │││││││   0x0016b040      add   x1, x1, 0x4bc                        ; int64_t arg2
+- VA 0x24a4bc, function fcn.0016b7dc, lines 175104-175105: │   │││││   0x0016b89c      adrp  x1, 0x24a000 || │   │││││   0x0016b8a0      add   x1, x1, 0x4bc                        ; int64_t arg2
+- VA 0x24a4bc, function fcn.0016c0ac, lines 175665-175667: │     │││   0x0016c0f0      adrp  x1, 0x24a000 || │     │││   0x0016c0f8      add   x1, x1, 0x4bc                        ; int64_t arg2
 - VA 0x23e409, function fcn.0016d638, lines 177185-177186: │           0x0016d6dc      adrp  x21, 0x23e000 || │           0x0016d6e0      add   x21, x21, 0x409
 - VA 0x23e409, function fcn.0016e1a8, lines 177628-177630: │      ╎│   0x0016e21c      adrp  x2, 0x23e000 || │      ╎│   0x0016e224      add   x2, x2, 0x409                        ; int64_t arg3
 - VA 0x23e409, function fcn.0016e1a8, lines 177699-177701: │      ││   0x0016e32c      adrp  x2, 0x23e000 || │      ││   0x0016e334      add   x2, x2, 0x409                        ; int64_t arg3
@@ -4949,6 +4955,7 @@ Decompressed lines: 469631
 - VA 0x5a6a90, function fcn.001895dc, lines 209199-209201: │           0x001895ec      adrp  x10, 0x5a6000 || │           0x001895f4      add   x10, x10, 0xa90
 - VA 0x5a6a90, function fcn.00189614, lines 209213-209214: │       ╎   0x00189618      adrp  x1, 0x5a6000 || │       ╎   0x0018961c      add   x1, x1, 0xa90
 - VA 0x26fe25, function fcn.0018962c, lines 209259-209260: │  ╎╎╎╎╎    0x00189690      adrp  x0, 0x26f000 || │  ╎╎╎╎╎    0x00189694      add   x0, x0, 0xe25                        ; int64_t arg1
+- VA 0x24a4bc, function fcn.0018962c, lines 209292-209293: │  ╎╎╎╎╎│   0x0018970c      adrp  x19, 0x24a000 || │  ╎╎╎╎╎│   0x00189710      add   x19, x19, 0x4bc
 - VA 0x26fe25, function fcn.0018962c, lines 209324-209325: │ └───────> 0x00189788      adrp  x0, 0x26f000 || │   ╎╎ ╎    0x0018978c      add   x0, x0, 0xe25                        ; int64_t arg1
 - VA 0x5a6a90, function fcn.0018962c, lines 209436-209437: │           0x00189934      adrp  x20, 0x5a6000 || │           0x00189938      add   x20, x20, 0xa90
 - VA 0x5a6a90, function fcn.00189be8, lines 209641-209642: │           0x00189bec      adrp  x8, 0x5a6000 || │           0x00189bf0      add   x8, x8, 0xa90
@@ -4956,6 +4963,7 @@ Decompressed lines: 469631
 - VA 0x26fe25, function fcn.00189d8c, lines 209811-209812: │    │╎ ╎   0x00189e44      adrp  x0, 0x26f000 || │    │╎ ╎   0x00189e48      add   x0, x0, 0xe25                        ; int64_t arg1
 - VA 0x26fe25, function fcn.00189fd0, lines 209976-209977: │ ╎╎╎╎╎╎    0x0018a078      adrp  x0, 0x26f000 || │ ╎╎╎╎╎╎    0x0018a07c      add   x0, x0, 0xe25                        ; int64_t arg1
 - VA 0x26fe25, function fcn.0018a2ac, lines 210170-210171: │ ╎╎╎╎╎╎    0x0018a338      adrp  x0, 0x26f000 || │ ╎╎╎╎╎╎    0x0018a33c      add   x0, x0, 0xe25                        ; int64_t arg1
+- VA 0x24a4bc, function fcn.0018a2ac, lines 210203-210204: │ ╎╎╎╎╎╎│   0x0018a3b4      adrp  x21, 0x24a000 || │ ╎╎╎╎╎╎│   0x0018a3b8      add   x21, x21, 0x4bc
 - VA 0x26fe25, function fcn.0018a2ac, lines 210234-210235: │ ────────> 0x0018a430      adrp  x0, 0x26f000 || │ ╎╎╎╎ ╎    0x0018a434      add   x0, x0, 0xe25                        ; int64_t arg1
 - VA 0x26fe25, function fcn.0018a6d4, lines 210609-210610: │  ╎╎╎╎╎│   0x0018a988      adrp  x0, 0x26f000 || │  ╎╎╎╎╎│   0x0018a98c      add   x0, x0, 0xe25                        ; int64_t arg1
 - VA 0x23e409, function fcn.0018b10c, lines 211154-211155: │      └──> 0x0018b158      adrp  x2, 0x23e000 || │       │   0x0018b15c      add   x2, x2, 0x409                        ; int64_t arg3
