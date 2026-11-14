@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Extract selected A26 J6 SBoot functions and direct xrefs from the gzip assembly.
+"""Extract selected A26 J6 SBoot functions and direct xrefs from gzip assembly.
 
-This is a read-only analysis helper. It never accesses a device or modifies firmware.
+Read-only repository analysis. It never accesses a handset or modifies firmware.
+The gzip dump may contain either named function headers or address-only disassembly;
+both layouts are supported.
 """
 from __future__ import annotations
 
@@ -16,141 +18,142 @@ INDEX = ROOT / "a26-analysis/current/function-index.tsv"
 OUT = ROOT / "a26-analysis/current/extracted"
 
 TARGETS = [
-    "fcn.0017184c",
-    "fcn.0017b7c8",
-    "fcn.0017bfac",
-    "fcn.0017eb34",
-    "fcn.00183e40",
-    "fcn.00187cf0",
-    "fcn.0016f3e0",
-    "fcn.0017af7c",
-    "fcn.0017dfdc",
-    "fcn.0017df80",
-    "fcn.001257bc",
-    "fcn.0012577c",
-    "fcn.001895dc",
-    "fcn.00123f14",
-    "fcn.001558e4",
-    "fcn.0018efb4",
-    "fcn.00179f90",
-    "fcn.0017b0a0",
-    "fcn.0017b1f8",
-    "fcn.0014b120",
+    "fcn.0017184c", "fcn.0017b7c8", "fcn.0017bfac", "fcn.0017eb34",
+    "fcn.00183e40", "fcn.00187cf0", "fcn.0016f3e0", "fcn.0017af7c",
+    "fcn.0017dfdc", "fcn.0017df80", "fcn.001257bc", "fcn.0012577c",
+    "fcn.001895dc", "fcn.00123f14", "fcn.001558e4", "fcn.0018efb4",
+    "fcn.00179f90", "fcn.0017b0a0", "fcn.0017b1f8", "fcn.0014b120",
     "fcn.0014b248",
 ]
 
 STRING_TERMS = [
-    "androidboot.other.locked",
-    "get_oem_unlock_val",
-    "PO_OEM_UNLOCK",
-    "using unlock keys which was downloaded by odin",
-    "there is no unlock keys",
-    "Fail to unlock",
-    "Succeed to unlock",
-    "sync_lockstate_custtoken",
+    "androidboot.other.locked", "get_oem_unlock_val", "PO_OEM_UNLOCK",
+    "using unlock keys which was downloaded by odin", "there is no unlock keys",
+    "Fail to unlock", "Succeed to unlock", "sync_lockstate_custtoken",
     "--reason=bootloader_unlock",
 ]
 
 OUT.mkdir(parents=True, exist_ok=True)
-if not SOURCE.is_file():
-    raise SystemExit(f"Missing input: {SOURCE}")
+if not SOURCE.is_file() or not INDEX.is_file():
+    raise SystemExit("Missing full-sboot.asm.gz or function-index.tsv")
 
-target_set = set(TARGETS)
-found: set[str] = set()
-callers: dict[str, list[tuple[str, int, str]]] = {t: [] for t in TARGETS}
-string_hits: list[str] = []
-current_function = "<outside-function>"
-current_target: str | None = None
-buffer: list[str] = []
-line_no = 0
-header_samples: list[str] = []
-
-def flush_function() -> None:
-    global buffer, current_target
-    if current_target and buffer:
-        path = OUT / f"{current_target}.asm"
-        path.write_text("".join(buffer), encoding="utf-8")
-        found.add(current_target)
-    buffer = []
-    current_target = None
+index_rows: dict[str, tuple[int, int, str]] = {}
+for row in INDEX.read_text(encoding="utf-8", errors="replace").splitlines():
+    parts = row.split("\t")
+    if len(parts) >= 3:
+        try:
+            address = int(parts[0], 16)
+            count = int(parts[2])
+        except ValueError:
+            continue
+        index_rows[parts[1]] = (address, count, row)
 
 with gzip.open(SOURCE, "rt", encoding="utf-8", errors="replace") as stream:
-    for line_no, line in enumerate(stream, 1):
-        if len(header_samples) < 30 and ("fcn." in line or "FUNCTION" in line):
-            header_samples.append(line.rstrip())
-        header = re.match(r"^\s*(?:FUNCTION:\s*)?┌?\s*(fcn\.[0-9a-fA-F]+)\(", line)
-        if header:
-            flush_function()
-            current_function = header.group(1)
-            if current_function in target_set:
-                current_target = current_function
-                buffer = [line]
+    asm_lines = list(stream)
+
+source_hash = hashlib.sha256(SOURCE.read_bytes()).hexdigest()
+line_addresses: dict[int, int] = {}
+header_lines: dict[str, int] = {}
+first_samples: list[str] = []
+string_hits: list[str] = []
+
+for idx, line in enumerate(asm_lines):
+    if len(first_samples) < 40 and (line.strip() and (
+        "fcn." in line or "FUNCTION" in line or "0x" in line
+    )):
+        first_samples.append(line.rstrip())
+
+    header = re.match(r"^\s*(?:FUNCTION:\s*)?┌?\s*(fcn\.[0-9a-fA-F]+)(?:\(|\s|$)", line)
+    if header:
+        header_lines[header.group(1)] = idx
+
+    addr = re.search(r"\b0x([0-9a-fA-F]{8})\b", line)
+    if addr:
+        line_addresses.setdefault(int(addr.group(1), 16), idx)
+
+    for term in STRING_TERMS:
+        if term in line:
+            string_hits.append(f"line {idx+1}: {line.rstrip()}")
+
+# Named-header extraction first. If the gzip file is address-only, use the
+# function-index start addresses and the next indexed function start as boundaries.
+found: set[str] = set()
+for target in TARGETS:
+    start_line = header_lines.get(target)
+    if start_line is not None:
+        later = [
+            (line_no, name) for name, line_no in header_lines.items()
+            if line_no > start_line
+        ]
+        end_line = min((x[0] for x in later), default=len(asm_lines))
+        extracted = asm_lines[start_line:end_line]
+    else:
+        indexed = index_rows.get(target)
+        if not indexed:
+            continue
+        address, instruction_count, _ = indexed
+        start_line = line_addresses.get(address)
+        if start_line is None:
             continue
 
-        if current_target:
-            buffer.append(line)
+        later_addresses = sorted(
+            (a, n) for n, (a, _, _) in index_rows.items() if a > address
+        )
+        end_line = len(asm_lines)
+        for next_address, _ in later_addresses:
+            candidate = line_addresses.get(next_address)
+            if candidate is not None and candidate > start_line:
+                end_line = candidate
+                break
 
-        for term in STRING_TERMS:
-            if term in line:
-                string_hits.append(
-                    f"line {line_no} | function {current_function} | {line.rstrip()}"
-                )
+        # The index count is a fallback cap if no next function boundary exists.
+        if end_line == len(asm_lines) and instruction_count > 0:
+            end_line = min(len(asm_lines), start_line + instruction_count + 80)
+        extracted = [f"FUNCTION: {target} (address-index extraction)\n"] + asm_lines[start_line:end_line]
 
-        call = re.search(r"\bbl\s+(fcn\.[0-9a-fA-F]+)", line)
-        if call and call.group(1) in target_set:
-            callers[call.group(1)].append((current_function, line_no, line.rstrip()))
+    if extracted:
+        (OUT / f"{target}.asm").write_text("".join(extracted), encoding="utf-8")
+        found.add(target)
 
-flush_function()
-
-# Read the function index so missing targets can be distinguished from absent functions.
-index_rows: dict[str, str] = {}
-if INDEX.is_file():
-    for row in INDEX.read_text(encoding="utf-8", errors="replace").splitlines():
-        parts = row.split("\t")
-        if len(parts) >= 3:
-            index_rows[parts[1]] = row
+# Direct call xrefs from textual BL instructions, when present.
+callers: dict[str, list[str]] = {t: [] for t in TARGETS}
+current_function = "<unknown>"
+for idx, line in enumerate(asm_lines, 1):
+    header = re.match(r"^\s*(?:FUNCTION:\s*)?┌?\s*(fcn\.[0-9a-fA-F]+)(?:\(|\s|$)", line)
+    if header:
+        current_function = header.group(1)
+    for target in TARGETS:
+        addr = index_rows.get(target, (None, None, None))[0]
+        if addr is None:
+            continue
+        if re.search(rf"\bbl\s+(?:{re.escape(target)}|0x{addr:08x})\b", line, re.I):
+            callers[target].append(f"line {idx}, caller {current_function}: {line.rstrip()}")
 
 report = [
-    "# A26 J6 SBoot targeted extraction report",
-    "",
+    "# A26 J6 SBoot targeted extraction report", "",
     f"Input: `{SOURCE.relative_to(ROOT)}`",
-    f"Input SHA256: `{hashlib.sha256(SOURCE.read_bytes()).hexdigest()}`",
-    f"Decompressed lines: {line_no}",
-    "",
-    "## Function extraction status",
-    "",
+    f"Input SHA256: `{source_hash}`",
+    f"Decompressed lines: {len(asm_lines)}", "",
+    "## Function extraction status", "",
 ]
 for target in TARGETS:
-    status = "EXTRACTED" if target in found else "NOT FOUND IN ASM"
-    index = index_rows.get(target, "not present in function-index.tsv")
-    report.append(f"- {target}: **{status}**; index: `{index}`")
+    indexed = index_rows.get(target)
+    index_text = indexed[2] if indexed else "not present in function-index.tsv"
+    status = "EXTRACTED" if target in found else "NOT LOCATED IN ASM"
+    report.append(f"- {target}: **{status}**; index: `{index_text}`")
 
-report += ["", "## Header samples", ""]
-report += [f"- `{sample}`" for sample in header_samples]
-report += ["", "## Header samples", ""]
-report += [f"- `{sample}`" for sample in header_samples]
+report += ["", "## Initial assembly samples", ""]
+report += [f"- `{x}`" for x in first_samples]
 report += ["", "## Direct call sites", ""]
 for target in TARGETS:
     report.append(f"### {target}")
-    sites = callers[target]
-    if not sites:
-        report.append("- No direct BL call found in the scanned assembly.")
-    else:
-        for caller, number, instruction in sites:
-            report.append(f"- line {number}, caller {caller}: `{instruction}`")
+    report += [f"- {x}" for x in callers[target]] or ["- No direct BL call found in the scanned text."]
     report.append("")
-
 report += ["## OEM / unlock string references", ""]
-report += [f"- {hit}" for hit in string_hits] if string_hits else ["- No string hits found."]
-report += ["", "## Scope", "", "Static extraction only. No device access, no writes, no token generation, and no firmware modification."]
+report += [f"- {x}" for x in string_hits] if string_hits else ["- No string hits found."]
+report += ["", "## Scope", "", "Static extraction only; no device access, writes, token generation or firmware modification."]
 (OUT / "a26-sboot-targeted-xrefs.md").write_text("\n".join(report) + "\n", encoding="utf-8")
 
-missing = sorted(target_set - found)
-print(f"Extracted {len(found)}/{len(TARGETS)} functions.")
-print("Header samples:", " | ".join(header_samples[:10]))
-print("Header samples:", " | ".join(header_samples[:10]))
-print(f"Decompressed {line_no} lines.")
-if missing:
-    print("Not extracted:", ", ".join(missing))
-else:
-    print("All target functions extracted.")
+print(f"Extracted {len(found)}/{len(TARGETS)} functions from {len(asm_lines)} lines.")
+print("Initial samples:", " | ".join(first_samples[:10]))
+print("Missing:", ", ".join(sorted(set(TARGETS) - found)))
