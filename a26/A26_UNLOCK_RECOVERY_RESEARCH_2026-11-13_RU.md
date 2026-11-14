@@ -753,3 +753,22 @@ Maintenance Mode не является путём включения OEM Unlock:
 Не повторять стандартные комбинации клавиш и не запрашивать повторно экран ODIN MODE. Не записывать TWRP/blank vbmeta и не изменять STEADY/RPMB. Следующий этап — статически разобрать A26-specific resource/TEE/ESS path и callers getter `fcn.0017af7c`, а не экспериментировать с защищённым состоянием устройства.
 
 Источник новых пользовательских наблюдений: сообщение владельца от 14.11.2026 в текущем разговоре.
+
+
+## 23. Direct SBoot boot-property evidence — 2026-11-14
+
+The string `androidboot.other.locked=%d` is no longer merely an unreferenced string-table lead. In J6 SBoot function `fcn.0016f3e0`, address `0x16fe84` loads its address `0x26b317`, `0x16fe8c` sets `w1=1`, and `0x16fe90` calls `fcn.0017184c`. This directly shows the SBoot path passing value 1 to the helper for this boot property. The helper's body is not yet extracted, so exact serialization semantics remain pending. The observed Android `ro.boot.other.locked=1` is consistent with the SBoot code.
+
+This explains why changing `ro.boot.other.locked` with KernelSU `resetprop` can expose the Android OEM Unlock switch without unlocking the bootloader: it changes the post-boot Android property, not the signed STEADY policy or protected lock-state cache. The actual lock-state synchronizer `fcn.0017dfdc` remains a separate path involving bit 3, MISC and protected state.
+
+A focused function extraction and xref audit is saved at `a26-analysis/current/extracted/bootarg-oem-locked-and-xref-audit.asm`.
+
+### Getter caller-map correction
+
+The old attribution of `fcn.00183e40 @ +0x25c` as a direct caller of `fcn.0017af7c` is invalid: its complete body has no such direct call. The instruction at `fcn.00187cf0 + 0x18c` / VA `0x187e7c` calls `fcn.00179f90`, not `fcn.0017af7c`. The candidate xref `fcn.0017bfac @ 0x17c758` remains unverified because that caller body has not yet been extracted. Reported `fcn.0017eb34` call offsets also need direct caller-body verification.
+
+### Next static targets
+
+1. Extract `fcn.0017184c` to prove how SBoot serializes boot parameters.
+2. Extract `fcn.0017bfac` and `fcn.0017eb34` to revalidate OEM getter callers.
+3. Keep Chimera EUB as the leading externally documented unlock candidate, pending written confirmation for A266BXXUCDZJ6 / Android 17 / BIT 12.
