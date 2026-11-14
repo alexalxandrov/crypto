@@ -22,14 +22,17 @@ TARGETS = [
     "fcn.0017dfdc", "fcn.0017df80", "fcn.001257bc", "fcn.0012577c",
     "fcn.001895dc", "fcn.00123f14", "fcn.001558e4", "fcn.0018efb4",
     "fcn.00179f90", "fcn.0017b0a0", "fcn.0017b1f8", "fcn.0014b120",
-    "fcn.0014b248",
+    "fcn.0014b248", "fcn.001758fc", "fcn.0017db48", "fcn.001866ac",
+    "fcn.001551fc", "fcn.0016e5f4", "fcn.0017cb74", "fcn.00188654",
+    "fcn.00179e6c", "fcn.0017bb70", "fcn.0017d674", "fcn.0017bdc0",
+    "fcn.0017d4cc", "fcn.0017d5b4", "fcn.0017c904", "fcn.0017e5f8",
 ]
 
 STRING_TERMS = [
     "androidboot.other.locked", "get_oem_unlock_val", "PO_OEM_UNLOCK",
     "using unlock keys which was downloaded by odin", "there is no unlock keys",
     "Fail to unlock", "Succeed to unlock", "sync_lockstate_custtoken",
-    "--reason=bootloader_unlock",
+    "--reason=bootloader_unlock", "PERSISTENT", "PO_OEM_UNLOCK",
 ]
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
 
@@ -133,7 +136,31 @@ for target in TARGETS:
     report.append(f"### {target}")
     report += [f"- {x}" for x in callers[target]] or ["- No direct BL call found in the scanned text."]
     report.append("")
-report += ["## OEM / unlock string references", ""]
+# Resolve ADRP + ADD references to known OEM/unlock string virtual addresses.
+known_vas = {0x24edc5, 0x23f11a, 0x245cf7, 0x2463d5, 0x265467, 0x26529e,
+             0x265508, 0x26b4ca, 0x26f537, 0x26a977, 0x275d4a, 0x26d660,
+             0x269201, 0x26b317, 0x2746cd, 0x26ff1c}
+string_xrefs = []
+current_function = "<unknown>"
+for i, line in enumerate(lines):
+    header = re.match(r"^\\s*┌\\s*(fcn\\.[0-9a-fA-F]+)\\(", line)
+    if header:
+        current_function = header.group(1)
+    adrp = re.search(r"\\badrp\\s+x(\\d+),\\s*0x([0-9a-fA-F]+)", line)
+    if not adrp:
+        continue
+    reg, page = adrp.group(1), int(adrp.group(2),16)
+    for j in range(i+1,min(i+7,len(lines))):
+        add = re.search(rf"\\badd\\s+x{reg},\\s*x{reg},\\s*(?:aav\\.)?0x([0-9a-fA-F]+)",lines[j])
+        if add:
+            va=page+int(add.group(1),16)
+            if va in known_vas:
+                string_xrefs.append(f"VA 0x{va:x}, function {current_function}, lines {i+1}-{j+1}: {line.strip()} || {lines[j].strip()}")
+            break
+
+report += ["## Direct ADRP+ADD xrefs to OEM/unlock strings", ""]
+report += [f"- {x}" for x in string_xrefs] if string_xrefs else ["- No direct ADRP+ADD xrefs found."]
+report += ["", "## OEM / unlock string references", ""]
 report += [f"- {x}" for x in string_hits] if string_hits else ["- No string hits found."]
 report += ["", "## Scope", "", "Static extraction only; no device access, writes, token generation or firmware modification."]
 (OUT / "a26-sboot-targeted-xrefs.md").write_text("\n".join(report) + "\n", encoding="utf-8")
@@ -150,10 +177,13 @@ if RAW_SBOOT.is_file():
         f"SHA-256: {hashlib.sha256(raw).hexdigest()}", "",
     ]
     base = None
+    known_vas = [0x24edc5, 0x23f11a, 0x245cf7, 0x2463d5, 0x265467,
+                 0x26529e, 0x265508, 0x26b4ca, 0x26f537, 0x26a977,
+                 0x275d4a, 0x26d660, 0x269201, 0x26b317, 0x2746cd, 0x26ff1c]
     if pos >= 0:
         base = 0x26B317 - pos
         mapping += [f"androidboot.other.locked: file offset 0x{pos:x}; known VA 0x26b317 implies load base 0x{base:x}.", ""]
-        for va in [0x265467, 0x2659d8, 0x26b317]:
+        for va in known_vas:
             off = va - base
             if 0 <= off < len(raw):
                 end = raw.find(bytes([0]), off, min(len(raw), off + 256))
