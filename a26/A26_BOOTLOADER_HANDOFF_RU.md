@@ -1336,3 +1336,29 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 Не следует трактовать это как доказанную линейную цепочку AIDL HAL → emservice → TLC → TEE. Прямые caller edges, TA UUID/command IDs и конкретные policy decisions остаются неустановленными. Строка Enabled RPMB RSI — лишь строка в ELF, не наблюдение фактической записи.
 
 Все выводы получены из конфигурационных файлов и read-only ELF inspection. Binder/ESS methods, изменяющие состояние, не вызывались; STEADY/RPMB и разделы загрузчика не менялись.
+
+
+## Дополнение 14 ноября 2026 — подтверждённая symbol linkage для EngMode
+
+По свежему read-only выводу `readelf -d` и `readelf -Ws` разделены импортируемые и определённые символы (`UND` против числового section index).
+
+Подтверждённая цепочка старого Binder/ESS контура:
+
+1. `/vendor/bin/emservice` имеет DT_NEEDED на `libengmode_server.so` и импортирует `android::EngineeringModeHandler::instantiate()`.
+2. `libengmode_server.so` определяет эту функцию, `EngineeringModeHandler::onTransact()`, `EngineeringModeWorld::emProcess()`, `emSyncUpCore()` и STEADY read/write accessors.
+3. `libengmode_server.so` импортирует `em_tlc_send`; функция определена в `libengmode_tlc.so`.
+4. `libengmode_tlc.so` импортирует TEEC context/session/shared-memory/command API из `libteecl.so`.
+
+Итого: `emservice → libengmode_server.so → libengmode_tlc.so → libteecl / TEEC API` — теперь это не только совпадение DT_NEEDED, но и подтверждённые межбиблиотечные symbol references.
+
+Отдельная AIDL ветвь:
+
+- `vendor.samsung.hardware.security.engmode-service` импортирует `BnSehEngmode` symbols из AIDL NDK glue и непосредственно зависит от `libengmode_client.so`.
+- NDK glue определяет BpSehEngmode proxy methods и BnSehEngmode interface stub/base.
+- Точная логика forwarding из AIDL service в classic Binder client пока не установлена; нельзя автоматически соединять её с `emservice` в одну цепь.
+
+`libengmode15.so` экспортирует `em_ess_make_token_request`, `em_ess_install_token_v1` и `em_write_to_steady`, но не входит в наблюдавшийся прямой DT_NEEDED набор `libengmode_server.so`. Конкретный caller relationship не утверждается.
+
+Подробная карта: `a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md`. Runtime capture: `a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md`.
+
+Не установлены TA UUID/command IDs, secure-world payload semantics, AIDL forwarding logic, а также наличие действительной Samsung authorization для OEM Unlock. Binder/ESS методы не вызывались; состояние устройства и разделы хранения не менялись.
