@@ -157,3 +157,25 @@ Android OEMLockService сообщал, что пользовательская/�
 Шесть live SHA-256 записаны в [ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md). Сравнение этих хешей с хранящимися binary artifacts репозитория пока не выполнялось.
 
 **Новая граница доказанного:** подтверждены DT_NEEDED зависимости и TEE Client API names; прямой порядок вызовов между AIDL HAL, emservice и TLC пока не установлен. Не выполнялись Binder/ESS state-changing calls и записи в разделы устройства.
+
+
+## Дополнение: подтверждённые связи ELF-символов — 14.11.2026
+
+Новая read-only проверка `readelf -d` и `readelf -Ws` позволила связать конкретные функции между исполняемыми файлами и библиотеками:
+
+- `emservice` импортирует `EngineeringModeHandler::instantiate()`; эта функция определена в `libengmode_server.so`.
+- `libengmode_server.so` определяет `EngineeringModeHandler::onTransact()`, `EngineeringModeWorld::emProcess()`, `emSyncUpCore()` и STEADY read/write accessors.
+- `libengmode_server.so` импортирует `em_tlc_send`, а `libengmode_tlc.so` определяет эту функцию.
+- TLC импортирует из `libteecl.so` реальные TEEC-функции: инициализацию контекста, открытие сессии, выделение shared memory, вызов команды, освобождение памяти и закрытие сессии.
+
+Поэтому теперь подтверждена статическая связка:
+
+`emservice → libengmode_server.so → libengmode_tlc.so → libteecl / TEEC API`
+
+Это доказывает путь зависимостей и межбиблиотечных symbol references до TEE Client API, но не раскрывает Trusted Application UUID, номера команд, формат payload, внутреннюю политику TEE или право на OEM Unlock.
+
+Отдельно подтверждено, что `vendor.samsung.hardware.security.engmode-service` использует AIDL NDK Binder glue и напрямую зависит от `libengmode_client.so`. Это пока самостоятельная ветвь: точная логика перенаправления AIDL-вызовов в classic Binder client и конкретный маршрут к `emservice` ещё не доказаны.
+
+`libengmode15.so` экспортирует `em_ess_make_token_request`, `em_ess_install_token_v1` и `em_write_to_steady`, но не фигурирует в зафиксированном прямом DT_NEEDED списке `libengmode_server.so`; связь вызова не предполагается без дополнительных доказательств.
+
+Результаты записаны в [подробную архитектурную карту](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) и [runtime diagnostics](../a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md). Вызовы Binder/ESS не выполнялись, разделы и состояние устройства не изменялись.
