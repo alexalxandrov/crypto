@@ -196,3 +196,18 @@ Android OEMLockService сообщал, что пользовательская/�
 Таким образом, AIDL-service executable использует legacy EngMode client API напрямую. Это подтверждённая ELF-связь, а не просто совпадение библиотечных зависимостей. Точный порядок forwarding внутри AIDL-обработчиков, имя legacy Binder service и доступность каждого метода из внешней транзакции ещё не установлены.
 
 Подробности и полный перечень импортов записаны в [ARCHITECTURE_STATIC_FINDINGS](../a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md) и [RUNTIME_DIAGNOSTICS](../a26-analysis/engmode/current/RUNTIME_DIAGNOSTICS_2026-11-14.md). Никакие методы не вызывались; устройство не изменялось.
+
+
+## Дополнение: ELF-layout AIDL executable и отсутствие objdump — 14.11.2026
+
+Для `vendor.samsung.hardware.security.engmode-service` получены размеры секций:
+
+- `.text`: `0x3054`;
+- `.plt`: `0x3f0`;
+- `.rela.plt`: 1464 байта — 61 стандартная 24-байтовая ELF64 RELA-запись;
+- `.dynsym`: `0x708`, `.dynstr`: `0xd64`;
+- флаги динамического линкера: `BIND_NOW`, `NOW PIE`.
+
+В отфильтрованном списке секций не обнаружены `.symtab` и `.strtab`; видимая dynamic symbol table содержит лишь несколько собственных вспомогательных определений. Имена внутренних обработчиков AIDL из этого ELF-вывода получить нельзя.
+
+В Termux не найдены `llvm-objdump` и `objdump`, поэтому дизассемблирование и карта call sites пока не сделаны. 61 запись PLT — это общее количество relocation entries, а не количество вызовов EngMode. Следующий read-only этап — сохранить полную таблицу `readelf -rW`; при желании владелец может отдельно установить LLVM tools в Termux для дизассемблирования. Никакие методы и состояние устройства не затрагивались.
