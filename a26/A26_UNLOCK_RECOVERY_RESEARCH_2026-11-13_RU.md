@@ -774,3 +774,14 @@ The old attribution of `fcn.00183e40 @ +0x25c` as a direct caller of `fcn.0017af
 1. Extract `fcn.0017184c` to prove how SBoot serializes boot parameters.
 2. Extract `fcn.0017bfac` and `fcn.0017eb34` to revalidate OEM getter callers.
 3. Keep Chimera EUB as the leading externally documented unlock candidate, pending written confirmation for A266BXXUCDZJ6 / Android 17 / BIT 12.
+
+
+## 24. AVB recovery hash proof — direct TWRP write while locked is closed (2026-11-14)
+
+The exact saved boot-chain backups were parsed offline. Report: `a26/recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md`.
+
+The signed `vbmeta.img` contains a HASH descriptor for `recovery` with image size 71,877,408 bytes and SHA-256 `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`. The stock recovery partition dump has an AVB footer and embedded vbmeta; its image digest matches this signed descriptor. The official TWRP TAR member `recovery.img` is 74,027,008 bytes, has no AVB footer, and its digest does not match the Samsung-signed recovery descriptor.
+
+This is direct cryptographic evidence that root-level `dd` into recovery while the bootloader remains locked cannot produce a bootable TWRP recovery under the current AVB chain. The block write may succeed, but SBoot/AVB will reject the modified recovery. Do not test this on the handset. The local build image was not available in this repository; it is still not stock and cannot satisfy the same signed recovery hash.
+
+The direct-`dd`-while-locked branch is closed. Pursue a real unlock/service authorization first; current leading candidate: Chimera EUB for SM-A266B, exact J6 / Android 17 / BIT 12 support unconfirmed.
