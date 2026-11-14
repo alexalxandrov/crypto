@@ -15,18 +15,22 @@ On 2026-11-14, Chimera's own model page for **Samsung Galaxy A26 5G / SM-A266B**
 
 Source: https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b
 
-The row is present in the official model-specific "Available Features" table. This is materially stronger than a third-party reseller listing and makes Chimera EUB the leading externally documented unlock candidate.
+The row is present in the current official model-specific "Available Features" table. However, there is conflicting first-party evidence: Chimera's A26-specific EUB launch announcement (SM-A266B/SM-A266M) explicitly lists the procedures available in EUB mode, and **Bootloader Unlock is not among them**. The model page may have been updated later, but no newer A26-specific announcement confirming EUB Bootloader Unlock was found. Therefore EUB is a plausible lead, not a confirmed unlock path.
 
 General feature page: https://chimeratool.com/en/features/unlock-relock-bootloader
 
 ## 2. What is and is not established
 
-### Established by first-party model page
+### Established by first-party sources
 
-- Chimera lists the exact base model SM-A266B.
-- The listed Bootloader Unlock / Relock mode is EUB.
+- The current official model page for SM-A266B lists Unlock / Relock Bootloader — EUB.
+- The official A26 EUB launch announcement lists SM-A266B and SM-A266M as EUB-compatible.
+- That A26-specific announcement's explicit EUB procedure list does **not** include Bootloader Unlock.
 - The official page exposes a model-specific Test Point Info link.
-- The feature exists in Chimera's current public catalogue for this model.
+
+### Conflict requiring support confirmation
+
+The current model page and the A26-specific EUB procedure announcement do not agree on whether Bootloader Unlock is actually available through EUB for A26. The announcement may be older and superseded, but the public evidence located so far does not prove that. Do not purchase credits or disassemble the phone until Chimera confirms this exact operation.
 
 ### Not established by the public page
 
@@ -51,7 +55,7 @@ A mirrored copy is available at: https://news.halabtech.com/chimera-update-new-s
 
 This Download Mode procedure must not be conflated with the separate **EUB** operation currently shown on the SM-A266B model page. The first-party announcement's Android-version limitation explicitly excludes the installed Android 17 build from the ODIN route. The public evidence does not say whether the separate EUB route has the same restriction; this is the exact point Chimera support must confirm.
 
-The installed A266BXXUCDZJ6 is Android 17. Therefore the older Download Mode route is not a viable assumption for this phone. The EUB listing is the route that needs exact-build confirmation.
+The installed A266BXXUCDZJ6 is Android 17. Therefore the older Download Mode route is not a viable assumption for this phone. The EUB listing is the route that needs both procedure-level and exact-build confirmation.
 
 ## 4. EUB feasibility and physical access
 
@@ -132,7 +136,7 @@ Therefore, the Chimera EUB route is interesting precisely because it may provide
 | Route | Current evidence | Status |
 |---|---|---|
 | Samsung standard Device Unlock UI | No confirmation branch appears on this phone | Not available in observed state |
-| Chimera Bootloader Unlock via EUB | Exact SM-A266B model page lists it | **Top candidate; exact Android 17 / BIT 12 support unconfirmed** |
+| Chimera Bootloader Unlock via EUB | Current model page lists it, but A26-specific EUB procedure announcement omits it | **Unresolved conflict; exact Android 17 / BIT 12 support unconfirmed** |
 | Chimera ODIN-mode unlock | Published for selected models below Android 16 when no emtoken is required | Not assumed compatible with Android 17 |
 | ESS signed-token route | A26 SBoot contains token/lock-state handling; no confirmed signed token issuance path | Open research |
 | KernelSU + kexec | Public A26 source defconfig disables KEXEC; installed J6 config still not read directly | Low-probability route |
@@ -140,7 +144,7 @@ Therefore, the Chimera EUB route is interesting precisely because it may provide
 
 ## 9. Safety gate
 
-- No write to recovery, vbmeta, STEADY, RPMB or MISC is authorized by this research note.
+- The owner has authorized pursuing unlock/TWRP. No write to recovery, vbmeta, STEADY, RPMB or MISC has been performed; a specific write still requires a verified path, image/backup validation and final operation-specific check.
 - Do not downgrade below RP SWREV 12.
 - Do not attempt a test-point procedure using a diagram from a different model or a different boot mode.
 - Treat unlock as a data-wiping operation; preserve a verified backup first.
@@ -153,3 +157,16 @@ Chimera's official download page currently lists **Windows 10 / Windows 11, 32/6
 https://chimeratool.com/en/download
 
 Therefore the user's Parrot Linux, macOS and legacy Windows 7 environment are not officially supported hosts for the current tool. Use a native Windows 10/11 PC if available. A Windows 10/11 virtual machine with USB passthrough may be technically possible but is not confirmed by Chimera for EUB/test-point workflows; do not rely on it for a paid or destructive procedure without support confirmation.
+
+
+## 11. First-party EUB procedure-list conflict — 2026-11-14
+
+A second first-party source was located: Chimera's official Telegram EUB announcement for Galaxy A26 5G (SM-A266B, SM-A266M). It confirms A26 EUB compatibility, but the explicit procedure list is: Backup, Change CSC, Change Serial, Factory Reset, FMM Remove, FRP Remove, Set KnoxGuard State, Get Info, Lost Mode Remove, Common Criteria Remove, MDM Remove, Remove Warnings, Security Backup/Restore, Network Factory Reset and Reset Battery Status. **Bootloader Unlock is absent from that A26-specific EUB list.**
+
+First-party source: https://t.me/s/chimeratool_offical?before=241
+
+This conflicts with the current official SM-A266B model page, which lists Unlock / Relock Bootloader (EUB). The announcement may have been superseded by a later update, but no later A26-specific first-party release note confirming the addition was located. Treat the model page as a lead, not proof that the EUB unlock operation is available on A26.
+
+The separate official ODIN/Download Mode announcement includes A26 but limits bootloader unlock to devices below Android 16 when no emtoken is required. The installed Android 17 firmware is outside that published ODIN boundary.
+
+**Updated decision:** do not buy credits or open the handset yet. Ask Chimera support to resolve the exact conflict and confirm SM-A266B / A266BXXUCDZJ6 / Android 17 / BIT 12. The support request in section 6 already contains the required device details; add the explicit question: “Your current model page lists EUB Bootloader Unlock, but your A26 EUB announcement's procedure list omits it. Has Bootloader Unlock been added for SM-A266B since that announcement?”
