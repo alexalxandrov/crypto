@@ -47,6 +47,16 @@ androidboot.other.locked: file offset 0x26b317; known VA 0x26b317 implies load b
 --reason=bootloader_unlock
 --locale=en_US
 
+- VA 0x260425 / file offset 0x260425: USERDATA
+- VA 0x24620d / file offset 0x24620d: erase
+- VA 0x269191 / file offset 0x269191: MDM MODE. CAN'T ERASE USERDATA.
+
+- VA 0x2561a0 / file offset 0x2561a0: %s: USERDATA partition is not exist.
+
+- VA 0x2463b3 / file offset 0x2463b3: %s : can not find MISC partition
+
+- VA 0x276a7f / file offset 0x276a7f: Device state switched (%d)
+
 
 ## OEM / unlock strings
 
