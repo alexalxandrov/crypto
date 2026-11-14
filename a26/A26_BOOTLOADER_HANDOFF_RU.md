@@ -1247,3 +1247,13 @@ su -c 'dd if=/dev/block/by-name/steady of=/sdcard/Download/steady_full_4m.bin bs
 ```
 
 Then record byte count and SHA-256. Never use the destination as a block device and never write data to STEADY/RPMB.
+
+## 15. Дополнение 14 ноября 2026 — Maintenance Mode и OEM Unlock
+
+Использовать вместе с `A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md`.
+
+Владелец подтвердил, что OEM unlocking switch появляется временно; когда отображается, его можно включить, и он остаётся ON (длительность и persistence после reboot не измерены). Maintenance Mode требует reboot для входа и отдельный reboot для выхода; Developer Options внутри MM отсутствует. На экране Custom OS короткое и длительное нажатия Volume Up приводят к обычному Download Mode без отдельного подтверждения Device Unlock. Полный ODIN MODE экран уже зафиксирован; строки OEM LOCK / FRP LOCK / DEVICE STATE отсутствуют, повторно запрашивать экран нельзя.
+
+Это не меняет подтверждённое состояние последнего read-only снимка: `flash.locked=1`, `vbmeta.device_state=locked`, `verifiedbootstate=green`; Android OEMLockService ранее возвращал allowed=true, но device OEM-unlocked=false. UI switch и bootloader state не тождественны.
+
+A26 J6 SBoot static analysis показывает STEADY/PIT policy bitmap, SecureBoot/signature-validation path и lock-state reconciliation. Точное имя bit 3, полярность internal state и доступность signed ESS authorization для SM-A266B остаются неразрешёнными. Maintenance Mode не является путём включения OEM Unlock; не повторять клавиатурные эксперименты, не записывать TWRP/blank vbmeta и не изменять STEADY/RPMB.
