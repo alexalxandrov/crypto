@@ -119,11 +119,13 @@ However, the model-level listing does not prove compatibility with the exact fir
 
 ### Important distinction: ODIN unlock vs EUB unlock
 
-The August 2026 Chimera Exynos announcement describes a Download Mode / ODIN unlock procedure for selected models **below Android 16, when no emtoken is required**. A26 is listed in the Exynos 1380 group:
+Chimera's first-party Telegram announcement (post 279, 27.08.2026) describes a Download Mode / ODIN unlock procedure for selected Exynos models **below Android 16, when no emtoken is required**. It explicitly lists Exynos 1380 and Galaxy A26 5G (SM-A266B/M/U/U1):
 
-https://news.halabtech.com/chimera-update-new-samsung-exynos-support-en-2026-08-27/
+https://t.me/chimeratool_offical/279
 
-Do not conflate this ODIN-mode procedure with the separate EUB operation listed on the SM-A266B model page. The public source does not state whether the EUB path has the same Android-version/emtoken restriction. Since the phone runs Android 17, the older ODIN path is not assumed compatible; EUB requires direct confirmation.
+Mirror: https://news.halabtech.com/chimera-update-new-samsung-exynos-support-en-2026-08-27/
+
+Do not conflate this ODIN-mode procedure with the separate EUB operation listed on the SM-A266B model page. The official announcement's below-Android-16 condition excludes the phone's Android 17 firmware from the ODIN route. The public source does not state whether the EUB path has the same Android-version/emtoken restriction; exact-build confirmation is required.
 
 A public A26 service article documents EUB/test-point use for FRP service on Android 15 / A266BXU1AYB5, not bootloader unlock:
 https://halabtech.com/samsung-a26-5g-frp-remove-via-test-point-eub/
