@@ -143,15 +143,15 @@ known_vas = {0x24edc5, 0x23f11a, 0x245cf7, 0x2463d5, 0x265467, 0x26529e,
 string_xrefs = []
 current_function = "<unknown>"
 for i, line in enumerate(lines):
-    header = re.match(r"^\\s*┌\\s*(fcn\\.[0-9a-fA-F]+)\\(", line)
+    header = re.match(r"^\s*┌\s*(fcn\.[0-9a-fA-F]+)\(", line)
     if header:
         current_function = header.group(1)
-    adrp = re.search(r"\\badrp\\s+x(\\d+),\\s*0x([0-9a-fA-F]+)", line)
+    adrp = re.search(r"\badrp\s+x(\d+),\s*0x([0-9a-fA-F]+)", line)
     if not adrp:
         continue
     reg, page = adrp.group(1), int(adrp.group(2),16)
     for j in range(i+1,min(i+7,len(lines))):
-        add = re.search(rf"\\badd\\s+x{reg},\\s*x{reg},\\s*(?:aav\\.)?0x([0-9a-fA-F]+)",lines[j])
+        add = re.search(rf"\badd\s+x{reg},\s*x{reg},\s*(?:aav\.)?0x([0-9a-fA-F]+)",lines[j])
         if add:
             va=page+int(add.group(1),16)
             if va in known_vas:
