@@ -121,6 +121,73 @@ androidboot.other.locked: file offset 0x26b317; known VA 0x26b317 implies load b
 
 - VA 0x24f0ce / file offset 0x24f0ce: UFS Provision : FAIL
 
+- VA 0x24a0e0 / file offset 0x24a0e0: %s : dVendorSpecificFeaturesSupport = 0x%x
+
+- VA 0x23c931 / file offset 0x23c931: ufs_sec_check_psa_support
+- VA 0x264c9e / file offset 0x264c9e: %s : ufs doesn't support psa.
+
+- VA 0x262a40 / file offset 0x262a40: ufs_sec_user_psa_configure
+- VA 0x24c3f2 / file offset 0x24c3f2: %s : UFS read attribute for PSA state Error: %d
+
+- VA 0x278624 / file offset 0x278624: ufs_read_bPSAState
+- VA 0x247c4a / file offset 0x247c4a: %s : get current psa state error: %d
+
+- VA 0x24f0e4 / file offset 0x24f0e4: %s : psa state : %d
+
+- VA 0x273b6f / file offset 0x273b6f: %s : psa state is PRE-SOLDERING state.
+
+- VA 0x2762b5 / file offset 0x2762b5: UFS write attribute for PSA state Error: %d
+
+- VA 0x24a10c / file offset 0x24a10c: %s : ufs set loading complete state is wrong. %d
+
+- VA 0x25e1ab / file offset 0x25e1ab: %s : ufs current psa state : %d
+
+- VA 0x273b44 / file offset 0x273b44: %s : ufs psa state : %d
+
+- VA 0x273b5d / file offset 0x273b5d: ufs_set_bPSAState
+- VA 0x266b5d / file offset 0x266b5d: %s : ufs user psa provision is succeeded.
+
+- VA 0x24c27f / file offset 0x24c27f: THGLF2G9J8LBATCA
+- VA 0x259f6f / file offset 0x259f6f: THGLF2G8J4LBATDA
+- VA 0x2536a3 / file offset 0x2536a3: SCSI swp set FAIL: %d
+
+- VA 0x266a2e / file offset 0x266a2e: %s: [bio_open] failed to open %s
+
+- VA 0x2716d3 / file offset 0x2716d3: scsi_swp_set
+- VA 0x266a50 / file offset 0x266a50: UFS LU%d SWP control Fail : %d
+
+- VA 0x2760b5 / file offset 0x2760b5: UFS LU%u SWP set success
+
+- VA 0x2457a3 / file offset 0x2457a3: UFS LU%u SWP clear success
+
+- VA 0x259f80 / file offset 0x259f80: UFS LU%u not support SWP setting
+
+- VA 0x250fb4 / file offset 0x250fb4: %s: Trying %d but %d failed!!
+
+- VA 0x268810 / file offset 0x268810: scsi_ufs_set_swp_luns
+- VA 0x276131 / file offset 0x276131: UFS_QUERY_WRITE_DESC_CONFIG, len : %02x
+
+- VA 0x2716f8 / file offset 0x2716f8: ==== ufs configuration descriptor setup ====
+
+- VA 0x268826 / file offset 0x268826:   0x%02x
+- VA 0x25729e / file offset 0x25729e: 
+
+
+- VA 0x268356 / file offset 0x268356: 
+
+- VA 0x24f033 / file offset 0x24f033: 
+==========================================
+
+- VA 0x2536ba / file offset 0x2536ba: [UFS] %s:%u: UFS utp interface error(%d): 0x%x
+
+- VA 0x23c811 / file offset 0x23c811: ufs_utp_query_process
+- VA 0x23a5c6 / file offset 0x23a5c6: [UFS] %s:%u: UFS utp check result error(%d): 0x%x
+
+- VA 0x26f7c1 / file offset 0x26f7c1: UFS Query cmd: 0x%x, flag 0x%x, function 0x%x, response 0x%x
+
+- VA 0x2739cc / file offset 0x2739cc: UFS: %s: query with opcode 0x%02x is not supported
+
+- VA 0x2557dd / file offset 0x2557dd: __utp_query_get_data
 
 ## OEM / unlock strings
 
