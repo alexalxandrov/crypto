@@ -1378,3 +1378,12 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 Тот же executable импортирует `BnSehEngmode` symbols из AIDL NDK glue. Это доказывает наличие AIDL Binder front end, непосредственно связанного с legacy EngMode client API. Это ещё не доказывает точную реализацию каждого AIDL transaction handler или успешный вызов методов на устройстве.
 
 Полная карта: `a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md`. State-changing Binder/ESS methods не вызывались; разделы устройства и bootloader state не менялись.
+
+
+## Дополнение 14 ноября 2026 — AIDL executable ELF sections / disassembler gap
+
+Для `vendor.samsung.hardware.security.engmode-service` владелец предоставил read-only ELF section/dynamic metadata: `.text` = `0x3054`, `.plt` = `0x3f0`, `.rela.plt` = 1464 bytes (61 стандартных ELF64 RELA entries), `.dynsym` = `0x708`, `.dynstr` = `0xd64`; присутствуют `BIND_NOW` и `NOW PIE`.
+
+В отфильтрованном section listing нет `.symtab` / `.strtab`, поэтому внутренние handler names stripped executable напрямую не видны. Termux не содержит objdump/llvm-objdump; пока не получены machine-code call sites. Следующий минимальный шаг — полный `readelf -rW` relocation table. Установка LLVM tools в Termux остаётся необязательной.
+
+Не выполнялись вызовы Binder/ESS и любые изменения устройства.
