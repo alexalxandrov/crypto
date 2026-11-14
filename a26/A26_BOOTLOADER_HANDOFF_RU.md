@@ -1266,3 +1266,8 @@ The current official Chimera model page for SM-A266B lists **Unlock / Relock Boo
 Chimera's official download page lists Windows 10 / Windows 11 32/64-bit; Linux, macOS and Windows 7 are not listed as supported hosts. Native Windows 10/11 is preferred; VM USB passthrough is unverified.
 
 Public A26-specific kernel source `os-guy-original/android_kernel_samsung_a26x` (branch `lineage-23.2`, Linux 5.15.180) has `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set` in `s5e8835-a26xxx_defconfig`. This is not the exact installed J6 kernel config (5.15.197), but it makes kexec a lower-probability route.
+
+
+## 17. AVB recovery hash proof — 2026-11-14
+
+Offline parsing of the saved Samsung `vbmeta.img` confirms a signed HASH descriptor for partition `recovery` (image_size 71,877,408 bytes; SHA-256 `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`). The saved stock recovery dump has an AVB footer and matches that digest. The official TWRP TAR's recovery.img has no AVB footer and fails the signed recovery digest. Thus direct `dd` of TWRP while locked is not a viable boot path. See `a26/recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md`. Do not test-write it.
