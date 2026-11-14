@@ -29,6 +29,11 @@ Decompressed lines: 469631
 - fcn.0014b248: **EXTRACTED**; index: `0x0014b248	fcn.0014b248	211`
 - fcn.001758fc: **EXTRACTED**; index: `0x001758fc	fcn.001758fc	85`
 - fcn.0012c4dc: **EXTRACTED**; index: `0x0012c4dc	fcn.0012c4dc	95`
+- fcn.0012c3dc: **EXTRACTED**; index: `0x0012c3dc	fcn.0012c3dc	77`
+- fcn.0012bbe0: **EXTRACTED**; index: `0x0012bbe0	fcn.0012bbe0	454`
+- fcn.00126b3c: **EXTRACTED**; index: `0x00126b3c	fcn.00126b3c	30`
+- fcn.001283b8: **EXTRACTED**; index: `0x001283b8	fcn.001283b8	59`
+- fcn.00138ddc: **EXTRACTED**; index: `0x00138ddc	fcn.00138ddc	84`
 - fcn.002049dc: **EXTRACTED**; index: `0x002049dc	fcn.002049dc	45`
 - fcn.00138f30: **EXTRACTED**; index: `0x00138f30	fcn.00138f30	73`
 - fcn.001390c0: **EXTRACTED**; index: `0x001390c0	fcn.001390c0	67`
@@ -676,6 +681,81 @@ Decompressed lines: 469631
 
 ### fcn.0012c4dc
 - line 118288, caller fcn.00138ddc: │      ││   0x00138e00      bl    fcn.0012c4dc
+
+### fcn.0012c3dc
+- line 103450, caller fcn.0012c4dc: │    ╎ ╎    0x0012c570      bl    fcn.0012c3dc
+- line 213434, caller fcn.0018ec8c: │           0x0018ecc0      bl    fcn.0012c3dc
+
+### fcn.0012bbe0
+- line 102715, caller fcn.0012b810: │           0x0012bb98      bl    fcn.0012bbe0
+- line 103440, caller fcn.0012c4dc: │      ││   0x0012c54c      bl    fcn.0012bbe0
+- line 103854, caller fcn.0012caa0: │           0x0012cab4      bl    fcn.0012bbe0
+- line 118332, caller fcn.00138ddc: │ ────────> 0x00138ea8      bl    fcn.0012bbe0
+
+### fcn.00126b3c
+- line 92960, caller fcn.00123490: │           0x001234a0      bl    fcn.00126b3c
+- line 93046, caller fcn.001235a0: │           0x001235b0      bl    fcn.00126b3c
+- line 93091, caller fcn.001235a0: │  └─└────> 0x0012365c      bl    fcn.00126b3c
+- line 96892, caller fcn.001268b8: │       ╎   0x00126910      bl    fcn.00126b3c
+- line 102416, caller fcn.0012b714: │           0x0012b72c      bl    fcn.00126b3c
+- line 102750, caller fcn.0012bbe0: │           0x0012bbf0      bl    fcn.00126b3c
+- line 103202, caller fcn.0012c27c: │           0x0012c288      bl    fcn.00126b3c
+- line 103221, caller fcn.0012c29c: │           0x0012c2ac      bl    fcn.00126b3c
+- line 103277, caller fcn.0012c344: │           0x0012c354      bl    fcn.00126b3c
+- line 103315, caller fcn.0012c3a4: │           0x0012c3bc      bl    fcn.00126b3c
+- line 103340, caller fcn.0012c3dc: │           0x0012c3f0      bl    fcn.00126b3c
+- line 103341, caller fcn.0012c3dc: │           0x0012c3f4      bl    fcn.00126b3c
+- line 103363, caller fcn.0012c3dc: │    │  │   0x0012c448      bl    fcn.00126b3c
+- line 103416, caller fcn.0012c4dc: │           0x0012c4ec      bl    fcn.00126b3c
+- line 103452, caller fcn.0012c4dc: │    ╎ ╎    0x0012c578      bl    fcn.00126b3c
+- line 103511, caller fcn.0012c624: │           0x0012c634      bl    fcn.00126b3c
+- line 103513, caller fcn.0012c624: │           0x0012c63c      bl    fcn.00126b3c
+- line 103549, caller fcn.0012c624: │    └────> 0x0012c6c4      bl    fcn.00126b3c
+- line 103584, caller fcn.0012c624: │   ╎ │╎╎   0x0012c74c      bl    fcn.00126b3c
+- line 103882, caller fcn.0012caf0: │           0x0012cafc      bl    fcn.00126b3c
+- line 212312, caller fcn.0018bfb0: │ ╎╎╎╎╎╎└─> 0x0018c014      bl    fcn.00126b3c
+- line 213827, caller fcn.0018f028: │ └───────> 0x0018f1d8      bl    fcn.00126b3c
+
+### fcn.001283b8
+- line 98205, caller fcn.00127530: │    │╎│╎   0x00127a8c      bl    fcn.001283b8
+- line 99323, caller fcn.00128a8c: │     ││    0x00128c34      bl    fcn.001283b8
+- line 99333, caller fcn.00128a8c: │    │││╎   0x00128c5c      bl    fcn.001283b8
+- line 99387, caller fcn.00128cfc: │       ╎   0x00128d18      bl    fcn.001283b8
+- line 99505, caller fcn.00128e78: │           0x00128ea0      bl    fcn.001283b8
+- line 99517, caller fcn.00128e78: │     │╎    0x00128ecc      bl    fcn.001283b8
+- line 99586, caller fcn.00128e78: │   │││╎│   0x00128fe0      bl    fcn.001283b8
+- line 99635, caller fcn.00128e78: │ ╎ ╎╎│╎╎   0x00129090      bl    fcn.001283b8
+- line 99645, caller fcn.00128e78: │ ╎│╎╎│╎╎   0x001290b8      bl    fcn.001283b8
+- line 99661, caller fcn.00128e78: │ ╎│╎╎│╎╎   0x001290f8      bl    fcn.001283b8
+- line 99677, caller fcn.00128e78: │ ╎│╎╎│╎╎   0x00129138      bl    fcn.001283b8
+- line 99693, caller fcn.00128e78: │ ╎│╎╎│╎╎   0x00129178      bl    fcn.001283b8
+- line 99709, caller fcn.00128e78: │ ╎│╎╎│╎╎   0x001291b8      bl    fcn.001283b8
+- line 99725, caller fcn.00128e78: │ ╎│╎╎│╎╎   0x001291f8      bl    fcn.001283b8
+- line 99741, caller fcn.00128e78: │ ╎│╎╎│╎╎   0x00129238      bl    fcn.001283b8
+- line 99757, caller fcn.00128e78: │  │╎╎│╎╎   0x00129278      bl    fcn.001283b8
+- line 99771, caller fcn.00128e78: │  │ ╎│╎╎   0x001292b0      bl    fcn.001283b8
+- line 99779, caller fcn.00128e78: │  │ ││╎╎   0x001292d0      bl    fcn.001283b8
+- line 99815, caller fcn.00128e78: │     ╎     0x00129358      bl    fcn.001283b8
+- line 100456, caller fcn.00129754: │ │╎╎╎│││   0x00129c24      bl    fcn.001283b8
+- line 100471, caller fcn.00129754: │ │ ╎╎│ │   0x00129c60      bl    fcn.001283b8
+- line 101000, caller fcn.0012a2a4: │       │   0x0012a2d8      bl    fcn.001283b8
+- line 101018, caller fcn.0012a2a4: │     │     0x0012a320      bl    fcn.001283b8
+- line 101027, caller fcn.0012a2a4: │     ││    0x0012a344      bl    fcn.001283b8
+- line 102756, caller fcn.0012bbe0: │       │   0x0012bc08      bl    fcn.001283b8
+- line 102765, caller fcn.0012bbe0: │     │ │   0x0012bc2c      bl    fcn.001283b8
+- line 102774, caller fcn.0012bbe0: │    ││ │   0x0012bc50      bl    fcn.001283b8
+- line 102783, caller fcn.0012bbe0: │   │││ │   0x0012bc74      bl    fcn.001283b8
+- line 103225, caller fcn.0012c29c: │           0x0012c2bc      bl    fcn.001283b8
+- line 103241, caller fcn.0012c29c: │     │╎│   0x0012c2f8      bl    fcn.001283b8
+- line 103283, caller fcn.0012c344: │       │   0x0012c36c      bl    fcn.001283b8
+- line 103347, caller fcn.0012c3dc: │       │   0x0012c40c      bl    fcn.001283b8
+- line 103374, caller fcn.0012c3dc: │    │ ││   0x0012c470      bl    fcn.001283b8
+- line 103422, caller fcn.0012c4dc: │       │   0x0012c504      bl    fcn.001283b8
+- line 103458, caller fcn.0012c4dc: │    ╎ ╎│   0x0012c590      bl    fcn.001283b8
+- line 103553, caller fcn.0012c624: │     ╎╎╎   0x0012c6d4      bl    fcn.001283b8
+
+### fcn.00138ddc
+- line 75156, caller fcn.00114100: │           0x00114144      bl    fcn.00138ddc
 
 ### fcn.002049dc
 - line 92453, caller fcn.001224ec: │       │   0x00122cc0      bl    fcn.002049dc
