@@ -143,3 +143,11 @@ Therefore, the Chimera EUB route is interesting precisely because it may provide
 - Do not attempt a test-point procedure using a diagram from a different model or a different boot mode.
 - Treat unlock as a data-wiping operation; preserve a verified backup first.
 - If Chimera confirms exact-build support, use its documented model-specific EUB procedure rather than manually reproducing unknown service commands.
+
+
+## 10. Host OS requirements
+
+Chimera's official download page currently lists **Windows 10 / Windows 11, 32/64-bit** as supported operating systems:
+https://chimeratool.com/en/download
+
+Therefore the user's Parrot Linux, macOS and legacy Windows 7 environment are not officially supported hosts for the current tool. Use a native Windows 10/11 PC if available. A Windows 10/11 virtual machine with USB passthrough may be technically possible but is not confirmed by Chimera for EUB/test-point workflows; do not rely on it for a paid or destructive procedure without support confirmation.
