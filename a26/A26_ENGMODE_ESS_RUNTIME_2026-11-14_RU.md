@@ -211,3 +211,12 @@ Android OEMLockService сообщал, что пользовательская/�
 В отфильтрованном списке секций не обнаружены `.symtab` и `.strtab`; видимая dynamic symbol table содержит лишь несколько собственных вспомогательных определений. Имена внутренних обработчиков AIDL из этого ELF-вывода получить нельзя.
 
 В Termux не найдены `llvm-objdump` и `objdump`, поэтому дизассемблирование и карта call sites пока не сделаны. 61 запись PLT — это общее количество relocation entries, а не количество вызовов EngMode. Следующий read-only этап — сохранить полную таблицу `readelf -rW`; при желании владелец может отдельно установить LLVM tools в Termux для дизассемблирования. Никакие методы и состояние устройства не затрагивались.
+
+
+## Дополнение: PLT и relocation map AIDL-службы — 14.11.2026
+
+После установки Termux LLVM 21.1.8 дизассемблер успешно запущен через su -c: при обычном запуске чтение /vendor/bin/vendor.samsung.hardware.security.engmode-service завершалось Permission denied. Сохранены три файла: ~/a26_engmode/relocations.txt (66 строк), plt.txt (380 строк) и disassembly.txt (3459 строк).
+
+Сопоставлены адреса PLT-stub с R_AARCH64_JUMP_SLOT для ключевых методов legacy API. Например: engmodeclient() — PLT 0x6140 / slot 0x74b0; getServer() — 0x6150 / 0x74b8; getModesbit() — 0x61e0 / 0x7500; commandForESS() — 0x6270 / 0x7548; makeTokenReq() — 0x6290 / 0x7558; installToken() — 0x6320 / 0x75a0; getStatus() — 0x6330 / 0x75a8. Полная таблица из 27 EngMode методов находится в архитектурной карте и runtime diagnostics.
+
+Это доказывает соответствие PLT stub ↔ GOT/relocation slot, но ещё не доказывает фактические BL call sites в .text и достижимость методов через AIDL transactions. Предыдущая заметка об отсутствии objdump устарела. Никакие Binder/ESS методы не вызывались; состояние устройства не менялось.
