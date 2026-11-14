@@ -1271,3 +1271,24 @@ Public A26-specific kernel source `os-guy-original/android_kernel_samsung_a26x` 
 ## 17. AVB recovery hash proof — 2026-11-14
 
 Offline parsing of the saved Samsung `vbmeta.img` confirms a signed HASH descriptor for partition `recovery` (image_size 71,877,408 bytes; SHA-256 `6b8ad8371e42811ac425d34579a97de564f7e04d3218b340c244a656974b07e7`). The saved stock recovery dump has an AVB footer and matches that digest. The official TWRP TAR's recovery.img has no AVB footer and fails the signed recovery digest. Thus direct `dd` of TWRP while locked is not a viable boot path. See `a26/recovery/A26_AVB_DESCRIPTOR_REPORT_2026-11-14_RU.md`. Do not test-write it.
+
+## 16. Chimera EUB candidate verified — 14.11.2026
+
+A live retrieval of the exact official Chimera model page for SM-A266B confirms that the current feature table lists:
+- `Unlock / Relock Bootloader — EUB`
+- `Patch Knoxguard — EUB`
+
+Exact model page: https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b?procedureId=344
+
+The page links the exact A26 test-point guide:
+https://chimeratool.com/en/test-points/1440-test-point-for-samsung-galaxy-a26-5g-models.html
+It redirects to login when unauthenticated; the pad diagram is not publicly visible. Official EUB documentation says most Samsung Exynos devices require hardware testpoints and that EUB procedures work up to latest security patches. The A266B does not appear in the official Switch-to-EUB/no-testpoint model search; assume testpoint required unless Chimera confirms otherwise.
+
+The global Chimera MDM guide says EUB KnoxGuard Patch unlocks the bootloader and sets KG Completed, but recommends this patch for Locked or Active states. This phone already reports KG COMPLETED (0); direct `Unlock / Relock Bootloader (EUB)` is the clearest listed candidate, while Patch Knoxguard behavior on already-Completed state needs confirmation.
+
+Chimera desktop software version 48.49.1158 (2026-11-10) supports Windows 10/11 32/64-bit. Its current EULA requires at least Windows 10 and prohibits use in virtual machines. Supported route therefore requires a physical Windows 10/11 host; do not plan on Windows 7, Wine, or a VM.
+
+Support request draft: `a26/A26_CHIMERA_SUPPORT_REQUEST_EN.md`.
+Full evidence, exact links, and constraints: `a26/A26_CHIMERA_EUB_BOOTLOADER_UNLOCK_2026-11-14_RU.md`.
+
+No EUB connection, testpoint bridge, credit purchase, or unlock operation has been performed. Do not bridge unidentified pads or use the unrelated EDL/ISP/BROM diagram as an EUB schematic.
