@@ -64,3 +64,13 @@ Do not rely on older handoff passages that say this function body is unavailable
 - String presence is not proof of a reachable branch or a usable unlock method.
 - A successful Binder request is not proof that Samsung issued a signed ESS token.
 - Keep all current device checks read-only until a supported procedure is independently established.
+
+## Latest owner observations — 2026-11-14
+
+- OEM unlocking switch is reported to appear temporarily and can be enabled; persistence across reboot has not been measured.
+- Maintenance Mode requires reboot both to enter and to exit; Developer Options is absent inside MM.
+- Short and long Volume Up on the Custom OS screen lead to ordinary Download Mode without a Device Unlock confirmation prompt.
+- The full ODIN MODE screen is already recorded. OEM LOCK / FRP LOCK / DEVICE STATE fields are absent; do not request another transcription.
+- Android UI permission is not equivalent to bootloader unlock. The last recorded boot properties remain locked. No supported unlock path has been demonstrated.
+
+See [A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md](A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md) for the full observation record and technical interpretation.
