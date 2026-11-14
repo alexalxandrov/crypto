@@ -101,4 +101,9 @@
 
 ## 8. Аппаратная платформа — уточнение 14.11.2026
 
-` s5e8835 ` соответствует **Samsung Exynos 1380**, а не Exynos 1280. Это подтверждается A26-specific kernel source tree `os-guy-original/android_kernel_samsung_a26x` и опубликованными device/kernel materials. Codename `a26x` / SM-A266B остаётся прежним.
+`s5e8835` соответствует **Samsung Exynos 1380**, а не Exynos 1280. Это подтверждается A26-specific kernel source tree `os-guy-original/android_kernel_samsung_a26x` и опубликованными device/kernel materials. Codename `a26x` / SM-A266B остаётся прежним.
+
+
+## 9. Исправление аппаратной платформы — 14.11.2026
+
+` s5e8835 ` — это **Exynos 1380**, не Exynos 1280. A26-specific kernel source tree `os-guy-original/android_kernel_samsung_a26x` подтверждает platform family `s5e8835`. Исправление также внесено в `a26/TWRP_RESEARCH_STATUS.md`.
