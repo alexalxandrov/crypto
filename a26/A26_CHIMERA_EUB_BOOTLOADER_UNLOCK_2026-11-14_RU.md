@@ -203,3 +203,46 @@ The model page row and A26-specific EUB launch announcement still conflict. No p
 ## 9. Related RAM-recovery path
 
 The A26-specific Android 16 kernel defconfig sets `# CONFIG_KEXEC is not set` and `# CONFIG_KEXEC_FILE is not set`; current Android 17 J6 runtime config remains to be read from `/proc/config.gz`. See `a26/recovery/A26_KEXEC_RAM_RECOVERY_FEASIBILITY_2026-11-14_RU.md` and run `a26/recovery/a26-readonly-preflight.sh`.
+
+## 10. Live first-party page verification — 2026-11-14
+
+A live Firecrawl retrieval of the exact official model page (not a third-party mirror) confirms that the current SM-A266B feature table lists both:
+
+- `Unlock / Relock Bootloader — EUB`
+- `Patch Knoxguard — EUB`
+
+Exact model page: https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b?procedureId=344
+
+The same page links the official A26 test-point instructions:
+https://chimeratool.com/en/test-points/1440-test-point-for-samsung-galaxy-a26-5g-models.html
+
+The test-point page redirects to Chimera login when accessed without an authenticated account, so the board image/pad diagram could not be inspected publicly. The exact model page does explicitly label detailed TP info as available.
+
+Chimera's EUB documentation was modified 2026-11-13 and says EUB is a low-level Exynos interface, most procedures require hardware testpoints, and EUB procedures work up to the latest security patches:
+https://chimeratool.com/en/docs/eub-mode
+
+The official `EUB mode without Test Point` instructions describe a limited Switch to EUB capability. The model's A266B page does not list A266B in the Switch to EUB model search, and the no-testpoint guide says the procedure is available only on supported US U models. Therefore, for SM-A266B/DS, plan on a hardware testpoint unless Chimera support confirms otherwise.
+
+The official global Samsung MDM guide says EUB KnoxGuard Patch unlocks the bootloader, sets KG to Completed, and disables the KnoxGuard service; it recommends this patch for Locked or Active states:
+https://chimeratool.com/en/docs/all-about-mdm-in-chimera
+
+Current device KG state is already `COMPLETED (0)`. Therefore:
+- the direct model-specific `Unlock / Relock Bootloader (EUB)` entry is the clearest candidate;
+- `Patch Knoxguard (EUB)` is also listed, but the vendor's general recommendation does not establish whether it accepts an already-Completed device;
+- neither operation is yet confirmed for exact Android 17 / A266BXXUCDZJ6 / BIT C / CAU.
+
+### Host software requirement
+
+Chimera's current download page (version 48.49.1158, 2026-11-10) lists Windows 10 and Windows 11 32/64-bit as supported OS:
+https://chimeratool.com/en/download
+
+The current EULA requires at least Windows 10 and explicitly prohibits running the software in a virtual machine. Do not plan on Wine, a Windows 7 host, or a Windows VM as a supported route. Use a physical Windows 10/11 machine.
+
+### Support confirmation draft
+
+A model/build-specific English support request is saved in:
+`a26/A26_CHIMERA_SUPPORT_REQUEST_EN.md`
+
+It asks for exact J6 / Android 17 / BIT C support, whether the direct unlock or KnoxGuard Patch is the correct operation when KG is already Completed, whether a testpoint is mandatory, data-wipe consequences, and recovery risk. It deliberately omits DID/Chip ID and other unnecessary device identifiers.
+
+**Current assessment:** this is now a concrete, officially listed candidate path, not merely a generic guess. The remaining blockers are (a) exact-build compatibility confirmation, (b) access to the authenticated A26 testpoint diagram, and (c) a physical Windows 10/11 host. Do not purchase credits or bridge pads before those are resolved.
