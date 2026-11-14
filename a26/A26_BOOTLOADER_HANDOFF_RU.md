@@ -1317,3 +1317,22 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 **Статус интерпретации:** наличие и запуск Engineering Mode/ESS software stack подтверждены. Наличие действительного Samsung-signed OEM-unlock token, его выдача для SM-A266B / A266BXXUCDZJ6, разрешённая mode bitmap и воспроизводимый пользовательский unlock path не подтверждены.
 
 **Не выполнялось:** не вызывались state-changing Binder/ESS методы (makeTokenReq, installToken, commandForESS, removeToken, sendFuseCmd, recoveryITL); не было записи в STEADY, RPMB, recovery, vbmeta или другие разделы. Все следующие действия остаются read-only/static-analysis-only до получения независимого и безопасного подтверждения процедуры.
+
+
+---
+
+## Дополнение 14 ноября 2026 — ELF dependency graph и TEE transport
+
+Свежий on-device readelf/strings intake уточнил архитектуру Engineering Mode:
+
+- AIDL manifest публикует vendor.samsung.hardware.security.engmode / ISehEngmode/default v1; vendor NDK glue library содержит BpSehEngmode/BnSehEngmode/ISehEngmodeDefault symbols.
+- Отдельная emservice служба и libengmode_server.so используют classic libbinder.so; в server library присутствует EngineeringModeHandler::onTransact.
+- libengmode_server.so прямо зависит от libengmode_tlc.so и libengmode2lite.so, плюс libstork_shared.so, libsecril-client.so и librtts_client.so.
+- libengmode_tlc.so зависит от libteecl.so и содержит TEEC_InitializeContext, TEEC_OpenSession, TEEC_InvokeCommand, TEEC shared-memory/session calls и em_tlc_send_teegris. TEE Client API transport boundary подтверждена.
+- libengmode15.so содержит ESS request/token/STEADY symbols и RIL integration diagnostics.
+- libengmode2lite.so содержит token/certificate/signature/nonce/session-key/ESI parsing diagnostics.
+- Live SHA-256 для шести vendor libraries сохранены в a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md.
+
+Не следует трактовать это как доказанную линейную цепочку AIDL HAL → emservice → TLC → TEE. Прямые caller edges, TA UUID/command IDs и конкретные policy decisions остаются неустановленными. Строка Enabled RPMB RSI — лишь строка в ELF, не наблюдение фактической записи.
+
+Все выводы получены из конфигурационных файлов и read-only ELF inspection. Binder/ESS methods, изменяющие состояние, не вызывались; STEADY/RPMB и разделы загрузчика не менялись.
