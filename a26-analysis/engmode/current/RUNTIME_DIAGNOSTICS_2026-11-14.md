@@ -476,3 +476,22 @@ Owner-provided LLVM disassembly windows show common wrapper behavior:
 In the shown common completion paths, AStatus_newOk() is returned while the EngMode operation's result/error is carried separately. Thus Binder-level status success must not be conflated with EngMode operation success.
 
 These observations do not establish runtime invocation, caller authorization, exact AIDL transaction numbers, or the final byte/vector serialization. The getBytes() zero-success convention is established only for the inspected wrappers. No Binder/ESS calls or device writes were performed.
+
+
+## 18. Byte-vector output path and getStatus argument layout — 2026-11-14
+
+Additional disassembly confirms that the zero-success getBytes path copies the returned byte buffer into the AIDL output vector. The wrapper reads the byte count written through its out-parameter, checks existing vector length/capacity, calls the local std::vector<unsigned char>::__append helper as needed, then memcpy copies exactly that count from the temporary 0xC800-byte buffer into the vector. The wrapper writes zero to its separate EngMode result slot and frees the temporary buffer/client object.
+
+The getLastTokenStatus wrapper has the same output-vector path. This establishes that getBytes supplies the byte payload consumed by the AIDL wrapper, rather than merely returning a status.
+
+At getStatus (call site 0x58B4), the method receives:
+- this pointer in x0;
+- integer argument in w1;
+- pointer in x2 and length in w3, where length is computed as field[0x08] − field[0x00];
+- second pointer in x4 and length in w5, where length is field[0x20] − field[0x18];
+- two scalar values in w6/w7 from field offset 0x30;
+- final scalar on the stack.
+
+This matches the imported native signature shape. It suggests, but does not prove, a caller-info structure with two byte ranges and scalar metadata. Exact field meanings require schema or constructor/call-site analysis.
+
+The EngMode result integer and AIDL vector are separate from the Binder AStatus object. Static-only finding; no Binder/ESS methods or protected writes were performed.
