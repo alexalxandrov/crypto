@@ -384,3 +384,44 @@ No disassembler binary was found in the current Termux PATH. Thus no disassembly
 Next capture should include the full `readelf -rW` output. If the owner opts to install tools, the official Termux LLVM tool subpackage includes `objdump`, `llvm-objdump` and Android-target-prefixed objdump binaries. This is an optional Termux package install, not a required device change.
 
 No methods were invoked and no device state was modified.
+
+
+## 15. AIDL executable PLT and relocation map — 2026-11-14
+
+Termux LLVM 21.1.8 is installed. Accessing the vendor executable as the ordinary Termux user returned Permission denied; llvm-objdump was therefore run under su -c. The owner saved ~/a26_engmode/relocations.txt (66 lines), ~/a26_engmode/plt.txt (380 lines), and ~/a26_engmode/disassembly.txt (3459 lines).
+
+The relocation dump identifies R_AARCH64_JUMP_SLOT entries and the PLT dump exposes their corresponding stubs. The PLT stub's GOT.PLT displacement resolves to the exact relocation address.
+
+| API method | PLT | JUMP_SLOT |
+|---|---:|---:|
+| constructor | 0x6140 | 0x74b0 |
+| getServer | 0x6150 | 0x74b8 |
+| getTokenInfoForJanus | 0x6160 | 0x74c0 |
+| getBytes | 0x6180 | 0x74d0 |
+| destructor | 0x6190 | 0x74d8 |
+| getModesbit | 0x61e0 | 0x7500 |
+| getStringModes | 0x61f0 | 0x7508 |
+| getLastTokenStatus | 0x6200 | 0x7510 |
+| getPriorityTime | 0x6210 | 0x7518 |
+| setPriorityTime | 0x6220 | 0x7520 |
+| getTUC | 0x6230 | 0x7528 |
+| getToken | 0x6240 | 0x7530 |
+| makeITLReq | 0x6250 | 0x7538 |
+| recoveryITL | 0x6260 | 0x7540 |
+| commandForESS | 0x6270 | 0x7548 |
+| getServerTime | 0x6280 | 0x7550 |
+| makeTokenReq | 0x6290 | 0x7558 |
+| getRequestMsg | 0x62a0 | 0x7560 |
+| getID | 0x62b0 | 0x7568 |
+| getExpiryDate | 0x62c0 | 0x7570 |
+| removeToken | 0x62d0 | 0x7578 |
+| getNumOfModes | 0x62e0 | 0x7580 |
+| sendFuseCmd | 0x62f0 | 0x7588 |
+| getVersion | 0x6300 | 0x7590 |
+| isTokenInstalled | 0x6310 | 0x7598 |
+| installToken | 0x6320 | 0x75a0 |
+| getStatus | 0x6330 | 0x75a8 |
+
+Additional NDK Binder base imports include BnSehEngmode constructor PLT 0x60d0 / JUMP_SLOT 0x7478 and destructor PLT 0x6120 / JUMP_SLOT 0x74a0.
+
+This is a PLT-to-relocation map, not yet a call-site map. It proves imported API slots and stubs exist; .text BL references still need to be extracted before assigning methods to AIDL handler paths. The earlier “objdump unavailable” note is superseded by this successful LLVM capture. No service methods were executed and no device state was changed.
