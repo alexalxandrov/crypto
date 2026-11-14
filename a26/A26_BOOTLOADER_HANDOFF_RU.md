@@ -1405,3 +1405,16 @@ No EUB connection, testpoint bridge, credit purchase, or unlock operation has be
 Точные адреса вызовов и PLT targets приведены в a26-analysis/engmode/current/ARCHITECTURE_STATIC_FINDINGS_2026-11-14.md. Повторяющийся шаблон constructor → getServer() → method-specific call → getBytes() → destructor указывает на wrapper-like код AIDL-службы, но точное соответствие AIDL transaction codes отдельным блокам пока не установлено.
 
 Это всё ещё статический факт наличия инструкций вызова, а не доказательство runtime invocation или успешного прохождения проверок. Следующий этап — разбор ветвлений и аргументов вокруг selected call sites. Никакие методы не вызывались и устройство не менялось.
+
+
+## Дополнение 14 ноября 2026 — статический control-flow анализ read-only AIDL wrappers
+
+В участках вокруг getModesbit (0x34d8), getLastTokenStatus (0x38f8) и getStatus (0x58b4) подтверждены предварительный вызов getServer() и проверка его результата по знаковому биту. Для getModesbit/getLastTokenStatus та же проверка применяется к результату профильного метода.
+
+Обе byte-return обёртки выделяют буфер 0xC800 (51 200 байт) и вызывают getBytes(client, buffer, &length). В этих call sites ноль от getBytes означает успех, неноль — ошибку. При сбое выделения либо getBytes видимый fallback записывает 0xF0000000 (−268435456) в выходной слот. Продолжение успешной обработки буфера после 0x35EC ещё нуждается в разборе.
+
+getStatus получает pointer/length-подобные данные из входной структуры, вычисляет две длины разностью полей (offsets 0x00/0x08 и 0x18/0x20), передаёт дополнительные scalars и возвращает отдельный int status. В показанном пути getBytes не вызывается; смысл полей структуры по одним offsets не установлен.
+
+На общих путях завершения создаётся AStatus_newOk(), а результат EngMode переносится отдельно. Успешный Binder status поэтому не доказывает успешность самой EngMode операции.
+
+Все выводы ограничены статическим дизассемблированием. Никакие Binder/ESS методы не вызывались и состояние устройства не изменялось.
