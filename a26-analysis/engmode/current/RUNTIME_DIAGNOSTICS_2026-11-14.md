@@ -460,3 +460,19 @@ Owner-provided LLVM disassembly grep output shows direct AArch64 BL instructions
 The call-site pattern repeatedly places a constructor and getServer() before the method-specific call, with getBytes() and the client destructor in the same wrapper-like block. This is consistent with AIDL adapter routines, but exact function boundaries and the AIDL transaction-code mapping have not yet been established.
 
 This is static disassembly evidence: it proves call references exist, not that all paths are reachable or have been invoked. The meaning of getBytes() and all guards/error paths must be confirmed from instruction/data-flow context. Next inspect bounded windows around the read-only mode/status methods and separately the token/ESS methods. No Binder/ESS methods were called and no device state changed.
+
+
+## 17. Static control-flow findings: getModesbit, getLastTokenStatus, getStatus — 2026-11-14
+
+Owner-provided LLVM disassembly windows show common wrapper behavior:
+
+- getServer() is called before the selected EngMode operation. Its return is tested using bit 31; negative values take a logged error path.
+- getModesbit() and getLastTokenStatus() are also tested using bit 31.
+- Both wrappers allocate a 0xC800-byte (51,200-byte) output buffer and call getBytes(client, buffer, &length). In these call sites, zero from getBytes is treated as success and nonzero as failure.
+- If buffer allocation or getBytes fails, the wrapper visibly sets the sentinel 0xF0000000 (-268435456) in its result slot.
+- getStatus() receives pointer/length-like data and scalar values unpacked from a caller-provided structure. Two length values are calculated as differences between fields at offsets 0x00/0x08 and 0x18/0x20. Exact field semantics remain unknown.
+- getStatus() itself returns an integer checked by sign bit; it does not use getBytes in the supplied block.
+
+In the shown common completion paths, AStatus_newOk() is returned while the EngMode operation's result/error is carried separately. Thus Binder-level status success must not be conflated with EngMode operation success.
+
+These observations do not establish runtime invocation, caller authorization, exact AIDL transaction numbers, or the final byte/vector serialization. The getBytes() zero-success convention is established only for the inspected wrappers. No Binder/ESS calls or device writes were performed.
