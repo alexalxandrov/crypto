@@ -881,3 +881,12 @@ https://github.com/alexalxandrov/crypto
 
 SVG-схема текущего состояния и незакрытых связей: [a26-analysis/unlock-evidence-map.svg](https://github.com/alexalxandrov/crypto/blob/main/a26-analysis/unlock-evidence-map.svg).
 
+## 15. Addendum — 2026-11-14 Maintenance Mode and OEM Unlock
+
+See `a26/A26_MAINTENANCE_MODE_OEM_TOGGLE_2026-11-14_RU.md` for the complete observation record.
+
+Owner reports that the Android OEM unlocking switch appears temporarily; when visible it can be enabled and remains ON, but persistence across reboot has not been measured. Maintenance Mode requires a reboot to enter and another reboot to exit; Developer Options is absent inside MM. Both short and long Volume Up on the Custom OS screen lead to ordinary Download Mode without a Device Unlock confirmation prompt. The complete ODIN MODE transcription already exists; OEM LOCK / FRP LOCK / DEVICE STATE rows are absent and must not be requested again.
+
+The latest recorded boot properties remain locked (`flash.locked=1`, `vbmeta.device_state=locked`, `verifiedbootstate=green`); the previous OEMLockService read returned allowed=true but device OEM-unlocked=false. Android UI permission is not bootloader unlock.
+
+J6 static analysis links STEADY/PIT policy loading, signature validation and lock-state reconciliation, but the semantic name of bit 3, internal state polarity and a supported A26 signed ESS issuance path remain unresolved. Do not write TWRP/blank vbmeta or modify STEADY/RPMB.
