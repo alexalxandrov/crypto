@@ -158,3 +158,17 @@ The complete MM/OEM switch observation record is in:
 4. If unlock becomes available, rebuild recovery from the exact J6 kernel/DTB and rework Android 17 FBE decryption; the existing local TWRP build is not production-ready.
 
 **No protected partition was changed.**
+
+## 8. Chimera EUB model-specific path update
+
+A live retrieval of the exact official SM-A266B model page confirms that it lists both `Unlock / Relock Bootloader — EUB` and `Patch Knoxguard — EUB`. The page also links an official A26 test-point guide:
+https://chimeratool.com/en/models/samsung-galaxy-a26-5g-sm-a266b?procedureId=344
+https://chimeratool.com/en/test-points/1440-test-point-for-samsung-galaxy-a26-5g-models.html
+
+The test-point guide redirects to login, so the diagram is not publicly inspectable. The official EUB documentation says most devices need hardware testpoints. The A266B is not listed in the official Switch to EUB/no-testpoint model list; assume a testpoint is required until the vendor confirms otherwise.
+
+The global Chimera MDM guide says EUB KnoxGuard Patch unlocks the bootloader and sets KG Completed, but recommends it for Locked or Active KG states. The current phone is already KG Completed. Thus the direct Unlock/Relock Bootloader EUB entry is the clearest candidate, while Patch Knoxguard's behavior on an already-Completed device remains uncertain.
+
+Chimera current desktop software supports Windows 10/11 only; its EULA prohibits virtual-machine use. A physical Windows 10/11 host is required for a supported workflow. No Windows VM or Wine route is assumed.
+
+A model/build-specific support request is saved as `a26/A26_CHIMERA_SUPPORT_REQUEST_EN.md`.
