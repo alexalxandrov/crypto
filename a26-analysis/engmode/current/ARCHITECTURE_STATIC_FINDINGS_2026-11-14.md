@@ -254,3 +254,55 @@ This confirms that the AIDL executable uses the generated NDK Binder interface l
 - Any end-user OEM-unlock authorization or reachable unlock operation.
 
 Only read-only ELF metadata and symbol tables were inspected. No Binder/ESS calls were issued and no device storage or security state was changed.
+
+
+## 8. AIDL service → legacy EngMode client: direct symbol linkage — 2026-11-14
+
+The owner supplied a fresh read-only `readelf -Ws` capture for `/vendor/bin/vendor.samsung.hardware.security.engmode-service`, `libengmode_client.so` and the AIDL NDK glue library.
+
+### Direct imports from the AIDL service executable
+
+The AIDL service executable imports the following `android::engmodeclient` symbols (all shown with `Ndx=UND` in the executable):
+
+- constructor/destructor: `engmodeclient::engmodeclient()`, `engmodeclient::~engmodeclient()`
+- server/status: `getServer()`, `getStatus(...)`
+- token/request: `getTokenInfoForJanus()`, `getToken()`, `makeTokenReq(...)`, `getRequestMsg(...)`, `installToken(...)`, `isTokenInstalled()`, `removeToken()`, `getLastTokenStatus()`, `getID()`, `getExpiryDate()`
+- modes: `getModesbit()`, `getStringModes()`, `getNumOfModes()`
+- ESS/ITL: `commandForESS(...)`, `makeITLReq(...)`, `recoveryITL(...)`
+- time and metadata: `getServerTime()`, `getPriorityTime()`, `setPriorityTime(...)`, `getTUC(...)`, `getVersion()`
+- other: `getBytes(...)`, `sendFuseCmd()`
+
+The same mangled names are defined (numeric section index, not `UND`) in `libengmode_client.so`. The AIDL service executable also has a direct DT_NEEDED dependency on that library. This is direct ELF evidence that the AIDL service uses the legacy EngMode client API; it is no longer merely a same-subsystem inference.
+
+### Relationship to the generated AIDL interface library
+
+The service executable separately imports `BnSehEngmode` constructor/destructor and interface metadata symbols from `vendor.samsung.hardware.security.engmode-V1-ndk.so`. That library provides the generated AIDL NDK proxy/stub/interface implementation.
+
+Taken together, these imports support the architecture:
+
+`AIDL NDK Binder service front end → android::engmodeclient API → legacy EngMode Binder client path`
+
+The exact per-method forwarding sequence and any additional checks in the AIDL service implementation have **not** yet been recovered. Symbol imports show that the executable references these client methods, but do not by themselves prove that every imported method is reachable from an external AIDL transaction or that it was invoked at runtime.
+
+### Relocation output caveat
+
+The owner's filtered `readelf -rW` output contained no matching symbol names. This does not cancel the dynamic-symbol evidence above: the imports are present in the executable's symbol table and resolve against its direct client-library dependency. The precise relocation/call-site map remains an open static-analysis task.
+
+### Updated architecture graph
+
+The evidence now supports two connected levels without collapsing the older server path into the AIDL front end:
+
+```text
+AIDL client
+  → ISehEngmode / BnSehEngmode service implementation
+      → android::engmodeclient methods
+          → legacy EngMode Binder client path
+              → emservice
+                  → libengmode_server.so
+                      → libengmode_tlc.so
+                          → libteecl / TEEC API
+```
+
+The AIDL-to-client edge is now directly supported by imports. The client-to-`emservice` service lookup and the exact Binder transaction mapping still require confirmation; therefore the full end-to-end path is a working architecture model, not yet a completely demonstrated runtime call trace.
+
+No Binder/ESS methods were invoked. No token operation, STEADY/RPMB write, or bootloader state change was performed.
